@@ -1,0 +1,101 @@
+{
+  "id": "12.1-candidate-set-normalization-v1",
+  "row_ids": [
+    "q0",
+    "q1",
+    "q2",
+    "q3"
+  ],
+  "candidate_ids": [
+    "c0",
+    "c1",
+    "c2",
+    "c3",
+    "c4"
+  ],
+  "base_ids": [
+    "c0",
+    "c1",
+    "c2"
+  ],
+  "selected_ids": [
+    "c1",
+    "c2",
+    "c0",
+    "c1"
+  ],
+  "logit_rule": "(((7*i + 5*j + 3) mod 17) - 8) / 4; 0<=i<4, 0<=j<5",
+  "raw_logits": [
+    [
+      -1.25,
+      0.0,
+      1.25,
+      -1.75,
+      -0.5
+    ],
+    [
+      0.5,
+      1.75,
+      -1.25,
+      0.0,
+      1.25
+    ],
+    [
+      -2.0,
+      -0.75,
+      0.5,
+      1.75,
+      -1.25
+    ],
+    [
+      -0.25,
+      1.0,
+      -2.0,
+      -0.75,
+      0.5
+    ]
+  ],
+  "permutation": [
+    4,
+    1,
+    3,
+    0,
+    2
+  ],
+  "shift": 1,
+  "dtype": "float64",
+  "device": "cpu",
+  "threads": 1,
+  "conditions": [
+    "baseline",
+    "expansion",
+    "unchanged_baseline",
+    "permuted_expansion",
+    "shifted_baseline",
+    "shifted_expansion"
+  ],
+  "kinds": [
+    "softmax",
+    "sigmoid"
+  ],
+  "max_calls": 12,
+  "timeout_seconds": 30,
+  "rtol": 1e-10,
+  "atol": 1e-12,
+  "metric": "mean(selected_expanded_softmax-selected_baseline_softmax)",
+  "units": "weight units; 0.01 equals one percentage point",
+  "roles": {
+    "TRAIN": "none",
+    "DEV": "exposed distinct literal fixtures",
+    "TEST": "none"
+  },
+  "target_status": "UNCONSTRUCTED_UNEXECUTED",
+  "source_pins": {
+    "infrastructure/chapters/chapter12_vlm_interpretability/master_12_1.py": "47c1b0aafec6115a759f4ee7ba52aa407f9e9af4dff28599454cead7e3f95df3",
+    "chapter12_vlm_interpretability/exercises/part1_clip_siglip/tests.py": "88fe498d1e8cd43b3e875352712a2fc310541ce05d17c2cdc4baca359eef0e18",
+    "mastery_hub/units/extension_predictions/lesson.py": "fe0e58e0577b1c348537ab7f33cee9aca4d6c2ae24b5c8562822fb0424cb8659",
+    "mastery_hub/units/ssd_prediction/lesson.py": "431e5cc0ab598e11b98f033038d958ab9d4df603201d6d924303d0a049a1a659",
+    "mastery_hub/units/sae_prediction/records.py": "2fece05ac32b881f929b7697fe5adade55ab871798b2adfd9e35a24f0360dbca",
+    "scripts/build_sae_prediction_notebook.py": "dbd9a95ef35b6c234e80bee4933250cfbaa2348b01936deed22f4f3ae6f5e437"
+  }
+}

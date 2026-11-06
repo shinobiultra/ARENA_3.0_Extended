@@ -1,0 +1,32 @@
+{
+  "schema_version": 1,
+  "section": "17.4",
+  "sources": {
+    "page": {
+      "path": "chapter17_training_dynamics/instructions/pages/04_[17.4]_Training_Dynamics_Across_Architectures.md",
+      "sha256": "8d3c26433bf1125593c322e3107514bd3fb82bb24a03b36b8f4274d4b93d409b"
+    },
+    "exercises": {
+      "path": "chapter17_training_dynamics/exercises/part4_cross_architecture_dynamics/17.4_Training_Dynamics_Across_Architectures_exercises.ipynb",
+      "sha256": "19d0985d9dd6af800385fd90b03713f0b584f5a5241a6b44dcf8a0e92440617f"
+    },
+    "reference": {
+      "path": "chapter17_training_dynamics/exercises/part4_cross_architecture_dynamics/17.4_Training_Dynamics_Across_Architectures_solutions.ipynb",
+      "sha256": "eda77058da48793e2e076e1fc3993353a100c071c73f726c7c21d1fda0a7ea0f"
+    }
+  },
+  "replacements": [
+    {
+      "old": "## Try it yourself\n\nScale only the first feature of the final representation by 10. Predict CKA to the unscaled representation, effective rank and frozen-probe behavior. Then refit the same ridge protocol and compare with its shuffled-label control. This changes geometry anisotropically rather than rotating its coordinate basis.",
+      "new": "## Try it yourself\n\nScale only the first feature of the final representation by 10. Predict CKA to the unscaled representation, effective rank and frozen-probe behavior. Then refit the same ridge protocol and compare with its shuffled-label control. This changes geometry anisotropically rather than rotating its coordinate basis.\n\n**Copyable fixed-weights versus refit comparison.** Run this scratch cell before the existing play cell overwrites `w,bias`. It explicitly freezes the baseline fit; the later cell refits the same ridge protocol.\n\n```python\nbase = representations[-1]\nchanged = base @ np.diag([10., 1., 1., 1.])\nfrozen_w, frozen_b = fit_ridge_probe(base[train], labels[train], ridge=.1)\ncontrol_w, control_b = fit_ridge_probe(base[train], shuffled_train_labels, ridge=.1)\nrefit_w, refit_b = fit_ridge_probe(changed[train], labels[train], ridge=.1)\nrefit_cw, refit_cb = fit_ridge_probe(changed[train], shuffled_train_labels, ridge=.1)\nprint(\"baseline DEV\", probe_accuracy(base[dev], labels[dev], frozen_w, frozen_b))\nprint(\"fixed weights, scaled DEV\", probe_accuracy(changed[dev], labels[dev], frozen_w, frozen_b))\nprint(\"fixed shuffled-control weights, scaled DEV\", probe_accuracy(changed[dev], labels[dev], control_w, control_b))\nprint(\"refit, scaled DEV\", probe_accuracy(changed[dev], labels[dev], refit_w, refit_b))\nprint(\"refit shuffled control, scaled DEV\", probe_accuracy(changed[dev], labels[dev], refit_cw, refit_cb))\n```\n\nFixed **weights** and fixed **ridge fitting protocol** ask different questions. Record both measurements even if accuracy happens to agree; disagreement is possible because changing units changes the frozen decision and the regularized fit. DEV remains monitored teaching data.",
+      "counts": {
+        "page": 1,
+        "exercises": 1,
+        "reference": 1
+      }
+    }
+  ],
+  "rationale": [
+    "Make the frozen-probe forecast observable alongside the existing refit and shuffled-label comparison."
+  ]
+}

@@ -49,21 +49,45 @@ GPT-2 Small completes
 When Mary and John went to the store, John gave a drink to
 ```
 
-with `" Mary"`. In [1.4.1] you found *how*, by activation patching: run the model on a corrupted prompt where the names are different, splice one component's activation from one run into the other, and measure how much the logit difference between `" Mary"` and `" John"` moves. Do that for every attention head and you get the famous IOI circuit map.
+with `" Mary"`. In [1.4.1] you found *how*, by activation patching: run the model on a corrupted prompt where the names are different, splice one component's activation from one
+run into the other, and measure how much the logit difference between `" Mary"` and `" John"` moves. Do that for every attention head and you get the famous IOI circuit map.
 
-Now count the forward passes. One per head is 144. One per (layer, position) of the residual stream is 180. And if you want to know not just *which components* matter but *which connections between them* matter (does head 9.9 get its query from the S-inhibition heads or from somewhere else?), you need one forward pass per **edge** of the model's computational graph. For GPT-2 Small, with heads, MLPs and separate query/key/value inputs, that's 32,491 forward passes for one batch of prompts. For a 7B-parameter model the count runs into the millions.
+Now count the forward passes. One per head is 144. One per (layer, position) of the residual stream is 180. And if you want to know not just *which components* matter but *which
+connections between them* matter (does head 9.9 get its query from the S-inhibition heads or from somewhere else?), you need one forward pass per **edge** of the model's
+computational graph. For GPT-2 Small, with heads, MLPs and separate query/key/value inputs, that's 32,491 forward passes for one batch of prompts. For a 7B-parameter model the
+count runs into the millions.
 
-**Attribution patching** (Nanda, 2023) replaces all of those forward passes with *one* forward pass and *one* backward pass. The idea is a first-order Taylor expansion: if you know the gradient of the metric with respect to an activation, you can estimate what would happen if you changed that activation, without actually changing it. **Edge attribution patching** (EAP; Syed, Rager & Conmy, 2023) applies the same trick to every edge of the graph at once. And **EAP-IG** (Hanna, Pezzelle & Belinkov, 2024) replaces the single gradient with an average of gradients along the path from the corrupted input to the clean one, i.e. integrated gradients.
+**Attribution patching** (Nanda, 2023) replaces all of those forward passes with *one* forward pass and *one* backward pass. The idea is a first-order Taylor expansion: if you know
+the gradient of the metric with respect to an activation, you can estimate what would happen if you changed that activation, without actually changing it. **Edge attribution
+patching** (EAP; Syed, Rager & Conmy, 2023) applies the same trick to every edge of the graph at once. And **EAP-IG** (Hanna, Pezzelle & Belinkov, 2024) replaces the single
+gradient with an average of gradients along the path from the corrupted input to the clean one, i.e. integrated gradients.
 
 Approximations are only useful if you know when to trust them. So the question running through this whole section is:
 
 > *When can a gradient stand in for an intervention, and what goes wrong when it can't?*
 
-By the end you'll have built all three methods from scratch on GPT-2 Small and produced four pictures: attribution patching agreeing with exact patching head by head (in a fraction of the time); a gallery of components where the first-order approximation gets the *sign* of the effect wrong, and why; the IOI circuit drawn from 32,491 edge scores that took a couple of seconds to compute; and faithfulness curves showing that the circuit EAP finds for IOI barely works at all, while the one EAP-IG finds recovers a large fraction of the behaviour. Explaining that last gap leads to the most important idea in the section: approximating single-edge patching well is not the same thing as finding a faithful circuit.
+By the end you'll have built all three methods from scratch on GPT-2 Small and produced four pictures: attribution patching agreeing with exact patching head by head (in a fraction
+of the time); a gallery of components where the first-order approximation gets the *sign* of the effect wrong, and why; the IOI circuit drawn from 32,491 edge scores that took a
+couple of seconds to compute; and faithfulness curves showing that the circuit EAP finds for IOI barely works at all, while the one EAP-IG finds recovers a large fraction of the
+behaviour. Explaining that last gap leads to the most important idea in the section: approximating single-edge patching well is not the same thing as finding a faithful circuit.
 
-As usual, every headline result comes with a control that should fail: gradient-only and activation-only baselines, shuffled scores, randomly chosen edges, held-out prompts, and a second task.
+As usual, every headline result comes with a control that should fail: gradient-only and activation-only baselines, shuffled scores, randomly chosen edges, held-out prompts, and a
+second task.
 
-This section assumes you've done [1.4.1] Indirect Object Identification (at least the activation patching parts), and are comfortable with TransformerLens hooks and PyTorch autograd. Section [8.1] covers noising vs denoising and patching metrics in more depth; you don't need it, but it helps.
+This section assumes you've done [1.4.1] Indirect Object Identification (at least the activation patching parts), and are comfortable with TransformerLens hooks and PyTorch
+autograd. Section [8.1] covers noising vs denoising and patching metrics in more depth; you don't need it, but it helps.
+'''
+
+# ! CELL TYPE: markdown
+# ! FILTERS: []
+# ! TAGS: []
+
+r'''
+**Runtime and device.** The setup runs on CPU when neither MPS nor CUDA is available. An accelerator is recommended for the full GPT-2 Small lesson: exact head/edge interventions,
+backward passes and integration-path sweeps repeat model computation. The saved plots are historical reference outputs; this prose update does not establish a full CPU walltime or
+minimum accelerator memory. Inspect the existing batch sizes and sweep lengths before running, and record any reductions as a changed experiment rather than comparing them silently
+with the reference.
+
 '''
 
 # ! CELL TYPE: markdown
@@ -75,7 +99,8 @@ r'''
 
 ### 1️⃣ Attribution Patching
 
-You'll derive attribution patching from a first-order Taylor expansion, implement it with one forward and one backward pass, and compare it head by head against exact activation patching on IOI. You'll check that both halves of the formula matter, using activation-only, gradient-only and shuffled baselines.
+You'll derive attribution patching from a first-order Taylor expansion, implement it with one forward and one backward pass, and compare it head by head against exact activation
+patching on IOI. You'll check that both halves of the formula matter, using activation-only, gradient-only and shuffled baselines.
 
 > ##### Learning Objectives
 >
@@ -86,7 +111,9 @@ You'll derive attribution patching from a first-order Taylor expansion, implemen
 
 ### 2️⃣ Where the Linear Approximation Breaks
 
-Attribution patching works beautifully for attention head outputs. You'll then find places where it fails badly, including components where it gets the sign of the effect wrong, and look at the metric along the straight line from the clean to the corrupted activation to see why: saturating attention softmaxes, and large, nonlinear changes like swapping out a token's identity. Integrating the gradient along that line fixes the estimate, at a price.
+Attribution patching works beautifully for attention head outputs. You'll then find places where it fails badly, including components where it gets the sign of the effect wrong,
+and look at the metric along the straight line from the clean to the corrupted activation to see why: saturating attention softmaxes, and large, nonlinear changes like swapping out
+a token's identity. Integrating the gradient along that line fixes the estimate, at a price.
 
 > ##### Learning Objectives
 >
@@ -97,7 +124,9 @@ Attribution patching works beautifully for attention head outputs. You'll then f
 
 ### 3️⃣ Edge Attribution Patching
 
-Because the residual stream is a sum, the input to any component is a sum of contributions from earlier components, and those contributions are the *edges* of the model's computational graph. You'll build the graph for GPT-2 Small (32,491 edges), implement EAP, check it against exact edge patching, and draw the IOI circuit from the top-scoring edges.
+Because the residual stream is a sum, the input to any component is a sum of contributions from earlier components, and those contributions are the *edges* of the model's
+computational graph. You'll build the graph for GPT-2 Small (32,491 edges), implement EAP, check it against exact edge patching, and draw the IOI circuit from the top-scoring
+edges.
 
 > ##### Learning Objectives
 >
@@ -108,7 +137,9 @@ Because the residual stream is a sum, the input to any component is a sum of con
 
 ### 4️⃣ EAP-IG and Faithfulness
 
-A ranked list of edges isn't yet a circuit. You'll implement circuit evaluation (corrupting every edge outside the circuit) and use it to draw faithfulness curves. You'll find that EAP's top edges barely recover IOI at all, implement EAP-IG, which does much better, and track down why: the missing edges belong to *redundant* mechanisms whose single-edge effects are tiny. You'll also check everything on held-out prompts and on a second task (greater-than).
+A ranked list of edges isn't yet a circuit. You'll implement circuit evaluation (corrupting every edge outside the circuit) and use it to draw faithfulness curves. You'll find that
+EAP's top edges barely recover IOI at all, implement EAP-IG, which does much better, and track down why: the missing edges belong to *redundant* mechanisms whose single-edge
+effects are tiny. You'll also check everything on held-out prompts and on a second task (greater-than).
 
 > ##### Learning Objectives
 >
@@ -211,7 +242,8 @@ r'''
 r'''
 ## The model
 
-We'll use GPT-2 Small throughout. We never train it, so we turn off gradients for its parameters (we'll still take gradients with respect to its *activations*, which is the whole point of this section).
+We'll use GPT-2 Small throughout. We never train it, so we turn off gradients for its parameters (we'll still take gradients with respect to its *activations*, which is the whole
+point of this section).
 '''
 
 # ! CELL TYPE: code
@@ -230,7 +262,8 @@ print(f"{model.cfg.n_layers} layers, {model.cfg.n_heads} heads per layer, d_mode
 r'''
 ## The task: IOI, a corruption and a metric
 
-Our main task is indirect object identification. We generate prompts from four templates, with random names, places and objects, and with the indirect object (IO) first in half the prompts and second in the other half:
+Our main task is indirect object identification. We generate prompts from four templates, with random names, places and objects, and with the indirect object (IO) first in half the
+prompts and second in the other half:
 
 ```
 When Mary and John went to the store, John gave a drink to       ->  " Mary"   (IO first, "ABBA")
@@ -239,18 +272,21 @@ When John and Mary went to the store, John gave a drink to       ->  " Mary"   (
 
 Every template has the same length (15 tokens including BOS), with the names at positions 2, 4 and 10, so we can batch prompts without padding.
 
-For each clean prompt we also need a **corrupted** prompt. We'll use the corruption Wang et al. call the **ABC distribution**: replace all three names with three fresh, unrelated names, keeping everything else fixed:
+For each clean prompt we also need a **corrupted** prompt. We'll use the corruption Wang et al. call the **ABC distribution**: replace all three names with three fresh, unrelated
+names, keeping everything else fixed:
 
 ```
 clean:    When Mary and John went to the store, John gave a drink to
 corrupt:  When Laura and Steve went to the store, Peter gave a drink to
 ```
 
-The corrupted prompt contains nothing about Mary or John, so the model's preference between `" Mary"` and `" John"` there is roughly zero. Any component whose activation, swapped from the corrupted run into the clean one, destroys the preference must be carrying information the model uses for the task.
+The corrupted prompt contains nothing about Mary or John, so the model's preference between `" Mary"` and `" John"` there is roughly zero. Any component whose activation, swapped
+from the corrupted run into the clean one, destroys the preference must be carrying information the model uses for the task.
 
 Our **metric** is the logit difference, $\text{logit}(\text{IO}) - \text{logit}(\text{S})$, at the final position, averaged over prompts.
 
-We'll package a task as a small `Task` object holding the clean and corrupted tokens, the answers, and a function computing the metric *per prompt*. It can be sliced (`task[:32]` is a task with the first 32 prompts), and its `chunks` method iterates over it in mini-batches, which keeps memory use down when we take gradients.
+We'll package a task as a small `Task` object holding the clean and corrupted tokens, the answers, and a function computing the metric *per prompt*. It can be sliced (`task[:32]`
+is a task with the first 32 prompts), and its `chunks` method iterates over it in mini-batches, which keeps memory use down when we take gradients.
 '''
 
 # ! CELL TYPE: code
@@ -290,7 +326,8 @@ r'''
 > You should spend up to 5 minutes on this exercise.
 > ```
 
-Implement `ioi_metric`, which takes logits of shape `(batch, seq, d_vocab)` and answers of shape `(batch, 2)` (column 0 is the IO token id, column 1 the subject token id), and returns the logit difference $\text{logit}(\text{IO}) - \text{logit}(\text{S})$ at the final position, for each prompt separately (shape `(batch,)`).
+Implement `ioi_metric`, which takes logits of shape `(batch, seq, d_vocab)` and answers of shape `(batch, 2)` (column 0 is the IO token id, column 1 the subject token id), and
+returns the logit difference $\text{logit}(\text{IO}) - \text{logit}(\text{S})$ at the final position, for each prompt separately (shape `(batch,)`).
 
 Returning a per-prompt metric rather than the mean is deliberate: when we split a task into chunks later, we'll want to add up per-prompt values across chunks.
 '''
@@ -326,7 +363,8 @@ r'''
 Take `logits[:, -1]` (shape `(batch, d_vocab)`), then use `.gather(-1, answers[:, :1])` to pick out each prompt's IO logit (and similarly for S).
 </details>
 
-Now let's build the dataset. We make two independent sets of 128 prompts: `ioi`, which we'll use to compute every attribution score in this section, and `ioi_heldout`, which we'll only use in 4️⃣ to evaluate circuits on prompts they weren't selected on.
+Now let's build the dataset. We make two independent sets of 128 prompts: `ioi`, which we'll use to compute every attribution score in this section, and `ioi_heldout`, which we'll
+only use in 4️⃣ to evaluate circuits on prompts they weren't selected on.
 '''
 
 # ! CELL TYPE: code
@@ -385,7 +423,9 @@ Corrupt logit diff: 0.063</pre>
 
 </details>
 
-On the clean prompts the model prefers the indirect object by a logit difference of 3.18 (odds of about 24 to 1), and gets 99% of prompts right. On the corrupted prompts its preference between the two clean names is essentially zero (0.06), as intended: the corrupted prompts don't mention either name. So in the noising direction, "complete damage" means a drop of about 3.1 in logit difference.
+On the clean prompts the model prefers the indirect object by a logit difference of 3.18 (odds of about 24 to 1), and gets 99% of prompts right. On the corrupted prompts its
+preference between the two clean names is essentially zero (0.06), as intended: the corrupted prompts don't mention either name. So in the noising direction, "complete damage"
+means a drop of about 3.1 in logit difference.
 '''
 
 # ! CELL TYPE: markdown
@@ -395,7 +435,9 @@ On the clean prompts the model prefers the indirect object by a logit difference
 r'''
 ## From activation patching to a Taylor expansion
 
-Pick a component, say the output of one attention head, and call its activation $a$ (for all prompts and positions at once). Write $M(a)$ for the value of the metric when we run the model on the clean prompts but force that component's activation to be $a$, letting everything downstream of it recompute as normal. Then $M(a_{\text{clean}})$ is just the clean metric, and **activation patching** in the *noising* direction measures
+Pick a component, say the output of one attention head, and call its activation $a$ (for all prompts and positions at once). Write $M(a)$ for the value of the metric when we run
+the model on the clean prompts but force that component's activation to be $a$, letting everything downstream of it recompute as normal. Then $M(a_{\text{clean}})$ is just the
+clean metric, and **activation patching** in the *noising* direction measures
 
 $$
 \Delta M_{\text{exact}} = M(a_{\text{corrupt}}) - M(a_{\text{clean}}),
@@ -415,7 +457,9 @@ $$
 \boxed{\;\Delta M_{\text{AP}} = \left(a_{\text{corrupt}} - a_{\text{clean}}\right) \cdot \left.\frac{\partial M}{\partial a}\right|_{\text{clean run}}\;}
 $$
 
-This is **attribution patching** (AP). Here's why it's so much cheaper. The activation difference $a_{\text{corrupt}} - a_{\text{clean}}$ needs one forward pass on each input. The gradient $\partial M / \partial a$ needs one backward pass from the metric on the clean run, and that single backward pass gives us the gradient with respect to *every* activation in the model simultaneously. So the cost is two forward passes and one backward pass, whether we score 144 heads or every neuron in the model.
+This is **attribution patching** (AP). Here's why it's so much cheaper. The activation difference $a_{\text{corrupt}} - a_{\text{clean}}$ needs one forward pass on each input. The
+gradient $\partial M / \partial a$ needs one backward pass from the metric on the clean run, and that single backward pass gives us the gradient with respect to *every* activation
+in the model simultaneously. So the cost is two forward passes and one backward pass, whether we score 144 heads or every neuron in the model.
 
 A few remarks before we implement it:
 
@@ -445,9 +489,14 @@ Implement `get_cache_fwd_and_bwd`. It should run the model on `tokens`, compute 
 - a dict mapping each hook name in `names` to the activation at that hook,
 - a dict mapping each hook name in `names` to the gradient of the metric with respect to that activation.
 
-Use `model.hooks(fwd_hooks=..., bwd_hooks=...)`, a context manager which attaches hooks and removes them again afterwards. Forward hook functions have the signature `hook_fn(activation, hook)`, and backward hook functions have the signature `hook_fn(gradient, hook)`, where `gradient` is the gradient of whatever you call `.backward()` on with respect to that hook's activation. In both cases `hook.name` tells you which hook you're in. Store detached copies (`.detach().clone()`), so the stored tensors don't hold on to the graph.
+Use `model.hooks(fwd_hooks=..., bwd_hooks=...)`, a context manager which attaches hooks and removes them again afterwards. Forward hook functions have the signature
+`hook_fn(activation, hook)`, and backward hook functions have the signature `hook_fn(gradient, hook)`, where `gradient` is the gradient of whatever you call `.backward()` on with
+respect to that hook's activation. In both cases `hook.name` tells you which hook you're in. Store detached copies (`.detach().clone()`), so the stored tensors don't hold on to the
+graph.
 
-There's one wrinkle. We froze the model's parameters, and token ids aren't differentiable, so as it stands nothing in the forward pass requires a gradient and `.backward()` will fail. The fix is to make the very first activation require grad: add a forward hook on `"hook_embed"` (the token embeddings) that returns `embed.requires_grad_(True)`. Everything downstream will then be tracked by autograd.
+There's one wrinkle. We froze the model's parameters, and token ids aren't differentiable, so as it stands nothing in the forward pass requires a gradient and `.backward()` will
+fail. The fix is to make the very first activation require grad: add a forward hook on `"hook_embed"` (the token embeddings) that returns `embed.requires_grad_(True)`. Everything
+downstream will then be tracked by autograd.
 '''
 
 # ! CELL TYPE: code
@@ -499,16 +548,20 @@ r'''
 <details>
 <summary>Hint</summary>
 
-Create two empty dicts. Your forward hook stores `act.detach().clone()` in one, keyed by `hook.name`; your backward hook stores `grad.detach().clone()` in the other. You can pass a *function* of the hook name instead of a name as the first element of a hook tuple, e.g. `(lambda name: name in names, forward_hook)`. Inside the `with model.hooks(...)` block, run the model, compute the metric, and call `.backward()` on it.
+Create two empty dicts. Your forward hook stores `act.detach().clone()` in one, keyed by `hook.name`; your backward hook stores `grad.detach().clone()` in the other. You can pass a
+*function* of the hook name instead of a name as the first element of a hook tuple, e.g. `(lambda name: name in names, forward_hook)`. Inside the `with model.hooks(...)` block, run
+the model, compute the metric, and call `.backward()` on it.
 </details>
 
 <details>
 <summary>Help - I get <code>RuntimeError: element 0 of tensors does not require grad</code>.</summary>
 
-You need the `hook_embed` forward hook that calls `requires_grad_(True)` on the embeddings. Without it, no tensor in the forward pass requires a gradient (the model's parameters are frozen), so there's no graph to backpropagate through.
+You need the `hook_embed` forward hook that calls `requires_grad_(True)` on the embeddings. Without it, no tensor in the forward pass requires a gradient (the model's parameters
+are frozen), so there's no graph to backpropagate through.
 </details>
 
-The test compares your gradient at the final residual stream against an independent calculation: it takes the cached final residual stream, applies the final layernorm and unembedding by hand, and differentiates that with `torch.autograd.grad`.
+The test compares your gradient at the final residual stream against an independent calculation: it takes the cached final residual stream, applies the final layernorm and
+unembedding by hand, and differentiates that with `torch.autograd.grad`.
 
 We'll also need the activations on the corrupted prompts, which only needs a forward pass:
 '''
@@ -527,13 +580,16 @@ def get_activations(model: HookedTransformer, tokens: Int[Tensor, "batch seq"], 
 # ! TAGS: []
 
 r'''
-A backward pass has to store the intermediate activations of the whole forward pass, and for 128 prompts that's a couple of GB (most of it in the MLPs' hidden layers and in the `(batch, seq, d_vocab)` logits). So we'll run `get_cache_fwd_and_bwd` on chunks of 32 prompts and concatenate the results. The one subtlety is the metric: we want gradients of the *mean* metric over the whole task, so for each chunk we backpropagate from
+A backward pass has to store the intermediate activations of the whole forward pass, and for 128 prompts that's a couple of GB (most of it in the MLPs' hidden layers and in the
+`(batch, seq, d_vocab)` logits). So we'll run `get_cache_fwd_and_bwd` on chunks of 32 prompts and concatenate the results. The one subtlety is the metric: we want gradients of the
+*mean* metric over the whole task, so for each chunk we backpropagate from
 
 $$
 \frac{1}{N_{\text{task}}} \sum_{\text{prompts in chunk}} M_i ,
 $$
 
-and since the mean over the task is the sum of these terms over chunks, the gradients we get for each prompt are exactly the gradients of the task's mean metric. (We'll use the same trick again in 3️⃣.)
+and since the mean over the task is the sum of these terms over chunks, the gradients we get for each prompt are exactly the gradients of the task's mean metric. (We'll use the
+same trick again in 3️⃣.)
 '''
 
 # ! CELL TYPE: code
@@ -567,9 +623,12 @@ r'''
 > You should spend up to 10 minutes on this exercise.
 > ```
 
-Implement `attribution_patch_heads`. It takes clean activations and gradients, and corrupted activations, at the hooks `blocks.{layer}.attn.hook_z` for every layer, and returns a `(n_layers, n_heads)` tensor of AP scores.
+Implement `attribution_patch_heads`. It takes clean activations and gradients, and corrupted activations, at the hooks `blocks.{layer}.attn.hook_z` for every layer, and returns a
+`(n_layers, n_heads)` tensor of AP scores.
 
-`hook_z` has shape `(batch, pos, n_heads, d_head)`: it's each head's attention-weighted sum of value vectors, just before the output projection $W_O$. A head's output in the residual stream is $z_h W_O^h$, so patching $z_h$ is the same as patching the head's output, and the gradient with respect to $z_h$ already includes the $W_O^h$ factor. For each head, compute $(z_{\text{corrupt}} - z_{\text{clean}}) \cdot \partial M / \partial z$, summed over batch, position and `d_head`.
+`hook_z` has shape `(batch, pos, n_heads, d_head)`: it's each head's attention-weighted sum of value vectors, just before the output projection $W_O$. A head's output in the
+residual stream is $z_h W_O^h$, so patching $z_h$ is the same as patching the head's output, and the gradient with respect to $z_h$ already includes the $W_O^h$ factor. For each
+head, compute $(z_{\text{corrupt}} - z_{\text{clean}}) \cdot \partial M / \partial z$, summed over batch, position and `d_head`.
 '''
 
 # ! CELL TYPE: code
@@ -609,7 +668,9 @@ r'''
 For each layer, `(corrupt_acts[name] - clean_acts[name]) * clean_grads[name]` has shape `(batch, pos, head, d_head)`. Sum over every dimension except `head`, then stack the layers.
 </details>
 
-The test uses two independent checks: a small hand-made example, and the identity that the AP scores of all heads in a layer must add up to the AP score of the whole attention layer's output (`hook_attn_out`). That identity holds because the attention output is (up to a constant bias) the sum of the heads' outputs, so the chain rule splits its gradient exactly.
+The test uses two independent checks: a small hand-made example, and the identity that the AP scores of all heads in a layer must add up to the AP score of the whole attention
+layer's output (`hook_attn_out`). That identity holds because the attention output is (up to a constant bias) the sum of the heads' outputs, so the chain rule splits its gradient
+exactly.
 
 Now let's compute AP scores for every head on IOI, and time it.
 '''
@@ -641,9 +702,11 @@ r'''
 > You should spend up to 10 minutes on this exercise.
 > ```
 
-To know whether AP is any good we need the ground truth. Implement `exact_patch_heads`: for every head, run the model on the clean prompts with that head's `hook_z` replaced (at every position) by its value from the corrupted run, and record the change in the mean metric relative to the clean run. That's 144 forward passes.
+To know whether AP is any good we need the ground truth. Implement `exact_patch_heads`: for every head, run the model on the clean prompts with that head's `hook_z` replaced (at
+every position) by its value from the corrupted run, and record the change in the mean metric relative to the clean run. That's 144 forward passes.
 
-This is the same activation patching you did in [1.4.1], but in the noising direction (corrupt patched into clean). The test compares against TransformerLens's own `patching.get_act_patch_attn_head_out_all_pos`, run in the same direction.
+This is the same activation patching you did in [1.4.1], but in the noising direction (corrupt patched into clean). The test compares against TransformerLens's own
+`patching.get_act_patch_attn_head_out_all_pos`, run in the same direction.
 '''
 
 # ! CELL TYPE: code
@@ -686,7 +749,8 @@ r'''
 <details>
 <summary>Hint</summary>
 
-Loop over layers and heads. For each, define a hook function on `blocks.{layer}.attn.hook_z` that sets `z[:, :, head] = corrupt_acts[name][:, :, head]` and returns `z`, and run `model.run_with_hooks(task.clean_tokens, fwd_hooks=[(name, hook_fn)])`.
+Loop over layers and heads. For each, define a hook function on `blocks.{layer}.attn.hook_z` that sets `z[:, :, head] = corrupt_acts[name][:, :, head]` and returns `z`, and run
+`model.run_with_hooks(task.clean_tokens, fwd_hooks=[(name, hook_fn)])`.
 </details>
 '''
 
@@ -758,9 +822,13 @@ Largest disagreements:
 - The **S-inhibition heads** 7.9, 8.6 and 8.10 (and, more weakly, 7.3), the **induction head** 5.5 and the **duplicate token head** 3.0 all have negative effects: they compute and pass on the "which name is duplicated?" signal.
 - Among the **name movers**, 9.9 has a negative effect as expected. Head 9.6, which Wang et al. also call a name mover, has a positive effect here in *both* heatmaps. We'll leave that as an anomaly to chase in the bonus section; the point for now is that AP reproduces it.
 
-**The scatter plot is close to the diagonal**, with a correlation of 0.94, and AP got there roughly 30 times faster than exact patching (the exact ratio depends on your hardware). With 144 heads that's a nice speed-up; with every neuron or every edge of a large model it's the difference between feasible and infeasible, because exact patching scales with the number of components and AP doesn't.
+**The scatter plot is close to the diagonal**, with a correlation of 0.94, and AP got there roughly 30 times faster than exact patching (the exact ratio depends on your hardware).
+With 144 heads that's a nice speed-up; with every neuron or every edge of a large model it's the difference between feasible and infeasible, because exact patching scales with the
+number of components and AP doesn't.
 
-**But it's not perfect.** Look at the disagreements: AP underestimates the induction head 5.5 almost fivefold (−0.18 vs −0.86), overestimates the S-inhibition head 8.6 and the name mover 9.9 by 30-70%, and gets the sign of the previous-token head 4.11 wrong (though both values are small). A first-order approximation can only be as good as the model is linear along the way from clean to corrupt, and in 2️⃣ we'll look directly at how far from linear it can be.
+**But it's not perfect.** Look at the disagreements: AP underestimates the induction head 5.5 almost fivefold (−0.18 vs −0.86), overestimates the S-inhibition head 8.6 and the name
+mover 9.9 by 30-70%, and gets the sign of the previous-token head 4.11 wrong (though both values are small). A first-order approximation can only be as good as the model is linear
+along the way from clean to corrupt, and in 2️⃣ we'll look directly at how far from linear it can be.
 </details>
 '''
 
@@ -778,7 +846,9 @@ r'''
 > You should spend up to 5-10 minutes on this exercise.
 > ```
 
-Pearson correlation is dominated by the few largest values. When we use attribution scores to *choose* components (keep the top 10 heads, the top 1,000 edges), what matters is whether the ordering is right, so the more relevant statistic is a rank correlation. Implement `spearman_correlation`: replace each value by its rank within its own tensor (0 for the smallest, $n-1$ for the largest), then compute the Pearson correlation of the ranks. You can ignore ties.
+Pearson correlation is dominated by the few largest values. When we use attribution scores to *choose* components (keep the top 10 heads, the top 1,000 edges), what matters is
+whether the ordering is right, so the more relevant statistic is a rank correlation. Implement `spearman_correlation`: replace each value by its rank within its own tensor (0 for
+the smallest, $n-1$ for the largest), then compute the Pearson correlation of the ranks. You can ignore ties.
 '''
 
 # ! CELL TYPE: code
@@ -810,7 +880,8 @@ r'''
 <details>
 <summary>Hint</summary>
 
-`v.argsort()` gives the indices that would sort `v`; applying `argsort()` again to that gives each element's rank. Then `t.corrcoef(t.stack([rank_x, rank_y]))[0, 1]` is the Pearson correlation of the ranks.
+`v.argsort()` gives the indices that would sort `v`; applying `argsort()` again to that gives each element's rank. Then `t.corrcoef(t.stack([rank_x, rank_y]))[0, 1]` is the Pearson
+correlation of the ranks.
 </details>
 '''
 
@@ -828,13 +899,16 @@ r'''
 > You should spend up to 15 minutes on this exercise.
 > ```
 
-AP multiplies two things: how much a component's activation *changes* between clean and corrupt, and how sensitive the metric is to that component (the gradient). Is the product really needed, or would either half alone rank heads just as well? And is the agreement with exact patching specific to pairing each head's activation difference with *its own* gradient? Implement three baselines, each returning a `(n_layers, n_heads)` tensor:
+AP multiplies two things: how much a component's activation *changes* between clean and corrupt, and how sensitive the metric is to that component (the gradient). Is the product
+really needed, or would either half alone rank heads just as well? And is the agreement with exact patching specific to pairing each head's activation difference with *its own*
+gradient? Implement three baselines, each returning a `(n_layers, n_heads)` tensor:
 
 - `"activation change only"`: for each head, the norm of $z_{\text{corrupt}} - z_{\text{clean}}$ over `d_head`, summed over batch and position. This is the "which heads behave differently on the corrupted prompts?" heuristic.
 - `"gradient only"`: the norm of $\partial M / \partial z$ over `d_head`, summed over batch and position. This is plain gradient saliency.
 - `"AP, shuffled pairing"`: the AP formula, but with each head's activation difference dotted with the gradient of a *different*, randomly chosen head (use a random permutation of the 144 heads, seeded with `seed`). This should destroy any agreement, if AP's agreement with exact patching is not an accident.
 
-Since the first two baselines are unsigned, we'll compare everything by the Spearman correlation between $|\text{score}|$ and $|\text{exact effect}|$: "does this method rank heads by importance?".
+Since the first two baselines are unsigned, we'll compare everything by the Spearman correlation between $|\text{score}|$ and $|\text{exact effect}|$: "does this method rank heads
+by importance?".
 '''
 
 # ! CELL TYPE: code
@@ -880,7 +954,9 @@ r'''
 <details>
 <summary>Hint</summary>
 
-Stack the per-layer tensors into one `(layer, batch, pos, head, d_head)` tensor. The first two baselines are a `.norm(dim=-1)` followed by a sum over the batch and position dimensions. For the shuffled pairing, flatten `(layer, head)` into one dimension of size 144, index the gradients' flattened dimension with a permutation, and do the AP dot product.
+Stack the per-layer tensors into one `(layer, batch, pos, head, d_head)` tensor. The first two baselines are a `.norm(dim=-1)` followed by a sum over the batch and position
+dimensions. For the shuffled pairing, flatten `(layer, head)` into one dimension of size 144, index the gradients' flattened dimension with a permutation, and do the AP dot
+product.
 </details>
 '''
 
@@ -934,13 +1010,18 @@ Signed agreement (Pearson correlation with the signed exact effect):
 <details>
 <summary>Help - how should I interpret this?</summary>
 
-**The gradient alone is useless** (Spearman −0.03). A large gradient says the metric is sensitive to this head's output *in some direction*, but says nothing about whether the corruption actually moves the head's output in that direction, or at all.
+**The gradient alone is useless** (Spearman −0.03). A large gradient says the metric is sensitive to this head's output *in some direction*, but says nothing about whether the
+corruption actually moves the head's output in that direction, or at all.
 
-**The activation change alone is moderately informative** (0.48): heads whose output changes a lot when you swap the names tend to be heads that process names. But it's well short of AP (0.92), because plenty of heads change a lot without the change mattering for the logit difference.
+**The activation change alone is moderately informative** (0.48): heads whose output changes a lot when you swap the names tend to be heads that process names. But it's well short
+of AP (0.92), because plenty of heads change a lot without the change mattering for the logit difference.
 
-**The shuffled pairing is a control that only half fails, and it's worth understanding why.** By the unsigned measure it still gets 0.41. That's because the shuffled score of head $i$ is still proportional to the size of head $i$'s own activation change, so it inherits most of the "activation change only" signal; the shuffled gradient just adds noise. On the *signed* comparison, which also asks whether the effect helps or hurts, the shuffled pairing collapses to −0.03, while AP keeps 0.94.
+**The shuffled pairing is a control that only half fails, and it's worth understanding why.** By the unsigned measure it still gets 0.41. That's because the shuffled score of head
+$i$ is still proportional to the size of head $i$'s own activation change, so it inherits most of the "activation change only" signal; the shuffled gradient just adds noise. On the
+*signed* comparison, which also asks whether the effect helps or hurts, the shuffled pairing collapses to −0.03, while AP keeps 0.94.
 
-So both halves of the formula matter: the activation change says *how far* the component moves, and its own gradient says *whether that movement matters, and which way*. Pairing each head's change with its own gradient is what takes us from 0.48 to 0.92 and gets the signs right.
+So both halves of the formula matter: the activation change says *how far* the component moves, and its own gradient says *whether that movement matters, and which way*. Pairing
+each head's change with its own gradient is what takes us from 0.48 to 0.92 and gets the signs right.
 </details>
 '''
 
@@ -972,9 +1053,11 @@ r'''
 r'''
 ## Patching the residual stream
 
-Head outputs were a friendly case. Let's try the residual stream, the first thing you patched in [1.4.1]: for every layer and every position, corrupt `resid_pre` at that (layer, position) and see what happens to the logit difference.
+Head outputs were a friendly case. Let's try the residual stream, the first thing you patched in [1.4.1]: for every layer and every position, corrupt `resid_pre` at that (layer,
+position) and see what happens to the logit difference.
 
-This is a much harsher test, for a simple reason. At the name positions in early layers, the residual stream *is* basically the name: corrupting it replaces `" Mary"` with `" Laura"` wholesale. That is not a small perturbation of anything, and a first-order Taylor expansion has no reason to be accurate for it.
+This is a much harsher test, for a simple reason. At the name positions in early layers, the residual stream *is* basically the name: corrupting it replaces `" Mary"` with `"
+Laura"` wholesale. That is not a small perturbation of anything, and a first-order Taylor expansion has no reason to be accurate for it.
 '''
 
 # ! CELL TYPE: markdown
@@ -991,7 +1074,8 @@ r'''
 > You should spend up to 5 minutes on this exercise.
 > ```
 
-Implement `attribution_patch_resid`, which takes activations and gradients at `blocks.{layer}.hook_resid_pre` for every layer and returns a `(n_layers, seq)` tensor of AP scores, one per (layer, position). It's the same formula as before, summed over batch and `d_model` but *not* over position.
+Implement `attribution_patch_resid`, which takes activations and gradients at `blocks.{layer}.hook_resid_pre` for every layer and returns a `(n_layers, seq)` tensor of AP scores,
+one per (layer, position). It's the same formula as before, summed over batch and `d_model` but *not* over position.
 '''
 
 # ! CELL TYPE: code
@@ -1034,7 +1118,8 @@ r'''
 > You should spend up to 5-10 minutes on this exercise.
 > ```
 
-And the ground truth: implement `exact_patch_resid`, which for every (layer, position) runs the clean prompts with `resid_pre` at that layer and position replaced by its corrupted value, and returns the change in the mean metric. That's $12 \times 15 = 180$ forward passes. (The test checks you against TransformerLens's `patching.get_act_patch_resid_pre`.)
+And the ground truth: implement `exact_patch_resid`, which for every (layer, position) runs the clean prompts with `resid_pre` at that layer and position replaced by its corrupted
+value, and returns the change in the mean metric. That's $12 \times 15 = 180$ forward passes. (The test checks you against TransformerLens's `patching.get_act_patch_resid_pre`.)
 '''
 
 # ! CELL TYPE: code
@@ -1123,11 +1208,19 @@ Layer 0 at the name positions:
 <details>
 <summary>Help - how should I interpret this?</summary>
 
-**The exact heatmap is the familiar picture from [1.4.1].** Up to about layer 9, the information the model needs sits at the three name positions; from layer 8 onwards it has been moved to the final position (`END`, the last `to`), where the answer is produced. Corrupting a name position in an early layer is devastating: at layer 0, corrupting the first name lowers the logit difference by 4.67, *more* than the whole clean logit difference of 3.18. That's not surprising once you think about it: the clean IO name is then simply no longer in the prompt, so the model has no reason to say it.
+**The exact heatmap is the familiar picture from [1.4.1].** Up to about layer 9, the information the model needs sits at the three name positions; from layer 8 onwards it has been
+moved to the final position (`END`, the last `to`), where the answer is produced. Corrupting a name position in an early layer is devastating: at layer 0, corrupting the first name
+lowers the logit difference by 4.67, *more* than the whole clean logit difference of 3.18. That's not surprising once you think about it: the clean IO name is then simply no longer
+in the prompt, so the model has no reason to say it.
 
-**AP gets the late layers right and the name positions badly wrong.** At the final position in layers 8-11, AP's estimates are close to the exact ones. At S2 it gets the middle layers roughly right but misses most of the effect in layers 0-4. And at the name positions it gets the **sign** wrong: at every layer from 0 to 9 for the first name, and at all of them but layer 6 for the second. At layer 0 it predicts that corrupting the first name would *help* the model (+0.73), when in fact it destroys the behaviour (−4.67). Overall the correlation is 0.11.
+**AP gets the late layers right and the name positions badly wrong.** At the final position in layers 8-11, AP's estimates are close to the exact ones. At S2 it gets the middle
+layers roughly right but misses most of the effect in layers 0-4. And at the name positions it gets the **sign** wrong: at every layer from 0 to 9 for the first name, and at all of
+them but layer 6 for the second. At layer 0 it predicts that corrupting the first name would *help* the model (+0.73), when in fact it destroys the behaviour (−4.67). Overall the
+correlation is 0.11.
 
-Why the difference? At the final position in late layers, the corruption nudges the residual stream, and only a few mostly-linear steps remain before the logits. At a name position in an early layer, the corruption replaces one name with another: the "perturbation" is as big as the vector itself, and it has to pass through a dozen layers of attention and MLPs. There's no reason for a first-order expansion to survive that. Let's look at exactly how it fails.
+Why the difference? At the final position in late layers, the corruption nudges the residual stream, and only a few mostly-linear steps remain before the logits. At a name position
+in an early layer, the corruption replaces one name with another: the "perturbation" is as big as the vector itself, and it has to pass through a dozen layers of attention and
+MLPs. There's no reason for a first-order expansion to survive that. Let's look at exactly how it fails.
 </details>
 '''
 
@@ -1138,7 +1231,8 @@ Why the difference? At the final position in late layers, the corruption nudges 
 r'''
 ## The one-dimensional picture
 
-To see what's going on, let's stop looking at two numbers (exact and AP) and look at the whole function in between. Fix one component, and define the straight-line path from its clean activation to its corrupted activation,
+To see what's going on, let's stop looking at two numbers (exact and AP) and look at the whole function in between. Fix one component, and define the straight-line path from its
+clean activation to its corrupted activation,
 
 $$
 a(\alpha) = a_{\text{clean}} + \alpha \left(a_{\text{corrupt}} - a_{\text{clean}}\right), \qquad \alpha \in [0, 1],
@@ -1156,7 +1250,8 @@ $$
 f'(\alpha) = \left.\frac{\partial M}{\partial a}\right|_{a(\alpha)} \cdot \left(a_{\text{corrupt}} - a_{\text{clean}}\right),
 $$
 
-so the AP score is exactly $f'(0)$. In other words, **attribution patching draws the tangent line to $f$ at $\alpha = 0$, and reads off its value at $\alpha = 1$**. It's exact if $f$ is a straight line, and it can be arbitrarily wrong if $f$ curves.
+so the AP score is exactly $f'(0)$. In other words, **attribution patching draws the tangent line to $f$ at $\alpha = 0$, and reads off its value at $\alpha = 1$**. It's exact if
+$f$ is a straight line, and it can be arbitrarily wrong if $f$ curves.
 '''
 
 # ! CELL TYPE: markdown
@@ -1173,14 +1268,18 @@ r'''
 > You should spend up to 15-20 minutes on this exercise.
 > ```
 
-Implement `metric_along_path`. A component is specified by a hook name and an `index` into that hook's activation, such as `np.s_[:, :, 7]` for head 7 of a `hook_z` or `hook_q` activation (all prompts and positions), or `np.s_[:, 10]` for position 10 of a residual stream or MLP output. (`np.s_` is just a convenient way to write a tuple of slices: `np.s_[:, 10]` is `(slice(None), 10)`, and you can use it to index a torch tensor with `act[index]`.)
+Implement `metric_along_path`. A component is specified by a hook name and an `index` into that hook's activation, such as `np.s_[:, :, 7]` for head 7 of a `hook_z` or `hook_q`
+activation (all prompts and positions), or `np.s_[:, 10]` for position 10 of a residual stream or MLP output. (`np.s_` is just a convenient way to write a tuple of slices:
+`np.s_[:, 10]` is `(slice(None), 10)`, and you can use it to index a torch tensor with `act[index]`.)
 
-For each `alpha` in `alphas`, run the model on the clean prompts with a hook that replaces `act[index]` by `clean[index] + alpha * (corrupt[index] - clean[index])`, and return two lists:
+For each `alpha` in `alphas`, run the model on the clean prompts with a hook that replaces `act[index]` by `clean[index] + alpha * (corrupt[index] - clean[index])`, and return two
+lists:
 
 - `values`: $f(\alpha)$, the mean metric minus the clean mean metric;
 - `slopes`: $f'(\alpha) = \nabla_a M \cdot (a_{\text{corrupt}} - a_{\text{clean}})$, where the gradient is taken at the interpolated activation, and the dot product is over the indexed part only.
 
-To get the gradient, make the interpolated activation a leaf that requires grad inside your hook (clone the activation, write the interpolated values into it, call `.requires_grad_(True)`, keep a reference to it, and return it), then use `t.autograd.grad(metric, interpolated_act)`.
+To get the gradient, make the interpolated activation a leaf that requires grad inside your hook (clone the activation, write the interpolated values into it, call
+`.requires_grad_(True)`, keep a reference to it, and return it), then use `t.autograd.grad(metric, interpolated_act)`.
 '''
 
 # ! CELL TYPE: code
@@ -1240,13 +1339,16 @@ r'''
 <details>
 <summary>Hint</summary>
 
-Compute `delta = corrupt[index] - clean[index]` once. Inside the loop, define the hook as a closure over `alpha`, run `model.run_with_hooks(task.clean_tokens, fwd_hooks=[(hook_name, hook_fn)])`, compute the mean metric, and call `t.autograd.grad(value, stored_act)`, which returns a tuple with one gradient. The slope is `(grad[index] * delta).sum()`.
+Compute `delta = corrupt[index] - clean[index]` once. Inside the loop, define the hook as a closure over `alpha`, run `model.run_with_hooks(task.clean_tokens,
+fwd_hooks=[(hook_name, hook_fn)])`, compute the mean metric, and call `t.autograd.grad(value, stored_act)`, which returns a tuple with one gradient. The slope is `(grad[index] *
+delta).sum()`.
 </details>
 
 <details>
 <summary>Help - I get <code>RuntimeError: One of the differentiated Tensors appears to not have been used in the graph</code>.</summary>
 
-The tensor you differentiate with respect to must be the one the rest of the forward pass is computed from. Your hook has to *return* exactly the tensor you stored (the clone you called `requires_grad_(True)` on). If you store one tensor and return another, the stored one isn't part of the graph.
+The tensor you differentiate with respect to must be the one the rest of the forward pass is computed from. Your hook has to *return* exactly the tensor you stored (the clone you
+called `requires_grad_(True)` on). If you store one tensor and return another, the stored one isn't part of the graph.
 </details>
 
 The test checks two identities: $f(1)$ must equal the exact patching effect of the component, and $f'(0)$ must equal its AP score.
@@ -1312,17 +1414,25 @@ r'''
 <details>
 <summary>Help - how should I interpret these four curves?</summary>
 
-In each panel the black curve is the truth, the red dashed line is what attribution patching assumes, and the black square is the exact patching effect. They show four different ways for a function to relate to its tangent.
+In each panel the black curve is the truth, the red dashed line is what attribution patching assumes, and the black square is the exact patching effect. They show four different
+ways for a function to relate to its tangent.
 
-**Head 10.7's output: nearly straight.** The curve bends slightly upwards, so the tangent underestimates the effect by about a quarter (1.03 vs 1.34), but the sign and rough size are right. Most head outputs look like this, which is why 1️⃣ went well.
+**Head 10.7's output: nearly straight.** The curve bends slightly upwards, so the tangent underestimates the effect by about a quarter (1.03 vs 1.34), but the sign and rough size
+are right. Most head outputs look like this, which is why 1️⃣ went well.
 
-**Head 6.9's query: saturating.** The metric falls steeply at first, then flattens out after about $\alpha = 0.4$: beyond that point, changing the query further does nothing. The tangent extrapolates the initial steep slope all the way to $\alpha = 1$, and overestimates the effect almost threefold (−1.37 vs −0.49). We'll see below that this is the attention softmax saturating.
+**Head 6.9's query: saturating.** The metric falls steeply at first, then flattens out after about $\alpha = 0.4$: beyond that point, changing the query further does nothing. The
+tangent extrapolates the initial steep slope all the way to $\alpha = 1$, and overestimates the effect almost threefold (−1.37 vs −0.49). We'll see below that this is the attention
+softmax saturating.
 
-**MLP0's output at S2: flat, then a cliff.** For the first third of the path almost nothing happens; then between $\alpha \approx 0.4$ and $0.9$ the logit difference collapses by more than 3. The gradient at the clean point is nearly zero, so AP reports almost nothing (−0.12 vs −3.30). This is a **false negative**: the method would tell you this component doesn't matter, when it's one of the most important in the model.
+**MLP0's output at S2: flat, then a cliff.** For the first third of the path almost nothing happens; then between $\alpha \approx 0.4$ and $0.9$ the logit difference collapses by
+more than 3. The gradient at the clean point is nearly zero, so AP reports almost nothing (−0.12 vs −3.30). This is a **false negative**: the method would tell you this component
+doesn't matter, when it's one of the most important in the model.
 
-**The residual stream at the first name: wrong direction.** The metric first goes slightly *up* (to about +0.1 at $\alpha \approx 0.25$) before crashing to −4.84. The tangent at the clean point points up, so AP gets the **sign** wrong.
+**The residual stream at the first name: wrong direction.** The metric first goes slightly *up* (to about +0.1 at $\alpha \approx 0.25$) before crashing to −4.84. The tangent at
+the clean point points up, so AP gets the **sign** wrong.
 
-The general lesson: AP sees only the local slope at the clean activation. If the function bends anywhere between the clean and the corrupted activation, AP can be wrong by any amount, in either direction. Large patches (replacing a token's identity) and saturating nonlinearities (softmax, GELU, layernorm) are where the function bends.
+The general lesson: AP sees only the local slope at the clean activation. If the function bends anywhere between the clean and the corrupted activation, AP can be wrong by any
+amount, in either direction. Large patches (replacing a token's identity) and saturating nonlinearities (softmax, GELU, layernorm) are where the function bends.
 </details>
 '''
 
@@ -1333,13 +1443,15 @@ The general lesson: AP sees only the local slope at the clean activation. If the
 r'''
 ## Why attention saturates
 
-Head 6.9's curve is the textbook attention-saturation failure, so it's worth being precise about it. An attention head's pattern is a softmax over scores $s_j = q \cdot k_j / \sqrt{d_{head}}$, and the derivative of a softmax probability with respect to its own score is
+Head 6.9's curve is the textbook attention-saturation failure, so it's worth being precise about it. An attention head's pattern is a softmax over scores $s_j = q \cdot k_j /
+\sqrt{d_{head}}$, and the derivative of a softmax probability with respect to its own score is
 
 $$
 \frac{\partial p_i}{\partial s_i} = p_i (1 - p_i).
 $$
 
-This is largest at $p_i = 1/2$ and goes to zero as $p_i \to 0$ or $p_i \to 1$. Moving the query along a straight line moves the scores along a straight line, but the probabilities follow an S-shaped (logistic-like) curve. So:
+This is largest at $p_i = 1/2$ and goes to zero as $p_i \to 0$ or $p_i \to 1$. Moving the query along a straight line moves the scores along a straight line, but the probabilities
+follow an S-shaped (logistic-like) curve. So:
 
 - If the head starts **saturated** ($p_i \approx 1$ or $\approx 0$ on the clean run), the gradient at the clean point is near zero even if a large change in the query would completely redirect the head. AP reports a **false negative**.
 - If the head starts in the steep part of the curve, the gradient at the clean point is large, but the probability can only fall as far as zero. AP extrapolates the steep slope all the way to $\alpha = 1$ and **overestimates** the effect.
@@ -1390,7 +1502,10 @@ alpha = 1.0: head 6.9 attention from S2 to S1+1 = 0.006</pre>
 
 </details>
 
-The attention to the token after S1 falls off roughly exponentially: it has more than halved by $\alpha = 0.2$ and is down to 0.03 by $\alpha = 0.5$. From there on the head has essentially stopped attending to that token, so moving its query further can't change anything, and that's exactly the plateau in the metric curve. The gradient at $\alpha = 0$ is measured where the attention is falling fastest, and the tangent line assumes it keeps falling at that rate all the way to $\alpha = 1$, which is impossible for a probability that's already near zero.
+The attention to the token after S1 falls off roughly exponentially: it has more than halved by $\alpha = 0.2$ and is down to 0.03 by $\alpha = 0.5$. From there on the head has
+essentially stopped attending to that token, so moving its query further can't change anything, and that's exactly the plateau in the metric curve. The gradient at $\alpha = 0$ is
+measured where the attention is falling fastest, and the tangent line assumes it keeps falling at that rate all the way to $\alpha = 1$, which is impossible for a probability
+that's already near zero.
 '''
 
 # ! CELL TYPE: markdown
@@ -1398,7 +1513,8 @@ The attention to the token after S1 falls off roughly exponentially: it has more
 # ! TAGS: []
 
 r'''
-This is the problem that **AtP\*** (Kramár et al., 2024) attacks with its "QK fix": instead of linearising through the softmax, it recomputes the attention pattern exactly for the patched query or key, and only linearises what comes after. You'll implement that in section [8.3]. Here we'll look at a more general fix.
+This is the problem that **AtP\*** (Kramár et al., 2024) attacks with its "QK fix": instead of linearising through the softmax, it recomputes the attention pattern exactly for the
+patched query or key, and only linearises what comes after. You'll implement that in section [8.3]. Here we'll look at a more general fix.
 
 ## Integrated gradients for one component
 
@@ -1415,7 +1531,8 @@ $$
 = \left(a_{\text{corrupt}} - a_{\text{clean}}\right) \cdot \frac{1}{m}\sum_{k=0}^{m-1} \left.\frac{\partial M}{\partial a}\right|_{a(k/m)} .
 $$
 
-This is a Riemann sum for the integral, so $\text{IG}_m \to f(1)$, the exact patching effect, as $m \to \infty$; and with $m = 1$ it's exactly attribution patching. In machine learning this is called **integrated gradients** (Sundararajan et al., 2017): "the activation difference times the gradient averaged along the path".
+This is a Riemann sum for the integral, so $\text{IG}_m \to f(1)$, the exact patching effect, as $m \to \infty$; and with $m = 1$ it's exactly attribution patching. In machine
+learning this is called **integrated gradients** (Sundararajan et al., 2017): "the activation difference times the gradient averaged along the path".
 '''
 
 # ! CELL TYPE: markdown
@@ -1432,7 +1549,8 @@ r'''
 > You should spend up to 5 minutes on this exercise.
 > ```
 
-Implement `integrated_gradients_component`, which returns $\text{IG}_m$ for one component, using `metric_along_path` with $\alpha_k = k/m$ for $k = 0, \dots, m-1$ (a left Riemann sum, so that $m = 1$ is AP).
+Implement `integrated_gradients_component`, which returns $\text{IG}_m$ for one component, using `metric_along_path` with $\alpha_k = k/m$ for $k = 0, \dots, m-1$ (a left Riemann
+sum, so that $m = 1$ is AP).
 '''
 
 # ! CELL TYPE: code
@@ -1507,11 +1625,18 @@ r'''
 <details>
 <summary>Help - how should I interpret this?</summary>
 
-**Integrated gradients fixes all four failures.** With 8 steps, every estimate has the right sign and is within 0.2 of the exact effect, including the two components where AP was wrong in sign or by a factor of almost 30.
+**Integrated gradients fixes all four failures.** With 8 steps, every estimate has the right sign and is within 0.2 of the exact effect, including the two components where AP was
+wrong in sign or by a factor of almost 30.
 
-**The convergence is roughly first-order.** For the smooth curves (heads 10.7 and 6.9), the error halves every time $m$ doubles, as you'd expect from a left Riemann sum, whose error is $O(1/m)$. The two "cliff" curves start with much larger errors and behave erratically for small $m$: with $m = 2$ the residual-stream estimate *overshoots* to −6.10, because one of its two sample points ($\alpha = 0.5$) lands on the steepest part of the cliff and gets weighted as if it covered half the path. Once there are enough points to resolve the cliff, they converge at least as fast as the smooth curves.
+**The convergence is roughly first-order.** For the smooth curves (heads 10.7 and 6.9), the error halves every time $m$ doubles, as you'd expect from a left Riemann sum, whose
+error is $O(1/m)$. The two "cliff" curves start with much larger errors and behave erratically for small $m$: with $m = 2$ the residual-stream estimate *overshoots* to −6.10,
+because one of its two sample points ($\alpha = 0.5$) lands on the steepest part of the cliff and gets weighted as if it covered half the path. Once there are enough points to
+resolve the cliff, they converge at least as fast as the smooth curves.
 
-**But there's a catch.** $\text{IG}_m$ for one component costs $m$ forward *and* backward passes, while exact patching of that component costs one forward pass. So integrated gradients *for a single component* is strictly worse than just patching it! It's useful here to understand what goes wrong with AP, not as a replacement for exact patching. The trick that makes integration cheap is to move *every* component along its path at the same time, so that $m$ backward passes give integrated gradients for everything at once. We'll do that in 4️⃣, and it will turn out to estimate something subtly different from single-component patching.
+**But there's a catch.** $\text{IG}_m$ for one component costs $m$ forward *and* backward passes, while exact patching of that component costs one forward pass. So integrated
+gradients *for a single component* is strictly worse than just patching it! It's useful here to understand what goes wrong with AP, not as a replacement for exact patching. The
+trick that makes integration cheap is to move *every* component along its path at the same time, so that $m$ backward passes give integrated gradients for everything at once. We'll
+do that in 4️⃣, and it will turn out to estimate something subtly different from single-component patching.
 </details>
 '''
 
@@ -1543,15 +1668,19 @@ r'''
 r'''
 ## From nodes to edges
 
-So far we've asked "how much does this *component* matter?". Circuit discovery asks a finer question: "how much does this *connection* matter?". Does head 9.9 matter because of what its query reads from the S-inhibition heads, or because of what its value reads from the name tokens?
+So far we've asked "how much does this *component* matter?". Circuit discovery asks a finer question: "how much does this *connection* matter?". Does head 9.9 matter because of
+what its query reads from the S-inhibition heads, or because of what its value reads from the name tokens?
 
-The residual stream makes connections easy to define. Every component reads from the residual stream, and the residual stream at any point is the sum of the outputs of everything that came before it (plus some constant biases):
+The residual stream makes connections easy to define. Every component reads from the residual stream, and the residual stream at any point is the sum of the outputs of everything
+that came before it (plus some constant biases):
 
 $$
 x_v = \sum_{u \text{ before } v} a_u + \text{biases}.
 $$
 
-So the input $x_v$ to a component $v$ splits into one contribution $a_u$ from each earlier component $u$, and we call each pair $(u \to v)$ an **edge**. To *patch an edge*, we replace $u$'s contribution to $v$'s input (and only to $v$'s input) with its corrupted value: $x_v \to x_v + (a_u^{\text{corrupt}} - a_u^{\text{clean}})$, while every other component still sees $u$'s clean output. (If you did path patching in [1.4.1], this is the same idea, for a single sender and receiver.)
+So the input $x_v$ to a component $v$ splits into one contribution $a_u$ from each earlier component $u$, and we call each pair $(u \to v)$ an **edge**. To *patch an edge*, we
+replace $u$'s contribution to $v$'s input (and only to $v$'s input) with its corrupted value: $x_v \to x_v + (a_u^{\text{corrupt}} - a_u^{\text{clean}})$, while every other
+component still sees $u$'s clean output. (If you did path patching in [1.4.1], this is the same idea, for a single sender and receiver.)
 
 We'll use the same graph as Hanna et al.'s EAP-IG code:
 
@@ -1559,16 +1688,20 @@ We'll use the same graph as Hanna et al.'s EAP-IG code:
 - **Receivers** (things that read from it): the query, key and value input of each attention head (432 receivers), the input of each MLP (12), and the logits, i.e. the final residual stream (1). That's 445 receivers.
 - There is an edge from $u$ to $v$ whenever $u$ writes before $v$ reads. Heads in layer $\ell$ read before any head in layer $\ell$ writes, so there are no edges within an attention layer; but MLP $\ell$ reads *after* the heads in layer $\ell$ have written, so those edges do exist.
 
-Splitting a head's input into query, key and value lets the graph distinguish Q-, K- and V-composition from [1.2]'s "A Mathematical Framework" discussion. To patch or differentiate head $h$'s query input without touching any other head, we need each head to have its *own* copy of its input.
+Splitting a head's input into query, key and value lets the graph distinguish Q-, K- and V-composition from [1.2]'s "A Mathematical Framework" discussion. To patch or differentiate
+head $h$'s query input without touching any other head, we need each head to have its *own* copy of its input.
 
 We also need hook points on every receiver's input, so we switch on two TransformerLens options now:
 
 - `set_use_split_qkv_input(True)` gives every attention head its own copy of the residual stream as the input to its query, key and value projections, at hooks `blocks.{layer}.hook_q_input` (and `k`, `v`), each of shape `(batch, pos, n_heads, d_model)`;
 - `set_use_hook_mlp_in(True)` adds a hook `blocks.{layer}.hook_mlp_in` on the input to each MLP.
 
-Neither changes what the model computes, though the first makes forward and backward passes somewhat slower and hungrier, since every layer now carries `3 * n_heads` copies of the residual stream. That's why we only switch it on now.
+Neither changes what the model computes, though the first makes forward and backward passes somewhat slower and hungrier, since every layer now carries `3 * n_heads` copies of the
+residual stream. That's why we only switch it on now.
 
-(There's also a `set_use_attn_result` option, which caches each head's output in the residual stream basis, `hook_result`. We deliberately *don't* use it: TransformerLens implements it by materialising a `(batch, pos, n_heads, d_head, d_model)` tensor, which needs several GB even for our small batches. We'll compute head outputs from `hook_z` and $W_O$ instead.)
+(There's also a `set_use_attn_result` option, which caches each head's output in the residual stream basis, `hook_result`. We deliberately *don't* use it: TransformerLens
+implements it by materialising a `(batch, pos, n_heads, d_head, d_model)` tensor, which needs several GB even for our small batches. We'll compute head outputs from `hook_z` and
+$W_O$ instead.)
 
 '''
 
@@ -1584,7 +1717,8 @@ model.set_use_hook_mlp_in(True)
 # ! TAGS: []
 
 r'''
-Here are the names and index conventions we'll use. Senders are ordered `input, a0.0, ..., a0.11, m0, a1.0, ..., m11`; receivers are ordered layer by layer as `a{layer}.{head}<q>` for all heads, then `<k>`, then `<v>`, then `m{layer}`, and finally `logits`.
+Here are the names and index conventions we'll use. Senders are ordered `input, a0.0, ..., a0.11, m0, a1.0, ..., m11`; receivers are ordered layer by layer as `a{layer}.{head}<q>`
+for all heads, then `<k>`, then `<v>`, then `m{layer}`, and finally `logits`.
 '''
 
 # ! CELL TYPE: code
@@ -1647,7 +1781,9 @@ r'''
 
 Implement `build_edge_mask`, returning a boolean tensor of shape `(N_SENDERS, N_RECEIVERS)` which is `True` exactly where an edge exists.
 
-A clean way to do this is to give every sender a "write time" and every receiver a "read time", and keep the pairs where the write comes strictly before the read. For example: the input writes at time 0; the heads in layer $\ell$ read at time $2\ell + 1$ and write at time $2\ell + 1$; MLP $\ell$ reads and writes at time $2\ell + 2$; the logits read at time $2L + 1$. (A head can't send to another head in the same layer because they share the time $2\ell+1$.)
+A clean way to do this is to give every sender a "write time" and every receiver a "read time", and keep the pairs where the write comes strictly before the read. For example: the
+input writes at time 0; the heads in layer $\ell$ read at time $2\ell + 1$ and write at time $2\ell + 1$; MLP $\ell$ reads and writes at time $2\ell + 2$; the logits read at time
+$2L + 1$. (A head can't send to another head in the same layer because they share the time $2\ell+1$.)
 
 You should get 32,491 edges.
 '''
@@ -1688,13 +1824,16 @@ r'''
 <details>
 <summary>Hint</summary>
 
-Build two lists, `write_time` of length 157 and `read_time` of length 445, following the orderings above. Then `t.tensor(write_time)[:, None] < t.tensor(read_time)[None, :]` broadcasts to the full mask.
+Build two lists, `write_time` of length 157 and `read_time` of length 445, following the orderings above. Then `t.tensor(write_time)[:, None] < t.tensor(read_time)[None, :]`
+broadcasts to the full mask.
 </details>
 
 <details>
 <summary>Where does 32,491 come from?</summary>
 
-The input sends to all 445 receivers. Each head in layer $\ell$ sends to the $3 \times 12$ q/k/v inputs of every later layer, to MLPs $\ell, \dots, 11$, and to the logits: $36(11 - \ell) + (12 - \ell) + 1$ edges. MLP $\ell$ sends to $36(11-\ell) + (11 - \ell) + 1$. Summing: $445 + 12 \sum_{\ell}(36(11-\ell) + 13 - \ell) + \sum_\ell (37(11-\ell) + 1) = 445 + 29{,}592 + 2{,}454 = 32{,}491$.
+The input sends to all 445 receivers. Each head in layer $\ell$ sends to the $3 \times 12$ q/k/v inputs of every later layer, to MLPs $\ell, \dots, 11$, and to the logits: $36(11 -
+\ell) + (12 - \ell) + 1$ edges. MLP $\ell$ sends to $36(11-\ell) + (11 - \ell) + 1$. Summing: $445 + 12 \sum_{\ell}(36(11-\ell) + 13 - \ell) + \sum_\ell (37(11-\ell) + 1) = 445 +
+29{,}592 + 2{,}454 = 32{,}491$.
 </details>
 
 To do exact patching on every one of these edges we'd need 32,491 forward passes (per batch of prompts). Let's see how EAP gets all of them from one.
@@ -1713,15 +1852,18 @@ $$
 \Delta M_{\text{EAP}}(u \to v) = \Delta a_u \cdot \left.\frac{\partial M}{\partial x_v}\right|_{\text{clean run}},
 $$
 
-with the dot product summed over batch, position and `d_model` (the edge is a connection at every position, and each position of $a_u$ only feeds the same position of $x_v$). This is **edge attribution patching** (Syed, Rager & Conmy, 2023).
+with the dot product summed over batch, position and `d_model` (the edge is a connection at every position, and each position of $a_u$ only feeds the same position of $x_v$). This
+is **edge attribution patching** (Syed, Rager & Conmy, 2023).
 
-The beautiful thing is how the computation factorises. $\Delta a_u$ depends only on the sender, and the gradient $g_v = \partial M / \partial x_v$ depends only on the receiver. So we need:
+The beautiful thing is how the computation factorises. $\Delta a_u$ depends only on the sender, and the gradient $g_v = \partial M / \partial x_v$ depends only on the receiver. So
+we need:
 
 - the outputs of all 157 senders on the clean and corrupted prompts: two forward passes;
 - the gradient of the metric with respect to all 445 receiver inputs on the clean prompts: one backward pass;
 - and then *every* edge score at once, as a single einsum: `scores[u, v] = sum over (batch, pos, d) of delta[batch, pos, u, d] * grads[batch, pos, v, d]`.
 
-The tensors are big: for 16 prompts of 15 tokens, the receiver gradients are $16 \times 15 \times 445 \times 768$ floats, about 330MB. That's why `Task` has a `chunks` method: we'll process prompts in mini-batches and add up the scores.
+The tensors are big: for 16 prompts of 15 tokens, the receiver gradients are $16 \times 15 \times 445 \times 768$ floats, about 330MB. That's why `Task` has a `chunks` method:
+we'll process prompts in mini-batches and add up the scores.
 '''
 
 # ! CELL TYPE: markdown
@@ -1738,7 +1880,8 @@ r'''
 > You should spend up to 10-15 minutes on this exercise.
 > ```
 
-Implement `sender_activations`, which runs the model on `tokens` and returns a tensor of shape `(batch, pos, N_SENDERS, d_model)` holding each sender's output in the residual stream, in the sender order above:
+Implement `sender_activations`, which runs the model on `tokens` and returns a tensor of shape `(batch, pos, N_SENDERS, d_model)` holding each sender's output in the residual
+stream, in the sender order above:
 
 - `input`: the embeddings, i.e. `blocks.0.hook_resid_pre` (token plus positional embedding);
 - head $h$ in layer $\ell$: $z_h W_O^h$, computed from `blocks.{layer}.attn.hook_z` and `model.W_O[layer]` (shape `(n_heads, d_head, d_model)`), *without* the bias $b_O$, which is the same on every input and so never differs between clean and corrupted runs;
@@ -1785,7 +1928,9 @@ r'''
 <details>
 <summary>Hint</summary>
 
-Use `run_with_cache` with a `names_filter` for the hooks you need. For each layer, `einops.einsum(z, model.W_O[layer], "batch pos head d_head, head d_head d_model -> batch pos head d_model")` gives the per-head outputs, and `cache[f"blocks.{layer}.hook_mlp_out"][:, :, None]` gives the MLP output with a sender dimension of size 1. Concatenate everything along dimension 2.
+Use `run_with_cache` with a `names_filter` for the hooks you need. For each layer, `einops.einsum(z, model.W_O[layer], "batch pos head d_head, head d_head d_model -> batch pos head
+d_model")` gives the per-head outputs, and `cache[f"blocks.{layer}.hook_mlp_out"][:, :, None]` gives the MLP output with a sender dimension of size 1. Concatenate everything along
+dimension 2.
 </details>
 '''
 
@@ -1803,15 +1948,18 @@ r'''
 > You should spend up to 15-20 minutes on this exercise.
 > ```
 
-Implement `receiver_gradients`, which runs the model on `tokens`, backpropagates from `metric_fn(logits)`, and returns the gradients with respect to every receiver's input, as a tensor of shape `(batch, pos, N_RECEIVERS, d_model)` in the receiver order above. The receiver inputs live at these hooks:
+Implement `receiver_gradients`, which runs the model on `tokens`, backpropagates from `metric_fn(logits)`, and returns the gradients with respect to every receiver's input, as a
+tensor of shape `(batch, pos, N_RECEIVERS, d_model)` in the receiver order above. The receiver inputs live at these hooks:
 
 - `blocks.{layer}.hook_q_input`, `hook_k_input`, `hook_v_input`, each of shape `(batch, pos, n_heads, d_model)`, for the heads' query, key and value inputs;
 - `blocks.{layer}.hook_mlp_in`, shape `(batch, pos, d_model)`, for the MLPs;
 - `blocks.{N_LAYERS - 1}.hook_resid_post`, shape `(batch, pos, d_model)`, for the logits.
 
-To save memory, preallocate the output tensor with `t.zeros` and have your backward hooks write each gradient straight into the right slice, using `hook.layer()` (the layer number) and `hook.name` to work out which slice. Use the `hook_embed` trick from `get_cache_fwd_and_bwd` to make the forward pass differentiable.
+To save memory, preallocate the output tensor with `t.zeros` and have your backward hooks write each gradient straight into the right slice, using `hook.layer()` (the layer number)
+and `hook.name` to work out which slice. Use the `hook_embed` trick from `get_cache_fwd_and_bwd` to make the forward pass differentiable.
 
-The optional `input_embed` argument isn't needed until 4️⃣: if it's given, your `hook_embed` hook should *replace* the token embeddings with it (`input_embed.clone().requires_grad_(True)`), so the model runs on those embeddings instead of the ones for `tokens`.
+The optional `input_embed` argument isn't needed until 4️⃣: if it's given, your `hook_embed` hook should *replace* the token embeddings with it
+(`input_embed.clone().requires_grad_(True)`), so the model runs on those embeddings instead of the ones for `tokens`.
 '''
 
 # ! CELL TYPE: code
@@ -1870,13 +2018,16 @@ r'''
 <details>
 <summary>Hint</summary>
 
-`hook.name.split(".")[-1]` is one of `"hook_q_input"`, `"hook_k_input"`, `"hook_v_input"`, `"hook_mlp_in"` or `"hook_resid_post"`. For the q/k/v hooks, the gradient has shape `(batch, pos, n_heads, d_model)` and goes into the 12 consecutive receivers starting at `head_receiver(layer, qkv, 0)`.
+`hook.name.split(".")[-1]` is one of `"hook_q_input"`, `"hook_k_input"`, `"hook_v_input"`, `"hook_mlp_in"` or `"hook_resid_post"`. For the q/k/v hooks, the gradient has shape
+`(batch, pos, n_heads, d_model)` and goes into the 12 consecutive receivers starting at `head_receiver(layer, qkv, 0)`.
 </details>
 
 <details>
 <summary>How does the test check this?</summary>
 
-With a neat identity. The input embedding is part of the residual stream all the way to the end, and it reaches the output *only* through some receiver's input. Every receiver input is a copy of the residual stream, so by the chain rule the gradient with respect to the embeddings equals the sum of the gradients with respect to *all* 445 receiver inputs. The test compares your gradients, summed over the receiver dimension, with an independently computed gradient at `blocks.0.hook_resid_pre`.
+With a neat identity. The input embedding is part of the residual stream all the way to the end, and it reaches the output *only* through some receiver's input. Every receiver
+input is a copy of the residual stream, so by the chain rule the gradient with respect to the embeddings equals the sum of the gradients with respect to *all* 445 receiver inputs.
+The test compares your gradients, summed over the receiver dimension, with an independently computed gradient at `blocks.0.hook_resid_pre`.
 </details>
 '''
 
@@ -1902,7 +2053,8 @@ Now put the pieces together. Implement `eap_scores`, which loops over the task i
 
 Finally, zero out the entries which aren't edges by multiplying with `EDGE_MASK`, and return the `(N_SENDERS, N_RECEIVERS)` scores.
 
-(This is the same chunking trick as `get_cache_fwd_and_bwd_chunked` in 1️⃣. Since the scores are linear in the gradient, adding up the chunks' scores gives the score for the whole task.)
+(This is the same chunking trick as `get_cache_fwd_and_bwd_chunked` in 1️⃣. Since the scores are linear in the gradient, adding up the chunks' scores gives the score for the whole
+task.)
 '''
 
 # ! CELL TYPE: code
@@ -1979,7 +2131,10 @@ r'''
 
 </details>
 
-32,491 edge scores in about a second (the timing depends on your hardware). The top of the list is the end of the IOI circuit: name movers 9.9, 9.6 and 10.0 writing to the logits (negative scores: corrupting them hurts), negative name movers 10.7 and 11.10 writing to the logits (positive scores), and 9.9 and 10.7 feeding the *query* of the negative name mover 11.10, so the negative name movers know which name to push down. Further down, the induction head 5.5 feeds the value of the S-inhibition head 8.6. Notice `input -> m0` near the top with a *positive* score: EAP thinks corrupting the input embeddings' contribution to MLP0 would *help* the model. Remember MLP0 from 2️⃣?
+32,491 edge scores in about a second (the timing depends on your hardware). The top of the list is the end of the IOI circuit: name movers 9.9, 9.6 and 10.0 writing to the logits
+(negative scores: corrupting them hurts), negative name movers 10.7 and 11.10 writing to the logits (positive scores), and 9.9 and 10.7 feeding the *query* of the negative name
+mover 11.10, so the negative name movers know which name to push down. Further down, the induction head 5.5 feeds the value of the S-inhibition head 8.6. Notice `input -> m0` near
+the top with a *positive* score: EAP thinks corrupting the input embeddings' contribution to MLP0 would *help* the model. Remember MLP0 from 2️⃣?
 '''
 
 # ! CELL TYPE: markdown
@@ -1994,7 +2149,8 @@ As in 1️⃣, an approximation is only as good as our check of it. We can't aff
 - the **200 edges with the largest |EAP score|**, which are the ones circuit discovery would actually keep;
 - **200 edges chosen uniformly at random**, as a control. Most edges in a model don't matter for any given task, so we expect exact patching and EAP both to put these near zero. If EAP's top edges didn't look any different from random ones under exact patching, EAP would be useless.
 
-To patch a single edge $u \to v$ exactly, run the clean prompts with a hook on $v$'s input hook that adds $\Delta a_u$ to $v$'s input (and only to head $h$'s slice, if $v$ is a head's q/k/v input). Here's a helper that maps a receiver index to its hook name and head:
+To patch a single edge $u \to v$ exactly, run the clean prompts with a hook on $v$'s input hook that adds $\Delta a_u$ to $v$'s input (and only to head $h$'s slice, if $v$ is a
+head's q/k/v input). Here's a helper that maps a receiver index to its hook name and head:
 '''
 
 # ! CELL TYPE: code
@@ -2027,9 +2183,13 @@ r'''
 > You should spend up to 15-20 minutes on this exercise.
 > ```
 
-Implement `patch_single_edges`, which takes a list of edges `(u, v)` and returns a tensor with the exact change in the mean metric from corrupting each edge on its own. Loop over the task in chunks; for each chunk compute $\Delta a$ for all senders (as in `eap_scores`) and the clean metric, then for each edge run the clean prompts with a hook on `receiver_hook(v)` that adds `delta[:, :, u]` to the receiver's input. Accumulate per-prompt metric sums across chunks, and return (patched sum − clean sum) / `len(task)` for each edge.
+Implement `patch_single_edges`, which takes a list of edges `(u, v)` and returns a tensor with the exact change in the mean metric from corrupting each edge on its own. Loop over
+the task in chunks; for each chunk compute $\Delta a$ for all senders (as in `eap_scores`) and the clean metric, then for each edge run the clean prompts with a hook on
+`receiver_hook(v)` that adds `delta[:, :, u]` to the receiver's input. Accumulate per-prompt metric sums across chunks, and return (patched sum − clean sum) / `len(task)` for each
+edge.
 
-Be careful with the head receivers: the hook's input has shape `(batch, pos, n_heads, d_model)`, and you should only add $\Delta a_u$ to head `head`'s slice. Clone before modifying in place.
+Be careful with the head receivers: the hook's input has shape `(batch, pos, n_heads, d_model)`, and you should only add $\Delta a_u$ to head `head`'s slice. Clone before modifying
+in place.
 '''
 
 # ! CELL TYPE: code
@@ -2079,10 +2239,12 @@ r'''
 <details>
 <summary>Hint</summary>
 
-Inside the edge loop, look up `hook_name, head = receiver_hook(v)` and define a hook function that closes over `u` and `head`. For MLP and logits receivers it returns `x + delta[:, :, u]`; for head receivers it clones `x`, does `x[:, :, head] += delta[:, :, u]`, and returns the clone.
+Inside the edge loop, look up `hook_name, head = receiver_hook(v)` and define a hook function that closes over `u` and `head`. For MLP and logits receivers it returns `x + delta[:,
+:, u]`; for head receivers it clones `x`, does `x[:, :, head] += delta[:, :, u]`, and returns the clone.
 </details>
 
-The test uses an oracle for edges into the logits: corrupting $u \to$ logits just adds $\Delta a_u$ to the final residual stream, so the effect can be computed directly with `model.ln_final` and `model.unembed`.
+The test uses an oracle for edges into the logits: corrupting $u \to$ logits just adds $\Delta a_u$ to the final residual stream, so the effect can be computed directly with
+`model.ln_final` and `model.unembed`.
 
 Now let's patch the top-200 EAP edges and 200 random edges. This is 400 forward passes per chunk of prompts, so it takes a little while.
 '''
@@ -2158,9 +2320,14 @@ The five top-200 edges where EAP is furthest from the exact effect:
 <details>
 <summary>Help - how should I interpret this?</summary>
 
-**The control behaves as it should.** The 200 random edges cluster tightly at the origin: their average exact effect is 0.0014, about 150 times smaller than for EAP's top 200 (0.22). So EAP's top edges really are special, and EAP is excellent at telling apart edges that matter from edges that don't. On the random edges its estimates are also very accurate (Pearson 0.98), which is what you'd expect from 2️⃣: small effects come from small, nearly linear perturbations.
+**The control behaves as it should.** The 200 random edges cluster tightly at the origin: their average exact effect is 0.0014, about 150 times smaller than for EAP's top 200
+(0.22). So EAP's top edges really are special, and EAP is excellent at telling apart edges that matter from edges that don't. On the random edges its estimates are also very
+accurate (Pearson 0.98), which is what you'd expect from 2️⃣: small effects come from small, nearly linear perturbations.
 
-**Among the top 200, the ranking is good (Spearman 0.89) but the values have some big misses (Pearson 0.66).** Most points lie close to the diagonal, including the largest edges into the logits. The worst miss by far is `input -> m0`: exact −3.68, EAP +0.84. That's the MLP0 failure from 2️⃣ again, now at the level of an edge, with EAP getting the sign wrong. The next-worst misses are edges into mid-layer MLPs (`a5.5 -> m5` and `a3.0 -> m5`, where EAP overstates small effects several-fold, once with the wrong sign) and edges into the negative name movers' *queries*, which act through attention patterns, like head 6.9's query in 2️⃣.
+**Among the top 200, the ranking is good (Spearman 0.89) but the values have some big misses (Pearson 0.66).** Most points lie close to the diagonal, including the largest edges
+into the logits. The worst miss by far is `input -> m0`: exact −3.68, EAP +0.84. That's the MLP0 failure from 2️⃣ again, now at the level of an edge, with EAP getting the sign
+wrong. The next-worst misses are edges into mid-layer MLPs (`a5.5 -> m5` and `a3.0 -> m5`, where EAP overstates small effects several-fold, once with the wrong sign) and edges into
+the negative name movers' *queries*, which act through attention patterns, like head 6.9's query in 2️⃣.
 
 So far EAP looks like a decent, cheap approximation to exact edge patching, with known failure modes. Hold that thought until 4️⃣.
 </details>
@@ -2173,7 +2340,9 @@ So far EAP looks like a decent, cheap approximation to exact edge patching, with
 r'''
 ## Drawing the circuit
 
-Let's look at the top EAP edges as a graph. In the plot below, heads are placed by layer (vertically) and head index (horizontally), MLPs sit in the right-hand column, and we draw the 50 edges with the largest |EAP score|. Red edges have negative scores: corrupting them *lowers* the logit difference, so they carry information the model uses. Blue edges have positive scores. We've labelled the heads that Wang et al. assigned a role in the IOI circuit, so you can compare.
+Let's look at the top EAP edges as a graph. In the plot below, heads are placed by layer (vertically) and head index (horizontally), MLPs sit in the right-hand column, and we draw
+the 50 edges with the largest |EAP score|. Red edges have negative scores: corrupting them *lowers* the logit difference, so they carry information the model uses. Blue edges have
+positive scores. We've labelled the heads that Wang et al. assigned a role in the IOI circuit, so you can compare.
 '''
 
 # ! CELL TYPE: code
@@ -2221,7 +2390,8 @@ Reading from the top down, you can trace most of the IOI circuit from [1.4.1]:
 - **Induction and previous-token heads.** The induction head 5.5 writes into the values of the S-inhibition heads and the query of the other induction head 6.9. The previous-token heads 2.2 and 4.11 (plus 4.7 and 5.6) feed the *key* of 6.9 (dotted lines): that's the K-composition which defines an induction head.
 - **Duplicate token head 3.0 and MLP0.** 3.0 feeds the induction head 6.9 and the mid-layer MLPs, and MLP0 sends many edges up into the circuit. At the name positions, MLP0 is essentially an extended embedding of the name.
 
-What's *missing* is as interesting. The duplicate token heads 0.1 and 0.10 (grey labels in the bottom row) don't appear at all among EAP's top 50 edges, even though Wang et al. found them to be part of the circuit. And the input embeddings connect to the circuit only through MLP0, with a blue (positive) edge whose sign we know is wrong.
+What's *missing* is as interesting. The duplicate token heads 0.1 and 0.10 (grey labels in the bottom row) don't appear at all among EAP's top 50 edges, even though Wang et al.
+found them to be part of the circuit. And the input embeddings connect to the circuit only through MLP0, with a blue (positive) edge whose sign we know is wrong.
 </details>
 '''
 
@@ -2253,33 +2423,39 @@ r'''
 r'''
 ## Is a list of edges a circuit?
 
-So far we've judged EAP by how well it predicts *single-edge* patching effects. But that's not what we use it for. We use the scores to pick a **circuit**, a small set of edges that's supposed to be "the part of the model that does the task", and the real question is whether that circuit *works*.
+So far we've judged EAP by how well it predicts *single-edge* patching effects. But that's not what we use it for. We use the scores to pick a **circuit**, a small set of edges
+that's supposed to be "the part of the model that does the task", and the real question is whether that circuit *works*.
 
-The standard test (used by ACDC, EAP and EAP-IG) is **faithfulness**. Take a circuit $C$, a set of edges. Run the model on the clean prompts, but make every edge *not* in $C$ carry its corrupted value. In terms of a receiver $v$'s input:
+The standard test (used by ACDC, EAP and EAP-IG) is **faithfulness**. Take a circuit $C$, a set of edges. Run the model on the clean prompts, but make every edge *not* in $C$ carry
+its corrupted value. In terms of a receiver $v$'s input:
 
 $$
 x_v^{(C)} = \sum_{(u \to v) \in C} a_u^{(C)} \;+\; \sum_{(u \to v) \notin C} a_u^{\text{corrupt}} \;+\; \text{biases},
 $$
 
-where $a_u^{(C)}$ is sender $u$'s output *in this patched run*: if $u$'s own inputs were partly corrupted, its output changes, and that change propagates. The normalised faithfulness is
+where $a_u^{(C)}$ is sender $u$'s output *in this patched run*: if $u$'s own inputs were partly corrupted, its output changes, and that change propagates. The normalised
+faithfulness is
 
 $$
 F(C) = \frac{M(C) - M(\text{corrupt})}{M(\text{clean}) - M(\text{corrupt})},
 $$
 
-so the empty circuit (every edge corrupted) gives exactly the corrupted run, $F = 0$, and the full graph gives exactly the clean run, $F = 1$. A good circuit gets $F$ close to 1 with few edges.
+so the empty circuit (every edge corrupted) gives exactly the corrupted run, $F = 0$, and the full graph gives exactly the clean run, $F = 1$. A good circuit gets $F$ close to 1
+with few edges.
 
 Notice the difference from single-edge patching: here we corrupt tens of thousands of edges *at the same time*. Keep that in mind.
 
 ### Implementing circuit evaluation
 
-There's a neat way to compute $x_v^{(C)}$ in a single forward pass. The model computes $x_v = \sum_u a_u^{(C)} + \text{biases}$ by itself (that's just the residual stream). So we only need to subtract, for each edge $u \to v$ outside the circuit, the difference between what $u$ actually output in this run and its corrupted output:
+There's a neat way to compute $x_v^{(C)}$ in a single forward pass. The model computes $x_v = \sum_u a_u^{(C)} + \text{biases}$ by itself (that's just the residual stream). So we
+only need to subtract, for each edge $u \to v$ outside the circuit, the difference between what $u$ actually output in this run and its corrupted output:
 
 $$
 x_v^{(C)} = x_v - \sum_{(u \to v) \notin C} \left(a_u^{(C)} - a_u^{\text{corrupt}}\right).
 $$
 
-So during the forward pass we keep a running tensor `diff` of shape `(batch, pos, N_SENDERS, d_model)`, holding $a_u^{(C)} - a_u^{\text{corrupt}}$ for every sender computed so far (zero for the ones not computed yet), and at each receiver's input hook we subtract `einsum(diff, not_in_circuit[:, v])`, where `not_in_circuit = EDGE_MASK & ~in_circuit`.
+So during the forward pass we keep a running tensor `diff` of shape `(batch, pos, N_SENDERS, d_model)`, holding $a_u^{(C)} - a_u^{\text{corrupt}}$ for every sender computed so far
+(zero for the ones not computed yet), and at each receiver's input hook we subtract `einsum(diff, not_in_circuit[:, v])`, where `not_in_circuit = EDGE_MASK & ~in_circuit`.
 '''
 
 # ! CELL TYPE: markdown
@@ -2296,7 +2472,8 @@ r'''
 > You should spend up to 25-35 minutes on this exercise.
 > ```
 
-Implement `run_with_circuit`, which returns the mean metric over the task when only the edges in `in_circuit` (a boolean `(N_SENDERS, N_RECEIVERS)` tensor) carry clean values. For each chunk of prompts:
+Implement `run_with_circuit`, which returns the mean metric over the task when only the edges in `in_circuit` (a boolean `(N_SENDERS, N_RECEIVERS)` tensor) carry clean values. For
+each chunk of prompts:
 
 1. Compute the corrupted sender outputs `corrupt_out = sender_activations(model, chunk.corrupt_tokens)`, and a zero tensor `diff` of the same shape.
 2. Run the model on the clean prompts with these hooks, in forward order:
@@ -2309,9 +2486,11 @@ Implement `run_with_circuit`, which returns the mean metric over the task when o
      - `blocks.{layer}.hook_mlp_in` and `blocks.{N_LAYERS-1}.hook_resid_post`: the same with a single receiver column.
 3. Add the chunk's per-prompt metric sum to a running total, and return total / `len(task)`.
 
-Because of the order in which TransformerLens calls hooks, the senders a receiver depends on are always filled in before that receiver's hook runs (for example, layer 3's MLP output is written before layer 4's `hook_q_input` is called). Senders that haven't run yet have `diff = 0`, and they can't send to this receiver anyway.
+Because of the order in which TransformerLens calls hooks, the senders a receiver depends on are always filled in before that receiver's hook runs (for example, layer 3's MLP
+output is written before layer 4's `hook_q_input` is called). Senders that haven't run yet have `diff = 0`, and they can't send to this receiver anyway.
 
-The test checks three things: the full graph gives the clean metric, the empty circuit gives the corrupted metric, and a circuit missing exactly one edge gives the same answer as `patch_single_edges`.
+The test checks three things: the full graph gives the clean metric, the empty circuit gives the corrupted metric, and a circuit missing exactly one edge gives the same answer as
+`patch_single_edges`.
 '''
 
 # ! CELL TYPE: code
@@ -2383,25 +2562,31 @@ r'''
 <details>
 <summary>Hint - the sender hooks</summary>
 
-Sender hooks don't change the forward pass; they just record. They can return `None`. Remember that `diff` holds $a_u^{(C)} - a_u^{\text{corrupt}}$, the difference between what the sender output *in this run* and its corrupted output.
+Sender hooks don't change the forward pass; they just record. They can return `None`. Remember that `diff` holds $a_u^{(C)} - a_u^{\text{corrupt}}$, the difference between what the
+sender output *in this run* and its corrupted output.
 </details>
 
 <details>
 <summary>Hint - the receiver hooks</summary>
 
-For a q/k/v input hook at layer $\ell$, the relevant columns of `not_in_circuit` are `head_receiver(layer, qkv, 0)` to `head_receiver(layer, qkv, 0) + N_HEADS`, giving a `(N_SENDERS, n_heads)` mask. `einops.einsum(diff, mask, "batch pos sender d, sender head -> batch pos head d")` then has exactly the shape of the hook's activation, `(batch, pos, n_heads, d_model)`. Return `x - that`.
+For a q/k/v input hook at layer $\ell$, the relevant columns of `not_in_circuit` are `head_receiver(layer, qkv, 0)` to `head_receiver(layer, qkv, 0) + N_HEADS`, giving a
+`(N_SENDERS, n_heads)` mask. `einops.einsum(diff, mask, "batch pos sender d, sender head -> batch pos head d")` then has exactly the shape of the hook's activation, `(batch, pos,
+n_heads, d_model)`. Return `x - that`.
 </details>
 
 <details>
 <summary>Help - my full circuit doesn't give the clean metric.</summary>
 
-With the full graph, `not_in_circuit` is all zeros, so the receiver hooks subtract nothing and the run should be exactly the clean run. If it isn't, check that your receiver hooks *return* the patched tensor rather than modifying a copy, and that `not_in_circuit` is `EDGE_MASK & ~in_circuit` (not the other way round).
+With the full graph, `not_in_circuit` is all zeros, so the receiver hooks subtract nothing and the run should be exactly the clean run. If it isn't, check that your receiver hooks
+*return* the patched tensor rather than modifying a copy, and that `not_in_circuit` is `EDGE_MASK & ~in_circuit` (not the other way round).
 </details>
 
 <details>
 <summary>Help - my empty circuit doesn't give the corrupted metric.</summary>
 
-With the empty circuit, each receiver input becomes $x_v - \sum_u (a_u^{(C)} - a_u^{\text{corrupt}}) = \sum_u a_u^{\text{corrupt}} + \text{biases}$, exactly the corrupted run's input. If this fails, check that every sender's slot of `diff` is filled in (including the input embedding at `blocks.0.hook_resid_pre`), and that your head outputs don't include `b_O` (the corrupted outputs from `sender_activations` don't either).
+With the empty circuit, each receiver input becomes $x_v - \sum_u (a_u^{(C)} - a_u^{\text{corrupt}}) = \sum_u a_u^{\text{corrupt}} + \text{biases}$, exactly the corrupted run's
+input. If this fails, check that every sender's slot of `diff` is filled in (including the input embedding at `blocks.0.hook_resid_pre`), and that your head outputs don't include
+`b_O` (the corrupted outputs from `sender_activations` don't either).
 </details>
 '''
 
@@ -2410,7 +2595,8 @@ With the empty circuit, each receiver input becomes $x_v - \sum_u (a_u^{(C)} - a
 # ! TAGS: []
 
 r'''
-To turn scores into circuits we keep the $k$ edges with the largest *absolute* score. (We use absolute values because an edge with a large positive score, one whose corruption *helps* the metric, like the negative name movers' edges to the logits, is also part of the mechanism.)
+To turn scores into circuits we keep the $k$ edges with the largest *absolute* score. (We use absolute values because an edge with a large positive score, one whose corruption
+*helps* the metric, like the negative name movers' edges to the logits, is also part of the mechanism.)
 '''
 
 # ! CELL TYPE: code
@@ -2438,7 +2624,8 @@ r'''
 > You should spend up to 5-10 minutes on this exercise.
 > ```
 
-Implement `faithfulness_curve`, which returns the normalised faithfulness $F$ of `top_k_circuit(scores, k)` for each `k` in `ks`. Compute the clean and corrupted mean metrics on the same task (you can use `mean_metric`, or chunk them yourself for large tasks).
+Implement `faithfulness_curve`, which returns the normalised faithfulness $F$ of `top_k_circuit(scores, k)` for each `k` in `ks`. Compute the clean and corrupted mean metrics on
+the same task (you can use `mean_metric`, or chunk them yourself for large tasks).
 '''
 
 # ! CELL TYPE: code
@@ -2472,7 +2659,8 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-Now the real test. We take the EAP scores computed on `ioi`, and measure the faithfulness of their top-$k$ circuits on the **held-out** prompts in `ioi_heldout`, for $k$ from 20 up to 10,000 edges. As a control, we do the same for random edge sets of the same sizes (five random seeds). Before you run it: what do you expect the curve to look like?
+Now the real test. We take the EAP scores computed on `ioi`, and measure the faithfulness of their top-$k$ circuits on the **held-out** prompts in `ioi_heldout`, for $k$ from 20 up
+to 10,000 edges. As a control, we do the same for random edge sets of the same sizes (five random seeds). Before you run it: what do you expect the curve to look like?
 '''
 
 # ! CELL TYPE: code
@@ -2515,7 +2703,9 @@ r'''
 
 </details>
 
-The random control does what it should: random edge sets recover nothing at any size. But look at EAP. **Its top 1,000 edges recover nothing either** (−0.01). Only at 2,000 edges does its circuit start to work (0.40), and it takes 5,000 edges, 15% of the whole graph, to get to 0.82. That's strange, given that in 3️⃣ EAP ranked the important edges well against exact patching, and its top-50 graph looked like the IOI circuit. Something in the top 1,000 must be missing. Before we find out what, let's implement the alternative.
+The random control does what it should: random edge sets recover nothing at any size. But look at EAP. **Its top 1,000 edges recover nothing either** (−0.01). Only at 2,000 edges
+does its circuit start to work (0.40), and it takes 5,000 edges, 15% of the whole graph, to get to 0.82. That's strange, given that in 3️⃣ EAP ranked the important edges well
+against exact patching, and its top-50 graph looked like the IOI circuit. Something in the top 1,000 must be missing. Before we find out what, let's implement the alternative.
 '''
 
 # ! CELL TYPE: markdown
@@ -2525,27 +2715,33 @@ The random control does what it should: random edge sets recover nothing at any 
 r'''
 ## EAP-IG
 
-In 2️⃣ we fixed a badly-behaved single-component estimate by averaging the gradient along the path from clean to corrupt. EAP-IG (Hanna, Pezzelle & Belinkov, 2024) does the same thing for edges, with one crucial change: instead of moving one component at a time (which would cost $m$ backward passes *per edge*), it moves the **input** along a path, so that every activation in the model moves at once:
+In 2️⃣ we fixed a badly-behaved single-component estimate by averaging the gradient along the path from clean to corrupt. EAP-IG (Hanna, Pezzelle & Belinkov, 2024) does the same
+thing for edges, with one crucial change: instead of moving one component at a time (which would cost $m$ backward passes *per edge*), it moves the **input** along a path, so that
+every activation in the model moves at once:
 
 $$
 e(\alpha) = e_{\text{clean}} + \alpha \left(e_{\text{corrupt}} - e_{\text{clean}}\right),
 $$
 
-where $e$ is the token embedding (the positional embeddings are the same for clean and corrupted prompts). At each of $m$ points along this path we run the model on $e(\alpha_k)$ and take the gradient at every receiver's input, then use the *average* gradient in place of the clean one:
+where $e$ is the token embedding (the positional embeddings are the same for clean and corrupted prompts). At each of $m$ points along this path we run the model on $e(\alpha_k)$
+and take the gradient at every receiver's input, then use the *average* gradient in place of the clean one:
 
 $$
 \Delta M_{\text{EAP-IG}}(u \to v) = \Delta a_u \cdot \frac{1}{m} \sum_{k=0}^{m-1} \left.\frac{\partial M}{\partial x_v}\right|_{e(k/m)} .
 $$
 
-(The activation difference $\Delta a_u$ is the same as in EAP.) That's $m$ backward passes in total, for all 32,491 edges. With $m=1$ the only point is $\alpha = 0$, the clean input, so EAP-IG with one step *is* EAP.
+(The activation difference $\Delta a_u$ is the same as in EAP.) That's $m$ backward passes in total, for all 32,491 edges. With $m=1$ the only point is $\alpha = 0$, the clean
+input, so EAP-IG with one step *is* EAP.
 
-What does this estimate? It's no longer an approximation to single-edge patching. Instead, it has a **completeness** property: by the same fundamental-theorem-of-calculus argument as in 2️⃣, the scores of the edges leaving the input add up (as $m \to \infty$) to the *total* change from clean to corrupted,
+What does this estimate? It's no longer an approximation to single-edge patching. Instead, it has a **completeness** property: by the same fundamental-theorem-of-calculus argument
+as in 2️⃣, the scores of the edges leaving the input add up (as $m \to \infty$) to the *total* change from clean to corrupted,
 
 $$
 \sum_v \Delta M_{\text{EAP-IG}}(\text{input} \to v) \;\longrightarrow\; M(\text{corrupt}) - M(\text{clean}),
 $$
 
-because the gradient with respect to the input embedding is the sum of the gradients at all receivers (the identity the `receiver_gradients` test used). EAP-IG divides up the effect of corrupting *everything*, along a path where everything is partially corrupted. Hold on to that thought; it's going to matter.
+because the gradient with respect to the input embedding is the sum of the gradients at all receivers (the identity the `receiver_gradients` test used). EAP-IG divides up the
+effect of corrupting *everything*, along a path where everything is partially corrupted. Hold on to that thought; it's going to matter.
 '''
 
 # ! CELL TYPE: markdown
@@ -2562,7 +2758,9 @@ r'''
 > You should spend up to 10-15 minutes on this exercise.
 > ```
 
-Implement `eap_ig_scores`. It's `eap_scores` with an inner loop over $k = 0, \dots, m-1$: compute the clean and corrupted token embeddings for the chunk with `model.embed(tokens)` (inside `t.no_grad()`), interpolate them with $\alpha = k/m$, call `receiver_gradients(..., input_embed=...)` on the clean tokens, and add `einsum(delta, grads) / n_steps` to the scores.
+Implement `eap_ig_scores`. It's `eap_scores` with an inner loop over $k = 0, \dots, m-1$: compute the clean and corrupted token embeddings for the chunk with `model.embed(tokens)`
+(inside `t.no_grad()`), interpolate them with $\alpha = k/m$, call `receiver_gradients(..., input_embed=...)` on the clean tokens, and add `einsum(delta, grads) / n_steps` to the
+scores.
 '''
 
 # ! CELL TYPE: code
@@ -2633,7 +2831,9 @@ Completeness check: sum of scores of edges leaving the input embedding
 
 </details>
 
-This is a striking check. Summed over all edges leaving the input, EAP's scores are its linear prediction of what happens when you corrupt *all* the names: it predicts the logit difference goes **up** by 1.10. In fact it goes down by 3.12. EAP-IG with only 5 steps gets −3.25, and with 20 steps −3.14, converging on the true value as completeness says it must. The first-order expansion around the clean run simply doesn't describe the journey from clean to corrupt.
+This is a striking check. Summed over all edges leaving the input, EAP's scores are its linear prediction of what happens when you corrupt *all* the names: it predicts the logit
+difference goes **up** by 1.10. In fact it goes down by 3.12. EAP-IG with only 5 steps gets −3.25, and with 20 steps −3.14, converging on the true value as completeness says it
+must. The first-order expansion around the clean run simply doesn't describe the journey from clean to corrupt.
 '''
 
 # ! CELL TYPE: code
@@ -2689,9 +2889,12 @@ r'''
 <details>
 <summary>Help - how should I interpret this?</summary>
 
-**EAP-IG's circuits work far better at the sizes that matter.** At 500 edges EAP-IG's circuit recovers 35% of the logit difference on held-out prompts, and at 1,000 edges 57%, while EAP's recover 9% and nothing. The curves only meet at around 5,000 edges, where both circuits contain most of what matters. Random edge sets recover nothing at any size, so neither curve is an artefact of how we evaluate circuits.
+**EAP-IG's circuits work far better at the sizes that matter.** At 500 edges EAP-IG's circuit recovers 35% of the logit difference on held-out prompts, and at 1,000 edges 57%,
+while EAP's recover 9% and nothing. The curves only meet at around 5,000 edges, where both circuits contain most of what matters. Random edge sets recover nothing at any size, so
+neither curve is an artefact of how we evaluate circuits.
 
-**This is the signature result of the section,** and it reproduces the main finding of Hanna et al. (2024): circuits found by EAP-IG are substantially more faithful than those found by EAP, at the same size. Remember that the scores were computed on one set of prompts and the faithfulness on another, so these are held-out numbers.
+**This is the signature result of the section,** and it reproduces the main finding of Hanna et al. (2024): circuits found by EAP-IG are substantially more faithful than those
+found by EAP, at the same size. Remember that the scores were computed on one set of prompts and the faithfulness on another, so these are held-out numbers.
 
 **Some honest caveats about the curves themselves:**
 
@@ -2708,7 +2911,8 @@ r'''
 r'''
 ## Why does EAP fail on IOI?
 
-Let's find out what EAP-IG's circuit has that EAP's doesn't. The cell below takes the top 1,000 edges by each method, finds the edges that are in EAP-IG's circuit but not EAP's, and lists the ten with the largest EAP-IG scores, along with their rank under EAP and their *exact* single-edge patching effect.
+Let's find out what EAP-IG's circuit has that EAP's doesn't. The cell below takes the top 1,000 edges by each method, finds the edges that are in EAP-IG's circuit but not EAP's,
+and lists the ten with the largest EAP-IG scores, along with their rank under EAP and their *exact* single-edge patching effect.
 '''
 
 # ! CELL TYPE: code
@@ -2759,7 +2963,8 @@ r'''
 
 </details>
 
-The circuits share 814 of their 1,000 edges. The ten highest-scoring edges that EAP-IG keeps and EAP drops sit almost all at the bottom of the network: the input embeddings, the layer-0 heads, and MLPs 0 and 1. They come in two kinds:
+The circuits share 814 of their 1,000 edges. The ten highest-scoring edges that EAP-IG keeps and EAP drops sit almost all at the bottom of the network: the input embeddings, the
+layer-0 heads, and MLPs 0 and 1. They come in two kinds:
 
 - **Edges with a real single-edge effect that EAP underestimates.** `a0.10 -> m0` has an exact effect of −0.124 and `m0 -> a1.11<k>` of −0.111, but EAP gives them −0.008 and −0.006. These are the MLP0 failures from 2️⃣ again.
 - **Edges with almost no single-edge effect, about which EAP is right.** The two top rows are the input embeddings feeding the key and query of head 0.1, one of Wang et al.'s duplicate token heads. Corrupting either edge on its own changes the logit difference by +0.04 and +0.02 (slightly *positive*!). EAP agrees that they barely matter, and ranks the key edge 10,317th out of 32,491. Yet EAP-IG ranks them among the most important edges in the model.
@@ -2781,7 +2986,9 @@ r'''
 > You should spend up to 10 minutes on this exercise.
 > ```
 
-Here's a hypothesis. Wang et al. found *three* duplicate token heads (0.1, 0.10 and 3.0), plus induction heads that compute the same "S is duplicated" signal by a different route. If several heads compute the same thing, corrupting the input to any *one* of them does little, because the others still deliver the signal; but corrupting all of them at once breaks it. The mechanism behaves like an OR gate, and single-edge patching (and any good approximation to it, like EAP) is blind to OR gates.
+Here's a hypothesis. Wang et al. found *three* duplicate token heads (0.1, 0.10 and 3.0), plus induction heads that compute the same "S is duplicated" signal by a different route.
+If several heads compute the same thing, corrupting the input to any *one* of them does little, because the others still deliver the signal; but corrupting all of them at once
+breaks it. The mechanism behaves like an OR gate, and single-edge patching (and any good approximation to it, like EAP) is blind to OR gates.
 
 Test this. Implement `joint_vs_individual`, which takes a list of edges and returns:
 
@@ -2822,7 +3029,8 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-We'll test three groups of edges: the edges from the input embedding into the duplicate token heads 0.1 and 0.10 (query, key and value: 6 edges); the edges from the input into *every* layer-0 head (36 edges); and, as a control, 36 random edges.
+We'll test three groups of edges: the edges from the input embedding into the duplicate token heads 0.1 and 0.10 (query, key and value: 6 edges); the edges from the input into
+*every* layer-0 head (36 edges); and, as a control, 36 random edges.
 '''
 
 # ! CELL TYPE: code
@@ -2855,13 +3063,21 @@ r'''
 <details>
 <summary>Help - how should I interpret this?</summary>
 
-**The effects are not additive.** Corrupting the six input edges of the duplicate token heads 0.1 and 0.10 together costs 2.4 times as much as the sum of corrupting them one at a time (−0.78 vs −0.32). For all 36 input edges into layer 0's heads it's more dramatic still: individually they add up to a small *positive* effect (+0.34), but corrupting them together costs a third of the whole logit difference (−1.04). The control behaves differently: for 36 random edges the joint effect equals the sum of the individual ones (−0.043 vs −0.042), as you'd expect for edges that don't interact.
+**The effects are not additive.** Corrupting the six input edges of the duplicate token heads 0.1 and 0.10 together costs 2.4 times as much as the sum of corrupting them one at a
+time (−0.78 vs −0.32). For all 36 input edges into layer 0's heads it's more dramatic still: individually they add up to a small *positive* effect (+0.34), but corrupting them
+together costs a third of the whole logit difference (−1.04). The control behaves differently: for 36 random edges the joint effect equals the sum of the individual ones (−0.043 vs
+−0.042), as you'd expect for edges that don't interact.
 
-This is what a **redundant** mechanism looks like. Several components compute the same signal (here, "this name has appeared before"), so knocking out any one input leaves the others to deliver it, like an OR gate. Single-edge patching sees each input as unimportant, and so does EAP, which approximates single-edge patching well. But a faithfulness test corrupts about 31,000 edges *at once*, so the backups are gone too, and the edges matter after all.
+This is what a **redundant** mechanism looks like. Several components compute the same signal (here, "this name has appeared before"), so knocking out any one input leaves the
+others to deliver it, like an OR gate. Single-edge patching sees each input as unimportant, and so does EAP, which approximates single-edge patching well. But a faithfulness test
+corrupts about 31,000 edges *at once*, so the backups are gone too, and the edges matter after all.
 
-EAP-IG sees this because its gradients are taken along a path where *every* input is partially corrupted at once. Halfway along the path, the backups are already half-broken, and the remaining duplicate-detection edges carry real weight. That's the sense in which EAP-IG "divides up the total effect" rather than estimating single-edge effects, and it's why it matches what circuit discovery needs.
+EAP-IG sees this because its gradients are taken along a path where *every* input is partially corrupted at once. Halfway along the path, the backups are already half-broken, and
+the remaining duplicate-detection edges carry real weight. That's the sense in which EAP-IG "divides up the total effect" rather than estimating single-edge effects, and it's why
+it matches what circuit discovery needs.
 
-We haven't shown *which* components back each other up; that would take a more careful set of joint patches (see the bonus section). "Redundancy" is the simplest explanation that fits these numbers, not a proven mechanism.
+We haven't shown *which* components back each other up; that would take a more careful set of joint patches (see the bonus section). "Redundancy" is the simplest explanation that
+fits these numbers, not a proven mechanism.
 </details>
 '''
 
@@ -2870,7 +3086,8 @@ We haven't shown *which* components back each other up; that would take a more c
 # ! TAGS: []
 
 r'''
-One last check on this explanation. If EAP's circuit fails because it's missing a handful of jointly-important edges, then adding them back should rescue it. Let's add the ten edges from the table above (the top EAP-IG edges that EAP missed) to EAP's circuits, and re-measure faithfulness on the held-out prompts.
+One last check on this explanation. If EAP's circuit fails because it's missing a handful of jointly-important edges, then adding them back should rescue it. Let's add the ten
+edges from the table above (the top EAP-IG edges that EAP missed) to EAP's circuits, and re-measure faithfulness on the held-out prompts.
 '''
 
 # ! CELL TYPE: code
@@ -2903,7 +3120,10 @@ r'''
 
 </details>
 
-Adding just ten edges lifts EAP's 1,000-edge circuit from nothing to 0.20, and its 2,000-edge circuit from 0.40 to 0.51. So the missing edges are part of the story. But they're not all of it: the rescued circuits still fall well short of EAP-IG's (0.57 and 0.63). The two 1,000-edge circuits differ in 186 edges, and these are spread throughout the network: of EAP-IG's 186 extra edges, 52 leave the input or a layer-0 component, 67 leave layers 1-4, and 67 leave later layers. An honest summary: we've found the *kind* of edge EAP misses and why, but not a short list that accounts for the whole gap.
+Adding just ten edges lifts EAP's 1,000-edge circuit from nothing to 0.20, and its 2,000-edge circuit from 0.40 to 0.51. So the missing edges are part of the story. But they're not
+all of it: the rescued circuits still fall well short of EAP-IG's (0.57 and 0.63). The two 1,000-edge circuits differ in 186 edges, and these are spread throughout the network: of
+EAP-IG's 186 extra edges, 52 leave the input or a layer-0 component, 67 leave layers 1-4, and 67 leave later layers. An honest summary: we've found the *kind* of edge EAP misses
+and why, but not a short list that accounts for the whole gap.
 '''
 
 # ! CELL TYPE: markdown
@@ -2919,7 +3139,9 @@ One task is an anecdote. Let's repeat the comparison on **greater-than** (Hanna,
 The war lasted from the year 1732 to the year 17
 ```
 
-GPT-2 Small should continue with a two-digit year greater than 32. The corrupted prompt replaces the start year with `1701`, after which every year is "greater". The metric is the probability mass on years greater than the start year minus the mass on years less than or equal to it, a *probability* difference rather than a logit difference. That makes it more nonlinear (it goes through a softmax), which is another reason a first-order method might struggle.
+GPT-2 Small should continue with a two-digit year greater than 32. The corrupted prompt replaces the start year with `1701`, after which every year is "greater". The metric is the
+probability mass on years greater than the start year minus the mass on years less than or equal to it, a *probability* difference rather than a logit difference. That makes it
+more nonlinear (it goes through a softmax), which is another reason a first-order method might struggle.
 '''
 
 # ! CELL TYPE: code
@@ -3002,7 +3224,9 @@ Held-out: clean metric 0.856, corrupt metric -0.486
 <details>
 <summary>Help - how should I interpret this?</summary>
 
-**On greater-than, both methods work, and EAP-IG is still better at small sizes.** EAP-IG's 100-edge circuit recovers 87% of the probability difference, against 70% for EAP's; by 500 edges both are at 0.96, and the curves are nearly indistinguishable from there on. Random edge sets again recover nothing. (EAP-IG's 2,000-edge circuit scores 1.02: slightly *better* than the full model. That happens when a circuit leaves out some edges that work against the task.)
+**On greater-than, both methods work, and EAP-IG is still better at small sizes.** EAP-IG's 100-edge circuit recovers 87% of the probability difference, against 70% for EAP's; by
+500 edges both are at 0.96, and the curves are nearly indistinguishable from there on. Random edge sets again recover nothing. (EAP-IG's 2,000-edge circuit scores 1.02: slightly
+*better* than the full model. That happens when a circuit leaves out some edges that work against the task.)
 
 **So EAP's collapse on IOI is not a general property of EAP.** Why the difference? Here are some hypotheses to think about, and to test if you want to:
 
@@ -3045,7 +3269,8 @@ r'''
 <details>
 <summary>Help - what changed compared to EAP's graph?</summary>
 
-The top of the circuit (name movers, negative name movers, S-inhibition, induction heads) is almost the same as in EAP's graph (a few weaker edges into the logits, from 10.6, 7.9 and MLP9, are new). The main differences are at the bottom:
+The top of the circuit (name movers, negative name movers, S-inhibition, induction heads) is almost the same as in EAP's graph (a few weaker edges into the logits, from 10.6, 7.9
+and MLP9, are new). The main differences are at the bottom:
 
 - `input -> m0` is now the **second-largest** edge in the model, and red: EAP-IG says corrupting the embeddings' contribution to MLP0 is very harmful, matching the exact effect (where EAP had it positive).
 - The duplicate token head **0.1** now appears, with its query, key and value inputs coming from the input embeddings, and its output going into MLP0.
@@ -3062,7 +3287,8 @@ This is the part of the IOI circuit that detects *which name is repeated*, and i
 r'''
 ## Try it yourself - change the corruption
 
-Everything in this section depends on the choice of corrupted prompts, and that choice is a *question*: "which information do I want to trace?". The ABC corruption we've used replaces all three names, so it traces everything the model does with names. A much gentler corruption replaces only the second mention of the subject:
+Everything in this section depends on the choice of corrupted prompts, and that choice is a *question*: "which information do I want to trace?". The ABC corruption we've used
+replaces all three names, so it traces everything the model does with names. A much gentler corruption replaces only the second mention of the subject:
 
 ```
 clean:    When Mary and John went to the store, John gave a drink to
@@ -3071,7 +3297,8 @@ corrupt:  When Mary and John went to the store, Peter gave a drink to
 
 This keeps the names in the first clause, and only removes the *duplication* of John. It asks the narrower question "how does the model use the fact that S is repeated?".
 
-The cell below re-runs the EAP vs EAP-IG comparison with this `"s2"` corruption. Before running it, predict: will the gap between EAP and EAP-IG get bigger or smaller? (Hint: think about which edges EAP missed, and what this corruption changes at the name positions.) Then try your own variations:
+The cell below re-runs the EAP vs EAP-IG comparison with this `"s2"` corruption. Before running it, predict: will the gap between EAP and EAP-IG get bigger or smaller? (Hint: think
+about which edges EAP missed, and what this corruption changes at the name positions.) Then try your own variations:
 
 - change `PLAY_STEPS` to 1 (which should reproduce EAP), 2 or 20;
 - write a new corruption in `utils.make_ioi_prompts` (e.g. swap the IO and S names, or replace only the IO);
@@ -3128,7 +3355,11 @@ EAP-IG (5 steps): 20: 0.00  50: 0.04  100: 0.21  200: 0.39  500: 0.63  1000: 0.7
 <details>
 <summary>Help - what should I see?</summary>
 
-With the gentler corruption, EAP's circuits work much better: 0.53 at 500 edges, compared with 0.09 under the ABC corruption. Only one token changes, so the corruption is closer to the linear regime, and since the first two names are the same in the clean and corrupted prompts, there's no large "the name is a different name" change at those positions. EAP-IG is still better at every size from 100 to 2,000 edges, though (0.76 vs 0.43 at 1,000), and EAP's curve is non-monotonic: its 1,000-edge circuit is worse than its 500-edge one. The corrupted prompts no longer contain a repeated name, so this corruption still switches off the redundant duplicate-detection mechanism, which would explain why EAP still lags. (You can check this with the missing-edges table and `joint_vs_individual` from above.)
+With the gentler corruption, EAP's circuits work much better: 0.53 at 500 edges, compared with 0.09 under the ABC corruption. Only one token changes, so the corruption is closer to
+the linear regime, and since the first two names are the same in the clean and corrupted prompts, there's no large "the name is a different name" change at those positions. EAP-IG
+is still better at every size from 100 to 2,000 edges, though (0.76 vs 0.43 at 1,000), and EAP's curve is non-monotonic: its 1,000-edge circuit is worse than its 500-edge one. The
+corrupted prompts no longer contain a repeated name, so this corruption still switches off the redundant duplicate-detection mechanism, which would explain why EAP still lags. (You
+can check this with the missing-edges table and `joint_vs_individual` from above.)
 
 The general point: "which edges matter?" has no answer without "for which corruption?". Both the circuit and the reliability of the approximation depend on it.
 </details>
@@ -3163,7 +3394,8 @@ r'''
 r'''
 ## Denoising-direction attribution
 
-Everything in this section was in the noising direction: gradients at the clean run, activations moving towards the corrupted ones. Repeat 1️⃣ and 2️⃣ in the denoising direction (gradients at the *corrupted* run, patching clean activations in), as in Neel Nanda's original post. Some questions:
+Everything in this section was in the noising direction: gradients at the clean run, activations moving towards the corrupted ones. Repeat 1️⃣ and 2️⃣ in the denoising direction
+(gradients at the *corrupted* run, patching clean activations in), as in Neel Nanda's original post. Some questions:
 
 - Does AP agree better or worse with exact patching for heads? For the residual stream at the name positions?
 - For a single component, the denoising AP estimate is the tangent at $\alpha = 1$ of the curves from 2️⃣. Looking at those curves, can you predict which components AP will get right in the denoising direction?
@@ -3176,7 +3408,9 @@ Everything in this section was in the noising direction: gradients at the clean 
 
 ## Fixing attention saturation: AtP*
 
-Kramár et al. (2024) propose **AtP\***, with two fixes to attribution patching: recomputing the attention softmax exactly when patching queries and keys (the "QK fix", aimed at exactly the saturation we saw with head 6.9), and **GradDrop**, which guards against cancellation between paths. You'll implement both in section [8.3], and can then rerun the head 6.9 path plot from 2️⃣ with the QK fix.
+Kramár et al. (2024) propose **AtP\***, with two fixes to attribution patching: recomputing the attention softmax exactly when patching queries and keys (the "QK fix", aimed at
+exactly the saturation we saw with head 6.9), and **GradDrop**, which guards against cancellation between paths. You'll implement both in section [8.3], and can then rerun the head
+6.9 path plot from 2️⃣ with the QK fix.
 
 ## Anomaly hunts
 

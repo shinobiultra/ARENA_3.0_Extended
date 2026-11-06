@@ -1,0 +1,51 @@
+{
+  "checked_on": "2026-10-15",
+  "policy": "Canonical originals plus provenance; documents read in memory only, not vendored.",
+  "artifacts": [
+    {
+      "url": "https://deep-learning-alchemy.github.io/assets/assignments/a1_basics.pdf",
+      "checked_on": "2026-10-15",
+      "archived_locally": false,
+      "http_status": 200,
+      "content_type": "application/pdf",
+      "bytes": 681834,
+      "sha256": "c7224af293c916f18a44aeaf746cbc5a215de6cb1367720a438fdeb04d3f21d0",
+      "pdf_signature": true
+    },
+    {
+      "url": "https://deep-learning-alchemy.github.io/assets/assignments/a2_hyperparameter_scaling.pdf",
+      "checked_on": "2026-10-15",
+      "archived_locally": false,
+      "http_status": 200,
+      "content_type": "application/pdf",
+      "bytes": 223659,
+      "sha256": "fe3afd8fbfa9ce243fa30b9d314345ed3d96a57f25287baab3883a5f928800de",
+      "pdf_signature": true
+    },
+    {
+      "url": "https://deep-learning-alchemy.github.io/assets/assignments/a3_optimization2.pdf",
+      "checked_on": "2026-10-15",
+      "archived_locally": false,
+      "http_status": 200,
+      "content_type": "application/pdf",
+      "bytes": 1667108,
+      "sha256": "5d85fa0dc33e69aee3593944f8c5183073f059ade6e1bb1791754afcb15fb8c5",
+      "pdf_signature": true
+    }
+  ],
+  "code_releases": [
+    {
+      "branch": "a1_release",
+      "commit": "baafc3f2d364e5ddbba75f0fe8d1cb29326920e5"
+    },
+    {
+      "branch": "a2_release",
+      "commit": "069e18c52c93a0c6626b00f1c79de070ba30275f"
+    },
+    {
+      "branch": "a3_release",
+      "commit": "57c60bbeef200ee20f5bdd847bfefaf7646fee78"
+    }
+  ],
+  "code_repository": "https://github.com/deep-learning-alchemy/assignments"
+}

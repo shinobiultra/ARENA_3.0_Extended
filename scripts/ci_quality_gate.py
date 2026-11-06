@@ -31,6 +31,21 @@ HOSTED_CPU_PYTEST_TARGETS = [
     "tests/test_strict_completion_audit.py",
 ]
 
+# A separate learner-delivery lane. Full scientific/release gates above remain
+# unchanged; these checks never run protected prediction targets or model jobs.
+STUDY_DELIVERY_TARGETS = [
+    "tests/mastery/test_reader_routes.py",
+    "tests/mastery/test_reading_entrypoint.py",
+    "tests/mastery/test_teaching_delivery_errors.py",
+    "tests/mastery/test_blank_practice_foundation_integration.py",
+    "tests/mastery/test_study_edition_notice.py",
+    "tests/mastery/test_extension_prediction_workbook.py",
+    "tests/mastery/test_app.py",
+    "tests/mastery/test_app_workspace.py",
+    "tests/mastery/test_empirical_protocol.py",
+    "tests/test_teaching_editions.py",
+]
+
 
 def run(command: list[str], *, env: dict[str, str] | None = None) -> None:
     print("+", " ".join(command), flush=True)
@@ -69,6 +84,22 @@ def run_local_unit() -> None:
     run_whitespace_gate()
     run([sys.executable, "-m", "pytest", "-q"])
     run_hosted_cpu()
+
+
+def run_study_delivery() -> None:
+    run([sys.executable, "-m", "pytest", "-q", *STUDY_DELIVERY_TARGETS])
+    for script in (
+        "scripts/build_extension_prediction_workbook.py",
+        "scripts/build_circuit_prediction_notebook.py",
+        "scripts/build_shapley_prediction_notebook.py",
+        "scripts/build_sage_prediction_notebook.py",
+        "scripts/build_ssd_prediction_notebook.py",
+        "scripts/build_graph_prediction_notebook.py",
+        "scripts/build_sae_prediction_notebook.py",
+    ):
+        run(python_command(script, "--check"))
+    run(python_command("scripts/build_merged_config.py", "--check"))
+    run(python_command("scripts/audit_original_arena_preservation.py"))
 
 
 def run_gpu(section_filters: list[str]) -> None:
@@ -112,7 +143,7 @@ def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument(
         "--mode",
-        choices=("hosted-cpu", "local-unit", "gpu", "release"),
+        choices=("hosted-cpu", "study-delivery", "local-unit", "gpu", "release"),
         default="hosted-cpu",
     )
     parser.add_argument(
@@ -125,6 +156,8 @@ def main() -> None:
 
     if args.mode == "hosted-cpu":
         run_hosted_cpu()
+    elif args.mode == "study-delivery":
+        run_study_delivery()
     elif args.mode == "local-unit":
         run_local_unit()
     elif args.mode == "gpu":

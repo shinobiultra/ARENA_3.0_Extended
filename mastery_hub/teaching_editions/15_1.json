@@ -1,0 +1,41 @@
+{
+  "schema_version": 1,
+  "section": "15.1",
+  "sources": {
+    "page": {
+      "path": "chapter15_peft_misalignment/instructions/pages/01_[15.1]_LoRA_and_DoRA_from_Scratch.md",
+      "sha256": "6e15ab70877b76443899cee186d88a317cb2397e5ba37e4ba18d882668cbbe37"
+    },
+    "exercises": {
+      "path": "chapter15_peft_misalignment/exercises/part1_lora_dora/15.1_LoRA_and_DoRA_from_Scratch_exercises.ipynb",
+      "sha256": "4e9decb53c5d35a5cb1c13b31b6ce85c3740f423040bc52c4ed8392b6a28e453"
+    },
+    "reference": {
+      "path": "chapter15_peft_misalignment/exercises/part1_lora_dora/15.1_LoRA_and_DoRA_from_Scratch_solutions.ipynb",
+      "sha256": "ebe7f9f7e94dc6f2b65a1a6725be0fbf9068184fcd0f19b635fbdedd4b5831d7"
+    }
+  },
+  "replacements": [
+    {
+      "old": "### Exercise - train and evaluate a real adapter",
+      "new": "### Exercise - evaluate the learned decision, then train an adapter",
+      "counts": {
+        "page": 1,
+        "exercises": 1,
+        "reference": 1
+      }
+    },
+    {
+      "old": "Implement the training loop and evaluation report. Record a trace, evaluate held-out accuracy, OOD accuracy,\nsingular values, direction cosines, and activation-margin correlations.",
+      "new": "Work in three steps, testing each part before combining them. These are public interface contracts; implement the computations yourself.\n\n**1. Evaluation (first success).** Implement `evaluate_proxy_adapter` on the supplied batch generator. Let `W` be the effective weight, `Δ=W-base_weight`, decision `d=W[1]-W[0]`, and margin `logit_1-logit_0`. Return the following exact keys:\n\n| Fields | Definition |\n| --- | --- |\n| `accuracy`, `baseline_accuracy`, `accuracy_delta` | Label accuracy of model and frozen base on the same batch; their signed difference. |\n| `target_direction_cosine`, `baseline_target_direction_cosine` | Signed cosine of effective and base decision vectors to target basis coordinate 0. |\n| `distractor_abs_cosine`, `protected_abs_cosine` | Absolute cosine of the effective decision to coordinates 1 and 2. |\n| `protected_projection_fraction`, `protected_direction_flagged` | Frobenius norm of Δ projected onto input coordinate 2 divided by `||Δ||F`; flag fraction strictly above 0.2. This uses Δ, not d. |\n| `activation_target_corr`, `activation_distractor_abs_corr`, `activation_protected_abs_corr` | Pearson correlation of model-minus-base margin with input coordinates 0,1,2; signed for target, absolute for the other two. |\n| `update_norm`, `update_rank`, `singular_values` | Frobenius norm of Δ, float32 matrix rank at tolerance `1e-4`, and the supplied spectrum convention. |\n\nUse the already supplied zero-norm/zero-variance conventions in `_cosine_with_basis`, `intruder_dimension_report` and `_margin_feature_correlation`. Evaluation uses the function's public `seed`, `batch`, `ood_shift`, and `protected_shift`; compare model and baseline on identical rows. Apply OOD shifts through `make_proxy_batch`, not by changing labels or the metric.\n\n**2. One optimizer update.** In `train_proxy_adapter`, set `t.manual_seed(seed)`, instantiate the requested LoRA/DoRA/full model on CPU by default, and reject nonpositive `steps` or an unknown method. Use AdamW, zero weight decay, cross entropy, and default learning rates 0.1 for LoRA/DoRA and 0.05 for full fine-tuning; explicit `lr` overrides these. Generate batch step `s` with seed `data_seed*1000+s`, batch size `batch_size`, and the requested `random_labels`. Zero gradients, backpropagate and step once. Verify that gradients and effective weights can change before building the trace.\n\n**3. Checkpoints and return contract.** Record at `{1, steps}` plus positive multiples of `eval_every` up to `steps`. `trace` has scalar metadata `method`, `rank`, `alpha` (float), `seed`, `data_seed`, `random_labels` (bool), and equally long lists `step`, `loss`, `train_accuracy`, `eval_accuracy`, `target_direction_cosine`, `protected_abs_cosine`. Training loss/accuracy use the batch logits from **before** that optimizer update; evaluation uses the updated model, seed `9000+s`, batch 1024. Finally set `final_loss=trace['loss'][-1]`, `trainable_parameters` to the number of trainable scalar parameters, and return `(model, trace)`. First pass the small CPU test; only then interpret held-out/OOD curves and controls. Different default full/adapter learning rates are part of this fixture, not a matched optimization comparison.",
+      "counts": {
+        "page": 1,
+        "exercises": 1,
+        "reference": 1
+      }
+    }
+  ],
+  "rationale": [
+    "Expose the exact evaluation/optimization contracts and divide the combined exercise into three meaningful implementation steps."
+  ]
+}

@@ -1,0 +1,76 @@
+{
+  "claim": "A small I-JEPA trained from scratch on an exact generated image world uses a visible class-colour key to predict the target latent of a fully masked object on pixel-distinct scenes sharing all twelve semantic templates. Correct context recovers object class, while a key-only cyclic replacement changes the prediction to the alternate key class while every other pixel remains fixed. Erasing the image-space key reduces accuracy to chance, zero latent context raises loss, and an untrained architecture remains at chance. A matched jointly optimized target ablation attains very low latent loss while compressing feature spread and weakening held-out prediction. Linear probes are explicitly not evidence here because random encoder features already decode this easy world. This is not an ImageNet or checkpoint-parity claim.",
+  "device": "cpu",
+  "per_seed": [
+    {
+      "seed": 0,
+      "prediction_accuracy": 1.0,
+      "mismatched_original_accuracy": 0.0,
+      "alternate_key_accuracy": 1.0,
+      "key_erased_accuracy": 0.3333333432674408,
+      "latent_loss": 0.006483207922428846,
+      "effective_rank_report_only": 2.657695770263672,
+      "feature_std": 0.028207307681441307,
+      "shared_semantic_templates": 12
+    },
+    {
+      "seed": 1,
+      "prediction_accuracy": 1.0,
+      "mismatched_original_accuracy": 0.0,
+      "alternate_key_accuracy": 1.0,
+      "key_erased_accuracy": 0.3333333432674408,
+      "latent_loss": 0.007911293767392635,
+      "effective_rank_report_only": 1.429148554801941,
+      "feature_std": 0.17011648416519165,
+      "shared_semantic_templates": 12
+    },
+    {
+      "seed": 2,
+      "prediction_accuracy": 1.0,
+      "mismatched_original_accuracy": 0.0,
+      "alternate_key_accuracy": 1.0,
+      "key_erased_accuracy": 0.3333333432674408,
+      "latent_loss": 0.009675929322838783,
+      "effective_rank_report_only": 1.8502260446548462,
+      "feature_std": 0.08572548627853394,
+      "shared_semantic_templates": 12
+    }
+  ],
+  "thresholds": {
+    "tests_passed": true,
+    "accepted": true,
+    "loss_ratio_max": 0.2,
+    "feature_std_min": 0.02,
+    "effective_rank_min": 1.5,
+    "heldout_prediction_accuracy_min": 0.9,
+    "mismatched_context_accuracy_max": 0.1,
+    "alternate_key_accuracy_min": 0.9,
+    "key_erased_context_accuracy_max": 0.5,
+    "key_erased_non_key_pixel_max_abs_diff_max": 0.0,
+    "key_erased_to_correct_loss_ratio_min": 1.1,
+    "all_seeds_accepted": true,
+    "worst_seed_prediction_accuracy_min": 0.9,
+    "worst_seed_key_erased_accuracy_max": 0.5,
+    "shared_semantic_template_count": 12,
+    "non_key_pixel_max_abs_diff_max": 0.0,
+    "random_prediction_accuracy_max": 0.5,
+    "joint_target_ablation_prediction_accuracy_max": 0.75,
+    "mismatched_to_correct_loss_ratio_min": 1.1,
+    "zero_to_correct_loss_ratio_min": 5.0,
+    "random_to_trained_loss_ratio_min": 20.0,
+    "main_to_joint_target_feature_std_ratio_min": 5.0,
+    "random_encoder_object_probe_accuracy_min": 0.9,
+    "train_eval_exact_overlap": 0,
+    "collapsed_feature_std_max": 1e-07,
+    "collapsed_effective_rank_max": 1.01,
+    "cuda_available": true,
+    "within_vram_budget": true,
+    "max_allowed_gpu_gb": 24
+  },
+  "chance_levels": {
+    "object": 0.3333333333333333,
+    "position": 0.25
+  },
+  "negative_result": "Random features solve the easy probe. Seed 1 has effective rank 1.429 despite perfect causal recovery; effective rank alone neither proves nor rules out collapse.",
+  "interpretation": "This is pixel-distinct evaluation of twelve shared templates, not natural-image or held-out semantic-template generalization."
+}

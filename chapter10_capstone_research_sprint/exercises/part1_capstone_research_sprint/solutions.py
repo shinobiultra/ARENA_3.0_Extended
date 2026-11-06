@@ -378,6 +378,77 @@ def plan_fingerprint(plan: dict) -> str:
     """A short hash of the plan. If any setting changes, the fingerprint changes."""
     return hashlib.sha256(json.dumps(plan, sort_keys=True).encode()).hexdigest()[:12]
 
+
+def budget_counts(plan: dict, splits: dict[str, np.ndarray], labels: Tensor | np.ndarray) -> dict:
+    """Count intervention head rows on DEV and confirmation (not fitting or post-hoc play)."""
+    draws = {"no_patch": 1, "full_patch": 1, "direction": 1, "shuffled": 1,
+             "random_dirs": plan["controls"]["n_random"]}
+    for k in plan["coordinate_counts"]:
+        draws[f"units_{k}"] = 1
+        draws[f"random_units_{k}"] = plan["controls"]["n_random"]
+    pairs = {stage: len(make_pairs(np.asarray(labels)[splits[stage]])[0]) for stage in ["dev", "confirm"]}
+    # evaluate_patch calls the head six times per pair: two predictions and four logit differences.
+    by_stage = {stage: 6 * n * sum(draws.values()) for stage, n in pairs.items()}
+    return {"draws": draws, "pairs": pairs, "readout_rows_by_stage": by_stage,
+            "readout_rows": sum(by_stage.values())}
+
+
+def register_plan(plan: dict, splits: dict[str, np.ndarray], x: Tensor, y: Tensor, rows: np.ndarray) -> dict:
+    """Freeze the plan, exact data and exhaustive/disjoint split indices in a content-bound receipt."""
+    if set(splits) != {"train", "dev", "confirm"}:
+        raise ValueError("Expected train/dev/confirm splits")
+    indices = [np.asarray(splits[name]) for name in ["train", "dev", "confirm"]]
+    if any(ids.ndim != 1 or not np.issubdtype(ids.dtype, np.integer) for ids in indices):
+        raise ValueError("Split indices must be one-dimensional integer arrays")
+    if not np.array_equal(np.sort(np.concatenate(indices)), np.arange(len(y))):
+        raise ValueError("Splits must be disjoint and exhaustive")
+    if len(x) != len(y) or len(rows) != len(y) or len(np.unique(rows)) != len(rows):
+        raise ValueError("Data, labels and unique dataset row IDs must align")
+    digest = hashlib.sha256()
+    for value in [x, y, rows]:
+        array = np.ascontiguousarray(np.asarray(value))
+        digest.update(json.dumps([array.dtype.str, array.shape]).encode())
+        digest.update(array.tobytes())
+    payload = {"plan": json.loads(json.dumps(plan)), "splits": {name: splits[name].tolist() for name in splits},
+               "data_sha256": digest.hexdigest(), "budget": budget_counts(plan, splits, y)}
+    fingerprint = hashlib.sha256(json.dumps(payload, sort_keys=True).encode()).hexdigest()
+    return {"payload": payload, "fingerprint": fingerprint}
+
+
+def verify_registration(registration: dict, plan: dict, splits: dict, x: Tensor, y: Tensor, rows: np.ndarray) -> None:
+    """Reject changed receipts, plans, data, row identities or split assignments before readout."""
+    expected = register_plan(plan, splits, x, y, rows)
+    if registration != expected:
+        raise ValueError("Registered plan, data, splits or receipt changed")
+
+
+def evaluate_registered(
+    head: nn.Module, h: Tensor, y: Tensor, interventions: dict, registration: dict, stage: str, usage: dict
+) -> dict:
+    """Run each registered stage once and count actual head rows against the frozen budget."""
+    budget = registration["payload"]["budget"]
+    if stage not in budget["pairs"] or stage in usage.get("completed", []):
+        raise ValueError("Use each registered development/confirmation stage once")
+    if stage == "confirm" and "dev" not in usage.get("completed", []):
+        raise ValueError("Run development before confirmation")
+    if {name: len(fns) for name, fns in interventions.items()} != budget["draws"]:
+        raise ValueError("Intervention names or draw counts changed")
+    if len(make_pairs(y)[0]) != budget["pairs"][stage]:
+        raise ValueError("Pair count differs from registration")
+    if usage.get("readout_rows", 0) + budget["readout_rows_by_stage"][stage] > budget["readout_rows"]:
+        raise ValueError("Registered readout budget exceeded")
+
+    def counted_head(values: Tensor) -> Tensor:
+        used = usage.get("readout_rows", 0) + len(values)
+        if used > budget["readout_rows"]:
+            raise ValueError("Registered readout budget exceeded")
+        usage["readout_rows"] = used
+        return head(values)
+
+    results = evaluate_interventions(counted_head, h, y, interventions)
+    usage.setdefault("completed", []).append(stage)
+    return results
+
 # %%
 
 class ResearchLog:
@@ -413,8 +484,11 @@ if MAIN:
         f"Trained the MLP once: train and dev accuracy 100%. Instrument checks on {len(train0)} training pairs pass "
         "(no patch swaps 0%, full patch 100%). Confirmation set untouched.",
     )
+    REGISTRATION = register_plan(PLAN, splits, x, y, rows)
+    USAGE = {"readout_rows": 0, "completed": []}
     REGISTERED_FINGERPRINT = plan_fingerprint(PLAN)
-    log.add("registered", f"Plan registered with fingerprint {REGISTERED_FINGERPRINT}.")
+    log.add("registered", f"Plan registered with fingerprint {REGISTERED_FINGERPRINT}; data/split receipt {REGISTRATION['fingerprint'][:12]}.")
+    print(f"Registered DEV + confirmation intervention budget: {REGISTRATION['payload']['budget']['readout_rows']:,} head rows")
     log.show()
 
 # %%
@@ -477,7 +551,7 @@ if MAIN:
 # %%
 
 if MAIN:
-    assert plan_fingerprint(PLAN) == REGISTERED_FINGERPRINT, "The plan has changed since it was registered!"
+    verify_registration(REGISTRATION, PLAN, splits, x, y, rows)
     
     readout = (model.head.weight[1] - model.head.weight[0]).detach()
     order = rank_coordinates(h_train, y_train, readout)
@@ -488,7 +562,7 @@ if MAIN:
     with t.no_grad():
         h_dev = model.encoder(x[splits["dev"]])
     y_dev = y[splits["dev"]]
-    dev = evaluate_interventions(model.head, h_dev, y_dev, interventions)
+    dev = evaluate_registered(model.head, h_dev, y_dev, interventions, REGISTRATION, "dev", USAGE)
     
     n_dev_pairs = dev["no_patch"]["swap"].shape[1]
     print(f"Development set: {n_dev_pairs} pairs\n")
@@ -555,14 +629,14 @@ if MAIN:
 # %%
 
 if MAIN:
-    assert plan_fingerprint(PLAN) == REGISTERED_FINGERPRINT, "The plan has changed since it was registered!"
+    verify_registration(REGISTRATION, PLAN, splits, x, y, rows)
     assert "selection" in log.stages() and "confirmation" not in log.stages(), "Select a method before opening confirmation"
     
     with t.no_grad():
         h_confirm = model.encoder(x[splits["confirm"]])
         confirm_accuracy = (model.head(h_confirm).argmax(-1) == y[splits["confirm"]]).double().mean().item()
     y_confirm = y[splits["confirm"]]
-    confirm = evaluate_interventions(model.head, h_confirm, y_confirm, interventions)
+    confirm = evaluate_registered(model.head, h_confirm, y_confirm, interventions, REGISTRATION, "confirm", USAGE)
     n_pairs = confirm["no_patch"]["swap"].shape[1]
     
     log.add("confirmation", f"Opened the confirmation set once ({len(y_confirm)} images, {n_pairs} pairs; model accuracy {confirm_accuracy:.1%}).")
@@ -664,6 +738,8 @@ if MAIN:
     all_ids = np.concatenate(list(splits.values()))
     methodology_checks = {
         "plan unchanged since registration": plan_fingerprint(PLAN) == REGISTERED_FINGERPRINT,
+        "registered readout budget respected": USAGE["readout_rows"] <= REGISTRATION["payload"]["budget"]["readout_rows"],
+        "registered stages each run once": USAGE["completed"] == ["dev", "confirm"],
         "splits disjoint and exhaustive": bool(np.array_equal(np.sort(all_ids), np.arange(len(y)))),
         "method selected before confirmation opened": log.stages().index("selection") < log.stages().index("confirmation"),
         "every registered intervention run on confirmation": set(confirm) == set(interventions),

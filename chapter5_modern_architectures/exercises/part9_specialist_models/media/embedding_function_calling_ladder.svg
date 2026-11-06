@@ -1,0 +1,70 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="920" height="360" viewBox="0 0 920 360" role="img" aria-labelledby="title desc">
+  <title id="title">Embedding retrieval and function-calling evidence ladder</title>
+  <desc id="desc">A course evidence ladder from pooling and retrieval through controls, tool validation, FunctionGemma evaluation, and limitations.</desc>
+  <defs>
+    <style>
+      .bg { fill: #f8f7f2; }
+      .panel { fill: #ffffff; stroke: #222222; stroke-width: 2; rx: 8; }
+      .blue { fill: #edf6ff; stroke: #1e6091; stroke-width: 2; rx: 8; }
+      .green { fill: #ecf7ef; stroke: #24733a; stroke-width: 2; rx: 8; }
+      .amber { fill: #fff1dd; stroke: #a15d00; stroke-width: 2; rx: 8; }
+      .text { font: 16px sans-serif; fill: #111111; }
+      .small { font: 13px sans-serif; fill: #333333; }
+      .tiny { font: 12px sans-serif; fill: #444444; }
+      .mono { font: 13px monospace; fill: #111111; }
+      .arrow { stroke: #222222; stroke-width: 2.4; marker-end: url(#arrowhead); fill: none; }
+      .cell { fill: #ffffff; stroke: #111111; stroke-width: 1.2; }
+      .hit { fill: #24733a; }
+      .miss { fill: #c44900; }
+    </style>
+    <marker id="arrowhead" markerWidth="9" markerHeight="7" refX="8" refY="3.5" orient="auto">
+      <polygon points="0 0, 9 3.5, 0 7" fill="#222222" />
+    </marker>
+  </defs>
+  <rect class="bg" width="920" height="360" />
+  <text class="text" x="34" y="38">Evidence ladder for [5.6] Embedding Retrieval and Function-Calling Controls</text>
+  <text class="small" x="34" y="61">A specialist-model result needs retrieval controls, no-call checks, parser scoring, and visible failure cases.</text>
+
+  <rect class="blue" x="36" y="92" width="156" height="96" />
+  <text class="text" x="56" y="122">Pool tokens</text>
+  <text class="small" x="56" y="148">mask padding</text>
+  <text class="small" x="56" y="168">normalize vectors</text>
+
+  <path class="arrow" d="M200 140 H247" />
+  <rect class="blue" x="254" y="92" width="160" height="96" />
+  <text class="text" x="278" y="122">Retrieve pairs</text>
+  <rect class="cell hit" x="282" y="140" width="16" height="16" />
+  <rect class="cell" x="302" y="140" width="16" height="16" />
+  <rect class="cell" x="322" y="140" width="16" height="16" />
+  <rect class="cell" x="282" y="160" width="16" height="16" />
+  <rect class="cell hit" x="302" y="160" width="16" height="16" />
+  <rect class="cell" x="322" y="160" width="16" height="16" />
+  <rect class="cell" x="282" y="180" width="16" height="16" />
+  <rect class="cell" x="302" y="180" width="16" height="16" />
+  <rect class="cell hit" x="322" y="180" width="16" height="16" />
+  <text class="tiny" x="348" y="153">diagonal</text>
+  <text class="tiny" x="348" y="172">retrieval</text>
+
+  <path class="arrow" d="M422 140 H469" />
+  <rect class="amber" x="476" y="92" width="164" height="96" />
+  <text class="text" x="500" y="122">Break pairs</text>
+  <text class="small" x="500" y="148">permuted top-1</text>
+  <text class="mono" x="500" y="169">0.0 control</text>
+
+  <path class="arrow" d="M648 140 H695" />
+  <rect class="green" x="702" y="92" width="178" height="96" />
+  <text class="text" x="724" y="122">Tool contract</text>
+  <text class="small" x="724" y="148">mask invalid tools</text>
+  <text class="small" x="724" y="168">score no-call prompts</text>
+
+  <rect class="green" x="78" y="236" width="332" height="82" />
+  <text class="text" x="104" y="264">Released checkpoints</text>
+  <text class="small" x="104" y="289">BGE + EmbeddingGemma retrieval; FunctionGemma Mobile Actions eval.</text>
+
+  <rect class="amber" x="500" y="236" width="342" height="82" />
+  <text class="text" x="526" y="264">Honest failures</text>
+  <text class="small" x="526" y="289">Function names parse perfectly; exact arguments are 0.875, not 1.0.</text>
+
+  <path class="arrow" d="M244 226 V193" />
+  <path class="arrow" d="M672 226 V193" />
+</svg>

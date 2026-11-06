@@ -1,0 +1,272 @@
+{
+  "schema": "arena.review-bundle.v1",
+  "archive": {
+    "name": "original_sources.tar.gz",
+    "sha256": "b7f607de1970d10cf0b9db0e25be8268e3256c1a0a59d166a752dc14f77b3037",
+    "size_bytes": 4346244
+  },
+  "limits": {
+    "archive_bytes": 67108864,
+    "member_bytes": 16777216,
+    "total_member_bytes": 134217728,
+    "tar_container_bytes": 167772160,
+    "decoded_json_bytes": 67108864,
+    "total_decoded_bytes": 536870912,
+    "members": 4096
+  },
+  "provenance": {
+    "kind": "historical_data_packaging",
+    "source_data": {
+      "absolute_path": "/home/bitwise/Documents/ARENA_3.0_Extended/mastery_hub/units/pilot_practice/original_source_manifest.json",
+      "repository_path": "mastery_hub/units/pilot_practice/original_source_manifest.json",
+      "sha256": "d1754cc88e8c83ef969fba1af30248437f4522f4c61a7efcb45dbc8cc4cc6c88",
+      "size_bytes": 9036
+    },
+    "measurement_claim": "Byte-exact original public curricula; no scientific execution, new measurement or learner acceptance."
+  },
+  "members": {
+    "chapter7_activation_to_language/exercises/part1_lenses_patchscopes/7.1_Logit_Lens_Tuned_Lens_and_Patchscopes_exercises.ipynb": {
+      "type": "regular",
+      "size_bytes": 492217,
+      "sha256": "8660ad73a33415d0a68b6417536209d5d90378b7e589c0de792ae93a9236ebb1",
+      "format": "notebook-json"
+    },
+    "chapter7_activation_to_language/exercises/part1_lenses_patchscopes/7.1_Logit_Lens_Tuned_Lens_and_Patchscopes_solutions.ipynb": {
+      "type": "regular",
+      "size_bytes": 578734,
+      "sha256": "05bff1b721738d951f223e0e85df0f87baa5d0340cbaebcb84cc14efec4fe28f",
+      "format": "notebook-json"
+    },
+    "chapter7_activation_to_language/exercises/part1_lenses_patchscopes/README.md": {
+      "type": "regular",
+      "size_bytes": 2126,
+      "sha256": "7a88257f7cfb0acbabba36dbf221c53cf75595aa1c70a312d7176b6acf21b212",
+      "format": "utf8-text"
+    },
+    "chapter7_activation_to_language/exercises/part1_lenses_patchscopes/media/capitals_tuned_vs_logit.png": {
+      "type": "regular",
+      "size_bytes": 55539,
+      "sha256": "4659f8170793a005848374120d42c4fffed5c8987a90933084eb11a64efbc949",
+      "format": "png"
+    },
+    "chapter7_activation_to_language/exercises/part1_lenses_patchscopes/media/lens_comparison.png": {
+      "type": "regular",
+      "size_bytes": 60843,
+      "sha256": "17ccd72897b30cceb164d237f0946b459c04b011263fc24bca90a5fa3e323c35",
+      "format": "png"
+    },
+    "chapter7_activation_to_language/exercises/part1_lenses_patchscopes/media/logit_lens_ranks.png": {
+      "type": "regular",
+      "size_bytes": 50005,
+      "sha256": "9e1a436641b034c061142dc4a17fe83531d1308ba57a0b330f79b8a51c2a703b",
+      "format": "png"
+    },
+    "chapter7_activation_to_language/exercises/part1_lenses_patchscopes/media/patchscope_controls.png": {
+      "type": "regular",
+      "size_bytes": 25162,
+      "sha256": "040c53cff0dd04d4dadac70e1e3d2efb25547c6869bad6fdef7cc2466a0730a8",
+      "format": "png"
+    },
+    "chapter7_activation_to_language/exercises/part1_lenses_patchscopes/media/patchscope_grid.png": {
+      "type": "regular",
+      "size_bytes": 61055,
+      "sha256": "5b7131c0e8098c1adcbf6f78fda9237565b198f2662f9dbce553408fdbe5cc0c",
+      "format": "png"
+    },
+    "chapter7_activation_to_language/exercises/part1_lenses_patchscopes/media/tuned_lens_training.png": {
+      "type": "regular",
+      "size_bytes": 29979,
+      "sha256": "8da1f36fa09e17bc5297875f298762587b0be2c2b97774bd11c87513f0cf48d4",
+      "format": "png"
+    },
+    "chapter7_activation_to_language/exercises/part1_lenses_patchscopes/solutions.py": {
+      "type": "regular",
+      "size_bytes": 22615,
+      "sha256": "257986fe3a5217ba4e0ce9d43dcf93be852a4c4f004b456fa46081f41f640ff9",
+      "format": "utf8-text"
+    },
+    "chapter7_activation_to_language/exercises/part1_lenses_patchscopes/tests.py": {
+      "type": "regular",
+      "size_bytes": 17748,
+      "sha256": "2e3a7705ec8389b4c048d8e1bd842def834adeee021b5b9bcf0ed9111de47895",
+      "format": "utf8-text"
+    },
+    "chapter7_activation_to_language/exercises/part1_lenses_patchscopes/utils.py": {
+      "type": "regular",
+      "size_bytes": 5135,
+      "sha256": "f8a6eadc05488f047ce51eaf7a6207885f0a3cf8dabd74422144d3504f2c400b",
+      "format": "utf8-text"
+    },
+    "chapter7_activation_to_language/exercises/part1_lenses_patchscopes/verification_report.schema.json": {
+      "type": "regular",
+      "size_bytes": 2669,
+      "sha256": "ecd833883885077ad5d7a0e239d984d01462255e94266212cf195ab4d4e27b3d",
+      "format": "json"
+    },
+    "chapter7_activation_to_language/instructions/pages/01_[7.1]_Logit_Lens_Tuned_Lens_and_Patchscopes.md": {
+      "type": "regular",
+      "size_bytes": 89281,
+      "sha256": "6e2f86a8183f414a794fe597e8e027e236211e5e6b77f8f5f391b536bd8c85bf",
+      "format": "utf8-text"
+    },
+    "chapter7_activation_to_language/instructions/pages/01_[7.1]_Logit_Lens_Tuned_Lens_and_Patchscopes.py": {
+      "type": "regular",
+      "size_bytes": 2748,
+      "sha256": "14deba3759ccdabb10f1902e1e130b0cd0e46dcda39aa42a632c2a47907f447d",
+      "format": "utf8-text"
+    },
+    "chapter9_alignment_interpretability/exercises/part1_refusal_directions/9.1_Refusal_Directions_and_Representation_Engineering_exercises.ipynb": {
+      "type": "regular",
+      "size_bytes": 1578892,
+      "sha256": "ae6f48048177c540d5c695293456754cd42faa4353825ae766958715be824c53",
+      "format": "notebook-json"
+    },
+    "chapter9_alignment_interpretability/exercises/part1_refusal_directions/9.1_Refusal_Directions_and_Representation_Engineering_solutions.ipynb": {
+      "type": "regular",
+      "size_bytes": 1697669,
+      "sha256": "909a175009b71947c51e3e7ace082ac876825a0aeded2baa8e7b9f203415e85f",
+      "format": "notebook-json"
+    },
+    "chapter9_alignment_interpretability/exercises/part1_refusal_directions/README.md": {
+      "type": "regular",
+      "size_bytes": 1802,
+      "sha256": "a4657905c834a14fd8fe4b732a86ba3d6091dcf736af597f445eb1f8e44e4133",
+      "format": "utf8-text"
+    },
+    "chapter9_alignment_interpretability/exercises/part1_refusal_directions/media/control_alignment.png": {
+      "type": "regular",
+      "size_bytes": 82811,
+      "sha256": "4dce4ad4f1ec82020f05efcf1aa9617c60776c5bcfc3e391e15ae77f2dd68d62",
+      "format": "png"
+    },
+    "chapter9_alignment_interpretability/exercises/part1_refusal_directions/media/direction_readout.png": {
+      "type": "regular",
+      "size_bytes": 105838,
+      "sha256": "3c90991af9a3ca51001160fe831fe8f506c7ac4995d406a3a1a5b8e05c88c5bf",
+      "format": "png"
+    },
+    "chapter9_alignment_interpretability/exercises/part1_refusal_directions/media/layer_position_sweep.png": {
+      "type": "regular",
+      "size_bytes": 74202,
+      "sha256": "8cd546bbcdefbe27bc3ae6763896abc9e9aa334bc719ee4c7436f600e73feeae",
+      "format": "png"
+    },
+    "chapter9_alignment_interpretability/exercises/part1_refusal_directions/media/reading_vs_control.png": {
+      "type": "regular",
+      "size_bytes": 69179,
+      "sha256": "92cf6d2b008b5eb0626c82e496355765c9d6ff164857bc57350af76191a5d717",
+      "format": "png"
+    },
+    "chapter9_alignment_interpretability/exercises/part1_refusal_directions/media/refusal_categories.png": {
+      "type": "regular",
+      "size_bytes": 64136,
+      "sha256": "4146d57054e0723e63f3761fe3f4ba35fdfe468a5ccb186f507acb58b6f62130",
+      "format": "png"
+    },
+    "chapter9_alignment_interpretability/exercises/part1_refusal_directions/media/refusal_cone_slice.png": {
+      "type": "regular",
+      "size_bytes": 70460,
+      "sha256": "e7f4921c89595b281465285c25c83aa5fab0494a23b0edbb5164b8fb0447fd4d",
+      "format": "png"
+    },
+    "chapter9_alignment_interpretability/exercises/part1_refusal_directions/media/refusal_dose_response.png": {
+      "type": "regular",
+      "size_bytes": 139520,
+      "sha256": "c251f2a264f769f5fe3ffbae8df90fe2cc32d6045e35fe1e28d81e0000903d41",
+      "format": "png"
+    },
+    "chapter9_alignment_interpretability/exercises/part1_refusal_directions/media/refusal_pca.png": {
+      "type": "regular",
+      "size_bytes": 70258,
+      "sha256": "a2acac991279c1d9c90d9f7cfe05e34a37d49bdbb90cb6a199394281ff4f580f",
+      "format": "png"
+    },
+    "chapter9_alignment_interpretability/exercises/part1_refusal_directions/media/refusal_score_distribution.png": {
+      "type": "regular",
+      "size_bytes": 23035,
+      "sha256": "476386e128f4d9ab6bb74b9b84ed9741ef2dcc55e2ca321d0120b28dca0124bd",
+      "format": "png"
+    },
+    "chapter9_alignment_interpretability/exercises/part1_refusal_directions/media/repe_readout.png": {
+      "type": "regular",
+      "size_bytes": 105499,
+      "sha256": "abe11b76558240a5c0cfc6fef725745b51b5e7517d344ee063dc2854f641e0ce",
+      "format": "png"
+    },
+    "chapter9_alignment_interpretability/exercises/part1_refusal_directions/media/side_effects.png": {
+      "type": "regular",
+      "size_bytes": 126739,
+      "sha256": "9fb75d78bbe9517e27cda2cf75e0ccf2283a3478741953ec5631bb939f1d7de5",
+      "format": "png"
+    },
+    "chapter9_alignment_interpretability/exercises/part1_refusal_directions/media/token_scores.png": {
+      "type": "regular",
+      "size_bytes": 81465,
+      "sha256": "356b7a813f12d6e9febad7b69fb6de53e676083a820388354720b12a8cd4792a",
+      "format": "png"
+    },
+    "chapter9_alignment_interpretability/exercises/part1_refusal_directions/solutions.py": {
+      "type": "regular",
+      "size_bytes": 53183,
+      "sha256": "96f7bc82bbe0e8d7651b70c331f4dfb9c79441b85c94de167175c5ddcb6df62a",
+      "format": "utf8-text"
+    },
+    "chapter9_alignment_interpretability/exercises/part1_refusal_directions/tests.py": {
+      "type": "regular",
+      "size_bytes": 32546,
+      "sha256": "473b6c81dabc471891b73d966c3b2293f07662f265820d13d8f5a6693d1102b0",
+      "format": "utf8-text"
+    },
+    "chapter9_alignment_interpretability/exercises/part1_refusal_directions/utils.py": {
+      "type": "regular",
+      "size_bytes": 32286,
+      "sha256": "469b2ce560b51c4a6587111472fb192bb28e26b6eb6a03f7ffa1f4d744e609b3",
+      "format": "utf8-text"
+    },
+    "chapter9_alignment_interpretability/exercises/part1_refusal_directions/verification_report.schema.json": {
+      "type": "regular",
+      "size_bytes": 2669,
+      "sha256": "ecd833883885077ad5d7a0e239d984d01462255e94266212cf195ab4d4e27b3d",
+      "format": "json"
+    },
+    "chapter9_alignment_interpretability/instructions/pages/01_[9.1]_Refusal_Directions_and_Representation_Engineering.md": {
+      "type": "regular",
+      "size_bytes": 186350,
+      "sha256": "3966b12c0901838c919547486bd0e9208aaed6b7f7167c5ad46109af5c698917",
+      "format": "utf8-text"
+    },
+    "chapter9_alignment_interpretability/instructions/pages/01_[9.1]_Refusal_Directions_and_Representation_Engineering.py": {
+      "type": "regular",
+      "size_bytes": 3025,
+      "sha256": "c2835429a4687472104108b897ba71b4bf07c5d204c72e01410cb6b93299dcce",
+      "format": "utf8-text"
+    },
+    "infrastructure/chapters/chapter7_activation_to_language/master_7_1.ipynb": {
+      "type": "regular",
+      "size_bytes": 104151,
+      "sha256": "9e71a39584076e5fcb538e348c41628fd4ccd4c403be45037e4be4b1657b8132",
+      "format": "notebook-json"
+    },
+    "infrastructure/chapters/chapter7_activation_to_language/master_7_1.py": {
+      "type": "regular",
+      "size_bytes": 90867,
+      "sha256": "891b6ff05148aafcb915869d535318ad176ccace355315c68672da9f839065a4",
+      "format": "utf8-text"
+    },
+    "infrastructure/chapters/chapter9_alignment_interpretability/master_9_1.ipynb": {
+      "type": "regular",
+      "size_bytes": 210660,
+      "sha256": "5221d2dbb1357d5b9a5df285e64fcae05822a2beb01e782654cc7cef8c6e6fc1",
+      "format": "notebook-json"
+    },
+    "infrastructure/chapters/chapter9_alignment_interpretability/master_9_1.py": {
+      "type": "regular",
+      "size_bytes": 188198,
+      "sha256": "103a8aec0caee85522512d605ff7a16bef0b22ea5f5fe33b9c036bca830fb14d",
+      "format": "utf8-text"
+    }
+  },
+  "external_payloads": {},
+  "member_count": 40,
+  "total_member_bytes": 6691296
+}

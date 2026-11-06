@@ -1,0 +1,32 @@
+{
+  "schema_version": 1,
+  "section": "1.6",
+  "sources": {
+    "page": {
+      "path": "chapter1_transformer_interp/instructions/pages/40_[1.6]_Local_Frontier_ML_Infrastructure_Practice.md",
+      "sha256": "4270c5de92f0bb978c449a52bf1cfa5380df2dd05636aa8a0bf7eebd3a8fe522"
+    },
+    "exercises": {
+      "path": "chapter1_transformer_interp/exercises/part6_frontier_ml_infrastructure_practice/1.6_Local_Frontier_ML_Infrastructure_Practice_exercises.ipynb",
+      "sha256": "445c5099bdfb18408a674f65d6bd114c9d4cc5282e5d1e43111e608a2740189e"
+    },
+    "reference": {
+      "path": "chapter1_transformer_interp/exercises/part6_frontier_ml_infrastructure_practice/1.6_Local_Frontier_ML_Infrastructure_Practice_solutions.ipynb",
+      "sha256": "494080d3b4d423c18fb84ddccb829af915fc7763e9e7e69701f94568cadce9f3"
+    }
+  },
+  "replacements": [
+    {
+      "old": "### Forecast before revealing the reference\n\nPredict whether the same top-k token set guarantees small MSE and KL. Specify the direction of KL and distinguish equal token IDs from similar decoded text.\n\n- Forecast: ______\n- Confidence: ______\n- Causal reasoning: ______\n- Prior exposure (seen / unseen / unknown): ______\n- Observation after reveal: ______\n- Changed-condition prediction: ______",
+      "new": "### Forecast before revealing the reference\n\nPredict whether the same top-k token set guarantees small MSE and KL. Specify the direction of KL and distinguish equal token IDs from similar decoded text.\n\n- Forecast: ______\n- Confidence: ______\n- Causal reasoning: ______\n- Prior exposure (seen / unseen / unknown): ______\n- Observation after reveal: ______\n- Changed-condition prediction: ______\n\n**Try the same-set counterexample after implementing `compare_logits`.** Copy this into a scratch code cell before reading its reveal:\n\n```python\nreference = t.arange(6, dtype=t.float32).reshape(1, 1, 6)\ncustom = 10 * reference\nprint(compare_logits(custom, reference, k=2))\n```\n\n<details><summary>Counterexample reveal and interpretation</summary>\n\nBoth top-2 sets are `{4,5}`, so agreement is 1, while max absolute logit error is 45, MSE is 742.5, and mean KL(reference || custom) is approximately 4.64746. Scaling preserves ranks but sharpens probability concentration. Thus top-k agreement cannot replace distributional tolerances. This is a hand-checkable synthetic metric fixture, not real-model parity. A categorical confidence is a subjective event probability; a numeric forecast should instead give a value/range and units.\n\n</details>",
+      "counts": {
+        "page": 1,
+        "exercises": 1,
+        "reference": 1
+      }
+    }
+  ],
+  "rationale": [
+    "Complete the same-top-k/large-drift forecast with a copyable existing-metric counterexample and interpretation."
+  ]
+}

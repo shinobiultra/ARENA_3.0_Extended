@@ -1,0 +1,924 @@
+[
+  {
+    "kind": "exercises",
+    "legacy_cell": 0,
+    "canonical_cell": 5,
+    "legacy_id": "fa485358",
+    "canonical_id": "fa485358",
+    "source_route": "historical dropdown label, canonical notebook links and media only",
+    "full_cell_inverse_exact": true
+  },
+  {
+    "kind": "exercises",
+    "legacy_cell": 1,
+    "canonical_cell": 6,
+    "legacy_id": "02cf24c9",
+    "generated_id": null,
+    "canonical_id": "02cf24c9",
+    "source_route": "setup only",
+    "full_cell_inverse_exact": true
+  },
+  {
+    "kind": "exercises",
+    "legacy_cell": 2,
+    "canonical_cell": 9,
+    "legacy_id": "561b87d3",
+    "canonical_id": "561b87d3",
+    "source_route": "historical dropdown label, canonical notebook links and media only",
+    "full_cell_inverse_exact": true
+  },
+  {
+    "kind": "exercises",
+    "legacy_cell": 3,
+    "canonical_cell": 10,
+    "legacy_id": "89c1a813",
+    "canonical_id": "89c1a813",
+    "source_route": "historical dropdown label, canonical notebook links and media only",
+    "full_cell_inverse_exact": true
+  },
+  {
+    "kind": "exercises",
+    "legacy_cell": 4,
+    "canonical_cell": 11,
+    "legacy_id": "2ad81951",
+    "generated_id": null,
+    "canonical_id": "2ad81951",
+    "source_route": "none",
+    "full_cell_inverse_exact": true
+  },
+  {
+    "kind": "exercises",
+    "legacy_cell": 5,
+    "canonical_cell": 13,
+    "legacy_id": "1eae5d68",
+    "canonical_id": "1eae5d68",
+    "source_route": "historical dropdown label, canonical notebook links and media only",
+    "full_cell_inverse_exact": true
+  },
+  {
+    "kind": "exercises",
+    "legacy_cell": 6,
+    "canonical_cell": 15,
+    "legacy_id": "688281fb",
+    "generated_id": null,
+    "canonical_id": "688281fb",
+    "source_route": "none",
+    "full_cell_inverse_exact": true
+  },
+  {
+    "kind": "exercises",
+    "legacy_cell": 7,
+    "canonical_cell": 17,
+    "legacy_id": "05b5e531",
+    "canonical_id": "05b5e531",
+    "source_route": "historical dropdown label, canonical notebook links and media only",
+    "full_cell_inverse_exact": true
+  },
+  {
+    "kind": "exercises",
+    "legacy_cell": 8,
+    "canonical_cell": 18,
+    "legacy_id": "5693a095",
+    "generated_id": null,
+    "canonical_id": "5693a095",
+    "source_route": "none",
+    "full_cell_inverse_exact": true
+  },
+  {
+    "kind": "exercises",
+    "legacy_cell": 9,
+    "canonical_cell": 19,
+    "legacy_id": "0a4cfb85",
+    "canonical_id": "0a4cfb85",
+    "source_route": "historical dropdown label, canonical notebook links and media only",
+    "full_cell_inverse_exact": true
+  },
+  {
+    "kind": "exercises",
+    "legacy_cell": 10,
+    "canonical_cell": 20,
+    "legacy_id": "969222c8",
+    "canonical_id": "969222c8",
+    "source_route": "historical dropdown label, canonical notebook links and media only",
+    "full_cell_inverse_exact": true
+  },
+  {
+    "kind": "exercises",
+    "legacy_cell": 11,
+    "canonical_cell": 22,
+    "legacy_id": "b08a4437",
+    "generated_id": null,
+    "canonical_id": "b08a4437",
+    "source_route": "none",
+    "full_cell_inverse_exact": true
+  },
+  {
+    "kind": "exercises",
+    "legacy_cell": 12,
+    "canonical_cell": 24,
+    "legacy_id": "119486ca",
+    "canonical_id": "119486ca",
+    "source_route": "historical dropdown label, canonical notebook links and media only",
+    "full_cell_inverse_exact": true
+  },
+  {
+    "kind": "exercises",
+    "legacy_cell": 13,
+    "canonical_cell": 25,
+    "legacy_id": "e0a866cb",
+    "canonical_id": "e0a866cb",
+    "source_route": "historical dropdown label, canonical notebook links and media only",
+    "full_cell_inverse_exact": true
+  },
+  {
+    "kind": "exercises",
+    "legacy_cell": 14,
+    "canonical_cell": 27,
+    "legacy_id": "5a98eb2c",
+    "generated_id": null,
+    "canonical_id": "5a98eb2c",
+    "source_route": "none",
+    "full_cell_inverse_exact": true
+  },
+  {
+    "kind": "exercises",
+    "legacy_cell": 15,
+    "canonical_cell": 29,
+    "legacy_id": "5ecf31ed",
+    "canonical_id": "5ecf31ed",
+    "source_route": "historical dropdown label, canonical notebook links and media only",
+    "full_cell_inverse_exact": true
+  },
+  {
+    "kind": "exercises",
+    "legacy_cell": 16,
+    "canonical_cell": 30,
+    "legacy_id": "ec6885e3",
+    "canonical_id": "ec6885e3",
+    "source_route": "historical dropdown label, canonical notebook links and media only",
+    "full_cell_inverse_exact": true
+  },
+  {
+    "kind": "exercises",
+    "legacy_cell": 17,
+    "canonical_cell": 32,
+    "legacy_id": "3ec4915f",
+    "generated_id": null,
+    "canonical_id": "3ec4915f",
+    "source_route": "none",
+    "full_cell_inverse_exact": true
+  },
+  {
+    "kind": "exercises",
+    "legacy_cell": 18,
+    "canonical_cell": 34,
+    "legacy_id": "b4f99ddf",
+    "canonical_id": "b4f99ddf",
+    "source_route": "historical dropdown label, canonical notebook links and media only",
+    "full_cell_inverse_exact": true
+  },
+  {
+    "kind": "exercises",
+    "legacy_cell": 19,
+    "canonical_cell": 35,
+    "legacy_id": "76c308cb",
+    "generated_id": null,
+    "canonical_id": "76c308cb",
+    "source_route": "none",
+    "full_cell_inverse_exact": true
+  },
+  {
+    "kind": "exercises",
+    "legacy_cell": 20,
+    "canonical_cell": 36,
+    "legacy_id": "d21fa5ee",
+    "canonical_id": "d21fa5ee",
+    "source_route": "historical dropdown label, canonical notebook links and media only",
+    "full_cell_inverse_exact": true
+  },
+  {
+    "kind": "exercises",
+    "legacy_cell": 21,
+    "canonical_cell": 38,
+    "legacy_id": "d6f800d5",
+    "generated_id": null,
+    "canonical_id": "d6f800d5",
+    "source_route": "none",
+    "full_cell_inverse_exact": true
+  },
+  {
+    "kind": "exercises",
+    "legacy_cell": 22,
+    "canonical_cell": 40,
+    "legacy_id": "5e1948ea",
+    "canonical_id": "5e1948ea",
+    "source_route": "historical dropdown label, canonical notebook links and media only",
+    "full_cell_inverse_exact": true
+  },
+  {
+    "kind": "exercises",
+    "legacy_cell": 23,
+    "canonical_cell": 41,
+    "legacy_id": "6d6df3d2",
+    "generated_id": null,
+    "canonical_id": "6d6df3d2",
+    "source_route": "none",
+    "full_cell_inverse_exact": true
+  },
+  {
+    "kind": "exercises",
+    "legacy_cell": 24,
+    "canonical_cell": 42,
+    "legacy_id": "94ab7289",
+    "canonical_id": "94ab7289",
+    "source_route": "historical dropdown label, canonical notebook links and media only",
+    "full_cell_inverse_exact": true
+  },
+  {
+    "kind": "exercises",
+    "legacy_cell": 25,
+    "canonical_cell": 43,
+    "legacy_id": "78dee790",
+    "canonical_id": "78dee790",
+    "source_route": "historical dropdown label, canonical notebook links and media only",
+    "full_cell_inverse_exact": true
+  },
+  {
+    "kind": "exercises",
+    "legacy_cell": 26,
+    "canonical_cell": 45,
+    "legacy_id": "184cc3e9",
+    "generated_id": null,
+    "canonical_id": "184cc3e9",
+    "source_route": "none",
+    "full_cell_inverse_exact": true
+  },
+  {
+    "kind": "exercises",
+    "legacy_cell": 27,
+    "canonical_cell": 48,
+    "legacy_id": "6ea00aac",
+    "canonical_id": "6ea00aac",
+    "source_route": "historical dropdown label, canonical notebook links and media only",
+    "full_cell_inverse_exact": true
+  },
+  {
+    "kind": "exercises",
+    "legacy_cell": 28,
+    "canonical_cell": 49,
+    "legacy_id": "d3773bb3",
+    "canonical_id": "d3773bb3",
+    "source_route": "historical dropdown label, canonical notebook links and media only",
+    "full_cell_inverse_exact": true
+  },
+  {
+    "kind": "exercises",
+    "legacy_cell": 29,
+    "canonical_cell": 51,
+    "legacy_id": "c53cb1d0",
+    "generated_id": null,
+    "canonical_id": "c53cb1d0",
+    "source_route": "reviewed constructor compatibility: one @dataclass; exact inverse removes only it",
+    "full_cell_inverse_exact": true
+  },
+  {
+    "kind": "exercises",
+    "legacy_cell": 30,
+    "canonical_cell": 53,
+    "legacy_id": "b5bcd940",
+    "canonical_id": "b5bcd940",
+    "source_route": "historical dropdown label, canonical notebook links and media only",
+    "full_cell_inverse_exact": true
+  },
+  {
+    "kind": "exercises",
+    "legacy_cell": 31,
+    "canonical_cell": 55,
+    "legacy_id": "60d54a87",
+    "generated_id": null,
+    "canonical_id": "60d54a87",
+    "source_route": "none",
+    "full_cell_inverse_exact": true
+  },
+  {
+    "kind": "exercises",
+    "legacy_cell": 32,
+    "canonical_cell": 57,
+    "legacy_id": "94c18857",
+    "canonical_id": "94c18857",
+    "source_route": "historical dropdown label, canonical notebook links and media only",
+    "full_cell_inverse_exact": true
+  },
+  {
+    "kind": "exercises",
+    "legacy_cell": 33,
+    "canonical_cell": 59,
+    "legacy_id": "5b7cbbcd",
+    "generated_id": null,
+    "canonical_id": "5b7cbbcd",
+    "source_route": "none",
+    "full_cell_inverse_exact": true
+  },
+  {
+    "kind": "exercises",
+    "legacy_cell": 34,
+    "canonical_cell": 61,
+    "legacy_id": "be0cf0f2",
+    "canonical_id": "be0cf0f2",
+    "source_route": "historical dropdown label, canonical notebook links and media only",
+    "full_cell_inverse_exact": true
+  },
+  {
+    "kind": "exercises",
+    "legacy_cell": 35,
+    "canonical_cell": 62,
+    "legacy_id": "c81d3573",
+    "generated_id": null,
+    "canonical_id": "c81d3573",
+    "source_route": "none",
+    "full_cell_inverse_exact": true
+  },
+  {
+    "kind": "exercises",
+    "legacy_cell": 36,
+    "canonical_cell": 64,
+    "legacy_id": "7af07a04",
+    "generated_id": null,
+    "canonical_id": "7af07a04",
+    "source_route": "none",
+    "full_cell_inverse_exact": true
+  },
+  {
+    "kind": "exercises",
+    "legacy_cell": 37,
+    "canonical_cell": 66,
+    "legacy_id": "80b3b888",
+    "canonical_id": "80b3b888",
+    "source_route": "historical dropdown label, canonical notebook links and media only",
+    "full_cell_inverse_exact": true
+  },
+  {
+    "kind": "exercises",
+    "legacy_cell": 38,
+    "canonical_cell": 68,
+    "legacy_id": "44551d66",
+    "canonical_id": "44551d66",
+    "source_route": "historical dropdown label, canonical notebook links and media only",
+    "full_cell_inverse_exact": true
+  },
+  {
+    "kind": "exercises",
+    "legacy_cell": 39,
+    "canonical_cell": 70,
+    "legacy_id": "a27b78e4",
+    "generated_id": null,
+    "canonical_id": "a27b78e4",
+    "source_route": "none",
+    "full_cell_inverse_exact": true
+  },
+  {
+    "kind": "exercises",
+    "legacy_cell": 40,
+    "canonical_cell": 72,
+    "legacy_id": "626dd2af",
+    "canonical_id": "626dd2af",
+    "source_route": "historical dropdown label, canonical notebook links and media only",
+    "full_cell_inverse_exact": true
+  },
+  {
+    "kind": "exercises",
+    "legacy_cell": 41,
+    "canonical_cell": 73,
+    "legacy_id": "09112171",
+    "generated_id": null,
+    "canonical_id": "09112171",
+    "source_route": "none",
+    "full_cell_inverse_exact": true
+  },
+  {
+    "kind": "exercises",
+    "legacy_cell": 42,
+    "canonical_cell": 74,
+    "legacy_id": "1ac886fe",
+    "canonical_id": "1ac886fe",
+    "source_route": "historical dropdown label, canonical notebook links and media only",
+    "full_cell_inverse_exact": true
+  },
+  {
+    "kind": "exercises",
+    "legacy_cell": 43,
+    "canonical_cell": 75,
+    "legacy_id": "0e89d922",
+    "canonical_id": "0e89d922",
+    "source_route": "historical dropdown label, canonical notebook links and media only",
+    "full_cell_inverse_exact": true
+  },
+  {
+    "kind": "exercises",
+    "legacy_cell": 44,
+    "canonical_cell": 77,
+    "legacy_id": "6bb8f329",
+    "generated_id": null,
+    "canonical_id": "6bb8f329",
+    "source_route": "none",
+    "full_cell_inverse_exact": true
+  },
+  {
+    "kind": "exercises",
+    "legacy_cell": 45,
+    "canonical_cell": 80,
+    "legacy_id": "3d093eae",
+    "canonical_id": "3d093eae",
+    "source_route": "historical dropdown label, canonical notebook links and media only",
+    "full_cell_inverse_exact": true
+  },
+  {
+    "kind": "exercises",
+    "legacy_cell": 46,
+    "canonical_cell": 81,
+    "legacy_id": "7a8286f4",
+    "canonical_id": "7a8286f4",
+    "source_route": "historical dropdown label, canonical notebook links and media only",
+    "full_cell_inverse_exact": true
+  },
+  {
+    "kind": "exercises",
+    "legacy_cell": 47,
+    "canonical_cell": 82,
+    "legacy_id": "995d39a8",
+    "generated_id": null,
+    "canonical_id": "995d39a8",
+    "source_route": "none",
+    "full_cell_inverse_exact": true
+  },
+  {
+    "kind": "exercises",
+    "legacy_cell": 48,
+    "canonical_cell": 83,
+    "legacy_id": "7dde2b91",
+    "canonical_id": "7dde2b91",
+    "source_route": "historical dropdown label, canonical notebook links and media only",
+    "full_cell_inverse_exact": true
+  },
+  {
+    "kind": "solutions",
+    "legacy_cell": 0,
+    "canonical_cell": 5,
+    "legacy_id": "21c1b6a8",
+    "canonical_id": "21c1b6a8",
+    "source_route": "historical dropdown label, canonical notebook links and media only",
+    "full_cell_inverse_exact": true
+  },
+  {
+    "kind": "solutions",
+    "legacy_cell": 1,
+    "canonical_cell": 6,
+    "legacy_id": "72b8b0cf",
+    "generated_id": null,
+    "canonical_id": "72b8b0cf",
+    "source_route": "setup only",
+    "full_cell_inverse_exact": true
+  },
+  {
+    "kind": "solutions",
+    "legacy_cell": 2,
+    "canonical_cell": 9,
+    "legacy_id": "4e3b630c",
+    "canonical_id": "4e3b630c",
+    "source_route": "historical dropdown label, canonical notebook links and media only",
+    "full_cell_inverse_exact": true
+  },
+  {
+    "kind": "solutions",
+    "legacy_cell": 3,
+    "canonical_cell": 10,
+    "legacy_id": "1979ad69",
+    "canonical_id": "1979ad69",
+    "source_route": "historical dropdown label, canonical notebook links and media only",
+    "full_cell_inverse_exact": true
+  },
+  {
+    "kind": "solutions",
+    "legacy_cell": 4,
+    "canonical_cell": 11,
+    "legacy_id": "86c802d1",
+    "generated_id": null,
+    "canonical_id": "86c802d1",
+    "source_route": "none",
+    "full_cell_inverse_exact": true
+  },
+  {
+    "kind": "solutions",
+    "legacy_cell": 5,
+    "canonical_cell": 13,
+    "legacy_id": "60538d39",
+    "canonical_id": "60538d39",
+    "source_route": "historical dropdown label, canonical notebook links and media only",
+    "full_cell_inverse_exact": true
+  },
+  {
+    "kind": "solutions",
+    "legacy_cell": 6,
+    "canonical_cell": 15,
+    "legacy_id": "42b734a6",
+    "generated_id": null,
+    "canonical_id": "42b734a6",
+    "source_route": "none",
+    "full_cell_inverse_exact": true
+  },
+  {
+    "kind": "solutions",
+    "legacy_cell": 7,
+    "canonical_cell": 17,
+    "legacy_id": "a0cc653b",
+    "canonical_id": "a0cc653b",
+    "source_route": "historical dropdown label, canonical notebook links and media only",
+    "full_cell_inverse_exact": true
+  },
+  {
+    "kind": "solutions",
+    "legacy_cell": 8,
+    "canonical_cell": 18,
+    "legacy_id": "2fb5daa9",
+    "generated_id": null,
+    "canonical_id": "2fb5daa9",
+    "source_route": "none",
+    "full_cell_inverse_exact": true
+  },
+  {
+    "kind": "solutions",
+    "legacy_cell": 9,
+    "canonical_cell": 20,
+    "legacy_id": "a763222e",
+    "canonical_id": "a763222e",
+    "source_route": "historical dropdown label, canonical notebook links and media only",
+    "full_cell_inverse_exact": true
+  },
+  {
+    "kind": "solutions",
+    "legacy_cell": 10,
+    "canonical_cell": 21,
+    "legacy_id": "5c17c87e",
+    "canonical_id": "5c17c87e",
+    "source_route": "historical dropdown label, canonical notebook links and media only",
+    "full_cell_inverse_exact": true
+  },
+  {
+    "kind": "solutions",
+    "legacy_cell": 11,
+    "canonical_cell": 23,
+    "legacy_id": "e3068602",
+    "generated_id": null,
+    "canonical_id": "e3068602",
+    "source_route": "none",
+    "full_cell_inverse_exact": true
+  },
+  {
+    "kind": "solutions",
+    "legacy_cell": 12,
+    "canonical_cell": 25,
+    "legacy_id": "113971b3",
+    "canonical_id": "113971b3",
+    "source_route": "historical dropdown label, canonical notebook links and media only",
+    "full_cell_inverse_exact": true
+  },
+  {
+    "kind": "solutions",
+    "legacy_cell": 13,
+    "canonical_cell": 26,
+    "legacy_id": "3ca6c727",
+    "canonical_id": "3ca6c727",
+    "source_route": "historical dropdown label, canonical notebook links and media only",
+    "full_cell_inverse_exact": true
+  },
+  {
+    "kind": "solutions",
+    "legacy_cell": 14,
+    "canonical_cell": 28,
+    "legacy_id": "98c7bd6d",
+    "generated_id": null,
+    "canonical_id": "98c7bd6d",
+    "source_route": "none",
+    "full_cell_inverse_exact": true
+  },
+  {
+    "kind": "solutions",
+    "legacy_cell": 15,
+    "canonical_cell": 30,
+    "legacy_id": "be1d279b",
+    "canonical_id": "be1d279b",
+    "source_route": "historical dropdown label, canonical notebook links and media only",
+    "full_cell_inverse_exact": true
+  },
+  {
+    "kind": "solutions",
+    "legacy_cell": 16,
+    "canonical_cell": 31,
+    "legacy_id": "64a92c7c",
+    "canonical_id": "64a92c7c",
+    "source_route": "historical dropdown label, canonical notebook links and media only",
+    "full_cell_inverse_exact": true
+  },
+  {
+    "kind": "solutions",
+    "legacy_cell": 17,
+    "canonical_cell": 33,
+    "legacy_id": "ce7c4f47",
+    "generated_id": null,
+    "canonical_id": "ce7c4f47",
+    "source_route": "none",
+    "full_cell_inverse_exact": true
+  },
+  {
+    "kind": "solutions",
+    "legacy_cell": 18,
+    "canonical_cell": 35,
+    "legacy_id": "c5fdfc4f",
+    "canonical_id": "c5fdfc4f",
+    "source_route": "historical dropdown label, canonical notebook links and media only",
+    "full_cell_inverse_exact": true
+  },
+  {
+    "kind": "solutions",
+    "legacy_cell": 19,
+    "canonical_cell": 36,
+    "legacy_id": "2c3634ec",
+    "generated_id": null,
+    "canonical_id": "2c3634ec",
+    "source_route": "none",
+    "full_cell_inverse_exact": true
+  },
+  {
+    "kind": "solutions",
+    "legacy_cell": 20,
+    "canonical_cell": 38,
+    "legacy_id": "c4e97d72",
+    "canonical_id": "c4e97d72",
+    "source_route": "historical dropdown label, canonical notebook links and media only",
+    "full_cell_inverse_exact": true
+  },
+  {
+    "kind": "solutions",
+    "legacy_cell": 21,
+    "canonical_cell": 40,
+    "legacy_id": "3ba83677",
+    "generated_id": null,
+    "canonical_id": "3ba83677",
+    "source_route": "none",
+    "full_cell_inverse_exact": true
+  },
+  {
+    "kind": "solutions",
+    "legacy_cell": 22,
+    "canonical_cell": 42,
+    "legacy_id": "c5793182",
+    "canonical_id": "c5793182",
+    "source_route": "historical dropdown label, canonical notebook links and media only",
+    "full_cell_inverse_exact": true
+  },
+  {
+    "kind": "solutions",
+    "legacy_cell": 23,
+    "canonical_cell": 43,
+    "legacy_id": "a2f7d169",
+    "generated_id": null,
+    "canonical_id": "a2f7d169",
+    "source_route": "none",
+    "full_cell_inverse_exact": true
+  },
+  {
+    "kind": "solutions",
+    "legacy_cell": 24,
+    "canonical_cell": 45,
+    "legacy_id": "41b9ca85",
+    "canonical_id": "41b9ca85",
+    "source_route": "historical dropdown label, canonical notebook links and media only",
+    "full_cell_inverse_exact": true
+  },
+  {
+    "kind": "solutions",
+    "legacy_cell": 25,
+    "canonical_cell": 46,
+    "legacy_id": "9e2a5b13",
+    "canonical_id": "9e2a5b13",
+    "source_route": "historical dropdown label, canonical notebook links and media only",
+    "full_cell_inverse_exact": true
+  },
+  {
+    "kind": "solutions",
+    "legacy_cell": 26,
+    "canonical_cell": 48,
+    "legacy_id": "8f98e21e",
+    "generated_id": null,
+    "canonical_id": "8f98e21e",
+    "source_route": "none",
+    "full_cell_inverse_exact": true
+  },
+  {
+    "kind": "solutions",
+    "legacy_cell": 27,
+    "canonical_cell": 51,
+    "legacy_id": "b0c9add9",
+    "canonical_id": "b0c9add9",
+    "source_route": "historical dropdown label, canonical notebook links and media only",
+    "full_cell_inverse_exact": true
+  },
+  {
+    "kind": "solutions",
+    "legacy_cell": 28,
+    "canonical_cell": 52,
+    "legacy_id": "26a581ff",
+    "canonical_id": "26a581ff",
+    "source_route": "historical dropdown label, canonical notebook links and media only",
+    "full_cell_inverse_exact": true
+  },
+  {
+    "kind": "solutions",
+    "legacy_cell": 29,
+    "canonical_cell": 54,
+    "legacy_id": "8d46abb3",
+    "generated_id": null,
+    "canonical_id": "8d46abb3",
+    "source_route": "reviewed constructor compatibility: one @dataclass; exact inverse removes only it",
+    "full_cell_inverse_exact": true
+  },
+  {
+    "kind": "solutions",
+    "legacy_cell": 30,
+    "canonical_cell": 56,
+    "legacy_id": "36140082",
+    "canonical_id": "36140082",
+    "source_route": "historical dropdown label, canonical notebook links and media only",
+    "full_cell_inverse_exact": true
+  },
+  {
+    "kind": "solutions",
+    "legacy_cell": 31,
+    "canonical_cell": 58,
+    "legacy_id": "0d8e527f",
+    "generated_id": null,
+    "canonical_id": "0d8e527f",
+    "source_route": "none",
+    "full_cell_inverse_exact": true
+  },
+  {
+    "kind": "solutions",
+    "legacy_cell": 32,
+    "canonical_cell": 60,
+    "legacy_id": "a2bea3fc",
+    "canonical_id": "a2bea3fc",
+    "source_route": "historical dropdown label, canonical notebook links and media only",
+    "full_cell_inverse_exact": true
+  },
+  {
+    "kind": "solutions",
+    "legacy_cell": 33,
+    "canonical_cell": 62,
+    "legacy_id": "63bad581",
+    "generated_id": null,
+    "canonical_id": "63bad581",
+    "source_route": "none",
+    "full_cell_inverse_exact": true
+  },
+  {
+    "kind": "solutions",
+    "legacy_cell": 34,
+    "canonical_cell": 64,
+    "legacy_id": "bd694b36",
+    "canonical_id": "bd694b36",
+    "source_route": "historical dropdown label, canonical notebook links and media only",
+    "full_cell_inverse_exact": true
+  },
+  {
+    "kind": "solutions",
+    "legacy_cell": 35,
+    "canonical_cell": 65,
+    "legacy_id": "872e448c",
+    "generated_id": null,
+    "canonical_id": "872e448c",
+    "source_route": "none",
+    "full_cell_inverse_exact": true
+  },
+  {
+    "kind": "solutions",
+    "legacy_cell": 36,
+    "canonical_cell": 67,
+    "legacy_id": "77f8aeae",
+    "generated_id": null,
+    "canonical_id": "77f8aeae",
+    "source_route": "none",
+    "full_cell_inverse_exact": true
+  },
+  {
+    "kind": "solutions",
+    "legacy_cell": 37,
+    "canonical_cell": 69,
+    "legacy_id": "634516f2",
+    "canonical_id": "634516f2",
+    "source_route": "historical dropdown label, canonical notebook links and media only",
+    "full_cell_inverse_exact": true
+  },
+  {
+    "kind": "solutions",
+    "legacy_cell": 38,
+    "canonical_cell": 71,
+    "legacy_id": "1196f769",
+    "canonical_id": "1196f769",
+    "source_route": "historical dropdown label, canonical notebook links and media only",
+    "full_cell_inverse_exact": true
+  },
+  {
+    "kind": "solutions",
+    "legacy_cell": 39,
+    "canonical_cell": 73,
+    "legacy_id": "3d19bf22",
+    "generated_id": null,
+    "canonical_id": "3d19bf22",
+    "source_route": "none",
+    "full_cell_inverse_exact": true
+  },
+  {
+    "kind": "solutions",
+    "legacy_cell": 40,
+    "canonical_cell": 75,
+    "legacy_id": "a867a113",
+    "canonical_id": "a867a113",
+    "source_route": "historical dropdown label, canonical notebook links and media only",
+    "full_cell_inverse_exact": true
+  },
+  {
+    "kind": "solutions",
+    "legacy_cell": 41,
+    "canonical_cell": 76,
+    "legacy_id": "0ff42073",
+    "generated_id": null,
+    "canonical_id": "0ff42073",
+    "source_route": "none",
+    "full_cell_inverse_exact": true
+  },
+  {
+    "kind": "solutions",
+    "legacy_cell": 42,
+    "canonical_cell": 77,
+    "legacy_id": "47988872",
+    "canonical_id": "47988872",
+    "source_route": "historical dropdown label, canonical notebook links and media only",
+    "full_cell_inverse_exact": true
+  },
+  {
+    "kind": "solutions",
+    "legacy_cell": 43,
+    "canonical_cell": 78,
+    "legacy_id": "6e0d39c2",
+    "canonical_id": "6e0d39c2",
+    "source_route": "historical dropdown label, canonical notebook links and media only",
+    "full_cell_inverse_exact": true
+  },
+  {
+    "kind": "solutions",
+    "legacy_cell": 44,
+    "canonical_cell": 80,
+    "legacy_id": "896441bd",
+    "generated_id": null,
+    "canonical_id": "896441bd",
+    "source_route": "none",
+    "full_cell_inverse_exact": true
+  },
+  {
+    "kind": "solutions",
+    "legacy_cell": 45,
+    "canonical_cell": 83,
+    "legacy_id": "b66c99c2",
+    "canonical_id": "b66c99c2",
+    "source_route": "historical dropdown label, canonical notebook links and media only",
+    "full_cell_inverse_exact": true
+  },
+  {
+    "kind": "solutions",
+    "legacy_cell": 46,
+    "canonical_cell": 84,
+    "legacy_id": "d1f7ac1f",
+    "canonical_id": "d1f7ac1f",
+    "source_route": "historical dropdown label, canonical notebook links and media only",
+    "full_cell_inverse_exact": true
+  },
+  {
+    "kind": "solutions",
+    "legacy_cell": 47,
+    "canonical_cell": 85,
+    "legacy_id": "86e8e246",
+    "generated_id": null,
+    "canonical_id": "86e8e246",
+    "source_route": "none",
+    "full_cell_inverse_exact": true
+  },
+  {
+    "kind": "solutions",
+    "legacy_cell": 48,
+    "canonical_cell": 86,
+    "legacy_id": "7b41595a",
+    "canonical_id": "7b41595a",
+    "source_route": "historical dropdown label, canonical notebook links and media only",
+    "full_cell_inverse_exact": true
+  }
+]

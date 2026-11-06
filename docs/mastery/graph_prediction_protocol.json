@@ -1,0 +1,162 @@
+{
+  "status": "design_adopted_for_scratch_implementation_only_unexecuted",
+  "title": "[8.7] Predict whether a selected graph survives exact interventions",
+  "proposed_case_id": "8.7-predetermined-weight-variant-v1",
+  "source_packet": {
+    "path": "/tmp/arena-graph-migration-20261020/preservation.json",
+    "sha256": "8d8c855e49cfc26d2b1c64bc2a7b39ddcf7617782f9cbd3ab195849a5c401cc5"
+  },
+  "question": "For this distinct predetermined seven-node weight matrix, does the recovered path meet all three unchanged normalized intervention gates AND does the selected graph beat both unchanged graph controls?",
+  "case_selection": "One source-only predetermined candidate, never selected or repaired using its outcome. Adoption freezes it before any target calculation. No search, alternative seed sweep or empirical selection.",
+  "organism": {
+    "type": "hand-constructed linear topological component DAG; same method and topology as 8.7",
+    "node_order": [
+      "feature:country=France",
+      "head:subject-router",
+      "mlp:relation-lookup",
+      "feature:capital=Paris",
+      "head:syntax-router",
+      "mlp:style-cleanup",
+      "logit:Paris-vs-Rome"
+    ],
+    "edge_weights": [
+      [
+        0,
+        1,
+        0.92
+      ],
+      [
+        1,
+        2,
+        1.08
+      ],
+      [
+        2,
+        3,
+        0.96
+      ],
+      [
+        3,
+        6,
+        1.17
+      ],
+      [
+        2,
+        6,
+        0.27
+      ],
+      [
+        0,
+        4,
+        0.41
+      ],
+      [
+        4,
+        5,
+        0.33
+      ],
+      [
+        5,
+        6,
+        0.24
+      ],
+      [
+        1,
+        5,
+        0.16
+      ]
+    ],
+    "unspecified_weights": 0,
+    "clean_inputs": [
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "corrupt_inputs": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "source_index": 0,
+    "target_index": 6,
+    "change_from_published_case": "Only the nine edge-weight values change; this is one new fixed organism, not a nine-factor causal ablation. Published default and published .10/4/3 play configuration are not target evidence.",
+    "path_depth_limit": 4
+  },
+  "frozen_method": {
+    "threshold": 0.25,
+    "ig_steps": 16,
+    "ig_path": "all active edge masks jointly scaled alpha=(k+.5)/16; mean midpoint gradients times active-edge support",
+    "random_seed": 0,
+    "selection": "absolute IG score >= .25; no max_edges cap; sort by (-magnitude, source_index, target_index), signed edge values retained and rounded to 6 decimals exactly as original",
+    "path_selection": "highest product of absolute selected-edge scores, declared source to target, max_depth=4, original adjacency stable tie behavior",
+    "metric": "scalar final logit:Paris-vs-Rome node activation",
+    "denominator": "D=M_full-M_corrupt; zero is a failure, not epsilon-clamped",
+    "faithfulness": "(M_path_only-M_corrupt)/D",
+    "completeness": "(M_full-M_path_removed)/D",
+    "minimality": "min(full-graph single-edge drops on recovered path)/D",
+    "path_gate": "all three unrounded normalized criteria >= .8",
+    "random_gate": "M_selected_graph-M_same_size_random >= .5, unrounded",
+    "reversed_gate": "M_selected_graph-M_reversed >= .5, unrounded",
+    "combined_predicate": "path_gate AND random_gate AND reversed_gate; no threshold tuning or rounding before comparisons"
+  },
+  "controls": [
+    "full graph and all-zero corrupt anchors",
+    "path-only and path-removed exact interventions",
+    "every recovered-path edge ablated individually",
+    "same-size random actual nonzero edges, excluding ALL selected-graph edges, random.Random(0); matches size only",
+    "selected graph with all edge directions reversed and signed scores retained; backward edges unsupported by topological propagation",
+    "exact single-edge ablation score heatmap versus edge-gate IG score heatmap"
+  ],
+  "roles": {
+    "TRAIN": "none; no fitted parameters or training corpus",
+    "DEV": "published historical lesson/results and independent practice fixtures, exposed; may support implementation debugging but never target config/threshold selection",
+    "TEST": "none; no independent statistical TEST claim",
+    "target": "unexecuted fixed synthetic prereveal diagnostic candidate; held back from target-result inspection only after adoption and honest exposure declaration"
+  },
+  "exposure": {
+    "prior_exposure": "unknown",
+    "allowed_values": [
+      "unknown",
+      "seen",
+      "self_reported_not_seen"
+    ],
+    "public_derivation": "The topology, method and baseline are public. Distinct weights do not establish causal identity, human unseen status, independent TEST or generalization. If equivalent target outputs are known, mark seen and use guided practice."
+  },
+  "learner_fields": {
+    "prediction": null,
+    "confidence": null,
+    "reasoning": "",
+    "observation": null,
+    "explanation": "",
+    "transfer_prediction": null,
+    "transfer_reasoning": ""
+  },
+  "commitment": "Immutable sealed JSON text binds case, exact student method source, helper/tests/protocol hashes, node/edge order, raw input/weight bytes and actual dtype/CPU/thread/runtime configuration. Freeze/commit/reveal/export/replay must not evaluate DAG activations, graph scores, graph paths or metrics.",
+  "failure_policy": [
+    "Retain immutable failed attempt and stage/error; no scored successful observation on exception, invalid graph, no source-target path, zero denominator, insufficient non-selected edges for equal-size random control, stale identity, mutation, timeout or malformed output.",
+    "A valid completed measurement with any declared gate false remains a valid measured rejection, not an implementation failure.",
+    "Never shrink random control, cap selected edges, change threshold, change seed, change weights, drop controls, substitute a stored answer or retry without a new separately recorded decision."
+  ],
+  "execution_authority": {
+    "current": "source/AST/JSON/generation tests and distinct tiny independent DEV fixture arithmetic only; no target execution",
+    "current_target_executions": 0,
+    "future_resource_proposal": "If separately authorized: one float32 CPU thread, one attempt, cooperative 120-second aggregate ceiling plus external timeout. No pretrained model, downloads, training, GPU or cluster. No existing budget inferred from other companions.",
+    "transfer": "No runnable transfer in minimal version; a blank changed-condition forecast is allowed, with separate future case freeze and authorization required before evaluation."
+  },
+  "scientific_execution": false,
+  "empirical_blind_run_exists": false,
+  "accepted": false,
+  "adoption_decision": {
+    "authority": "root delegated task 2026-10-20",
+    "decision": "single exact candidate and unchanged protocol adopted for scratch implementation only; publication, integration, target attempt and human acceptance remain deferred",
+    "public_path_metadata": "Declared historical path indices omitted from public target scaffolding; unchanged path depth limit 4 retained. Student must recover path from selected scores."
+  }
+}

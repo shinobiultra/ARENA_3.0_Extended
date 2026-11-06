@@ -1,0 +1,12 @@
+{
+  "scope": "distinct four-node exposed DEV arithmetic only; no target constructor/evaluation",
+  "result": ".........                                                                [100%]\n9 passed, 52 deselected in 1.34s",
+  "exit_code": 0,
+  "cpu_seconds": 2.255426,
+  "hard_cpu_limit_seconds": 10,
+  "lesson_sha256": "1c9d8e47977130cfad1c5889e90605f2cfbadf14b8b006c428c54af8689cc423",
+  "tests_sha256": "25c3fc208e8e730ea82e0de3bc10c439e3102d3d4bf5034bf182008452e87cb3",
+  "log_sha256": "13c58058075be0d30f146fe053b303ae214055bf71942bc83ee5cce40614dc18",
+  "final_seal": false,
+  "target_attempts": 0
+}

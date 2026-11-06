@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="920" height="340" viewBox="0 0 920 340" role="img" aria-labelledby="title desc">
+  <title id="title">Direction-removal control result for [6.4] Crosscoders and Model Diffing</title>
+  <desc id="desc">A bar chart showing that removing the top SVD model-diff direction reduces activation-delta norm much more than removing an orthogonal random direction.</desc>
+  <rect width="920" height="340" fill="#f8fafc"/>
+  <style>
+    .title { font: 700 20px sans-serif; fill: #0f172a; }
+    .label { font: 14px sans-serif; fill: #334155; }
+    .small { font: 12px sans-serif; fill: #475569; }
+    .axis { stroke: #475569; stroke-width: 1.5; }
+    .grid { stroke: #cbd5e1; stroke-width: 1; }
+    .baseline { fill: #2563eb; }
+    .top { fill: #16a34a; }
+    .control { fill: #f97316; }
+  </style>
+
+  <text x="42" y="42" class="title">Pinned GELU-1L vs SoLU-1L direction-removal control</text>
+  <text x="42" y="68" class="label">Activation-space model-delta norm falls after removing the top SVD direction; the orthogonal random control barely moves.</text>
+
+  <line x1="96" y1="260" x2="810" y2="260" class="axis"/>
+  <line x1="96" y1="90" x2="96" y2="260" class="axis"/>
+  <line x1="96" y1="203" x2="810" y2="203" class="grid"/>
+  <line x1="96" y1="146" x2="810" y2="146" class="grid"/>
+  <line x1="96" y1="90" x2="810" y2="90" class="grid"/>
+  <text x="64" y="264" class="small">0</text>
+  <text x="56" y="207" class="small">10</text>
+  <text x="56" y="150" class="small">20</text>
+  <text x="56" y="94" class="small">30</text>
+
+  <rect x="160" y="97" width="135" height="163" class="baseline"/>
+  <rect x="390" y="188" width="135" height="72" class="top"/>
+  <rect x="620" y="97" width="135" height="163" class="control"/>
+
+  <text x="176" y="88" class="label">28.658</text>
+  <text x="406" y="179" class="label">12.574</text>
+  <text x="636" y="88" class="label">28.653</text>
+
+  <text x="148" y="286" class="label">baseline</text>
+  <text x="348" y="286" class="label">top direction removed</text>
+  <text x="585" y="286" class="label">orthogonal control removed</text>
+
+  <text x="42" y="318" class="small">Report metrics: delta reduction 16.084 vs random-direction reduction 0.005; peak CUDA allocation 0.513 GB.</text>
+</svg>

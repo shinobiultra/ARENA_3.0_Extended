@@ -480,3 +480,153 @@ def test_notebook_contract(run_smoke_test: Callable | None = None):
         "The signature control must expose the finite convolution's long-delay failure."
     )
     print("All tests in `test_notebook_contract` passed!")
+
+
+def test_selective_parameters_literal(project_fn, discretize_fn, expand_fn):
+    import math
+    x_proj=nn.Linear(1,3,bias=False);dt_proj=nn.Linear(1,1,bias=True)
+    with t.no_grad():
+        x_proj.weight.copy_(t.tensor([[1.],[2.],[3.]]));dt_proj.weight.fill_(2.);dt_proj.bias.zero_()
+    x=t.tensor([[[-1.],[1.]]])
+    delta,B,C=project_fn(x,x_proj,dt_proj,1)
+    t.testing.assert_close(delta.flatten(),t.tensor([math.log1p(math.exp(-2)),math.log1p(math.exp(2))]),rtol=1e-6,atol=1e-6)
+    t.testing.assert_close(B.flatten(),t.tensor([-2.,2.]),rtol=0,atol=0)
+    t.testing.assert_close(C.flatten(),t.tensor([-3.,3.]),rtol=0,atol=0)
+    expanded=expand_fn(t.tensor([[[2.,3.]]]),3)
+    t.testing.assert_close(expanded,t.tensor([[[[2.,3.],[2.,3.],[2.,3.]]]]),rtol=0,atol=0)
+    import pytest
+    with pytest.raises(ValueError):expand_fn(t.ones(1,2),3)
+    a,b=discretize_fn(t.tensor([[[2.],[-1.]]]),t.tensor([[[.5],[.25]]]),t.tensor([[math.log(2.)]]),t.tensor([[[3.],[4.]]]))
+    t.testing.assert_close(a.flatten(),t.tensor([math.exp(-1),math.exp(-.5)]),rtol=1e-6,atol=1e-6)
+    t.testing.assert_close(b.flatten(),t.tensor([3.,-1.]),rtol=0,atol=0)
+    print('All tests in `test_selective_parameters_literal` passed!')
+
+
+def test_rms_norm_literal(norm_cls):
+    import math
+    layer=norm_cls(2,eps=0.)
+    with t.no_grad():layer.weight.copy_(t.tensor([2.,3.]))
+    actual=layer(t.tensor([[3.,4.],[0.,2.]]))
+    expected=t.tensor([[6/math.sqrt(12.5),12/math.sqrt(12.5)],[0.,3*math.sqrt(2)]])
+    t.testing.assert_close(actual,expected,rtol=1e-6,atol=1e-6)
+    print('All tests in `test_rms_norm_literal` passed!')
+
+
+def test_mixer_literal_oracle(mixer_cls,config_cls):
+    import math
+    config=config_cls(vocab_size=3,d_model=1,d_inner=2,d_state=1,d_conv=1,dt_rank=1,num_layers=1)
+    model=mixer_cls(config)
+    with t.no_grad():
+        model.in_proj.weight.copy_(t.tensor([[2.],[-1.],[.2],[-.3]]))
+        model.conv1d.weight.fill_(1.);model.conv1d.bias.zero_()
+        model.x_proj.weight.copy_(t.tensor([[.1,.2],[.4,.1],[-.6,.2]]))
+        model.dt_proj.weight.copy_(t.tensor([[1.],[2.]]));model.dt_proj.bias.copy_(t.tensor([-.7,.3]))
+        model.A_log.fill_(math.log(.2));model.D.copy_(t.tensor([.3,.5]));model.out_proj.weight.copy_(t.tensor([[1.,2.]]))
+    silu=lambda v:v/(1+math.exp(-v));state=[0.,0.];expected=[]
+    for u in (1.,-.5):
+        x=[silu(2*u),silu(-u)]
+        raw_dt=.1*x[0]+.2*x[1];B=.4*x[0]+.1*x[1];C=-.6*x[0]+.2*x[1]
+        dt=[math.log1p(math.exp(raw_dt-.7)),math.log1p(math.exp(2*raw_dt+.3))]
+        state=[math.exp(-.2*d)*h+d*B*v for d,h,v in zip(dt,state,x)]
+        y=[(h*C+D*v)*silu(g*u) for h,D,v,g in zip(state,(.3,.5),x,(.2,-.3))]
+        expected.append(y[0]+2*y[1])
+    actual,cache=model(t.tensor([[[1.],[-.5]]]),use_cache=True)
+    t.testing.assert_close(actual.flatten(),t.tensor(expected),rtol=2e-6,atol=2e-6)
+    t.testing.assert_close(cache.ssm_state.flatten(),t.tensor(state),rtol=2e-6,atol=2e-6)
+    print('All tests in `test_mixer_literal_oracle` passed!')
+
+
+def test_mixer_cache_storage(mixer_cls,config_cls):
+    with t.random.fork_rng():
+        t.manual_seed(0)
+        model=mixer_cls(config_cls(vocab_size=3,d_model=1,d_inner=2,d_state=1,d_conv=3,dt_rank=1,num_layers=1))
+    initial=model.initial_state(2,t.device('cpu'),t.float32)
+    assert initial.conv_state.shape==(2,2,3) and initial.ssm_state.shape==(2,2,1)
+    assert t.count_nonzero(initial.conv_state)==t.count_nonzero(initial.ssm_state)==0
+    x=t.tensor([[[1.,2.],[3.,4.]]]);before=x.clone()
+    actual=model._full_conv_state(x)
+    t.testing.assert_close(actual,t.tensor([[[0.,1.,3.],[0.,2.,4.]]]),rtol=0,atol=0)
+    t.testing.assert_close(x,before,rtol=0,atol=0)
+    print('All tests in `test_mixer_cache_storage` passed!')
+
+
+def test_weight_mapping_without_checkpoint(key_fn,load_fn):
+    from types import SimpleNamespace
+    import pytest
+    for key in ('backbone.embeddings.weight','backbone.norm_f.weight','lm_head.weight','backbone.layers.0.mixer.A_log'):
+        assert key_fn(key)==key
+    with pytest.raises(KeyError):key_fn('unrecognized.weight')
+    calls=[]
+    class Fake:
+        def load_state_dict(self,state,strict):
+            calls.append((state,strict));return SimpleNamespace(missing_keys=['m'],unexpected_keys=['u'])
+    state={'backbone.embeddings.weight':t.tensor([[1.,2.]])}
+    result=load_fn(Fake(),state)
+    assert len(calls)==1 and calls[0][1] is True
+    assert calls[0][0].keys()==state.keys()
+    t.testing.assert_close(calls[0][0]['backbone.embeddings.weight'],state['backbone.embeddings.weight'],rtol=0,atol=0)
+    assert result=={'mapped_tensor_count':1,'missing_keys':['m'],'unexpected_keys':['u']}
+    print('All tests in `test_weight_mapping_without_checkpoint` passed!')
+
+
+def test_parity_assembly_without_checkpoint(parity_fn):
+    from inspect import unwrap
+    from types import SimpleNamespace
+    from unittest.mock import patch
+    logits=t.tensor([[[1.,4.],[3.,1.],[2.,5.],[4.,0.]]])
+    reference=logits+.25;reference[0,0,0]=5.
+    generated=t.tensor([[10,314,2718,11,2,3,4]])
+    class Official:
+        def __call__(self,ids,**kwargs):
+            assert ids.tolist()==[[10,314,2718,11]]
+            return SimpleNamespace(logits=reference,hidden_states=(t.tensor([1.,4.]),t.tensor([3.,4.])))
+        def generate(self,*args,**kwargs):
+            assert kwargs['max_new_tokens']==3 and kwargs['do_sample'] is False
+            result=generated.clone();result[0,-1]=5;return result
+    class Local:
+        def __call__(self,ids,**kwargs):
+            if kwargs.get('use_cache'):
+                i={10:0,314:1,2718:2,11:3}[ids.item()]
+                return SimpleNamespace(logits=logits[:,i:i+1]+.5,states=i)
+            return SimpleNamespace(logits=logits,hidden_states=(t.tensor([1.,2.]),t.tensor([3.,4.])))
+        def greedy_generate(self,*args,**kwargs):
+            assert kwargs['max_new_tokens']==3;return generated
+    with patch.dict(unwrap(parity_fn).__globals__,{'load_pinned_mamba_130m_cpu':lambda:(Official(),Local(),{'mapped_tensor_count':243,'missing_keys':[],'unexpected_keys':[]})}):
+        result=parity_fn()
+    assert result['mapped_tensor_count']==243 and result['hidden_state_count']==2
+    assert result['hidden_max_abs_diff']==2. and result['hidden_max_mean_abs_diff']==1. and result['hidden_worst_layer']==0
+    assert result['logits_max_abs_diff']==4. and result['logits_mean_abs_diff']==.71875 and result['logits_top1_agreement']==.75
+    assert result['cache_max_abs_diff']==.5 and result['greedy_tokens_match'] is False
+    assert result['generated_tokens']==generated[0].tolist()
+    print('All tests in `test_parity_assembly_without_checkpoint` passed!')
+
+
+def test_event_controls_literal(coefficients_fn,read_fn,intervention_fn,attention_fn,conv_fn):
+    import pytest
+    events=t.tensor([[1,0,2,3,2]])
+    values=t.tensor([[2.,9.,0.,100.,0.]],dtype=t.float64)
+    a,b,c=coefficients_fn(events,values)
+    t.testing.assert_close(a.flatten(),t.tensor([0.,1.,1.,0.,1.],dtype=t.float64),rtol=0,atol=0)
+    t.testing.assert_close(b.flatten(),t.tensor([2.,0.,0.,0.,0.],dtype=t.float64),rtol=0,atol=0)
+    t.testing.assert_close(c.flatten(),t.tensor([0.,0.,1.,0.,1.],dtype=t.float64),rtol=0,atol=0)
+    a_before,b_before=a.clone(),b.clone()
+    intervened=intervention_fn(a,b,1,replacement=-3.)
+    t.testing.assert_close(intervened.flatten(),t.tensor([2.,-3.,-3.,0.,0.],dtype=t.float64),rtol=0,atol=0)
+    t.testing.assert_close(read_fn(intervened,c).flatten(),t.tensor([0.,0.,-3.,0.,0.],dtype=t.float64),rtol=0,atol=0)
+    t.testing.assert_close(a,a_before,rtol=0,atol=0);t.testing.assert_close(b,b_before,rtol=0,atol=0)
+    with pytest.raises(IndexError):intervention_fn(a,b,-1)
+    events=t.tensor([[1,0,2,1]]);values=t.tensor([[6.,100.,0.,1000.]],dtype=t.float64)
+    t.testing.assert_close(attention_fn(events,values,2,logit_gap=0.),t.tensor([2.],dtype=t.float64),rtol=0,atol=1e-12)
+    t.testing.assert_close(attention_fn(events,values,2),t.tensor([6.],dtype=t.float64),rtol=0,atol=1e-10)
+    t.testing.assert_close(conv_fn(events,values,2),t.tensor([[6.,6.,0.,1000.]],dtype=t.float64),rtol=0,atol=0)
+    print('All tests in `test_event_controls_literal` passed!')
+
+
+def test_delay_benchmark_literal(benchmark_fn):
+    result=benchmark_fn(distances=(1,2,3),conv_kernel=2,values=(-2.,4.))
+    t.testing.assert_close(result.distances,t.tensor([1,2,3]),rtol=0,atol=0)
+    t.testing.assert_close(result.selective_error,t.zeros(3,dtype=t.float64),rtol=0,atol=0)
+    t.testing.assert_close(result.attention_error,t.zeros(3,dtype=t.float64),rtol=0,atol=1e-10)
+    t.testing.assert_close(result.convolution_error,t.tensor([0.,3.,3.],dtype=t.float64),rtol=0,atol=0)
+    t.testing.assert_close(result.trace_state,t.full((4,),4.,dtype=t.float64),rtol=0,atol=0)
+    print('All tests in `test_delay_benchmark_literal` passed!')

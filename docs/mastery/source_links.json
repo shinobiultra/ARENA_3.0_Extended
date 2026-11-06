@@ -1,0 +1,238 @@
+{
+  "source_url": "https://deep-learning-alchemy.github.io/",
+  "checked_on": "2026-10-21",
+  "source_sha256": "ca0f2cbcfa766319dd3e45bc144a53aba2f885c8fdb0b7f8a87c1013bfeb4c50",
+  "preservation": "Canonical upstream originals; link index only, no copied or rewritten course material.",
+  "links": [
+    {
+      "url": "https://deep-learning-alchemy.github.io/",
+      "label": "CS 312",
+      "answer_material": false
+    },
+    {
+      "url": "https://thashim.github.io/",
+      "label": "Tatsunori Hashimoto",
+      "answer_material": false
+    },
+    {
+      "url": "https://kothasuhas.github.io/",
+      "label": "Suhas Kotha",
+      "answer_material": false
+    },
+    {
+      "url": "https://whenwen.github.io/",
+      "label": "Kaiyue Wen",
+      "answer_material": false
+    },
+    {
+      "url": "https://tristanthrush.com/",
+      "label": "Tristan Thrush",
+      "answer_material": false
+    },
+    {
+      "url": "https://deep-learning-alchemy.github.io/#schedule",
+      "label": "schedule",
+      "answer_material": false
+    },
+    {
+      "url": "https://ed.stanford.edu/academics/masters-handbook/honor-code",
+      "label": "Honor Code",
+      "answer_material": false
+    },
+    {
+      "url": "https://modal.com",
+      "label": "Modal",
+      "answer_material": false
+    },
+    {
+      "url": "https://modal.com/pricing",
+      "label": "Modal pricing",
+      "answer_material": false
+    },
+    {
+      "url": "https://modal.jobs/",
+      "label": "Modal",
+      "answer_material": false
+    },
+    {
+      "url": "https://deep-learning-alchemy.github.io/assets/slides/lecture_01.pdf",
+      "label": "slides",
+      "answer_material": false
+    },
+    {
+      "url": "https://github.com/deep-learning-alchemy/assignments/tree/a1_release",
+      "label": "code",
+      "answer_material": false
+    },
+    {
+      "url": "https://deep-learning-alchemy.github.io/assets/assignments/a1_basics.pdf",
+      "label": "pdf",
+      "answer_material": false
+    },
+    {
+      "url": "https://deep-learning-alchemy.github.io/assets/slides/llms_101_handout.pdf",
+      "label": "handout",
+      "answer_material": false
+    },
+    {
+      "url": "https://deep-learning-alchemy.github.io/assets/slides/llms_101_slides.pdf",
+      "label": "slides",
+      "answer_material": false
+    },
+    {
+      "url": "https://arxiv.org/abs/2503.04715",
+      "label": "Step Law",
+      "answer_material": false
+    },
+    {
+      "url": "https://arxiv.org/abs/2001.08361",
+      "label": "Kaplan et al. (2020)",
+      "answer_material": false
+    },
+    {
+      "url": "https://arxiv.org/abs/2103.04514",
+      "label": "Summers & Dinneen (2021)",
+      "answer_material": false
+    },
+    {
+      "url": "https://deep-learning-alchemy.github.io/assets/slides/lecture_02.pdf",
+      "label": "slides",
+      "answer_material": false
+    },
+    {
+      "url": "https://deep-learning-alchemy.github.io/quiz-basics.html",
+      "label": "quiz",
+      "answer_material": false
+    },
+    {
+      "url": "https://deep-learning-alchemy.github.io/assets/quizzes/basics_answer_slides.pdf",
+      "label": "slides",
+      "answer_material": true
+    },
+    {
+      "url": "https://github.com/deep-learning-alchemy/assignments/tree/a2_release",
+      "label": "code",
+      "answer_material": false
+    },
+    {
+      "url": "https://deep-learning-alchemy.github.io/assets/assignments/a2_hyperparameter_scaling.pdf",
+      "label": "pdf",
+      "answer_material": false
+    },
+    {
+      "url": "https://arxiv.org/abs/1907.04164",
+      "label": "Zhang et al. (2019)",
+      "answer_material": false
+    },
+    {
+      "url": "https://whenwen.github.io/wd_blog/public/weight-decay-part-2.html",
+      "label": "Weight decay blog",
+      "answer_material": false
+    },
+    {
+      "url": "https://arxiv.org/abs/2606.16899",
+      "label": "Hyperball",
+      "answer_material": false
+    },
+    {
+      "url": "https://deep-learning-alchemy.github.io/assets/slides/lecture_03.pdf",
+      "label": "slides",
+      "answer_material": false
+    },
+    {
+      "url": "https://deep-learning-alchemy.github.io/assets/slides/lecture_03.pptx",
+      "label": "pptx",
+      "answer_material": false
+    },
+    {
+      "url": "https://arxiv.org/abs/2407.05872",
+      "label": "Everett et al. (2024)",
+      "answer_material": false
+    },
+    {
+      "url": "https://arxiv.org/abs/2203.03466",
+      "label": "Tensor Programs V",
+      "answer_material": false
+    },
+    {
+      "url": "https://kellerjordan.github.io/posts/muon/",
+      "label": "Muon",
+      "answer_material": false
+    },
+    {
+      "url": "https://deep-learning-alchemy.github.io/assets/slides/lecture_04.pdf",
+      "label": "slides",
+      "answer_material": false
+    },
+    {
+      "url": "https://deep-learning-alchemy.github.io/quiz-hyperparameter-scaling.html",
+      "label": "quiz",
+      "answer_material": false
+    },
+    {
+      "url": "https://deep-learning-alchemy.github.io/assets/quizzes/hyperparameter_scaling_answer_slides.pdf",
+      "label": "slides",
+      "answer_material": true
+    },
+    {
+      "url": "https://github.com/deep-learning-alchemy/assignments/tree/a3_release",
+      "label": "code",
+      "answer_material": false
+    },
+    {
+      "url": "https://deep-learning-alchemy.github.io/assets/assignments/a3_optimization2.pdf",
+      "label": "pdf",
+      "answer_material": false
+    },
+    {
+      "url": "https://arxiv.org/abs/1802.10026",
+      "label": "Mode connectivity",
+      "answer_material": false
+    },
+    {
+      "url": "https://arxiv.org/abs/2410.05192",
+      "label": "River valley",
+      "answer_material": false
+    },
+    {
+      "url": "https://arxiv.org/abs/1406.2572",
+      "label": "Dauphin et al. (2014)",
+      "answer_material": false
+    },
+    {
+      "url": "https://deep-learning-alchemy.github.io/assets/slides/lecture_05.pdf",
+      "label": "slides",
+      "answer_material": false
+    },
+    {
+      "url": "https://arxiv.org/abs/2103.00065",
+      "label": "Edge of Stability",
+      "answer_material": false
+    },
+    {
+      "url": "https://arxiv.org/abs/2410.24206",
+      "label": "Central Flows",
+      "answer_material": false
+    },
+    {
+      "url": "https://arxiv.org/abs/2010.01412",
+      "label": "SAM",
+      "answer_material": false
+    },
+    {
+      "url": "https://deep-learning-alchemy.github.io/assets/slides/lecture_06.pdf",
+      "label": "slides",
+      "answer_material": false
+    },
+    {
+      "url": "https://deep-learning-alchemy.github.io/assets/slides/lecture_06.pptx",
+      "label": "pptx",
+      "answer_material": false
+    },
+    {
+      "url": "https://cs336.stanford.edu/spring2025/",
+      "label": "Stanford CS336",
+      "answer_material": false
+    }
+  ]
+}

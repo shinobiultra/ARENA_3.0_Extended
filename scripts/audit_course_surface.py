@@ -119,15 +119,59 @@ def _requirement_lines(path: Path) -> set[str]:
     }
 
 
+# Historical published headings reviewed against these exact registry identities.
+# Do not accept arbitrary suffixes or keywords from a different method's title.
+REVIEWED_PAGE_TITLE_ALIASES = {
+    ("8.3", "AtP* from Scratch"): {"AtP*: Fixing Attribution Patching"},
+    ("15.2", "LoRA vs Full Fine-Tuning"): {
+        "LoRA vs Full Finetuning on a Real Transformer"
+    },
+}
+
+
+def _normalized_page_title(title: str) -> str:
+    """Ignore conjunction punctuation while retaining every method/title word."""
+    title = re.sub(r"\s*&\s*", " and ", title)
+    title = re.sub(r",\s+and\b", " and", title)
+    return " ".join(title.split())
+
+
+def _page_has_title(text: str, number: str, title: str) -> bool:
+    accepted = {title} | REVIEWED_PAGE_TITLE_ALIASES.get((number, title), set())
+    accepted = {_normalized_page_title(candidate) for candidate in accepted}
+    headings = re.findall(r"^#\s+\[([^\]\n]+)\]\s+([^\n]+)$", text, re.M)
+    return any(
+        actual_number == number and _normalized_page_title(actual_title) in accepted
+        for actual_number, actual_title in headings
+    )
+
+
+def _page_has_runtime_contract(text: str) -> bool:
+    # Existing explicit interfaces remain supported. Bare CPU/GPU mentions are
+    # insufficient: prose must name execution on CPU or a timed hardware run.
+    if ("run_gpu_test" in text or "CUDA" in text or "GPU Contract" in text
+            or re.search(r"REQUIRES_GPU\s*=\s*(?:True|False)\b", text)):
+        return True
+    if re.search(r"\b(?:runs? on|use) (?:a |one )?CPU\b", text, re.I):
+        return True
+    duration = (
+        r"(?:\d+(?:[-–]\d+)?|a|an|one|two|three|four|five|six|seven|eight|nine|ten"
+        r"|a few|a couple of|half a)\s+(?:seconds?|minutes?|hours?)"
+    )
+    return re.search(
+        rf"\b{duration}(?:\s+per\s+run)?\s+on\s+(?:a|an|one|a single|single)\s+(?:CPU|GPU)\b",
+        text,
+        re.I,
+    ) is not None
+
+
 def _page_has_arena_shape(text: str, number: str, title: str) -> bool:
-    has_title = f"# [{number}] {title}" in text
+    has_title = _page_has_title(text, number, title)
     has_intro = re.search(r"^#{1,2}\s+(?:Introduction|Core Question)\s*$", text, re.M | re.I) is not None
     has_learning_objectives = re.search(r"^#{2,5}\s+(?:Content (?:&|and) )?Learning Objectives\s*$", text, re.M | re.I) is not None
     has_exercise = "Exercise" in text
     has_visible_test = "tests." in text or "run_smoke_test" in text
-    has_runtime_contract = ("run_gpu_test" in text or "CUDA" in text or "GPU Contract" in text
-                            or re.search(r"\b(?:runs? on|use) CPU\b", text) is not None
-                            or re.search(r"REQUIRES_GPU\s*=\s*(?:True|False)\b", text) is not None)
+    has_runtime_contract = _page_has_runtime_contract(text)
     return all(
         [
             has_title,
@@ -145,6 +189,106 @@ def _exercise_notebook_source(path: Path) -> str:
     return "\n".join("".join(cell.get("source", [])) for cell in notebook.get("cells", []))
 
 
+def _has_equivalent_legacy_runtime_hooks(path: Path) -> bool:
+    """Recognize compact legacy forwarding hooks without running their methods.
+
+    This additional route preserves the literal legacy detector. It supports
+    only the reviewed 16.5 delegate module and exact CUDA-guarded forwarding AST.
+    The complete delegate AST pin binds its preflight and module-level bindings;
+    it is a structural source identity, never execution or scientific evidence.
+    """
+    import hashlib
+
+    reviewed_modules = {
+        "part3_shapley_interactions_shapiq.solutions":
+            "c9e3537844c0522ca28bc7a2359776f02717442e210894f3868adb595c1b9a77",
+    }
+    try:
+        cells = json.loads(path.read_text()).get("cells", [])
+        source = "\n".join("".join(cell.get("source", [])) for cell in cells
+                           if cell.get("cell_type") == "code")
+        tree = ast.parse(source)
+    except (OSError, ValueError, SyntaxError):
+        return False
+    names = {"run_gpu_test", "run_full_experiment"}
+    functions = [node for node in tree.body
+                 if isinstance(node, ast.FunctionDef) and node.name in names]
+    if len(functions) != 2 or {node.name for node in functions} != names:
+        return False
+    expected = ast.parse("def hook(max_vram_gb: float = 24.0): pass").body[0].args
+    expected_args = ast.dump(expected, include_attributes=False)
+    if any(node.decorator_list or ast.dump(node.args, include_attributes=False) != expected_args
+           for node in functions):
+        return False
+    for statement in tree.body:
+        if statement in functions:
+            continue
+        for node in ast.walk(statement):
+            if (isinstance(node, ast.Name) and isinstance(node.ctx, (ast.Store, ast.Del))
+                    and node.id in names):
+                return False
+            if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)) and node.name in names:
+                return False
+            if isinstance(node, (ast.Import, ast.ImportFrom)) and any(
+                (alias.asname or alias.name.split(".")[0]) in names for alias in node.names
+            ):
+                return False
+
+    def body(function: ast.FunctionDef) -> list[ast.stmt]:
+        return [node for node in function.body if not (
+            isinstance(node, ast.Expr) and isinstance(node.value, ast.Constant)
+            and isinstance(node.value.value, str)
+        )]
+
+    def forwards(statement: ast.stmt, name: str) -> bool:
+        return (isinstance(statement, ast.Return) and isinstance(statement.value, ast.Call)
+                and isinstance(statement.value.func, ast.Name) and statement.value.func.id == name
+                and not statement.value.args and len(statement.value.keywords) == 1
+                and statement.value.keywords[0].arg == "max_vram_gb"
+                and isinstance(statement.value.keywords[0].value, ast.Name)
+                and statement.value.keywords[0].value.id == "max_vram_gb")
+
+    by_name = {node.name: node for node in functions}
+    full = body(by_name["run_full_experiment"])
+    gpu = body(by_name["run_gpu_test"])
+    if len(full) != 1 or not forwards(full[0], "run_gpu_test") or len(gpu) != 2:
+        return False
+    imported = gpu[0]
+    if (not isinstance(imported, ast.ImportFrom) or imported.level != 0
+            or not imported.module or len(imported.names) != 1):
+        return False
+    if imported.module not in reviewed_modules:
+        return False
+    alias = imported.names[0]
+    if alias.asname == "max_vram_gb":
+        return False
+    if alias.name != "run_gpu_test" or not forwards(gpu[1], alias.asname or alias.name):
+        return False
+    module_path = Path(*imported.module.split(".")).with_suffix(".py")
+    candidates = [path.parent.parent / module_path, ROOT / module_path]
+    delegate = next((file for file in candidates if file.is_file()), None)
+    if delegate is None:
+        return False
+    try:
+        delegate_tree = ast.parse(delegate.read_text())
+        targets = [node for node in delegate_tree.body
+                   if isinstance(node, ast.FunctionDef) and node.name == alias.name]
+    except (OSError, SyntaxError):
+        return False
+    if len(targets) != 1 or targets[0].decorator_list:
+        return False
+    expected_delegate = ast.parse(
+        "def run_gpu_test(max_vram_gb: float = 24.0) -> dict:\n"
+        "    if not t.cuda.is_available():\n"
+        "        raise RuntimeError(\"16.3 GPU preflight requires CUDA; no CPU fallback is accepted.\")\n"
+        "    return run_neural_interaction_preflight(max_vram_gb=max_vram_gb)\n"
+    ).body[0]
+    if ast.dump(targets[0], include_attributes=False) != ast.dump(expected_delegate, include_attributes=False):
+        return False
+    observed = hashlib.sha256(ast.dump(delegate_tree, include_attributes=False).encode()).hexdigest()
+    return observed == reviewed_modules[imported.module]
+
+
 def _exercise_notebook_declares_verification_contract(path: Path) -> bool:
     if path.name in {
         "16.18_Find_the_Interactions_Without_Trying_Every_Subset_exercises.ipynb",
@@ -159,6 +303,7 @@ def _exercise_notebook_declares_verification_contract(path: Path) -> bool:
         return has_learner_contract(path)
     source = _exercise_notebook_source(path)
     has_contract = all(required in source for required in REQUIRED_NOTEBOOK_VERIFICATION_STRINGS)
+    has_contract = has_contract or _has_equivalent_legacy_runtime_hooks(path)
     has_evidence_surface = any(surface in source for surface in REQUIRED_NOTEBOOK_EVIDENCE_SURFACES)
     # Legacy interface detection is only a surface check, never scientific
     # acceptance. Modern lessons execute their methods and keep reports outside
@@ -2521,6 +2666,90 @@ def _has_ccs_native_refit_contract(here: Path, fresh_node: ast.FunctionDef, name
                for functions, name, required in requirements)
 
 
+def _home_uses_shared_renderer(source: str) -> bool:
+    """Recognize a direct chapter-home call, without trusting comments or wrappers.
+
+    The current renderer resolves the chapter from __file__, uses the configured
+    chapter/section content through st_dependencies, and displays the chapter's
+    nonempty introductory Markdown. Only this known import contract is accepted.
+    """
+    try:
+        tree = ast.parse(source)
+    except SyntaxError:
+        return False
+    renderers: set[str] = set()
+    introductions: dict[str, str] = {}
+    original_file_binding = True
+    for node in tree.body:
+        if isinstance(node, ast.ImportFrom):
+            for item in node.names:
+                name = item.asname or item.name
+                introductions.pop(name, None)
+                if name == "*":
+                    renderers.clear()
+                    introductions.clear()
+                    original_file_binding = False
+                if name == "__file__":
+                    original_file_binding = False
+                if (node.level == 0 and node.module == "infrastructure.extension.home"
+                        and item.name == "render_chapter_home"):
+                    renderers.add(name)
+                else:
+                    renderers.discard(name)
+            continue
+        # Imports/definitions/assignments that shadow the known imported renderer
+        # remove its authority. An unrelated function with that name is no proof.
+        bound: set[str] = set()
+        if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)):
+            bound.add(node.name)
+        elif isinstance(node, (ast.Assign, ast.AnnAssign, ast.AugAssign)):
+            targets = node.targets if isinstance(node, ast.Assign) else [node.target]
+            bound.update(item.id for target in targets for item in ast.walk(target)
+                         if isinstance(item, ast.Name) and isinstance(item.ctx, ast.Store))
+            for name in bound:
+                introductions.pop(name, None)
+                if (isinstance(node, (ast.Assign, ast.AnnAssign))
+                        and isinstance(node.value, ast.Constant)
+                        and isinstance(node.value.value, str) and node.value.value.strip()):
+                    introductions[name] = node.value.value
+        elif isinstance(node, ast.Import):
+            bound.update(item.asname or item.name.split(".")[0] for item in node.names)
+        else:
+            # Conditional assignments/imports are not a known direct renderer
+            # contract, even when the happy-path source text looks convincing.
+            for item in ast.walk(node):
+                if isinstance(item, ast.Name) and isinstance(item.ctx, (ast.Store, ast.Del)):
+                    bound.add(item.id)
+                elif isinstance(item, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)):
+                    bound.add(item.name)
+                elif isinstance(item, (ast.Import, ast.ImportFrom)):
+                    bound.update(alias.asname or alias.name.split(".")[0] for alias in item.names)
+            for name in bound:
+                introductions.pop(name, None)
+        if "*" in bound:
+            renderers.clear()
+            introductions.clear()
+            original_file_binding = False
+        if "__file__" in bound:
+            original_file_binding = False
+        renderers.difference_update(bound)
+        if not isinstance(node, (ast.Assign, ast.AnnAssign)):
+            for name in bound:
+                introductions.pop(name, None)
+        if not isinstance(node, ast.Expr) or not isinstance(node.value, ast.Call):
+            continue
+        call = node.value
+        if (not original_file_binding or not isinstance(call.func, ast.Name) or call.func.id not in renderers
+                or len(call.args) != 2 or call.keywords
+                or not isinstance(call.args[0], ast.Name) or call.args[0].id != "__file__"):
+            continue
+        intro = call.args[1]
+        if ((isinstance(intro, ast.Constant) and isinstance(intro.value, str) and intro.value.strip())
+                or (isinstance(intro, ast.Name) and intro.id in introductions)):
+            return True
+    return False
+
+
 def chapter_surface_blockers(config: dict[str, Any], chapter_name: str) -> list[str]:
     chapter_dir = ROOT / chapter_name
     instructions_dir = chapter_dir / "instructions"
@@ -2529,7 +2758,7 @@ def chapter_surface_blockers(config: dict[str, Any], chapter_name: str) -> list[
     home_path = instructions_dir / "Home.py"
     if not home_path.exists():
         blockers.append(f"{chapter_name}: missing instructions/Home.py")
-    elif "render_extension_home(__file__)" not in home_path.read_text():
+    elif not _home_uses_shared_renderer(home_path.read_text()):
         blockers.append(f"{chapter_name}: Home.py does not use shared extension renderer")
 
     config_path = instructions_dir / ".streamlit/config.toml"

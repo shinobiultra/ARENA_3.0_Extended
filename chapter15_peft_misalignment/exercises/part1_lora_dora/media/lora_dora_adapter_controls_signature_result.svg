@@ -1,0 +1,78 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="980" height="440" viewBox="0 0 980 440" role="img" aria-labelledby="title desc">
+  <title id="title">LoRA, DoRA, and adapter-controls signature result</title>
+  <desc id="desc">A compact result board showing LoRA accuracy, controls, rank, merge parity, target alignment, and VRAM for the generated safe-proxy CUDA report.</desc>
+  <defs>
+    <style>
+      .bg { fill: #f8fafc; }
+      .panel { fill: #ffffff; stroke: #1f2937; stroke-width: 1.4; rx: 8; }
+      .good { fill: #dcfce7; stroke: #16a34a; }
+      .warn { fill: #fef3c7; stroke: #d97706; }
+      .blue { fill: #dbeafe; stroke: #2563eb; }
+      .pink { fill: #fce7f3; stroke: #db2777; }
+      .title { font: 700 22px Arial, sans-serif; fill: #0f172a; }
+      .subtitle { font: 14px Arial, sans-serif; fill: #475569; }
+      .label { font: 700 13px Arial, sans-serif; fill: #0f172a; }
+      .value { font: 700 26px Arial, sans-serif; fill: #0f172a; }
+      .small { font: 12px Arial, sans-serif; fill: #475569; }
+      .axis { stroke: #64748b; stroke-width: 1.2; }
+      .bar-good { fill: #16a34a; }
+      .bar-bad { fill: #94a3b8; }
+      .bar-mid { fill: #2563eb; }
+      .line { stroke: #334155; stroke-width: 1; }
+    </style>
+  </defs>
+
+  <rect class="bg" x="0" y="0" width="980" height="440" rx="12" />
+  <text class="title" x="36" y="42">Signature result: exact adapter checks plus safe-proxy CUDA controls</text>
+  <text class="subtitle" x="36" y="68">Generated target-direction task, Torch 2.12.1+cu132, CUDA 13.2, RTX 5090 Laptop GPU.</text>
+
+  <rect class="panel blue" x="36" y="96" width="204" height="112" />
+  <text class="label" x="58" y="124">LoRA accuracy</text>
+  <text class="value" x="58" y="162">0.987</text>
+  <text class="small" x="58" y="188">baseline: 0.512</text>
+
+  <rect class="panel warn" x="264" y="96" width="204" height="112" />
+  <text class="label" x="286" y="124">Negative controls</text>
+  <text class="value" x="286" y="162">fail</text>
+  <text class="small" x="286" y="188">random-label 0.438, random-adapter 0.583</text>
+
+  <rect class="panel good" x="492" y="96" width="204" height="112" />
+  <text class="label" x="514" y="124">Mechanism</text>
+  <text class="value" x="514" y="162">0.998</text>
+  <text class="small" x="514" y="188">target-direction cosine</text>
+
+  <rect class="panel pink" x="720" y="96" width="224" height="112" />
+  <text class="label" x="742" y="124">Rank and merge</text>
+  <text class="value" x="742" y="162">r = 1</text>
+  <text class="small" x="742" y="188">merge max diff: 0.0</text>
+
+  <rect class="panel" x="36" y="244" width="430" height="154" />
+  <text class="label" x="58" y="272">Accuracy comparison</text>
+  <line class="axis" x1="92" y1="354" x2="424" y2="354" />
+  <rect class="bar-bad" x="112" y="305" width="42" height="49" />
+  <rect class="bar-good" x="196" y="259" width="42" height="95" />
+  <rect class="bar-bad" x="280" y="312" width="42" height="42" />
+  <rect class="bar-bad" x="364" y="299" width="42" height="55" />
+  <text class="small" x="104" y="374">base</text>
+  <text class="small" x="190" y="374">LoRA</text>
+  <text class="small" x="262" y="374">rand label</text>
+  <text class="small" x="344" y="374">rand adapter</text>
+  <text class="small" x="106" y="294">0.512</text>
+  <text class="small" x="190" y="248">0.987</text>
+  <text class="small" x="274" y="301">0.438</text>
+  <text class="small" x="358" y="288">0.583</text>
+
+  <rect class="panel" x="514" y="244" width="430" height="154" />
+  <text class="label" x="536" y="272">Matched PEFT comparison</text>
+  <line class="line" x1="536" y1="292" x2="922" y2="292" />
+  <text class="small" x="536" y="318">LoRA accuracy</text>
+  <text class="small" x="766" y="318">0.987</text>
+  <text class="small" x="536" y="342">DoRA accuracy</text>
+  <text class="small" x="766" y="342">0.990</text>
+  <text class="small" x="536" y="366">Full finetune accuracy</text>
+  <text class="small" x="766" y="366">0.993</text>
+  <text class="small" x="536" y="390">Max distractor cosine</text>
+  <text class="small" x="766" y="390">0.0054</text>
+
+  <text class="subtitle" x="36" y="424">Scope: exact GT-0 tensor controls plus generated safe proxy training. Not evidence about arbitrary public or unsafe adapters.</text>
+</svg>

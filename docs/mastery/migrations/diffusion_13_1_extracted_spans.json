@@ -1,0 +1,101 @@
+[
+  {
+    "source_path": "arena_ext/vlm_interpretability.py",
+    "source_file_sha256": "41d93faddc45b311dd90520a1841f24e633df794b6c461d87e6aba31b8e2a50f",
+    "symbol": "ContrastiveAlignmentReport",
+    "start_line": 11,
+    "end_line": 16,
+    "source_sha256": "d25ff45f63162aa5d4d24c683ac6ac8fbe30464ba26d4dc67ac4cdd96bf86655",
+    "ast_sha256": "41e9cd67f5714e2384f8b673bf67ed56890ebc3eae57add77f84482a5c0abdf5"
+  },
+  {
+    "source_path": "arena_ext/vlm_interpretability.py",
+    "source_file_sha256": "41d93faddc45b311dd90520a1841f24e633df794b6c461d87e6aba31b8e2a50f",
+    "symbol": "contrastive_alignment_report",
+    "start_line": 1030,
+    "end_line": 1070,
+    "source_sha256": "66b31fdce82d4b007a046d2fdd4e4869388b778df1ccc52c0eea454c92d5ec22",
+    "ast_sha256": "0a46d7102eb0d7815f1ae57563169863c4d0122b81309aaf1ea55ba5731d74f8"
+  },
+  {
+    "source_path": "chapter13_image_generation_interpretability/exercises/part1_diffusion_image_controls/solutions.py",
+    "source_file_sha256": "75d2600c75ffd0f451c7832d03f214b753bf9e4a80095904b8f0a6c6f47938f0",
+    "symbol": "REAL_CLIP_MODEL_ID",
+    "start_line": 53,
+    "end_line": 53,
+    "source_sha256": "b8a82add88e2d3a1126bb332eb8382e5391d0421e4c668f0bbd70879085bfd71",
+    "ast_sha256": "fb86dbe1381a99a06803995029b5d639548f6f015a53c1c3299fb610bf44dfbc"
+  },
+  {
+    "source_path": "chapter13_image_generation_interpretability/exercises/part1_diffusion_image_controls/solutions.py",
+    "source_file_sha256": "75d2600c75ffd0f451c7832d03f214b753bf9e4a80095904b8f0a6c6f47938f0",
+    "symbol": "REAL_CLIP_REVISION",
+    "start_line": 54,
+    "end_line": 54,
+    "source_sha256": "61aee61b9892baad12c5692ce6bdbff03fe69c6754f8c8028ad7e596a4a0bf06",
+    "ast_sha256": "3ec6639c53659bd9dce3c8501dc604e07b9558a602fe8d9006b1111d0157092c"
+  },
+  {
+    "source_path": "chapter13_image_generation_interpretability/exercises/part1_diffusion_image_controls/solutions.py",
+    "source_file_sha256": "75d2600c75ffd0f451c7832d03f214b753bf9e4a80095904b8f0a6c6f47938f0",
+    "symbol": "REAL_SD15_MODEL_ID",
+    "start_line": 56,
+    "end_line": 56,
+    "source_sha256": "461886cd6c41e6f8112412f5ee9cdd65b49fa112fbdfa2b0386d68bcaff943a9",
+    "ast_sha256": "e934721012597366e80894c3462580ecb68d7a36ded96320a0f69e9e34d0763b"
+  },
+  {
+    "source_path": "chapter13_image_generation_interpretability/exercises/part1_diffusion_image_controls/solutions.py",
+    "source_file_sha256": "75d2600c75ffd0f451c7832d03f214b753bf9e4a80095904b8f0a6c6f47938f0",
+    "symbol": "REAL_SD15_REVISION",
+    "start_line": 57,
+    "end_line": 57,
+    "source_sha256": "5a789e73b446bafbf8d538b34e50f0896c62b46b36cc2ef2f3aa834a8dcf51fa",
+    "ast_sha256": "ecf8a6aa83c2bf1b2b4c5a4f644a585d518a12c31845f7520374bb3e5eca64ea"
+  },
+  {
+    "source_path": "chapter13_image_generation_interpretability/exercises/part1_diffusion_image_controls/solutions.py",
+    "source_file_sha256": "75d2600c75ffd0f451c7832d03f214b753bf9e4a80095904b8f0a6c6f47938f0",
+    "symbol": "REAL_SD15_NEGATIVE_PROMPT",
+    "start_line": 58,
+    "end_line": 61,
+    "source_sha256": "a19ce5d133448b6635f6c7ddbf7468707394ebe520bb08cc199dbaf643386916",
+    "ast_sha256": "500ce4be0bd640c7ae307e6423637cfca8bd1d52d8c23ba31bb6ddcf60d484aa"
+  },
+  {
+    "source_path": "chapter13_image_generation_interpretability/exercises/part1_diffusion_image_controls/solutions.py",
+    "source_file_sha256": "75d2600c75ffd0f451c7832d03f214b753bf9e4a80095904b8f0a6c6f47938f0",
+    "symbol": "REAL_SD15_CASES",
+    "start_line": 62,
+    "end_line": 103,
+    "source_sha256": "a7693f32f54acc25a333be3902db9c63e049e91a31845692544573ebfe3d16ad",
+    "ast_sha256": "a78963d5049db61f8054ec717131fd3e252b1d5264e3bffe841fb691d24bb148"
+  },
+  {
+    "source_path": "chapter13_image_generation_interpretability/exercises/part1_diffusion_image_controls/solutions.py",
+    "source_file_sha256": "75d2600c75ffd0f451c7832d03f214b753bf9e4a80095904b8f0a6c6f47938f0",
+    "symbol": "_pil_rgb_tensor",
+    "start_line": 662,
+    "end_line": 667,
+    "source_sha256": "e76a3ae243a5135d078ec4f20d35a4552e29d734579aa0b3173eebdb6eacae39",
+    "ast_sha256": "c275ef81a0818e3aa9be56ad33cca2c07d3db823e421f1a75121c9d1d091efc2"
+  },
+  {
+    "source_path": "chapter13_image_generation_interpretability/exercises/part1_diffusion_image_controls/solutions.py",
+    "source_file_sha256": "75d2600c75ffd0f451c7832d03f214b753bf9e4a80095904b8f0a6c6f47938f0",
+    "symbol": "load_pinned_sd15_pipeline",
+    "start_line": 682,
+    "end_line": 702,
+    "source_sha256": "bd61732b5623c7d5171f0e7769935421b5d9da5ffd350b216eb775a7cde72199",
+    "ast_sha256": "dc711d9725ed35ce722df88f8b76b99adcbc0a307c9ab91f8979b2a404337a81"
+  },
+  {
+    "source_path": "chapter13_image_generation_interpretability/exercises/part1_diffusion_image_controls/solutions.py",
+    "source_file_sha256": "75d2600c75ffd0f451c7832d03f214b753bf9e4a80095904b8f0a6c6f47938f0",
+    "symbol": "load_pinned_clip_components",
+    "start_line": 705,
+    "end_line": 731,
+    "source_sha256": "cf4741ba8a2b9b2420a92f4db2527af8cf191aa17cd9afad1017555bf97b3606",
+    "ast_sha256": "9ae26090826e60491d20fec361872034f4d36cb72a60a78c6add9581175c600e"
+  }
+]

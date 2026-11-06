@@ -1,0 +1,28 @@
+{
+  "notebook_id": "6_4_crosscoders_and_model_diffing",
+  "baselines": {
+    "required": true
+  },
+  "negative_controls": {
+    "required_where_applicable": true
+  },
+  "ood_tests": {
+    "required_where_applicable": true
+  },
+  "metrics": {
+    "accepted": true,
+    "tests_passed": true,
+    "contract_passed": true,
+    "n_heldout_min": 128,
+    "heldout_reconstruction_mse_max": 0.0003,
+    "zero_reconstruction_mse_min": 0.1,
+    "ownership_accuracy": 1.0,
+    "min_correlation_min": 0.9,
+    "target_reduction_min": 0.75,
+    "same_norm_random_reduction_max": 0.25,
+    "orthogonal_reduction_max": 0.25,
+    "learned_behavior_auc_min": 0.93,
+    "label_shuffle_behavior_auc_max": 0.75,
+    "max_allowed_gpu_gb": 24
+  }
+}

@@ -1,0 +1,262 @@
+{
+  "schema": "arena.acdc-own-method.practice.v2",
+  "status": "source_and_DEV_only_model_runtime_pending",
+  "sources": {
+    "chapter8_automated_circuits/exercises/part2_attribution_patching_eap/8.2_Attribution_Patching_and_EAP_exercises.ipynb": {
+      "sha256": "6b19f585031f885b2ae204b55ebc7f7d9df678274141749737be14ee01a75e10",
+      "size_bytes": 1354663
+    },
+    "chapter8_automated_circuits/exercises/part2_attribution_patching_eap/8.2_Attribution_Patching_and_EAP_solutions.ipynb": {
+      "sha256": "cd5926c7f629cfe167c2915c79dcc33efca8608a0a8303cf8d3257038b182f9d",
+      "size_bytes": 1365946
+    },
+    "chapter8_automated_circuits/exercises/part2_attribution_patching_eap/README.md": {
+      "sha256": "5a7ebd493210d9acf3ce54e016bc4f98ce64f225da06f8909fcb2e6f1cb66168",
+      "size_bytes": 1720
+    },
+    "chapter8_automated_circuits/exercises/part2_attribution_patching_eap/media/eap_graph.png": {
+      "sha256": "f43288d9a34e0373a6d540215884d311408c5be56c14236c7e6728ae2fbcf0e1",
+      "size_bytes": 173522
+    },
+    "chapter8_automated_circuits/exercises/part2_attribution_patching_eap/media/eap_ig_graph.png": {
+      "sha256": "1fa2cd64b67958fcc97624b7ff82ed6366566e00c0ce05af989676a80f4741b6",
+      "size_bytes": 175572
+    },
+    "chapter8_automated_circuits/exercises/part2_attribution_patching_eap/media/edges_scatter.png": {
+      "sha256": "fe91a8ff6f7d064ce6538d323f650e79b8b904dbf05b58d36c8033f12a7b89d8",
+      "size_bytes": 37428
+    },
+    "chapter8_automated_circuits/exercises/part2_attribution_patching_eap/media/faithfulness_both.png": {
+      "sha256": "05c380a547c221323c53b27ddf8c5a6f151428cc131d2ce462f03ffd9c91995b",
+      "size_bytes": 86558
+    },
+    "chapter8_automated_circuits/exercises/part2_attribution_patching_eap/media/faithfulness_ioi.png": {
+      "sha256": "dd581a710d1464c900d98c7a5b80ceee62f082e872f9cb393b10f19105aa3d00",
+      "size_bytes": 46126
+    },
+    "chapter8_automated_circuits/exercises/part2_attribution_patching_eap/media/heads_baselines.png": {
+      "sha256": "0d6359c50664e9ff228cb0b2d77df1c5188fbbf14d5326b4f27a642eff18e0ba",
+      "size_bytes": 28145
+    },
+    "chapter8_automated_circuits/exercises/part2_attribution_patching_eap/media/heads_heatmaps.png": {
+      "sha256": "222bd07f07d6e715e67db46ae25c25eb6d4736da038a7469983a48939a180eeb",
+      "size_bytes": 38174
+    },
+    "chapter8_automated_circuits/exercises/part2_attribution_patching_eap/media/heads_scatter.png": {
+      "sha256": "aab8f6fd6cbb39634e165cc9053c672d8c53bfbb2506d10e0348506ba87d797f",
+      "size_bytes": 35489
+    },
+    "chapter8_automated_circuits/exercises/part2_attribution_patching_eap/media/ig_convergence.png": {
+      "sha256": "d238f3f03edcb2662f7e82d25d6716337ffd31348d75e61d89bec9f823401113",
+      "size_bytes": 50425
+    },
+    "chapter8_automated_circuits/exercises/part2_attribution_patching_eap/media/paths.png": {
+      "sha256": "341493daa002fe74554fc3f3a60bb5f27660631128572c9403c0534cbb8fe5d5",
+      "size_bytes": 101508
+    },
+    "chapter8_automated_circuits/exercises/part2_attribution_patching_eap/media/play_faithfulness.png": {
+      "sha256": "fc18762a9c7c25e8ce3f98ee3c6f772dd1358b411fddee6317dd7086915e913d",
+      "size_bytes": 45775
+    },
+    "chapter8_automated_circuits/exercises/part2_attribution_patching_eap/media/resid_heatmaps.png": {
+      "sha256": "2bd22236ef0455249afa71965184c1ac7b1c95df77c4c4b27a1067d200095855",
+      "size_bytes": 51438
+    },
+    "chapter8_automated_circuits/exercises/part2_attribution_patching_eap/solutions.py": {
+      "sha256": "ca08299c8d4faaf3bc33f320de8148e94853be5814ccbd2ec39f6a690af78d1e",
+      "size_bytes": 44395
+    },
+    "chapter8_automated_circuits/exercises/part2_attribution_patching_eap/tests.py": {
+      "sha256": "fcdc0d3888882bb0c4993c8b29f3c43e86c504fd0510bb438ba3d6f5b61d8ac5",
+      "size_bytes": 26248
+    },
+    "chapter8_automated_circuits/exercises/part2_attribution_patching_eap/utils.py": {
+      "sha256": "dbb90b11099a3c5cb675c72ca6b8283611fe121309ce7d028976e6b09ac35f84",
+      "size_bytes": 17907
+    },
+    "chapter8_automated_circuits/exercises/part2_attribution_patching_eap/verification_report.schema.json": {
+      "sha256": "ecd833883885077ad5d7a0e239d984d01462255e94266212cf195ab4d4e27b3d",
+      "size_bytes": 2669
+    },
+    "chapter8_automated_circuits/exercises/part3_atp_star/8.3_AtP_from_Scratch_exercises.ipynb": {
+      "sha256": "79dacdcb06ed99f83c963dbe1901872dd7c08188b5ce3a303b53364df14c6834",
+      "size_bytes": 628156
+    },
+    "chapter8_automated_circuits/exercises/part3_atp_star/8.3_AtP_from_Scratch_solutions.ipynb": {
+      "sha256": "d56c1c2a1260decc3b291983baeb8675cc16935a3c06e1897dd2cc5683bc06f2",
+      "size_bytes": 636529
+    },
+    "chapter8_automated_circuits/exercises/part4_acdc_circuit_metrics/8.4_ACDC_and_Circuit_Metrics_exercises.ipynb": {
+      "sha256": "80022e96857ab352d1a1839a8004b5914875e984405ff6535f5e684bec36ea73",
+      "size_bytes": 951947
+    },
+    "chapter8_automated_circuits/exercises/part4_acdc_circuit_metrics/8.4_ACDC_and_Circuit_Metrics_solutions.ipynb": {
+      "sha256": "49aa72791d98c508818b7619292a0d88076d4ece14d67e72ebc123d0afa43e2a",
+      "size_bytes": 1026985
+    },
+    "chapter8_automated_circuits/exercises/part4_acdc_circuit_metrics/README.md": {
+      "sha256": "3c6e6c4f7e93d71b2dd8188d8083cce2118d13b64bf90f43ae9a7b130f0c7fd4",
+      "size_bytes": 2000
+    },
+    "chapter8_automated_circuits/exercises/part4_acdc_circuit_metrics/media/acdc_circuit.png": {
+      "sha256": "b807f99e126dc36b1729a34af0f47794ea3aaab3c16e252c47d3fee9ed0b9561",
+      "size_bytes": 69362
+    },
+    "chapter8_automated_circuits/exercises/part4_acdc_circuit_metrics/media/attention_by_offset.png": {
+      "sha256": "50db58cd3ed9f9162fd33ececdd96d39aa8a57ccbb7784b9f5b07ef2fe5ae434",
+      "size_bytes": 31113
+    },
+    "chapter8_automated_circuits/exercises/part4_acdc_circuit_metrics/media/completeness.png": {
+      "sha256": "bb65569453727a49d3783e215bb1ceadd759bc3ef6fd2d9df9efe033b5f43d5c",
+      "size_bytes": 40347
+    },
+    "chapter8_automated_circuits/exercises/part4_acdc_circuit_metrics/media/faithfulness_vs_random.png": {
+      "sha256": "63ed5d611bfd5ced88746c919ef6c730a155740f4505c931cee0994c491e540e",
+      "size_bytes": 49418
+    },
+    "chapter8_automated_circuits/exercises/part4_acdc_circuit_metrics/media/gt_circuit.png": {
+      "sha256": "1aef7e2a4ec17dc7c2e08d83ace02bb161b464c8a835c502bd078bb46facffd1",
+      "size_bytes": 218693
+    },
+    "chapter8_automated_circuits/exercises/part4_acdc_circuit_metrics/media/gt_faithfulness.png": {
+      "sha256": "8ad07f6e89b9cb45e5fe81f4b89bfefc289d69e3dc05d90fc8a9388264d554e9",
+      "size_bytes": 29154
+    },
+    "chapter8_automated_circuits/exercises/part4_acdc_circuit_metrics/media/minimality.png": {
+      "sha256": "b22df0c6e93927d29fd3b8991d2d3984baf7711e299528d1bdc69ac9005b4db4",
+      "size_bytes": 46292
+    },
+    "chapter8_automated_circuits/exercises/part4_acdc_circuit_metrics/media/roc.png": {
+      "sha256": "3874323498f04ba777c5217a63e37d52e87323fb8bae8f4b93b70e6fbbfbb8cc",
+      "size_bytes": 38225
+    },
+    "chapter8_automated_circuits/exercises/part4_acdc_circuit_metrics/media/single_edge_heatmap.png": {
+      "sha256": "4f6c6d69d361e3e845728db7e9976e578743a70cf58c8e0ba96545c2c3ca5d78",
+      "size_bytes": 44884
+    },
+    "chapter8_automated_circuits/exercises/part4_acdc_circuit_metrics/media/threshold_sweep.png": {
+      "sha256": "c8fa6069ab8cb8cd28f3ee1dee7cdbec59a2d6d5119534d917d691de2c74d01e",
+      "size_bytes": 53433
+    },
+    "chapter8_automated_circuits/exercises/part4_acdc_circuit_metrics/solutions.py": {
+      "sha256": "be98218958e0f3960025b53264cdab891c9fc9208bfeef8070efe5329308bd25",
+      "size_bytes": 28928
+    },
+    "chapter8_automated_circuits/exercises/part4_acdc_circuit_metrics/tests.py": {
+      "sha256": "94bc19a4fb1fe6ebe07e0d704205e2bc3a82075eb6ee65579b5181c75006bda7",
+      "size_bytes": 15890
+    },
+    "chapter8_automated_circuits/exercises/part4_acdc_circuit_metrics/utils.py": {
+      "sha256": "a991544f1bec18a22bb6519f9bdffd12ae31112414b2cd2aaeaab062add62de2",
+      "size_bytes": 15562
+    },
+    "chapter8_automated_circuits/exercises/part4_acdc_circuit_metrics/verification_report.schema.json": {
+      "sha256": "ecd833883885077ad5d7a0e239d984d01462255e94266212cf195ab4d4e27b3d",
+      "size_bytes": 2669
+    },
+    "chapter8_automated_circuits/instructions/pages/02_[8.2]_Attribution_Patching_and_EAP.md": {
+      "sha256": "ae185d3ead25cb3a853fdbd16312a5f84134a9dbe124c1eee42f575fc04c82a6",
+      "size_bytes": 154946
+    },
+    "chapter8_automated_circuits/instructions/pages/02_[8.2]_Attribution_Patching_and_EAP.py": {
+      "sha256": "5d9346ee733210ce592acc56b1d769557138b9d48054e4dbb274e9ee61c13d92",
+      "size_bytes": 2861
+    },
+    "chapter8_automated_circuits/instructions/pages/03_[8.3]_AtP_from_Scratch.md": {
+      "sha256": "4326435bb99dbc7240230c8b356a756dac600ec43d355d4011594c5e800d5a37",
+      "size_bytes": 88864
+    },
+    "chapter8_automated_circuits/instructions/pages/03_[8.3]_AtP_from_Scratch.py": {
+      "sha256": "67a0044455d184c40192d2b3a7b0fba8605c9c98312af7914d6361971998b0b9",
+      "size_bytes": 2873
+    },
+    "chapter8_automated_circuits/instructions/pages/04_[8.4]_ACDC_and_Circuit_Metrics.md": {
+      "sha256": "a4a5f5c06ea008c1ad512b4eba8dfe214f912574dfcb359c10b05a427ca9ae5c",
+      "size_bytes": 96333
+    },
+    "chapter8_automated_circuits/instructions/pages/04_[8.4]_ACDC_and_Circuit_Metrics.py": {
+      "sha256": "6612fdbb11779cdf609cfad10f1bf3a6f9c6ff6d71764ce7a8ba42a355e2b808",
+      "size_bytes": 2823
+    },
+    "infrastructure/chapters/chapter8_automated_circuits/master_8_4.py": {
+      "sha256": "ece97a194dc58e234f4b7c97ae91567ca7c2217b173928e23d7b2f6eba58132a",
+      "size_bytes": 99702
+    }
+  },
+  "original_identity": "Current 8.4 ACDC; current 8.3 AtP* remains unchanged; historical 8.2 method source retained.",
+  "existing_protocol": {
+    "discovery_n": 64,
+    "discovery_seed": 0,
+    "heldout_n": 64,
+    "heldout_seed": 1,
+    "tau": 0.01,
+    "random_n": 20,
+    "random_seed": 4
+  },
+  "parity_tolerances": null,
+  "actual_model_budget": 0,
+  "rng_in_DEV": false,
+  "estimand": "Full-vocabulary softmax, selected 00..99 year-token sums: > start minus <= start. Ratio of means using common full-minus-empty denominator on identical row identities.",
+  "failure_policy": "No fallback, retries, row drops, clamp, epsilon, tolerance search, implicit flag changes or partial-result promotion. Keep raw rows when denominator fails.",
+  "decisions": [
+    {
+      "id": "ACDC-D01",
+      "decision": "Own-method entry",
+      "recommendation": "Single visible callback/sender exercise; allow paste/adapt of learner8.2 code or explicit reference-derived mode; no silent reference fallback.",
+      "boundary": "Controls whether the transfer is learner-owned and how exposure is labeled.",
+      "status": "adopted_by_root_2026-10-21"
+    },
+    {
+      "id": "ACDC-D02",
+      "decision": "Protocol scope",
+      "recommendation": "Use only current8.4 Part4 greater-than64seed0/1,tau0.01,20random seed4; keep inductiontau0.1 and8.2cohorts distinct.",
+      "boundary": "No new registry case/cohort or result-equivalence claim.",
+      "status": "adopted_by_root_2026-10-21"
+    },
+    {
+      "id": "ACDC-D03",
+      "decision": "Invalid-mask contract",
+      "recommendation": "Preserve outside-mask ignored behavior; fail malformed shapes/types.",
+      "boundary": "Strictly rejecting outside-mask bits would be a different wrapper contract; not silently adopted.",
+      "status": "adopted_by_root_2026-10-21"
+    },
+    {
+      "id": "ACDC-D04",
+      "decision": "Future model parity tolerance",
+      "recommendation": "DEV hand fixtures exact; declare GPT-2 logit tolerances with dtype/runtime before any future model check; no auto-relaxation.",
+      "boundary": "Existing8.2 scalar1e-3 and8.4 two-layer logit1e-3/1e-4 are source context, not validated GPT-2 acceptance.",
+      "status": "UNSET_future_adoption_required"
+    },
+    {
+      "id": "ACDC-D05",
+      "decision": "Prospective normalization failure",
+      "recommendation": "Stop normalized recovery for zero/negative/nonfinite full-empty contrast; retain raw anchors/rows; no clamp/drop/epsilon.",
+      "boundary": "This new prospective failure policy needs explicit adoption; historical outcomes remain unchanged.",
+      "status": "adopted_by_root_2026-10-21"
+    },
+    {
+      "id": "ACDC-D06",
+      "decision": "Runtime stages and budget",
+      "recommendation": "Implementation/DEV after design adoption; prepared-model and own-method discovery require separate explicit runtime authorization and frozen budget.",
+      "boundary": "No model/cache/kernel work is authorized by this design.",
+      "status": "DEV_only_actual_model_budget_zero"
+    },
+    {
+      "id": "ACDC-D07",
+      "decision": "Minimum visible result",
+      "recommendation": "Edge-membership heatmap + raw/full/empty/own/same-size-random panel; no new GPT-2 threshold sweep.",
+      "boundary": "Progress trace curve/extra thresholds need separate trace/budget adoption.",
+      "status": "adopted_by_root_2026-10-21"
+    },
+    {
+      "id": "ACDC-D08",
+      "decision": "Acceptance meaning",
+      "recommendation": "Source/DEV evidence first; model/runtime evidence and Q001 learner acceptance remain distinct.",
+      "boundary": "Public repeated cases cannot be described as untouched evaluation.",
+      "status": "adopted_by_root_2026-10-21"
+    }
+  ],
+  "revision": "S1-S4/Q1 repair from frozen V1; pending independent review",
+  "prepared_identity": "Exact model parameters/buffers, graph/functions, callback/source attribution, flags/hooks, seed/order, token/cache/answer/anchor objects and bytes; validate before and after invocations.",
+  "attempt_evidence": "Incremental raw masks/logits/rows and failing returns; primary and secondary errors; no retry or partial success."
+}

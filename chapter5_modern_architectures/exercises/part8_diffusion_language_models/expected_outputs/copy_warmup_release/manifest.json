@@ -1,0 +1,37 @@
+{
+  "scope": "Previous copy-grammar publication, retained intact; solutions.py comes from its pre-wrapper snapshot",
+  "files": {
+    "5.5_Diffusion_Language_Models_exercises.ipynb": {
+      "sha256": "fa52cea93d644ca291ca1c6bf7aa4c2c931c933a237ec4ce3fdc908ee278bac5",
+      "gzip_sha256": "15a3784906a4a4130618b80025ecf752f7f4775e3dac4db3e0d3a164f062d3db"
+    },
+    "5.5_Diffusion_Language_Models_solutions.ipynb": {
+      "sha256": "d278935cc56e396b0d2a3ec192423f4e23000b526012cc454c397e08d0c538ea",
+      "gzip_sha256": "5f48c4766610308302fe69e7ce0fddb7825a869b3673bdbdd1a20b59d2cb0983"
+    },
+    "README.md": {
+      "sha256": "368ba4fe83ddfdab68c152882dc355aa63334ab81339078c15c0262af67ae732",
+      "gzip_sha256": "37c37620bd465e63dffb6ce66866737858a41b5e58344196a6f108c54be99eb2"
+    },
+    "artifacts.lock.yml": {
+      "sha256": "f4273ab1832df38e3f58d4d854bf722efb8244550c142e69787d883443f3028c",
+      "gzip_sha256": "a605e197ca6c9ff104ea4f589864158b4f3dae6b05d79014b30b0774b08572ae"
+    },
+    "verification_report.json": {
+      "sha256": "d4f09e1db719a1177e0dc242939fb3c52a145402e557bc86de46307cfe37a52e",
+      "gzip_sha256": "748524cd1277ad9f29797a19694c3686b0f7db458c7fd0f0f74738c7b0d417a8"
+    },
+    "expected_outputs_README.md": {
+      "sha256": "a19f05c1bced04bdbeff2877c3b186838745483e627afd54b367e534f7f4d7b7",
+      "gzip_sha256": "8cce6ab252218ee0c99288e61ef01e67ed1fee6a79753811d12dd50384fb603d"
+    },
+    "05_[5.5]_Diffusion_Language_Models.md": {
+      "sha256": "7c37c62003b33406932be4ef07d1730b64744fcfcf8b3f7b351712ffd41e8b0f",
+      "gzip_sha256": "2a19e4881b158cd96e0f6eea643ad22ed772c5725c80dbd9c97bdebf66bc6932"
+    },
+    "solutions.py": {
+      "sha256": "0b396cf7b8c3e0eb2bc4f21766d03e3cc43a1f3f6ca5d63b30b4483301d42424",
+      "gzip_sha256": "7589ebae8e928d0c6fe50507176150c2decc2d6fd517823db5b33a2763b827f6"
+    }
+  }
+}

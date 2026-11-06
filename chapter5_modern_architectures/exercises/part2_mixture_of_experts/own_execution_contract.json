@@ -1,0 +1,799 @@
+{
+  "schema_version": 1,
+  "exercise_notebook": "chapter5_modern_architectures/exercises/part2_mixture_of_experts/5.2_Mixture_of_Experts_from_Scratch_exercises.ipynb",
+  "source_files": {
+    "chapter5_modern_architectures/exercises/part2_mixture_of_experts/5.2_Mixture_of_Experts_from_Scratch_exercises.ipynb": {
+      "sha256": "35d2dbb5ce971e055695ea73500fd36c3e35e2744b29f1fdddec75dfade3330b",
+      "bytes": 574843
+    },
+    "chapter5_modern_architectures/exercises/part2_mixture_of_experts/5.2_Mixture_of_Experts_from_Scratch_solutions.ipynb": {
+      "sha256": "d01ac0653f20da9d4db0c48f26f7fe1f9f72528143007ce6cc3252b4a6626190",
+      "bytes": 794680
+    },
+    "chapter5_modern_architectures/exercises/part2_mixture_of_experts/solutions.py": {
+      "sha256": "f2311c506410fd3e36239d9f56c4763b6621f4f2ded72604545db7d1289daa06",
+      "bytes": 80542
+    },
+    "chapter5_modern_architectures/exercises/part2_mixture_of_experts/tests.py": {
+      "sha256": "1b0fc45d0e7bb391ad9815c8825f5035d0141ff5a1372fc4a3c1b8c31db29169",
+      "bytes": 32569
+    },
+    "chapter5_modern_architectures/exercises/part2_mixture_of_experts/README.md": {
+      "sha256": "255a27ce353a6600956228a43d2015a6fabff136f03aa36b6d159dccefb5421d",
+      "bytes": 2883
+    },
+    "infrastructure/chapters/chapter5_modern_architectures/master_5_2.py": {
+      "sha256": "d4c397550808f18593d42e82153effef794336fee1f441d4aee8efbaeb909b73",
+      "bytes": 132483
+    },
+    "chapter5_modern_architectures/exercises/part8_mixture_of_experts/solutions.py": {
+      "sha256": "e6024eb6d6a97e754ce093dc1b3201011bc0c3efe7469ad079acc58e0f058021",
+      "bytes": 75910
+    }
+  },
+  "plan": {
+    "schema_version": 1,
+    "source_notebook_object_sha256": "e1ca1fc2113ef9d0b1e49a50f38fa7d2ecd7ce0e47b565836b482a830b0e5a3d",
+    "occurrences": [
+      {
+        "cell": 12,
+        "statement": 0,
+        "name": "topk_router",
+        "stub_source_sha256": "edfae7bd0003cb5edcdb849f3d38d467084f45c06918c11810cf3e057052c611",
+        "stub_ast": "FunctionDef(name='topk_router', args=arguments(args=[arg(arg='router_logits', annotation=Attribute(value=Name(id='t', ctx=Load()), attr='Tensor', ctx=Load())), arg(arg='top_k', annotation=Name(id='int', ctx=Load()))]), body=[Raise(exc=Call(func=Name(id='NotImplementedError', ctx=Load())))], returns=Name(id='RouterOutput', ctx=Load()))",
+        "interface": {
+          "kind": "FunctionDef",
+          "name": "topk_router",
+          "args": "arguments(args=[arg(arg='router_logits'), arg(arg='top_k')])",
+          "decorators": [],
+          "type_params": []
+        },
+        "public_answer_interface": {
+          "kind": "FunctionDef",
+          "name": "topk_router",
+          "args": "arguments(args=[arg(arg='router_logits'), arg(arg='top_k')])",
+          "decorators": [],
+          "type_params": []
+        },
+        "answer_cell": 13,
+        "answer_block": 0,
+        "answer_code": 0,
+        "answer_block_sha256": "2fc047bbe478642c99558506e96aca73ef573dd6b301f9d6f9ad9f8db8f4b16c",
+        "answer_source": "def topk_router(router_logits: t.Tensor, top_k: int) -> RouterOutput:\n    \"\"\"Softmax router with portable ties and paper-faithful Switch top-1 gates.\n\n    Equal affinities are resolved by the lower expert index. Switch top-1 uses\n    the selected probability directly, so the task loss has an ordinary router\n    gradient. For ``top_k > 1`` the retained probabilities are normalized over\n    the selected experts, matching this section's explicit top-k convention.\n    \"\"\"\n\n    if router_logits.ndim != 2:\n        raise ValueError(\"router_logits must have shape (tokens, experts).\")\n    if not 1 <= top_k <= router_logits.shape[-1]:\n        raise ValueError(\"top_k must lie between one and the number of experts.\")\n    probabilities = router_logits.softmax(dim=-1)\n    ranked_indices = t.argsort(router_logits, dim=-1, descending=True, stable=True)\n    topk_indices = ranked_indices[:, :top_k]\n    topk_affinities = probabilities.gather(-1, topk_indices)\n    if top_k == 1:\n        topk_gates = topk_affinities\n    else:\n        topk_gates = topk_affinities / topk_affinities.sum(dim=-1, keepdim=True)\n    return RouterOutput(\n        router_logits,\n        probabilities,\n        topk_indices,\n        topk_affinities,\n        topk_gates,\n    )\n",
+        "answer_source_sha256": "2fc047bbe478642c99558506e96aca73ef573dd6b301f9d6f9ad9f8db8f4b16c"
+      },
+      {
+        "cell": 17,
+        "statement": 0,
+        "name": "compute_capacity_state",
+        "stub_source_sha256": "5a12ee39acabb10c230588a326ebc9b051d900298c390f54e431daa973e32bb9",
+        "stub_ast": "FunctionDef(name='compute_capacity_state', args=arguments(args=[arg(arg='topk_indices'), arg(arg='topk_affinities'), arg(arg='n_experts'), arg(arg='capacity_factor'), arg(arg='token_mask')], defaults=[Constant(value=None)]), body=[Raise(exc=Call(func=Name(id='NotImplementedError', ctx=Load())))])",
+        "interface": {
+          "kind": "FunctionDef",
+          "name": "compute_capacity_state",
+          "args": "arguments(args=[arg(arg='topk_indices'), arg(arg='topk_affinities'), arg(arg='n_experts'), arg(arg='capacity_factor'), arg(arg='token_mask')], defaults=[Constant(value=None)])",
+          "decorators": [],
+          "type_params": []
+        },
+        "public_answer_interface": {
+          "kind": "FunctionDef",
+          "name": "compute_capacity_state",
+          "args": "arguments(args=[arg(arg='topk_indices'), arg(arg='topk_affinities'), arg(arg='n_experts'), arg(arg='capacity_factor'), arg(arg='token_mask')], defaults=[Constant(value=None)])",
+          "decorators": [],
+          "type_params": []
+        },
+        "answer_cell": 18,
+        "answer_block": 0,
+        "answer_code": 0,
+        "answer_block_sha256": "cdbfebd3e324047517df5f31cbd615bc24fa2e5e657c10511471eaee1b97d068",
+        "answer_source": "def compute_capacity_state(\n    topk_indices: t.Tensor,\n    topk_affinities: t.Tensor,\n    n_experts: int,\n    capacity_factor: float | None,\n    token_mask: t.Tensor | None = None,\n) -> CapacityState:\n    \"\"\"Assign bounded slots independently per sequence and left-to-right.\n\n    A token competes only with earlier assignments from its own sequence. Each\n    sequence gets a fixed quota from its structural active-token mask, and\n    assignments are admitted left-to-right. Future token identities and\n    unrelated batch rows therefore cannot change an earlier decision. A 2D\n    input is treated as one sequence; decoder calls use 3D inputs. ``None`` or\n    infinity disables dropping while preserving the ledger.\n    \"\"\"\n\n    if topk_indices.shape != topk_affinities.shape or topk_indices.ndim not in (2, 3):\n        raise ValueError(\n            \"indices and affinities must share shape (sequence, top_k) or \"\n            \"(batch, sequence, top_k).\"\n        )\n    squeeze_batch = topk_indices.ndim == 2\n    if squeeze_batch:\n        topk_indices = topk_indices.unsqueeze(0)\n        topk_affinities = topk_affinities.unsqueeze(0)\n    batch, sequence, top_k = topk_indices.shape\n    if token_mask is None:\n        token_mask = t.ones((batch, sequence), dtype=t.bool, device=topk_indices.device)\n    elif squeeze_batch and token_mask.ndim == 1:\n        token_mask = token_mask.unsqueeze(0)\n    if token_mask.shape != (batch, sequence):\n        raise ValueError(\"token_mask must match the batch and sequence axes.\")\n    if capacity_factor is not None and capacity_factor <= 0:\n        raise ValueError(\"capacity_factor must be positive or None.\")\n\n    del topk_affinities  # Decoder admission order never depends on affinity.\n    slot_indices = t.full_like(topk_indices, -1)\n    requested_counts = t.zeros(n_experts, dtype=t.long, device=topk_indices.device)\n    kept_counts = t.zeros_like(requested_counts)\n    max_capacity = 0\n    unbounded = capacity_factor is None or math.isinf(capacity_factor)\n    for row in range(batch):\n        active_assignments = int(token_mask[row].sum().item()) * top_k\n        row_capacity = (\n            active_assignments\n            if unbounded\n            else math.ceil(capacity_factor * active_assignments / n_experts)\n        )\n        max_capacity = max(max_capacity, row_capacity)\n        row_kept = t.zeros(n_experts, dtype=t.long, device=topk_indices.device)\n        for position in range(sequence):\n            if not bool(token_mask[row, position]):\n                continue\n            for rank in range(top_k):\n                expert = int(topk_indices[row, position, rank])\n                requested_counts[expert] += 1\n                if unbounded or int(row_kept[expert]) < row_capacity:\n                    slot_indices[row, position, rank] = row_kept[expert]\n                    row_kept[expert] += 1\n                    kept_counts[expert] += 1\n\n    keep_mask = slot_indices.ge(0)\n    requested_total = int(requested_counts.sum().item())\n    kept_total = int(kept_counts.sum().item())\n    dropped_count = requested_total - kept_total\n    dropped_fraction = 0.0 if requested_total == 0 else dropped_count / requested_total\n    if squeeze_batch:\n        slot_indices = slot_indices.squeeze(0)\n        keep_mask = keep_mask.squeeze(0)\n    return CapacityState(\n        capacity=max_capacity,\n        slot_indices=slot_indices,\n        keep_mask=keep_mask,\n        requested_counts=requested_counts,\n        kept_counts=kept_counts,\n        dropped_count=dropped_count,\n        dropped_fraction=dropped_fraction,\n    )\n",
+        "answer_source_sha256": "cdbfebd3e324047517df5f31cbd615bc24fa2e5e657c10511471eaee1b97d068"
+      },
+      {
+        "cell": 22,
+        "statement": 0,
+        "name": "dispatch_tokens",
+        "stub_source_sha256": "74ab6b245dd279912accf0cd056868e2e9ffc7b90a689bd8bdf19b1aff529a72",
+        "stub_ast": "FunctionDef(name='dispatch_tokens', args=arguments(args=[arg(arg='token_activations'), arg(arg='topk_indices'), arg(arg='capacity'), arg(arg='n_experts')]), body=[Raise(exc=Call(func=Name(id='NotImplementedError', ctx=Load())))])",
+        "interface": {
+          "kind": "FunctionDef",
+          "name": "dispatch_tokens",
+          "args": "arguments(args=[arg(arg='token_activations'), arg(arg='topk_indices'), arg(arg='capacity'), arg(arg='n_experts')])",
+          "decorators": [],
+          "type_params": []
+        },
+        "public_answer_interface": {
+          "kind": "FunctionDef",
+          "name": "dispatch_tokens",
+          "args": "arguments(args=[arg(arg='token_activations'), arg(arg='topk_indices'), arg(arg='capacity'), arg(arg='n_experts')])",
+          "decorators": [],
+          "type_params": []
+        },
+        "answer_cell": 23,
+        "answer_block": 0,
+        "answer_code": 0,
+        "answer_block_sha256": "2b1f6bcb795397982c151df509d9bc834cfde209ba430094814a1cdff40b0989",
+        "answer_source": "def dispatch_tokens(\n    token_activations: t.Tensor,\n    topk_indices: t.Tensor,\n    capacity: CapacityState,\n    n_experts: int,\n) -> t.Tensor:\n    \"\"\"Pack activations into independent per-sequence expert buffers.\"\"\"\n\n    squeeze_batch = token_activations.ndim == 2\n    if squeeze_batch:\n        token_activations = token_activations.unsqueeze(0)\n        topk_indices = topk_indices.unsqueeze(0)\n        keep_mask = capacity.keep_mask.unsqueeze(0)\n        slot_indices = capacity.slot_indices.unsqueeze(0)\n    elif token_activations.ndim == 3:\n        keep_mask = capacity.keep_mask\n        slot_indices = capacity.slot_indices\n    else:\n        raise ValueError(\n            \"token_activations must have shape (sequence, d_model) or \"\n            \"(batch, sequence, d_model).\"\n        )\n    if topk_indices.shape[:2] != token_activations.shape[:2]:\n        raise ValueError(\"router and activation batch/sequence axes do not match.\")\n    batch, _, d_model = token_activations.shape\n    dispatched = token_activations.new_zeros(\n        batch,\n        n_experts,\n        capacity.capacity,\n        d_model,\n    )\n    rows, positions, ranks = t.nonzero(keep_mask, as_tuple=True)\n    experts = topk_indices[rows, positions, ranks]\n    slots = slot_indices[rows, positions, ranks]\n    dispatched[rows, experts, slots] = token_activations[rows, positions]\n    return dispatched.squeeze(0) if squeeze_batch else dispatched\n",
+        "answer_source_sha256": "0a57e400022755564f24164c86376ff0f996034f86d827702fcbab6d4f8acf92"
+      },
+      {
+        "cell": 22,
+        "statement": 1,
+        "name": "combine_expert_outputs",
+        "stub_source_sha256": "1bfd73429d58d74b41b8ccd1f5ebc25578feddac0d44f353a61e59385164c54c",
+        "stub_ast": "FunctionDef(name='combine_expert_outputs', args=arguments(args=[arg(arg='expert_outputs'), arg(arg='topk_indices'), arg(arg='topk_gates'), arg(arg='capacity')]), body=[Raise(exc=Call(func=Name(id='NotImplementedError', ctx=Load())))])",
+        "interface": {
+          "kind": "FunctionDef",
+          "name": "combine_expert_outputs",
+          "args": "arguments(args=[arg(arg='expert_outputs'), arg(arg='topk_indices'), arg(arg='topk_gates'), arg(arg='capacity')])",
+          "decorators": [],
+          "type_params": []
+        },
+        "public_answer_interface": {
+          "kind": "FunctionDef",
+          "name": "combine_expert_outputs",
+          "args": "arguments(args=[arg(arg='expert_outputs'), arg(arg='topk_indices'), arg(arg='topk_gates'), arg(arg='capacity')])",
+          "decorators": [],
+          "type_params": []
+        },
+        "answer_cell": 23,
+        "answer_block": 0,
+        "answer_code": 0,
+        "answer_block_sha256": "2b1f6bcb795397982c151df509d9bc834cfde209ba430094814a1cdff40b0989",
+        "answer_source": "def combine_expert_outputs(\n    expert_outputs: t.Tensor,\n    topk_indices: t.Tensor,\n    topk_gates: t.Tensor,\n    capacity: CapacityState,\n) -> tuple[t.Tensor, t.Tensor]:\n    \"\"\"Scatter weighted expert outputs back to independent sequences.\"\"\"\n\n    squeeze_batch = topk_indices.ndim == 2\n    if squeeze_batch:\n        expert_outputs = expert_outputs.unsqueeze(0)\n        topk_indices = topk_indices.unsqueeze(0)\n        topk_gates = topk_gates.unsqueeze(0)\n        keep_mask = capacity.keep_mask.unsqueeze(0)\n        slot_indices = capacity.slot_indices.unsqueeze(0)\n    elif topk_indices.ndim == 3 and expert_outputs.ndim == 4:\n        keep_mask = capacity.keep_mask\n        slot_indices = capacity.slot_indices\n    else:\n        raise ValueError(\"batched router and expert tensors must have compatible ranks.\")\n    batch, sequence, _ = topk_indices.shape\n    d_model = expert_outputs.shape[-1]\n    combined = expert_outputs.new_zeros(batch * sequence, d_model)\n    combined_weight = expert_outputs.new_zeros(batch * sequence)\n    rows, positions, ranks = t.nonzero(keep_mask, as_tuple=True)\n    experts = topk_indices[rows, positions, ranks]\n    slots = slot_indices[rows, positions, ranks]\n    gates = topk_gates[rows, positions, ranks]\n    token_ids = rows * sequence + positions\n    selected = expert_outputs[rows, experts, slots] * gates[:, None]\n    combined.index_add_(0, token_ids, selected)\n    combined_weight.index_add_(0, token_ids, gates)\n    combined = combined.reshape(batch, sequence, d_model)\n    combined_weight = combined_weight.reshape(batch, sequence)\n    if squeeze_batch:\n        return combined.squeeze(0), combined_weight.squeeze(0)\n    return combined, combined_weight\n",
+        "answer_source_sha256": "5b59ee086c9c3fb94affd9aa27fdc1e1b8c5f89b2d47394eacbe1d01a96c5f9f"
+      },
+      {
+        "cell": 28,
+        "statement": 0,
+        "name": "ExpertMLPs",
+        "stub_source_sha256": "d1834a2a701aaf2e936c1f1896dfdc73b792dfb858d58b9a0de0ec9bc1f7901b",
+        "stub_ast": "ClassDef(name='ExpertMLPs', bases=[Attribute(value=Name(id='nn', ctx=Load()), attr='Module', ctx=Load())], body=[FunctionDef(name='__init__', args=arguments(args=[arg(arg='self'), arg(arg='n_experts'), arg(arg='d_model'), arg(arg='d_expert')]), body=[Expr(value=Call(func=Attribute(value=Call(func=Name(id='super', ctx=Load())), attr='__init__', ctx=Load()))), Raise(exc=Call(func=Name(id='NotImplementedError', ctx=Load())))]), FunctionDef(name='forward', args=arguments(args=[arg(arg='self'), arg(arg='dispatched')]), body=[Raise(exc=Call(func=Name(id='NotImplementedError', ctx=Load())))])])",
+        "interface": {
+          "kind": "class",
+          "name": "ExpertMLPs",
+          "bases": [
+            "Attribute(value=Name(id='nn', ctx=Load()), attr='Module', ctx=Load())"
+          ],
+          "keywords": [],
+          "decorators": [],
+          "methods": [
+            {
+              "kind": "FunctionDef",
+              "name": "__init__",
+              "args": "arguments(args=[arg(arg='self'), arg(arg='n_experts'), arg(arg='d_model'), arg(arg='d_expert')])",
+              "decorators": [],
+              "type_params": []
+            },
+            {
+              "kind": "FunctionDef",
+              "name": "forward",
+              "args": "arguments(args=[arg(arg='self'), arg(arg='dispatched')])",
+              "decorators": [],
+              "type_params": []
+            }
+          ]
+        },
+        "public_answer_interface": {
+          "kind": "class",
+          "name": "ExpertMLPs",
+          "bases": [
+            "Attribute(value=Name(id='nn', ctx=Load()), attr='Module', ctx=Load())"
+          ],
+          "keywords": [],
+          "decorators": [],
+          "methods": [
+            {
+              "kind": "FunctionDef",
+              "name": "__init__",
+              "args": "arguments(args=[arg(arg='self'), arg(arg='n_experts'), arg(arg='d_model'), arg(arg='d_expert')])",
+              "decorators": [],
+              "type_params": []
+            },
+            {
+              "kind": "FunctionDef",
+              "name": "forward",
+              "args": "arguments(args=[arg(arg='self'), arg(arg='dispatched')])",
+              "decorators": [],
+              "type_params": []
+            }
+          ]
+        },
+        "answer_cell": 29,
+        "answer_block": 0,
+        "answer_code": 0,
+        "answer_block_sha256": "3cde951902a094799e6657eb761a37e0de559c04b60b4b1c0fdbfc53a8c50276",
+        "answer_source": "class ExpertMLPs(nn.Module):\n    \"\"\"A bank of independent two-layer GELU experts.\"\"\"\n\n    def __init__(self, n_experts: int, d_model: int, d_expert: int):\n        super().__init__()\n        self.experts = nn.ModuleList(\n            [\n                nn.Sequential(\n                    nn.Linear(d_model, d_expert),\n                    nn.GELU(),\n                    nn.Linear(d_expert, d_model),\n                )\n                for _ in range(n_experts)\n            ]\n        )\n\n    def forward(self, dispatched: t.Tensor) -> t.Tensor:\n        if dispatched.ndim == 3 and dispatched.shape[0] == len(self.experts):\n            return t.stack([expert(dispatched[index]) for index, expert in enumerate(self.experts)])\n        if dispatched.ndim == 4 and dispatched.shape[1] == len(self.experts):\n            return t.stack(\n                [expert(dispatched[:, index]) for index, expert in enumerate(self.experts)],\n                dim=1,\n            )\n        raise ValueError(\n            \"The dispatched tensor must have shape (experts, capacity, d_model) \"\n            \"or (batch, experts, capacity, d_model).\"\n        )\n",
+        "answer_source_sha256": "3cde951902a094799e6657eb761a37e0de559c04b60b4b1c0fdbfc53a8c50276"
+      },
+      {
+        "cell": 32,
+        "statement": 0,
+        "name": "load_balancing_loss",
+        "stub_source_sha256": "898f8d2def1bd4e2db6f183c6d40f688eda5ea68254ed2f32794968aafccade4",
+        "stub_ast": "FunctionDef(name='load_balancing_loss', args=arguments(args=[arg(arg='router_probabilities'), arg(arg='topk_indices'), arg(arg='token_mask')], defaults=[Constant(value=None)]), body=[Raise(exc=Call(func=Name(id='NotImplementedError', ctx=Load())))])",
+        "interface": {
+          "kind": "FunctionDef",
+          "name": "load_balancing_loss",
+          "args": "arguments(args=[arg(arg='router_probabilities'), arg(arg='topk_indices'), arg(arg='token_mask')], defaults=[Constant(value=None)])",
+          "decorators": [],
+          "type_params": []
+        },
+        "public_answer_interface": {
+          "kind": "FunctionDef",
+          "name": "load_balancing_loss",
+          "args": "arguments(args=[arg(arg='router_probabilities'), arg(arg='topk_indices'), arg(arg='token_mask')], defaults=[Constant(value=None)])",
+          "decorators": [],
+          "type_params": []
+        },
+        "answer_cell": 33,
+        "answer_block": 0,
+        "answer_code": 0,
+        "answer_block_sha256": "75625cc2bc8f827b5e366e6e0d3ce52ebc6c32f75adc49a6ecdfc116b572b669",
+        "answer_source": "def load_balancing_loss(\n    router_probabilities: t.Tensor,\n    topk_indices: t.Tensor,\n    token_mask: t.Tensor | None = None,\n) -> t.Tensor:\n    \"\"\"Switch-style product of soft importance and hard assignment frequency.\"\"\"\n\n    if router_probabilities.ndim != 2 or topk_indices.ndim != 2:\n        raise ValueError(\"router inputs must have shapes (tokens, experts) and (tokens, top_k).\")\n    n_tokens, n_experts = router_probabilities.shape\n    if token_mask is None:\n        token_mask = t.ones(n_tokens, dtype=t.bool, device=router_probabilities.device)\n    probabilities = router_probabilities[token_mask]\n    assignments = topk_indices[token_mask]\n    if probabilities.numel() == 0:\n        return router_probabilities.sum() * 0\n    importance = probabilities.mean(dim=0)\n    load = F.one_hot(assignments, num_classes=n_experts).float().mean(dim=(0, 1))\n    return n_experts * (importance * load.detach()).sum()\n",
+        "answer_source_sha256": "4e476b0f136e9ab87e8f7df6ae36f2bba11869507a44b0d0ce0035160fa26734"
+      },
+      {
+        "cell": 32,
+        "statement": 1,
+        "name": "router_z_loss",
+        "stub_source_sha256": "16c11d1f4e484104f28ee9a076adc70552b514dd0d6ba83b8d0782fc7daf01ef",
+        "stub_ast": "FunctionDef(name='router_z_loss', args=arguments(args=[arg(arg='router_logits'), arg(arg='token_mask')], defaults=[Constant(value=None)]), body=[Raise(exc=Call(func=Name(id='NotImplementedError', ctx=Load())))])",
+        "interface": {
+          "kind": "FunctionDef",
+          "name": "router_z_loss",
+          "args": "arguments(args=[arg(arg='router_logits'), arg(arg='token_mask')], defaults=[Constant(value=None)])",
+          "decorators": [],
+          "type_params": []
+        },
+        "public_answer_interface": {
+          "kind": "FunctionDef",
+          "name": "router_z_loss",
+          "args": "arguments(args=[arg(arg='router_logits'), arg(arg='token_mask')], defaults=[Constant(value=None)])",
+          "decorators": [],
+          "type_params": []
+        },
+        "answer_cell": 33,
+        "answer_block": 0,
+        "answer_code": 0,
+        "answer_block_sha256": "75625cc2bc8f827b5e366e6e0d3ce52ebc6c32f75adc49a6ecdfc116b572b669",
+        "answer_source": "def router_z_loss(router_logits: t.Tensor, token_mask: t.Tensor | None = None) -> t.Tensor:\n    \"\"\"Penalize large router log-partition values without changing routing semantics.\"\"\"\n\n    if token_mask is None:\n        token_mask = t.ones(router_logits.shape[0], dtype=t.bool, device=router_logits.device)\n    active = router_logits[token_mask]\n    if active.numel() == 0:\n        return router_logits.sum() * 0\n    return t.logsumexp(active, dim=-1).square().mean()\n",
+        "answer_source_sha256": "83ebc01641a6207d29da4be70fa6fbfa3300a2b2bf32b96581455043dd931fa7"
+      },
+      {
+        "cell": 32,
+        "statement": 2,
+        "name": "paired_factorial_effects",
+        "stub_source_sha256": "ddb290e9c32ac415df1aa16067bfd3c913b3f41de7ebee2b84646a665cb6331a",
+        "stub_ast": "FunctionDef(name='paired_factorial_effects', args=arguments(args=[arg(arg='condition_values')]), body=[Raise(exc=Call(func=Name(id='NotImplementedError', ctx=Load())))])",
+        "interface": {
+          "kind": "FunctionDef",
+          "name": "paired_factorial_effects",
+          "args": "arguments(args=[arg(arg='condition_values')])",
+          "decorators": [],
+          "type_params": []
+        },
+        "public_answer_interface": {
+          "kind": "FunctionDef",
+          "name": "paired_factorial_effects",
+          "args": "arguments(args=[arg(arg='condition_values')])",
+          "decorators": [],
+          "type_params": []
+        },
+        "answer_cell": 33,
+        "answer_block": 0,
+        "answer_code": 0,
+        "answer_block_sha256": "75625cc2bc8f827b5e366e6e0d3ce52ebc6c32f75adc49a6ecdfc116b572b669",
+        "answer_source": "def paired_factorial_effects(condition_values: dict[str, float]) -> dict[str, float]:\n    \"\"\"Signed within-initialization effects for the 2x2 aux/z design.\n\n    Main effects are ``mean(with factor) - mean(without factor)``. The\n    interaction is the aux effect with z minus the aux effect without z.\n    \"\"\"\n\n    required = {\"aux+z\", \"aux-only\", \"z-only\", \"neither\"}\n    if set(condition_values) != required:\n        raise ValueError(f\"condition_values must have exactly {sorted(required)}.\")\n    aux_z = float(condition_values[\"aux+z\"])\n    aux_only = float(condition_values[\"aux-only\"])\n    z_only = float(condition_values[\"z-only\"])\n    neither = float(condition_values[\"neither\"])\n    return {\n        \"aux_main_effect\": 0.5 * ((aux_z - z_only) + (aux_only - neither)),\n        \"z_main_effect\": 0.5 * ((aux_z - aux_only) + (z_only - neither)),\n        \"aux_z_interaction\": (aux_z - z_only) - (aux_only - neither),\n    }\n",
+        "answer_source_sha256": "09b352d260131dd1df260bb1e49aef022960831a7f86a852f3f6cd0468f05fc7"
+      },
+      {
+        "cell": 37,
+        "statement": 0,
+        "name": "SparseMoE",
+        "stub_source_sha256": "17a41e7924512daa69b8768bcacf5384869fa61cebe8d95f4c0b577b0a418209",
+        "stub_ast": "ClassDef(name='SparseMoE', bases=[Attribute(value=Name(id='nn', ctx=Load()), attr='Module', ctx=Load())], body=[FunctionDef(name='__init__', args=arguments(args=[arg(arg='self'), arg(arg='config')]), body=[Expr(value=Call(func=Attribute(value=Call(func=Name(id='super', ctx=Load())), attr='__init__', ctx=Load()))), Raise(exc=Call(func=Name(id='NotImplementedError', ctx=Load())))]), FunctionDef(name='forward', args=arguments(args=[arg(arg='self'), arg(arg='hidden')], kwonlyargs=[arg(arg='token_mask'), arg(arg='capacity_factor'), arg(arg='force_expert'), arg(arg='ablate_experts')], kw_defaults=[Constant(value=None), Constant(value=None), Constant(value=None), Tuple(ctx=Load())]), body=[Raise(exc=Call(func=Name(id='NotImplementedError', ctx=Load())))])])",
+        "interface": {
+          "kind": "class",
+          "name": "SparseMoE",
+          "bases": [
+            "Attribute(value=Name(id='nn', ctx=Load()), attr='Module', ctx=Load())"
+          ],
+          "keywords": [],
+          "decorators": [],
+          "methods": [
+            {
+              "kind": "FunctionDef",
+              "name": "__init__",
+              "args": "arguments(args=[arg(arg='self'), arg(arg='config')])",
+              "decorators": [],
+              "type_params": []
+            },
+            {
+              "kind": "FunctionDef",
+              "name": "forward",
+              "args": "arguments(args=[arg(arg='self'), arg(arg='hidden')], kwonlyargs=[arg(arg='token_mask'), arg(arg='capacity_factor'), arg(arg='force_expert'), arg(arg='ablate_experts')], kw_defaults=[Constant(value=None), Constant(value=None), Constant(value=None), Tuple(ctx=Load())])",
+              "decorators": [],
+              "type_params": []
+            }
+          ]
+        },
+        "public_answer_interface": {
+          "kind": "class",
+          "name": "SparseMoE",
+          "bases": [
+            "Attribute(value=Name(id='nn', ctx=Load()), attr='Module', ctx=Load())"
+          ],
+          "keywords": [],
+          "decorators": [],
+          "methods": [
+            {
+              "kind": "FunctionDef",
+              "name": "__init__",
+              "args": "arguments(args=[arg(arg='self'), arg(arg='config')])",
+              "decorators": [],
+              "type_params": []
+            },
+            {
+              "kind": "FunctionDef",
+              "name": "forward",
+              "args": "arguments(args=[arg(arg='self'), arg(arg='hidden')], kwonlyargs=[arg(arg='token_mask'), arg(arg='capacity_factor'), arg(arg='force_expert'), arg(arg='ablate_experts')], kw_defaults=[Constant(value=None), Constant(value=None), Constant(value=None), Tuple(ctx=Load())])",
+              "decorators": [],
+              "type_params": []
+            }
+          ]
+        },
+        "answer_cell": 38,
+        "answer_block": 0,
+        "answer_code": 0,
+        "answer_block_sha256": "ef67c0ab413f2ee1dccf6d871067b6e0cb105241970862b1adcb78a98c564e1c",
+        "answer_source": "class SparseMoE(nn.Module):\n    \"\"\"Top-k sparse expert layer with explicit dispatch and capacity accounting.\"\"\"\n\n    def __init__(self, config: MoEConfig):\n        super().__init__()\n        self.config = config\n        self.router = nn.Linear(config.d_model, config.n_experts)\n        self.expert_mlps = ExpertMLPs(config.n_experts, config.d_model, config.d_expert)\n        with t.no_grad():\n            self.router.bias.zero_()\n            self.router.bias[0] = config.router_bias_init\n\n    def forward(\n        self,\n        hidden: t.Tensor,\n        *,\n        token_mask: t.Tensor | None = None,\n        capacity_factor: float | None = None,\n        force_expert: int | None = None,\n        ablate_experts: Iterable[int] = (),\n    ) -> MoEForwardOutput:\n        batch, sequence, d_model = hidden.shape\n        flat_hidden = hidden.reshape(batch * sequence, d_model)\n        flat_mask = None if token_mask is None else token_mask.reshape(-1).bool()\n        logits = self.router(flat_hidden)\n        if force_expert is not None:\n            if not 0 <= force_expert < self.config.n_experts:\n                raise ValueError(\"force_expert is outside the expert range.\")\n            logits = t.full_like(logits, -30.0)\n            logits[:, force_expert] = 30.0\n        route = topk_router(logits, self.config.top_k)\n        factor = self.config.capacity_factor if capacity_factor is None else capacity_factor\n        routed_indices = route.topk_indices.reshape(batch, sequence, -1)\n        routed_affinities = route.topk_affinities.reshape(batch, sequence, -1)\n        ledger = compute_capacity_state(\n            routed_indices,\n            routed_affinities,\n            self.config.n_experts,\n            factor,\n            None if flat_mask is None else flat_mask.reshape(batch, sequence),\n        )\n        dispatched = dispatch_tokens(hidden, routed_indices, ledger, self.config.n_experts)\n        expert_outputs = self.expert_mlps(dispatched)\n        for expert in ablate_experts:\n            if not 0 <= expert < self.config.n_experts:\n                raise ValueError(\"An ablated expert index is outside the expert range.\")\n            expert_outputs[expert] = 0\n        combined, combined_weight = combine_expert_outputs(\n            expert_outputs,\n            routed_indices,\n            route.topk_gates.reshape(batch, sequence, -1),\n            ledger,\n        )\n        return MoEForwardOutput(\n            output=combined,\n            router=RouterOutput(\n                route.logits.reshape(batch, sequence, -1),\n                route.probabilities.reshape(batch, sequence, -1),\n                route.topk_indices.reshape(batch, sequence, -1),\n                route.topk_affinities.reshape(batch, sequence, -1),\n                route.topk_gates.reshape(batch, sequence, -1),\n            ),\n            capacity=ledger,\n            combined_weight=combined_weight,\n            load_balancing_loss=load_balancing_loss(route.probabilities, route.topk_indices, flat_mask),\n            router_z_loss=router_z_loss(route.logits, flat_mask),\n        )\n",
+        "answer_source_sha256": "ef67c0ab413f2ee1dccf6d871067b6e0cb105241970862b1adcb78a98c564e1c"
+      },
+      {
+        "cell": 43,
+        "statement": 0,
+        "name": "MoETransformerBlock",
+        "stub_source_sha256": "abb504b800c0c55ef49df95603b1d2661156e9a639def2cd9e9feeb08ccdd30b",
+        "stub_ast": "ClassDef(name='MoETransformerBlock', bases=[Attribute(value=Name(id='nn', ctx=Load()), attr='Module', ctx=Load())], body=[FunctionDef(name='__init__', args=arguments(args=[arg(arg='self'), arg(arg='config')]), body=[Expr(value=Call(func=Attribute(value=Call(func=Name(id='super', ctx=Load())), attr='__init__', ctx=Load()))), Raise(exc=Call(func=Name(id='NotImplementedError', ctx=Load())))]), FunctionDef(name='forward', args=arguments(args=[arg(arg='self'), arg(arg='hidden')], kwonlyargs=[arg(arg='past_kv'), arg(arg='token_mask'), arg(arg='capacity_factor'), arg(arg='force_expert'), arg(arg='ablate_experts')], kw_defaults=[Constant(value=None), Constant(value=None), Constant(value=None), Constant(value=None), Tuple(ctx=Load())]), body=[Raise(exc=Call(func=Name(id='NotImplementedError', ctx=Load())))])])",
+        "interface": {
+          "kind": "class",
+          "name": "MoETransformerBlock",
+          "bases": [
+            "Attribute(value=Name(id='nn', ctx=Load()), attr='Module', ctx=Load())"
+          ],
+          "keywords": [],
+          "decorators": [],
+          "methods": [
+            {
+              "kind": "FunctionDef",
+              "name": "__init__",
+              "args": "arguments(args=[arg(arg='self'), arg(arg='config')])",
+              "decorators": [],
+              "type_params": []
+            },
+            {
+              "kind": "FunctionDef",
+              "name": "forward",
+              "args": "arguments(args=[arg(arg='self'), arg(arg='hidden')], kwonlyargs=[arg(arg='past_kv'), arg(arg='token_mask'), arg(arg='capacity_factor'), arg(arg='force_expert'), arg(arg='ablate_experts')], kw_defaults=[Constant(value=None), Constant(value=None), Constant(value=None), Constant(value=None), Tuple(ctx=Load())])",
+              "decorators": [],
+              "type_params": []
+            }
+          ]
+        },
+        "public_answer_interface": {
+          "kind": "class",
+          "name": "MoETransformerBlock",
+          "bases": [
+            "Attribute(value=Name(id='nn', ctx=Load()), attr='Module', ctx=Load())"
+          ],
+          "keywords": [],
+          "decorators": [],
+          "methods": [
+            {
+              "kind": "FunctionDef",
+              "name": "__init__",
+              "args": "arguments(args=[arg(arg='self'), arg(arg='config')])",
+              "decorators": [],
+              "type_params": []
+            },
+            {
+              "kind": "FunctionDef",
+              "name": "forward",
+              "args": "arguments(args=[arg(arg='self'), arg(arg='hidden')], kwonlyargs=[arg(arg='past_kv'), arg(arg='token_mask'), arg(arg='capacity_factor'), arg(arg='force_expert'), arg(arg='ablate_experts')], kw_defaults=[Constant(value=None), Constant(value=None), Constant(value=None), Constant(value=None), Tuple(ctx=Load())])",
+              "decorators": [],
+              "type_params": []
+            }
+          ]
+        },
+        "answer_cell": 44,
+        "answer_block": 0,
+        "answer_code": 0,
+        "answer_block_sha256": "22695ac662a74c60483cd926355f8e713136794240440a7250f217f7f3f674ab",
+        "answer_source": "class MoETransformerBlock(nn.Module):\n    def __init__(self, config: MoEConfig):\n        super().__init__()\n        self.attention_norm = nn.LayerNorm(config.d_model)\n        self.attention = CausalSelfAttention(config)\n        self.moe_norm = nn.LayerNorm(config.d_model)\n        self.moe = SparseMoE(config)\n\n    def forward(\n        self,\n        hidden: t.Tensor,\n        *,\n        past_kv: tuple[t.Tensor, t.Tensor] | None = None,\n        token_mask: t.Tensor | None = None,\n        capacity_factor: float | None = None,\n        force_expert: int | None = None,\n        ablate_experts: Iterable[int] = (),\n    ) -> tuple[t.Tensor, tuple[t.Tensor, t.Tensor], MoEForwardOutput]:\n        attention_output, cache = self.attention(self.attention_norm(hidden), past_kv)\n        hidden = hidden + attention_output\n        moe_output = self.moe(\n            self.moe_norm(hidden),\n            token_mask=token_mask,\n            capacity_factor=capacity_factor,\n            force_expert=force_expert,\n            ablate_experts=ablate_experts,\n        )\n        return hidden + moe_output.output, cache, moe_output\n",
+        "answer_source_sha256": "22695ac662a74c60483cd926355f8e713136794240440a7250f217f7f3f674ab"
+      },
+      {
+        "cell": 47,
+        "statement": 0,
+        "name": "SparseMoETransformer",
+        "stub_source_sha256": "1b23aa37048129a0ff16ea89fb25fc25c6a7a336d366084859b62b1edfc6188f",
+        "stub_ast": "ClassDef(name='SparseMoETransformer', bases=[Attribute(value=Name(id='nn', ctx=Load()), attr='Module', ctx=Load())], body=[FunctionDef(name='__init__', args=arguments(args=[arg(arg='self'), arg(arg='config')]), body=[Expr(value=Call(func=Attribute(value=Call(func=Name(id='super', ctx=Load())), attr='__init__', ctx=Load()))), Raise(exc=Call(func=Name(id='NotImplementedError', ctx=Load())))]), FunctionDef(name='forward', args=arguments(args=[arg(arg='self'), arg(arg='input_ids')], kwonlyargs=[arg(arg='caches'), arg(arg='use_cache'), arg(arg='capacity_factor'), arg(arg='force_expert'), arg(arg='ablate_experts'), arg(arg='moe_token_mask')], kw_defaults=[Constant(value=None), Constant(value=False), Constant(value=None), Constant(value=None), Tuple(ctx=Load()), Constant(value=None)]), body=[Raise(exc=Call(func=Name(id='NotImplementedError', ctx=Load())))]), FunctionDef(name='greedy_generate', args=arguments(args=[arg(arg='self'), arg(arg='input_ids'), arg(arg='max_new_tokens')]), body=[Raise(exc=Call(func=Name(id='NotImplementedError', ctx=Load())))])])",
+        "interface": {
+          "kind": "class",
+          "name": "SparseMoETransformer",
+          "bases": [
+            "Attribute(value=Name(id='nn', ctx=Load()), attr='Module', ctx=Load())"
+          ],
+          "keywords": [],
+          "decorators": [],
+          "methods": [
+            {
+              "kind": "FunctionDef",
+              "name": "__init__",
+              "args": "arguments(args=[arg(arg='self'), arg(arg='config')])",
+              "decorators": [],
+              "type_params": []
+            },
+            {
+              "kind": "FunctionDef",
+              "name": "forward",
+              "args": "arguments(args=[arg(arg='self'), arg(arg='input_ids')], kwonlyargs=[arg(arg='caches'), arg(arg='use_cache'), arg(arg='capacity_factor'), arg(arg='force_expert'), arg(arg='ablate_experts'), arg(arg='moe_token_mask')], kw_defaults=[Constant(value=None), Constant(value=False), Constant(value=None), Constant(value=None), Tuple(ctx=Load()), Constant(value=None)])",
+              "decorators": [],
+              "type_params": []
+            },
+            {
+              "kind": "FunctionDef",
+              "name": "greedy_generate",
+              "args": "arguments(args=[arg(arg='self'), arg(arg='input_ids'), arg(arg='max_new_tokens')])",
+              "decorators": [],
+              "type_params": []
+            }
+          ]
+        },
+        "public_answer_interface": {
+          "kind": "class",
+          "name": "SparseMoETransformer",
+          "bases": [
+            "Attribute(value=Name(id='nn', ctx=Load()), attr='Module', ctx=Load())"
+          ],
+          "keywords": [],
+          "decorators": [],
+          "methods": [
+            {
+              "kind": "FunctionDef",
+              "name": "__init__",
+              "args": "arguments(args=[arg(arg='self'), arg(arg='config')])",
+              "decorators": [],
+              "type_params": []
+            },
+            {
+              "kind": "FunctionDef",
+              "name": "forward",
+              "args": "arguments(args=[arg(arg='self'), arg(arg='input_ids')], kwonlyargs=[arg(arg='caches'), arg(arg='use_cache'), arg(arg='capacity_factor'), arg(arg='force_expert'), arg(arg='ablate_experts'), arg(arg='moe_token_mask')], kw_defaults=[Constant(value=None), Constant(value=False), Constant(value=None), Constant(value=None), Tuple(ctx=Load()), Constant(value=None)])",
+              "decorators": [],
+              "type_params": []
+            },
+            {
+              "kind": "FunctionDef",
+              "name": "greedy_generate",
+              "args": "arguments(args=[arg(arg='self'), arg(arg='input_ids'), arg(arg='max_new_tokens')])",
+              "decorators": [
+                "Call(func=Attribute(value=Name(id='t', ctx=Load()), attr='inference_mode', ctx=Load()))"
+              ],
+              "type_params": []
+            }
+          ]
+        },
+        "answer_cell": 48,
+        "answer_block": 0,
+        "answer_code": 0,
+        "answer_block_sha256": "a0562f57c86039e5909bf71ffc7a151be8411e1783059b13922e77ff4467be09",
+        "answer_source": "class SparseMoETransformer(nn.Module):\n    \"\"\"A complete decoder-only transformer whose FFNs are sparse MoE layers.\"\"\"\n\n    def __init__(self, config: MoEConfig):\n        super().__init__()\n        self.config = config\n        self.token_embedding = nn.Embedding(config.vocab_size, config.d_model)\n        self.position_embedding = nn.Embedding.from_pretrained(\n            sinusoidal_position_table(config.max_seq_len, config.d_model), freeze=True\n        )\n        self.blocks = nn.ModuleList([MoETransformerBlock(config) for _ in range(config.n_layers)])\n        self.final_norm = nn.LayerNorm(config.d_model)\n        self.lm_head = nn.Linear(config.d_model, config.vocab_size, bias=False)\n        self.lm_head.weight = self.token_embedding.weight\n\n    def forward(\n        self,\n        input_ids: t.Tensor,\n        *,\n        caches: Sequence[tuple[t.Tensor, t.Tensor] | None] | None = None,\n        use_cache: bool = False,\n        capacity_factor: float | None = None,\n        force_expert: int | None = None,\n        ablate_experts: Iterable[int] = (),\n        moe_token_mask: t.Tensor | None = None,\n    ) -> ModelOutput:\n        if input_ids.ndim != 2:\n            raise ValueError(\"input_ids must have shape (batch, sequence).\")\n        batch, sequence = input_ids.shape\n        if sequence == 0:\n            raise ValueError(\"input_ids must contain at least one token.\")\n        if caches is None:\n            caches = [None] * len(self.blocks)\n        if len(caches) != len(self.blocks):\n            raise ValueError(\"One cache entry is required per transformer block.\")\n        if any(cache is None for cache in caches) and not all(cache is None for cache in caches):\n            raise ValueError(\"Caches must be either empty for every layer or populated for every layer.\")\n        past_lengths: list[int] = []\n        for cache in caches:\n            if cache is None:\n                past_lengths.append(0)\n                continue\n            if not isinstance(cache, (tuple, list)) or len(cache) != 2:\n                raise ValueError(\"Each layer cache must be a (key, value) pair.\")\n            key, value = cache\n            expected_prefix = (batch, self.config.n_heads)\n            if key.ndim != 4 or value.ndim != 4 or key.shape != value.shape:\n                raise ValueError(\"Cached keys and values must share shape (batch, heads, time, head_dim).\")\n            if key.shape[:2] != expected_prefix or key.shape[-1] != self.config.d_model // self.config.n_heads:\n                raise ValueError(\"Cache batch, head, or head-dimension does not match the model input.\")\n            if key.device != input_ids.device or value.device != input_ids.device:\n                raise ValueError(\"Caches and input_ids must be on the same device.\")\n            past_lengths.append(key.shape[-2])\n        if len(set(past_lengths)) != 1:\n            raise ValueError(\"Every layer cache must contain the same number of past tokens.\")\n        past_length = past_lengths[0]\n        positions = past_length + t.arange(sequence, device=input_ids.device)\n        if int(positions[-1]) >= self.config.max_seq_len:\n            raise ValueError(\"Sequence exceeds max_seq_len.\")\n        hidden = self.token_embedding(input_ids) + self.position_embedding(positions)[None]\n        new_caches, moe_outputs = [], []\n        token_mask = (\n            t.ones((batch, sequence), dtype=t.bool, device=input_ids.device)\n            if moe_token_mask is None\n            else moe_token_mask.to(device=input_ids.device, dtype=t.bool)\n        )\n        if token_mask.shape != input_ids.shape:\n            raise ValueError(\"moe_token_mask must have the same shape as input_ids.\")\n        for block, cache in zip(self.blocks, caches, strict=True):\n            hidden, new_cache, moe_output = block(\n                hidden,\n                past_kv=cache,\n                token_mask=token_mask,\n                capacity_factor=capacity_factor,\n                force_expert=force_expert,\n                ablate_experts=ablate_experts,\n            )\n            new_caches.append(new_cache)\n            moe_outputs.append(moe_output)\n        logits = self.lm_head(self.final_norm(hidden))\n        return ModelOutput(logits, tuple(new_caches) if use_cache else None, tuple(moe_outputs))\n\n    @t.inference_mode()\n    def greedy_generate(self, input_ids: t.Tensor, max_new_tokens: int) -> t.Tensor:\n        if max_new_tokens < 0:\n            raise ValueError(\"max_new_tokens must be non-negative.\")\n        if input_ids.ndim != 2 or input_ids.shape[1] == 0:\n            raise ValueError(\"input_ids must have shape (batch, nonzero sequence).\")\n        if input_ids.shape[1] + max_new_tokens > self.config.max_seq_len:\n            raise ValueError(\"Requested generation exceeds max_seq_len.\")\n        generated = input_ids\n        caches = None\n        next_input = input_ids\n        for _ in range(max_new_tokens):\n            output = self(next_input, caches=caches, use_cache=True, capacity_factor=math.inf)\n            next_input = output.logits[:, -1].argmax(dim=-1, keepdim=True)\n            generated = t.cat([generated, next_input], dim=1)\n            caches = output.caches\n        return generated\n",
+        "answer_source_sha256": "a0562f57c86039e5909bf71ffc7a151be8411e1783059b13922e77ff4467be09"
+      },
+      {
+        "cell": 51,
+        "statement": 0,
+        "name": "regime_transition",
+        "stub_source_sha256": "d3a186fd0eea3068e4dab36b993a750c8e44e4b54da159cc64d68e2500dff22f",
+        "stub_ast": "FunctionDef(name='regime_transition', args=arguments(args=[arg(arg='regime'), arg(arg='value'), arg(arg='modulus')], defaults=[Constant(value=5)]), body=[Raise(exc=Call(func=Name(id='NotImplementedError', ctx=Load())))])",
+        "interface": {
+          "kind": "FunctionDef",
+          "name": "regime_transition",
+          "args": "arguments(args=[arg(arg='regime'), arg(arg='value'), arg(arg='modulus')], defaults=[Constant(value=5)])",
+          "decorators": [],
+          "type_params": []
+        },
+        "public_answer_interface": {
+          "kind": "FunctionDef",
+          "name": "regime_transition",
+          "args": "arguments(args=[arg(arg='regime'), arg(arg='value'), arg(arg='modulus')], defaults=[Constant(value=5)])",
+          "decorators": [],
+          "type_params": []
+        },
+        "answer_cell": 52,
+        "answer_block": 0,
+        "answer_code": 0,
+        "answer_block_sha256": "9cf639f1bf2334982aa0f9166a9676ae3dbb32bfc83ea2a792848c8dbc72134a",
+        "answer_source": "def regime_transition(regime: t.Tensor, value: t.Tensor, modulus: int = 5) -> t.Tensor:\n    \"\"\"Three exact transition rules used by the controlled language task.\"\"\"\n\n    return t.where(\n        regime.eq(0),\n        value,\n        t.where(regime.eq(1), value + 1, value - 1),\n    ).remainder(modulus)\n",
+        "answer_source_sha256": "26d970a56c7228096cd74ebc136b6e36604d976aedecd325edf96c7c5ccd952c"
+      },
+      {
+        "cell": 51,
+        "statement": 1,
+        "name": "make_regime_sequences",
+        "stub_source_sha256": "7e5d1b60d2733dc864062fe51b636746d4acee3c93eb24cdcfce94280146412a",
+        "stub_ast": "FunctionDef(name='make_regime_sequences', args=arguments(args=[arg(arg='regimes'), arg(arg='starts'), arg(arg='n_data_tokens'), arg(arg='modulus')], defaults=[Constant(value=5)]), body=[Raise(exc=Call(func=Name(id='NotImplementedError', ctx=Load())))])",
+        "interface": {
+          "kind": "FunctionDef",
+          "name": "make_regime_sequences",
+          "args": "arguments(args=[arg(arg='regimes'), arg(arg='starts'), arg(arg='n_data_tokens'), arg(arg='modulus')], defaults=[Constant(value=5)])",
+          "decorators": [],
+          "type_params": []
+        },
+        "public_answer_interface": {
+          "kind": "FunctionDef",
+          "name": "make_regime_sequences",
+          "args": "arguments(args=[arg(arg='regimes'), arg(arg='starts'), arg(arg='n_data_tokens'), arg(arg='modulus')], defaults=[Constant(value=5)])",
+          "decorators": [],
+          "type_params": []
+        },
+        "answer_cell": 52,
+        "answer_block": 0,
+        "answer_code": 0,
+        "answer_block_sha256": "9cf639f1bf2334982aa0f9166a9676ae3dbb32bfc83ea2a792848c8dbc72134a",
+        "answer_source": "def make_regime_sequences(\n    regimes: t.Tensor,\n    starts: t.Tensor,\n    n_data_tokens: int,\n    modulus: int = 5,\n) -> t.Tensor:\n    \"\"\"Create ``BOS, x0, REGIME, x1, REGIME, ...`` instruction streams.\n\n    The prediction after each regime token is the transition result. Repeating\n    the operation token makes the expert decision observable at the position\n    where its output is graded, rather than letting routing correlate with the\n    numeric value tokens by accident.\n    \"\"\"\n\n    if starts.ndim != 1 or regimes.shape[0] != starts.shape[0] or regimes.ndim not in (1, 2):\n        raise ValueError(\"regimes must be (batch,) or (batch, transitions), matching starts.\")\n    if bool(((regimes < 0) | (regimes >= len(REGIME_NAMES))).any()):\n        raise ValueError(\"regimes must be in {0, 1, 2}.\")\n    if regimes.ndim == 1:\n        operations = regimes[:, None].expand(-1, n_data_tokens - 1)\n    else:\n        if regimes.shape[1] != n_data_tokens - 1:\n            raise ValueError(\"A mixed regime stream needs one operation per transition.\")\n        operations = regimes\n    values = [starts.remainder(modulus)]\n    for position in range(n_data_tokens - 1):\n        values.append(regime_transition(operations[:, position], values[-1], modulus))\n    data = t.stack(values, dim=1) + DATA_TOKEN_OFFSET\n    sequence = t.empty(\n        starts.numel(),\n        2 * n_data_tokens,\n        dtype=t.long,\n        device=regimes.device,\n    )\n    sequence[:, 0] = BOS_TOKEN\n    sequence[:, 1] = data[:, 0]\n    if n_data_tokens > 1:\n        sequence[:, 2::2] = operations + REGIME_TOKEN_OFFSET\n        sequence[:, 3::2] = data[:, 1:]\n    return sequence\n",
+        "answer_source_sha256": "02e16e5faa06087738c651793cd3ae8ab55f8f6d20ed5de97deca0ea49d587c6"
+      },
+      {
+        "cell": 51,
+        "statement": 2,
+        "name": "next_token_loss",
+        "stub_source_sha256": "26ec7b05e0e9d6f0b54373161b3500310d3259ab72b115b8da4811bbd5b539d0",
+        "stub_ast": "FunctionDef(name='next_token_loss', args=arguments(args=[arg(arg='logits'), arg(arg='sequences')]), body=[Raise(exc=Call(func=Name(id='NotImplementedError', ctx=Load())))])",
+        "interface": {
+          "kind": "FunctionDef",
+          "name": "next_token_loss",
+          "args": "arguments(args=[arg(arg='logits'), arg(arg='sequences')])",
+          "decorators": [],
+          "type_params": []
+        },
+        "public_answer_interface": {
+          "kind": "FunctionDef",
+          "name": "next_token_loss",
+          "args": "arguments(args=[arg(arg='logits'), arg(arg='sequences')])",
+          "decorators": [],
+          "type_params": []
+        },
+        "answer_cell": 52,
+        "answer_block": 0,
+        "answer_code": 0,
+        "answer_block_sha256": "9cf639f1bf2334982aa0f9166a9676ae3dbb32bfc83ea2a792848c8dbc72134a",
+        "answer_source": "def next_token_loss(logits: t.Tensor, sequences: t.Tensor) -> t.Tensor:\n    \"\"\"Cross entropy on data-token targets; the regime-token target is excluded.\"\"\"\n\n    if logits.shape[:2] != (sequences.shape[0], sequences.shape[1] - 1):\n        raise ValueError(\"logits must correspond to sequences[:, :-1].\")\n    targets = sequences[:, 1:]\n    input_tokens = sequences[:, :-1]\n    mask = input_tokens[0].ge(REGIME_TOKEN_OFFSET) & input_tokens[0].lt(DATA_TOKEN_OFFSET)\n    if not t.equal(\n        input_tokens.ge(REGIME_TOKEN_OFFSET) & input_tokens.lt(DATA_TOKEN_OFFSET),\n        mask[None].expand_as(input_tokens),\n    ):\n        raise ValueError(\"All rows must share regime-token positions for batched grading.\")\n    return F.cross_entropy(logits[:, mask].reshape(-1, logits.shape[-1]), targets[:, mask].reshape(-1))\n",
+        "answer_source_sha256": "5c9fd9230b2a145dfcdf684d9c48981db94fd15c8c9b0b7d091a58dfa337ed16"
+      },
+      {
+        "cell": 55,
+        "statement": 0,
+        "name": "delexicalized_router_event_features",
+        "stub_source_sha256": "09e0b75f020fc2351216f490cd7db6837d6f83fa21b53aef6da3d69fd1562f78",
+        "stub_ast": "FunctionDef(name='delexicalized_router_event_features', args=arguments(args=[arg(arg='model'), arg(arg='sequences')]), body=[Raise(exc=Call(func=Name(id='NotImplementedError', ctx=Load())))], decorator_list=[Call(func=Attribute(value=Name(id='t', ctx=Load()), attr='inference_mode', ctx=Load()))])",
+        "interface": {
+          "kind": "FunctionDef",
+          "name": "delexicalized_router_event_features",
+          "args": "arguments(args=[arg(arg='model'), arg(arg='sequences')])",
+          "decorators": [
+            "Call(func=Attribute(value=Name(id='t', ctx=Load()), attr='inference_mode', ctx=Load()))"
+          ],
+          "type_params": []
+        },
+        "public_answer_interface": {
+          "kind": "FunctionDef",
+          "name": "delexicalized_router_event_features",
+          "args": "arguments(args=[arg(arg='model'), arg(arg='sequences')])",
+          "decorators": [
+            "Call(func=Attribute(value=Name(id='t', ctx=Load()), attr='inference_mode', ctx=Load()))"
+          ],
+          "type_params": []
+        },
+        "answer_cell": 56,
+        "answer_block": 0,
+        "answer_code": 0,
+        "answer_block_sha256": "fc62b130081fb57196ab309f965f46a6f17f457326af9a4e6efc46d98eaec9c3",
+        "answer_source": "@t.inference_mode()\ndef delexicalized_router_event_features(\n    model: SparseMoETransformer,\n    sequences: t.Tensor,\n) -> tuple[t.Tensor, t.Tensor]:\n    \"\"\"Return router features after hiding the current operation token.\n\n    Each operation event becomes one evaluation row. Its exact causal prefix is\n    retained, but the current operation token is replaced by ``BOS_TOKEN``.\n    Future tokens cannot affect the selected router state because attention is\n    causal. The resulting probe therefore measures context-only decodability,\n    not the trivial identity of the token presented to the router.\n    \"\"\"\n\n    inputs = sequences[:, :-1]\n    operation_mask = inputs.ge(REGIME_TOKEN_OFFSET) & inputs.lt(DATA_TOKEN_OFFSET)\n    row_ids, positions = t.nonzero(operation_mask, as_tuple=True)\n    if row_ids.numel() == 0:\n        raise ValueError(\"sequences must contain at least one operation event.\")\n    event_inputs = inputs[row_ids].clone()\n    event_masks = operation_mask[row_ids]\n    event_ids = t.arange(row_ids.numel(), device=inputs.device)\n    labels = event_inputs[event_ids, positions] - REGIME_TOKEN_OFFSET\n    event_inputs[event_ids, positions] = BOS_TOKEN\n    route = model(\n        event_inputs,\n        capacity_factor=math.inf,\n        moe_token_mask=event_masks,\n    ).moe_outputs[-1].router\n    return route.probabilities[event_ids, positions], labels\n",
+        "answer_source_sha256": "72df4d1974c34a366386a403d2bced1a58f9510ef0a21c758c7f0fcdd3c9f223"
+      },
+      {
+        "cell": 55,
+        "statement": 1,
+        "name": "fit_router_probe",
+        "stub_source_sha256": "880778f033fe3a36713b0539c69b2d601f2236dd04fa88885e44cf20c09aaa3f",
+        "stub_ast": "FunctionDef(name='fit_router_probe', args=arguments(args=[arg(arg='features'), arg(arg='labels'), arg(arg='n_classes'), arg(arg='ridge')], defaults=[Constant(value=3), Constant(value=0.001)]), body=[Raise(exc=Call(func=Name(id='NotImplementedError', ctx=Load())))])",
+        "interface": {
+          "kind": "FunctionDef",
+          "name": "fit_router_probe",
+          "args": "arguments(args=[arg(arg='features'), arg(arg='labels'), arg(arg='n_classes'), arg(arg='ridge')], defaults=[Constant(value=3), Constant(value=0.001)])",
+          "decorators": [],
+          "type_params": []
+        },
+        "public_answer_interface": {
+          "kind": "FunctionDef",
+          "name": "fit_router_probe",
+          "args": "arguments(args=[arg(arg='features'), arg(arg='labels'), arg(arg='n_classes'), arg(arg='ridge')], defaults=[Constant(value=3), Constant(value=0.001)])",
+          "decorators": [],
+          "type_params": []
+        },
+        "answer_cell": 56,
+        "answer_block": 0,
+        "answer_code": 0,
+        "answer_block_sha256": "fc62b130081fb57196ab309f965f46a6f17f457326af9a4e6efc46d98eaec9c3",
+        "answer_source": "def fit_router_probe(features: t.Tensor, labels: t.Tensor, n_classes: int = 3, ridge: float = 1e-3) -> t.Tensor:\n    \"\"\"Closed-form ridge probe with an explicit bias column.\"\"\"\n\n    design = t.cat([features, t.ones(features.shape[0], 1, device=features.device)], dim=1)\n    targets = F.one_hot(labels, num_classes=n_classes).float()\n    identity = t.eye(design.shape[1], device=design.device, dtype=design.dtype)\n    return t.linalg.solve(design.T @ design + ridge * identity, design.T @ targets)\n",
+        "answer_source_sha256": "5051a73e57de22ac6a3efb48cf9909e0f749b472aed2e1d39e746ca5bec1956a"
+      },
+      {
+        "cell": 55,
+        "statement": 2,
+        "name": "predict_router_probe",
+        "stub_source_sha256": "beb9af6678a6826df162bdbd16a611cd791bb9af8fc7a22ac4f99d1a42dfc0cf",
+        "stub_ast": "FunctionDef(name='predict_router_probe', args=arguments(args=[arg(arg='features'), arg(arg='weights')]), body=[Raise(exc=Call(func=Name(id='NotImplementedError', ctx=Load())))])",
+        "interface": {
+          "kind": "FunctionDef",
+          "name": "predict_router_probe",
+          "args": "arguments(args=[arg(arg='features'), arg(arg='weights')])",
+          "decorators": [],
+          "type_params": []
+        },
+        "public_answer_interface": {
+          "kind": "FunctionDef",
+          "name": "predict_router_probe",
+          "args": "arguments(args=[arg(arg='features'), arg(arg='weights')])",
+          "decorators": [],
+          "type_params": []
+        },
+        "answer_cell": 56,
+        "answer_block": 0,
+        "answer_code": 0,
+        "answer_block_sha256": "fc62b130081fb57196ab309f965f46a6f17f457326af9a4e6efc46d98eaec9c3",
+        "answer_source": "def predict_router_probe(features: t.Tensor, weights: t.Tensor) -> t.Tensor:\n    design = t.cat([features, t.ones(features.shape[0], 1, device=features.device)], dim=1)\n    return (design @ weights).argmax(dim=-1)\n",
+        "answer_source_sha256": "ddab30380570eb48b0e62c4bd552dd896c95a40763364e38d3dc4264742a9111"
+      },
+      {
+        "cell": 59,
+        "statement": 0,
+        "name": "permute_moe_experts",
+        "stub_source_sha256": "cb37eb0182e72ae25d46ab35dc89648f6af2e926a7dbdf28acb5326ac8357446",
+        "stub_ast": "FunctionDef(name='permute_moe_experts', args=arguments(args=[arg(arg='moe', annotation=Name(id='SparseMoE', ctx=Load())), arg(arg='permutation', annotation=Subscript(value=Name(id='Sequence', ctx=Load()), slice=Name(id='int', ctx=Load()), ctx=Load()))]), body=[Raise(exc=Call(func=Name(id='NotImplementedError', ctx=Load())))], returns=Name(id='SparseMoE', ctx=Load()))",
+        "interface": {
+          "kind": "FunctionDef",
+          "name": "permute_moe_experts",
+          "args": "arguments(args=[arg(arg='moe'), arg(arg='permutation')])",
+          "decorators": [],
+          "type_params": []
+        },
+        "public_answer_interface": {
+          "kind": "FunctionDef",
+          "name": "permute_moe_experts",
+          "args": "arguments(args=[arg(arg='moe'), arg(arg='permutation')])",
+          "decorators": [],
+          "type_params": []
+        },
+        "answer_cell": 60,
+        "answer_block": 0,
+        "answer_code": 0,
+        "answer_block_sha256": "9e0a99f389a722d39fc35d379e8f37ee07685c5c785634024d7f05f7ef3294a7",
+        "answer_source": "def permute_moe_experts(moe: SparseMoE, permutation: Sequence[int]) -> SparseMoE:\n    \"\"\"Relabel router outputs and experts together, preserving the represented function.\"\"\"\n\n    permutation = tuple(permutation)\n    if sorted(permutation) != list(range(moe.config.n_experts)):\n        raise ValueError(\"permutation must contain every expert exactly once.\")\n    result = copy.deepcopy(moe)\n    with t.no_grad():\n        result.router.weight.copy_(moe.router.weight[list(permutation)])\n        result.router.bias.copy_(moe.router.bias[list(permutation)])\n    result.expert_mlps.experts = nn.ModuleList(\n        [copy.deepcopy(moe.expert_mlps.experts[index]) for index in permutation]\n    )\n    return result\n",
+        "answer_source_sha256": "9e0a99f389a722d39fc35d379e8f37ee07685c5c785634024d7f05f7ef3294a7"
+      },
+      {
+        "cell": 63,
+        "statement": 0,
+        "name": "next_token_accuracy_by_regime",
+        "stub_source_sha256": "e67a4a98f69d7fc5e88f853130c1163f87d2885b1d4b42a02e3d1df9a5ceb769",
+        "stub_ast": "FunctionDef(name='next_token_accuracy_by_regime', args=arguments(args=[arg(arg='logits'), arg(arg='sequences')]), body=[Raise(exc=Call(func=Name(id='NotImplementedError', ctx=Load())))])",
+        "interface": {
+          "kind": "FunctionDef",
+          "name": "next_token_accuracy_by_regime",
+          "args": "arguments(args=[arg(arg='logits'), arg(arg='sequences')])",
+          "decorators": [],
+          "type_params": []
+        },
+        "public_answer_interface": {
+          "kind": "FunctionDef",
+          "name": "next_token_accuracy_by_regime",
+          "args": "arguments(args=[arg(arg='logits'), arg(arg='sequences')])",
+          "decorators": [],
+          "type_params": []
+        },
+        "answer_cell": 64,
+        "answer_block": 0,
+        "answer_code": 0,
+        "answer_block_sha256": "792628447a6f56ceda4aac7836d80f32b3ee780d6004b3d17cd315e817c50091",
+        "answer_source": "def next_token_accuracy_by_regime(logits: t.Tensor, sequences: t.Tensor) -> t.Tensor:\n    \"\"\"Accuracy for each operation, even when every sequence mixes operations.\"\"\"\n\n    targets = sequences[:, 1:]\n    inputs = sequences[:, :-1]\n    predictions = logits.argmax(dim=-1)\n    labels = inputs - REGIME_TOKEN_OFFSET\n    values = []\n    for regime in range(len(REGIME_NAMES)):\n        mask = labels.eq(regime)\n        if not bool(mask.any()):\n            raise ValueError(f\"No {REGIME_NAMES[regime]} events are present in this evaluation stream.\")\n        values.append(predictions[mask].eq(targets[mask]).float().mean())\n    return t.stack(values)\n",
+        "answer_source_sha256": "fc78558e078a72d8728fffe19b1ddd3373b026b34efa4da949fae1df0d9435da"
+      },
+      {
+        "cell": 63,
+        "statement": 1,
+        "name": "evaluate_sparse_by_regime",
+        "stub_source_sha256": "bf73461f8f535f953757ee575ce4cefca2bace6497e391a34f12dc5af1fb8937",
+        "stub_ast": "FunctionDef(name='evaluate_sparse_by_regime', args=arguments(args=[arg(arg='model'), arg(arg='sequences')], kwonlyargs=[arg(arg='force_expert'), arg(arg='ablate_experts')], kw_defaults=[Constant(value=None), Tuple(ctx=Load())]), body=[Raise(exc=Call(func=Name(id='NotImplementedError', ctx=Load())))], decorator_list=[Call(func=Attribute(value=Name(id='t', ctx=Load()), attr='inference_mode', ctx=Load()))])",
+        "interface": {
+          "kind": "FunctionDef",
+          "name": "evaluate_sparse_by_regime",
+          "args": "arguments(args=[arg(arg='model'), arg(arg='sequences')], kwonlyargs=[arg(arg='force_expert'), arg(arg='ablate_experts')], kw_defaults=[Constant(value=None), Tuple(ctx=Load())])",
+          "decorators": [
+            "Call(func=Attribute(value=Name(id='t', ctx=Load()), attr='inference_mode', ctx=Load()))"
+          ],
+          "type_params": []
+        },
+        "public_answer_interface": {
+          "kind": "FunctionDef",
+          "name": "evaluate_sparse_by_regime",
+          "args": "arguments(args=[arg(arg='model'), arg(arg='sequences')], kwonlyargs=[arg(arg='force_expert'), arg(arg='ablate_experts')], kw_defaults=[Constant(value=None), Tuple(ctx=Load())])",
+          "decorators": [
+            "Call(func=Attribute(value=Name(id='t', ctx=Load()), attr='inference_mode', ctx=Load()))"
+          ],
+          "type_params": []
+        },
+        "answer_cell": 64,
+        "answer_block": 0,
+        "answer_code": 0,
+        "answer_block_sha256": "792628447a6f56ceda4aac7836d80f32b3ee780d6004b3d17cd315e817c50091",
+        "answer_source": "@t.inference_mode()\ndef evaluate_sparse_by_regime(\n    model: SparseMoETransformer,\n    sequences: t.Tensor,\n    *,\n    force_expert: int | None = None,\n    ablate_experts: Iterable[int] = (),\n) -> t.Tensor:\n    inputs = sequences[:, :-1]\n    moe_mask = inputs.ge(REGIME_TOKEN_OFFSET) & inputs.lt(DATA_TOKEN_OFFSET)\n    output = model(\n        inputs,\n        capacity_factor=math.inf,\n        force_expert=force_expert,\n        ablate_experts=ablate_experts,\n        moe_token_mask=moe_mask,\n    )\n    return next_token_accuracy_by_regime(output.logits, sequences)\n",
+        "answer_source_sha256": "8e77ad8ee988bbcad4a0bdf0de9270bd984808e4b7ec80b2fb59126cae3966e0"
+      },
+      {
+        "cell": 63,
+        "statement": 2,
+        "name": "causal_expert_intervention_table",
+        "stub_source_sha256": "50e801ddafd83da38451512ad05b596b3f6ccd072c2e90758c119f10baa90802",
+        "stub_ast": "FunctionDef(name='causal_expert_intervention_table', args=arguments(args=[arg(arg='model'), arg(arg='sequences')]), body=[Raise(exc=Call(func=Name(id='NotImplementedError', ctx=Load())))], decorator_list=[Call(func=Attribute(value=Name(id='t', ctx=Load()), attr='inference_mode', ctx=Load()))])",
+        "interface": {
+          "kind": "FunctionDef",
+          "name": "causal_expert_intervention_table",
+          "args": "arguments(args=[arg(arg='model'), arg(arg='sequences')])",
+          "decorators": [
+            "Call(func=Attribute(value=Name(id='t', ctx=Load()), attr='inference_mode', ctx=Load()))"
+          ],
+          "type_params": []
+        },
+        "public_answer_interface": {
+          "kind": "FunctionDef",
+          "name": "causal_expert_intervention_table",
+          "args": "arguments(args=[arg(arg='model'), arg(arg='sequences')])",
+          "decorators": [
+            "Call(func=Attribute(value=Name(id='t', ctx=Load()), attr='inference_mode', ctx=Load()))"
+          ],
+          "type_params": []
+        },
+        "answer_cell": 64,
+        "answer_block": 0,
+        "answer_code": 0,
+        "answer_block_sha256": "792628447a6f56ceda4aac7836d80f32b3ee780d6004b3d17cd315e817c50091",
+        "answer_source": "@t.inference_mode()\ndef causal_expert_intervention_table(\n    model: SparseMoETransformer,\n    sequences: t.Tensor,\n) -> CausalInterventionResult:\n    \"\"\"Exhaustively ablate and force every expert on a fixed trained model.\n\n    These effects establish dependence only for this trained toy model and\n    evaluation stream. They do not identify a universal expert concept.\n    \"\"\"\n\n    intact = evaluate_sparse_by_regime(model, sequences)\n    ablated = t.stack(\n        [evaluate_sparse_by_regime(model, sequences, ablate_experts=(expert,)) for expert in range(model.config.n_experts)],\n        dim=1,\n    )\n    forced = t.stack(\n        [evaluate_sparse_by_regime(model, sequences, force_expert=expert) for expert in range(model.config.n_experts)],\n        dim=1,\n    )\n    return CausalInterventionResult(intact, ablated, forced)\n",
+        "answer_source_sha256": "2b57436957b283669921fa3b5a7d306aaf5746e9fd3afb3c90c8a44ca4231e07"
+      }
+    ]
+  },
+  "policy": {
+    "practice": "explicit public reference completion versus submitted completed copy",
+    "reviewed_body_imports": [
+      "collections",
+      "copy",
+      "functools",
+      "itertools",
+      "math",
+      "numpy",
+      "operator",
+      "statistics",
+      "torch",
+      "torch.nn",
+      "torch.nn.functional",
+      "typing"
+    ],
+    "no_scientific_execution_in_source_checks": true,
+    "source_preservation": "all existing canonical files remain exact; only distinct copies can change answer bodies",
+    "interface_variants": "Original stub interface or the exact public-answer interface; call argument/default shape is identical. SparseMoETransformer public greedy_generate adds its existing t.inference_mode decorator."
+  }
+}

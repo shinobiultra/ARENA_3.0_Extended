@@ -1,0 +1,10 @@
+# Separate reader/optimizer + NumPy notebook environment; no CUDA or model packages.
+# The root uv.lock continues to describe the historical full extension runtime.
+streamlit==1.63.0
+PyYAML==6.0.3
+nbformat==5.11.1
+portalocker==4.3.0
+plotly==7.0.0
+matplotlib==3.11.1
+ipykernel==7.3.0
+jupyterlab==4.6.3

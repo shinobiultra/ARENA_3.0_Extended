@@ -1,0 +1,114 @@
+notebook_id: 14_2_ijepa_from_scratch
+section: '14.2'
+title: I-JEPA from Scratch
+exercise_metadata:
+  EXERCISE_ID: 14_2_ijepa_from_scratch
+  GT_TIER: GT-0
+  DIFFICULTY: 4
+  IMPORTANCE: 5
+  EXPECTED_RUNTIME: 120-180 minutes; under one minute for the full CUDA verification
+  REQUIRES_GPU: true
+gt_tier: GT-0
+evidence_level: cuda_verified_exact_predictive_world
+claim_scope: >-
+  A small I-JEPA trained from scratch on an exact generated image world uses a
+  visible class-colour key to predict the target latent of a fully masked object
+  on pixel-distinct scenes sharing all twelve semantic templates. Correct context recovers object class, while a
+  key-only cyclic replacement changes the prediction to the alternate key class
+  while every other pixel remains fixed. Erasing the image-space key reduces
+  accuracy to chance, zero latent context raises loss, and an untrained architecture remains at chance.
+  A matched jointly optimized target ablation attains very low latent loss while
+  compressing feature spread and weakening held-out prediction. Linear probes
+  are explicitly not evidence here because random encoder features already
+  decode this easy world. This is not an ImageNet or checkpoint-parity claim.
+required_gpu_gb: 1
+max_allowed_gpu_gb: 24
+models:
+  - id: course_tiny_ijepa_v2
+    source: trained_from_scratch
+    revision: exact_architecture_in_solutions_py
+    precision: float32
+    gated: false
+datasets:
+  - id: course_generated_ijepa_predictive_key_world_v2
+    source: deterministic_tensor_generator
+    train_seeds: [0, 1, 2]
+    evaluation_seeds: [50000, 50001, 50002]
+    examples_per_seed_per_split: 120
+    shared_semantic_templates: 12
+    image_size: 32x32
+    object_classes: 3
+    position_classes: 4
+    object_radius_pixels: 3
+    production_jitter_pixels: 0
+    key_patch: rows_0_3_columns_12_15
+    object_labels_used_in_loss: false
+    position_labels_used_for_target_selection: true
+    exact_train_evaluation_overlap: 0
+expected_metrics:
+  tests_passed: true
+  accepted: true
+  loss_ratio_max: 0.20
+  feature_std_min: 0.02
+  effective_rank_min: 1.5
+  heldout_prediction_accuracy_min: 0.90
+  mismatched_context_accuracy_max: 0.10
+  alternate_key_accuracy_min: 0.90
+  key_erased_context_accuracy_max: 0.50
+  key_erased_non_key_pixel_max_abs_diff_max: 0.0
+  key_erased_to_correct_loss_ratio_min: 1.10
+  all_seeds_accepted: true
+  worst_seed_prediction_accuracy_min: 0.90
+  worst_seed_key_erased_accuracy_max: 0.50
+  shared_semantic_template_count: 12
+  non_key_pixel_max_abs_diff_max: 0.0
+  random_prediction_accuracy_max: 0.50
+  joint_target_ablation_prediction_accuracy_max: 0.75
+  mismatched_to_correct_loss_ratio_min: 1.10
+  zero_to_correct_loss_ratio_min: 5.0
+  random_to_trained_loss_ratio_min: 20.0
+  main_to_joint_target_feature_std_ratio_min: 5.0
+  random_encoder_object_probe_accuracy_min: 0.90
+  train_eval_exact_overlap: 0
+  collapsed_feature_std_max: 0.0000001
+  collapsed_effective_rank_max: 1.01
+  cuda_available: true
+  within_vram_budget: true
+  max_allowed_gpu_gb: 24
+controls:
+  - exact_generated_scene_labels
+  - exact_object_pixel_containment_test
+  - hand_computed_patchify_oracle
+  - hand_computed_encoder_projection_position_oracle
+  - exact_predictor_context_scatter_and_mask_oracle
+  - shape_correct_zero_module_rejection
+  - contiguous_block_mask_invariant
+  - unequal_mask_cardinality_rejection
+  - normalized_loss_scale_invariance
+  - exact_ema_parameter_update
+  - frozen_target_gradient_boundary
+  - disjoint_train_evaluation_scene_seeds
+  - zero_exact_train_evaluation_image_overlap
+  - position_and_ordinal_matched_cyclic_key_source
+  - exact_key_only_intervention_negative_control
+  - exact_key_erasure_negative_control
+  - all_three_predeclared_seeds
+  - exact_prediction_metric_oracle
+  - fabricated_prediction_report_rejection
+  - zero_non_key_pixel_difference
+  - zero_context_prediction
+  - same_initialized_untrained_architecture
+  - same_initialized_joint_target_no_ema_training_ablation
+  - exact_first_step_shared_parameter_parity
+  - shuffled_training_labels
+  - exact_constant_feature_collapse_control
+  - random_encoder_probe_negative_result
+  - learner_validate_run_fail_closed_fixture
+  - no_op_validator_rejection
+  - all_solution_dropdowns_ast_parse
+safety_notes:
+  - No network access, gated weights, unsafe prompts, or external datasets are required.
+  - The generated world is intentionally small; all semantic claims are bounded to its exact predictive key.
+
+freshness_inputs:
+  - chapter14_jepa_world_models/exercises/part2_ijepa_from_scratch/build_notebooks.py

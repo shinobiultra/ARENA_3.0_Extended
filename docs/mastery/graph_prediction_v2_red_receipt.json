@@ -1,0 +1,12 @@
+{
+  "timestamp_utc": "2026-10-20T09:35:30.774882+00:00",
+  "scope": "RED mutant-regression phase; distinct exposed DEV only; no target access or constructor",
+  "lesson_sha256": "7681f24d8f44039614f3b77567bf22f20597dee852890ca91b8b72e185ae2bb3",
+  "tests_sha256": "25c3fc208e8e730ea82e0de3bc10c439e3102d3d4bf5034bf182008452e87cb3",
+  "red_log_sha256": "39136a1e8d037ea44eaa18113d4689bf3bef4807177f7ae03067b93d8f6462e5",
+  "result": "4 mutant-rejection regressions fail on v1 oracle because all four wrong methods escape; 57 prior tests deselected",
+  "red_exit_code": 1,
+  "cpu_limit_seconds": 10,
+  "target_attempts": 0,
+  "prior_tool_failure": "Initial creation+red command did not start because requested workdir v2 did not yet exist; no process or source writes occurred in that failed call."
+}

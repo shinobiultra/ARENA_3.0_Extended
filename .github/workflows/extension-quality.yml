@@ -18,6 +18,21 @@ on:
         default: ""
 
 jobs:
+  study-delivery:
+    name: Study reader and prediction records
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: astral-sh/setup-uv@v6
+      - name: Prepare separate study environment
+        run: |
+          uv venv --python 3.14
+          uv pip install -r mastery_hub/requirements-reader.txt pytest
+      - name: Check learner delivery without model execution
+        run: .venv/bin/python scripts/ci_quality_gate.py --mode study-delivery
+
   hosted-cpu:
     name: Hosted CPU audits
     runs-on: ubuntu-latest

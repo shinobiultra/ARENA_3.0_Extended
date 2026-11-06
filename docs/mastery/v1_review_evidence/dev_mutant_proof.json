@@ -1,0 +1,143 @@
+{
+  "scope": "distinct exposed DEV only; no target access, construction, evaluation, or result",
+  "source_lesson_sha256": "7681f24d8f44039614f3b77567bf22f20597dee852890ca91b8b72e185ae2bb3",
+  "proof_sha256": "f0bf55da0968b05f5b98bd88dbdabdec3d4f69f845be0d5dd6f8dd95c0f929e0",
+  "cpu_seconds": 0.694954757,
+  "results": [
+    {
+      "name": "reference",
+      "method_source_sha256": "9bb422cdf59c5ad21360ac209f6277fe2400b017aabe10c25e5eb1e24bcefff8",
+      "all_five_current_practice_stages_pass": true,
+      "three_edge_chain_IG_expected": [
+        0.984375,
+        0.984375,
+        0.984375
+      ],
+      "three_edge_chain_IG_observed": [
+        0.984375,
+        0.984375,
+        0.984375
+      ],
+      "IG_matches_independent_oracle": true,
+      "nonzero_corrupt_unequal_drops_expected_ratios": {
+        "faithfulness": 0.4666666666666667,
+        "completeness": 1.0666666666666667,
+        "minimality": 0.8
+      },
+      "nonzero_corrupt_unequal_drops_observed_ratios": {
+        "faithfulness": 0.4666666666666667,
+        "completeness": 1.0666666666666667,
+        "minimality": 0.8
+      },
+      "ratios_match_independent_oracle": true
+    },
+    {
+      "name": "IG_replaced_with_half_exact",
+      "method_source_sha256": "f4e4765d774bcb4064e5a08c228e5ee8d7fc4f8b9f378e3a9b087b6f56b80ef0",
+      "all_five_current_practice_stages_pass": true,
+      "three_edge_chain_IG_expected": [
+        0.984375,
+        0.984375,
+        0.984375
+      ],
+      "three_edge_chain_IG_observed": [
+        1.5,
+        1.5,
+        1.5
+      ],
+      "IG_matches_independent_oracle": false,
+      "nonzero_corrupt_unequal_drops_expected_ratios": {
+        "faithfulness": 0.4666666666666667,
+        "completeness": 1.0666666666666667,
+        "minimality": 0.8
+      },
+      "nonzero_corrupt_unequal_drops_observed_ratios": {
+        "faithfulness": 0.4666666666666667,
+        "completeness": 1.0666666666666667,
+        "minimality": 0.8
+      },
+      "ratios_match_independent_oracle": true
+    },
+    {
+      "name": "IG_ignores_requested_steps",
+      "method_source_sha256": "b9ff1dda7fb32d78c2950b1ff127e5e73cb725974ddecedb48d45d3db9ecf5c6",
+      "all_five_current_practice_stages_pass": true,
+      "three_edge_chain_IG_expected": [
+        0.984375,
+        0.984375,
+        0.984375
+      ],
+      "three_edge_chain_IG_observed": [
+        0.75,
+        0.75,
+        0.75
+      ],
+      "IG_matches_independent_oracle": false,
+      "nonzero_corrupt_unequal_drops_expected_ratios": {
+        "faithfulness": 0.4666666666666667,
+        "completeness": 1.0666666666666667,
+        "minimality": 0.8
+      },
+      "nonzero_corrupt_unequal_drops_observed_ratios": {
+        "faithfulness": 0.4666666666666667,
+        "completeness": 1.0666666666666667,
+        "minimality": 0.8
+      },
+      "ratios_match_independent_oracle": true
+    },
+    {
+      "name": "denominator_omits_corrupt",
+      "method_source_sha256": "6e335821453dd5f31cbb61a018b118c4dedba8b4fdc79fa2344c0682afed2926",
+      "all_five_current_practice_stages_pass": true,
+      "three_edge_chain_IG_expected": [
+        0.984375,
+        0.984375,
+        0.984375
+      ],
+      "three_edge_chain_IG_observed": [
+        0.984375,
+        0.984375,
+        0.984375
+      ],
+      "IG_matches_independent_oracle": true,
+      "nonzero_corrupt_unequal_drops_expected_ratios": {
+        "faithfulness": 0.4666666666666667,
+        "completeness": 1.0666666666666667,
+        "minimality": 0.8
+      },
+      "nonzero_corrupt_unequal_drops_observed_ratios": {
+        "faithfulness": 0.35,
+        "completeness": 0.8,
+        "minimality": 0.6
+      },
+      "ratios_match_independent_oracle": false
+    },
+    {
+      "name": "minimality_uses_maximum",
+      "method_source_sha256": "aa7e9f52be8715ec3c06dd6ba00dd57226394792aaec809dd2352a917af4c229",
+      "all_five_current_practice_stages_pass": true,
+      "three_edge_chain_IG_expected": [
+        0.984375,
+        0.984375,
+        0.984375
+      ],
+      "three_edge_chain_IG_observed": [
+        0.984375,
+        0.984375,
+        0.984375
+      ],
+      "IG_matches_independent_oracle": true,
+      "nonzero_corrupt_unequal_drops_expected_ratios": {
+        "faithfulness": 0.4666666666666667,
+        "completeness": 1.0666666666666667,
+        "minimality": 0.8
+      },
+      "nonzero_corrupt_unequal_drops_observed_ratios": {
+        "faithfulness": 0.4666666666666667,
+        "completeness": 1.0666666666666667,
+        "minimality": 1.0666666666666667
+      },
+      "ratios_match_independent_oracle": false
+    }
+  ]
+}

@@ -1,4 +1,5 @@
 from typing import Callable
+from inspect import unwrap
 
 import pandas as pd
 import torch as t
@@ -159,3 +160,171 @@ def test_patchscope_accuracy_grid(patchscope_accuracy_grid: Callable, model: Hoo
     assert result.shape == (3, 2), f"Expected shape (n_source_layers, n_target_layers) = (3, 2), got {tuple(result.shape)}"
     t.testing.assert_close(result.float().cpu(), expected.float().cpu())
     print("All tests in `test_patchscope_accuracy_grid` passed!")
+
+
+def _metric_fixture():
+    """An explicit three-sequence distribution fixture; no tokenizer or model weights."""
+    from types import SimpleNamespace
+
+    tokens = t.tensor([[0, 0, 0], [1, 1, 1], [2, 2, 2]])
+    # Position zero deliberately disagrees: neither metric may include it.
+    raw = t.tensor([
+        [[[.1, .9], [.9, .1], [.8, .2]], [[.1, .9], [.6, .4], [.7, .3]], [[.1, .9], [.2, .8], [.3, .7]]],
+        [[[.1, .9], [.8, .2], [.2, .8]], [[.1, .9], [.7, .3], [.3, .7]], [[.1, .9], [.6, .4], [.4, .6]]],
+    ])
+    final = t.tensor([[[.75, .25], [.75, .25], [.75, .25]]]).expand(3, -1, -1)
+    model = SimpleNamespace(cfg=SimpleNamespace(n_layers=2), ln_final=lambda x: x, unembed=lambda x: x)
+
+    class Lens:
+        def logits(self, model, resid, layer):
+            return resid.flip(-1) if layer == 0 else resid
+
+    def get_resid(model, batch):
+        indices = batch[:, 0]
+        return raw[:, indices].log(), final[indices].log()
+
+    return model, Lens(), tokens, raw, final, get_resid
+
+
+def test_evaluate_lenses(evaluate_lenses: Callable):
+    from unittest.mock import patch
+
+    model, lens, tokens, raw, final, get_resid = _metric_fixture()
+    tokens_before = tokens.clone()
+    # Independent oracle: library KL on all evaluated tokens at once, no batch means.
+    expected = {key: [] for key in ('logit_kl', 'tuned_kl', 'logit_agree', 'tuned_agree')}
+    for layer in range(2):
+        for name, probability in [('logit', raw[layer]), ('tuned', raw[layer].flip(-1) if layer == 0 else raw[layer])]:
+            q, p = probability[:, 1:], final[:, 1:]
+            expected[name + '_kl'].append(F.kl_div(q.log(), p, reduction='none').sum(-1).mean().item())
+            expected[name + '_agree'].append((q[..., 0] > q[..., 1]).float().mean().item())
+    with patch.dict(unwrap(evaluate_lenses).__globals__, get_resid_and_logprobs=get_resid):
+        for batch_size in (1, 2, 3, 8):
+            actual = evaluate_lenses(model, lens, tokens, batch_size=batch_size)
+            assert actual.keys() == expected.keys()
+            for key in expected:
+                t.testing.assert_close(t.tensor(actual[key]), t.tensor(expected[key]), atol=1e-6, rtol=1e-6,
+                                       msg=f'{key}: weight every non-BOS token equally, including a short final batch')
+    t.testing.assert_close(tokens, tokens_before)
+    assert abs(expected['logit_agree'][0] - 2 / 3) < 1e-6
+    print('All tests in `test_evaluate_lenses` passed!')
+
+
+def test_shifted_translator_agreement(shifted_translator_agreement: Callable):
+    from unittest.mock import patch
+
+    model, lens, tokens, _, _, get_resid = _metric_fixture()
+    # Translator 1 leaves layer 0 unchanged: four of six tokens agree.
+    # Translator 0 flips layer 1: three of six tokens agree.
+    expected = {1: {0: 2 / 3}, -1: {1: .5}, 0: {0: 1 / 3, 1: .5}, 3: {}}
+    with patch.dict(unwrap(shifted_translator_agreement).__globals__, get_resid_and_logprobs=get_resid):
+        for shift, values in expected.items():
+            for batch_size in (1, 2, 3, 8):
+                result = shifted_translator_agreement(model, lens, tokens, shift=shift, batch_size=batch_size)
+                assert result.keys() == values.keys(), 'Return only layers with a valid shifted translator'
+                for layer, agreement in values.items():
+                    assert abs(result[layer] - agreement) < 1e-6, 'Use the shifted translator and count non-BOS tokens equally'
+    print('All tests in `test_shifted_translator_agreement` passed!')
+
+
+def test_train_tuned_lens(train_tuned_lens: Callable):
+    from unittest.mock import patch
+
+    tokens = t.arange(24).reshape(6, 4)
+    before = tokens.clone()
+
+    class Lens(t.nn.Module):
+        def __init__(self):
+            super().__init__()
+            self.weight = t.nn.Parameter(t.tensor(0.0))
+
+    def run(lr, seed):
+        lens, batches = Lens(), []
+
+        def get_resid(model, batch):
+            batches.append(batch.clone())
+            return batch.float(), None
+
+        def loss_fn(lens, model, resid, target):
+            return (lens.weight - 1).square()
+
+        with patch.dict(unwrap(train_tuned_lens).__globals__, get_resid_and_logprobs=get_resid, tuned_lens_loss=loss_fn):
+            losses = train_tuned_lens(lens, object(), tokens, n_steps=3, batch_size=3, lr=lr, seed=seed)
+        assert len(losses) == 3 and all(isinstance(loss, float) for loss in losses)
+        assert len(batches) == 3 and all(batch.shape == (3, 4) for batch in batches)
+        return lens.weight.detach(), losses, batches
+
+    # Independent scalar Adam oracle: d/dw (w-1)^2 = 2(w-1). Use plain Python
+    # arithmetic and bias-corrected moments, rather than another torch optimizer.
+    from math import sqrt
+
+    expected_weight, first_moment, second_moment = 0., 0., 0.
+    expected_losses = []
+    for step in range(1, 4):
+        expected_losses.append((expected_weight - 1) ** 2)
+        gradient = 2 * (expected_weight - 1)
+        first_moment = .9 * first_moment + .1 * gradient
+        second_moment = .999 * second_moment + .001 * gradient ** 2
+        expected_weight -= .1 * (first_moment / (1 - .9 ** step)) / (sqrt(second_moment / (1 - .999 ** step)) + 1e-8)
+
+    weight, losses, batches = run(.1, 17)
+    t.testing.assert_close(t.tensor(losses), t.tensor(expected_losses), atol=1e-6, rtol=1e-6,
+                           msg='Clear gradients before every backward call; return pre-update losses')
+    assert abs(float(weight) - expected_weight) < 1e-6, 'Match the three-step Adam trajectory without accumulated gradients'
+    frozen, frozen_losses, _ = run(0, 17)
+    assert frozen == 0 and frozen_losses == [1., 1., 1.], 'Respect the supplied learning rate'
+    again, again_losses, again_batches = run(.1, 17)
+    t.testing.assert_close(weight, again)
+    assert losses == again_losses and all(t.equal(a, b) for a, b in zip(batches, again_batches)), 'Use a seeded batch sampler'
+    t.testing.assert_close(tokens, before)
+    print('All tests in `test_train_tuned_lens` passed!')
+
+
+def test_patchscope_controls(patchscope_controls: Callable):
+    from types import SimpleNamespace
+    from unittest.mock import patch
+
+    vectors, bos = 2 * t.eye(3), t.tensor([[2., 0., 0.]]).expand(3, -1).clone()
+    random = vectors.roll(1, dims=-1)
+    target, answers = t.tensor([[8, 9]]), t.tensor([0, 1, 2])
+    snapshots = [x.clone() for x in (vectors, bos, target, answers)]
+    calls, source_calls = [], []
+
+    class Model:
+        cfg = SimpleNamespace(device='cpu')
+
+        def __call__(self, tokens):
+            assert t.equal(tokens, target.expand(3, -1)), 'Broadcast the target prompt across source examples'
+            return t.tensor([[[0., 0., 1.]]]).expand(3, 2, 3)
+
+    model = Model()
+
+    def get_source(model_arg, prompts, pos, layer):
+        assert model_arg is model and prompts == ['a', 'b', 'c'] and layer == 4
+        source_calls.append(pos)
+        return vectors if pos == -1 else bos
+
+    def random_like(x):
+        t.testing.assert_close(x, vectors)
+        return random
+
+    def patchscope(model_arg, x, target_arg, target_pos, target_layer):
+        assert model_arg is model and target_pos == 1 and target_layer == 2
+        t.testing.assert_close(target_arg, target)
+        calls.append(x.clone())
+        return x
+
+    with patch.dict(unwrap(patchscope_controls).__globals__, get_source_vectors=get_source,
+                    random_vectors_like=random_like, run_patchscope=patchscope):
+        result = patchscope_controls(model, ['a', 'b', 'c'], 4, target, 1, 2, answers)
+    expected = {'patchscope': 1., 'text only (no patch)': 1 / 3,
+                'random vector (norm-matched)': 0., 'wrong position (BOS)': 1 / 3}
+    assert result.keys() == expected.keys()
+    for key, value in expected.items():
+        assert abs(result[key] - value) < 1e-6, f'Incorrect accuracy for {key}'
+    assert source_calls == [-1, 0] and len(calls) == 3
+    for actual, expected_vectors in zip(calls, (vectors, random, bos)):
+        t.testing.assert_close(actual, expected_vectors)
+    for actual, saved in zip((vectors, bos, target, answers), snapshots):
+        t.testing.assert_close(actual, saved, msg='Controls must not mutate source data or targets')
+    print('All tests in `test_patchscope_controls` passed!')

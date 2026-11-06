@@ -1,0 +1,42 @@
+{
+  "schema_version": 1,
+  "section": "14.1",
+  "sources": {
+    "page": {
+      "path": "chapter14_jepa_world_models/instructions/pages/01_[14.1]_I-JEPA_from_Scratch.md",
+      "sha256": "9d070289d87f4bb8a2af541aae605c1f2f3ea2bec98840c095463204683e31c8"
+    },
+    "exercises": {
+      "path": "chapter14_jepa_world_models/exercises/part1_ijepa_from_scratch/14.1_I-JEPA_from_Scratch_exercises.ipynb",
+      "sha256": "25033ebf3e907b80f2212e8c2694b11bbb99d6f1237eb7f3c02c89f4634422ce"
+    },
+    "reference": {
+      "path": "chapter14_jepa_world_models/exercises/part1_ijepa_from_scratch/14.1_I-JEPA_from_Scratch_solutions.ipynb",
+      "sha256": "261192f00aafdd28c349538d2e4949653657b34ade2875158b580d2766861c63"
+    }
+  },
+  "replacements": [
+    {
+      "old": "**Historical asset context.** Both retained figures—the source PNG shown above and the notebook's embedded PNG—are historical artifacts. Their key-swap bars disagree with the exact per-seed table\nand nearby expected-output prose. Their byte identities differ; this does not establish different numerical results between the two figures. Preserve both figures and the table without\nreconciliation. No fresh run resolves the disagreement. Use the exact retained per-seed table, with its seed IDs and column names, as the guided case evidence. Do not read a case answer from\neither PNG or silently harmonize the artifacts.",
+      "new": "**Reading the retained key-swap figures.** Both the source PNG shown above and the notebook's embedded PNG are historical artifacts. Read their four x-axis conditions explicitly: target=`1`, correct-context=`1`, original-after-swap=`0`, alternate-key=`1`. Both figures agree with the exact retained per-seed table on that comparison; different PNG byte identities do not imply a numerical disagreement. The earlier disagreement warning came from misreading the bar identities. Preserve both original PNGs and the table. Use the table's seed IDs and column names for the guided case, and the figures to see the same intervention. This is retained evidence for the small visible-key scene organism, not a fresh run or evidence for general image understanding.",
+      "counts": {
+        "page": 1,
+        "exercises": 1,
+        "reference": 1
+      }
+    },
+    {
+      "old": "Draw three objects in four locations. Keep the object fully inside its future target block and place a separated class-colour key in visible context. Labels are never used by the self-supervised\nloss.",
+      "new": "Draw three objects in four locations using the exact scene specification below. Keep the object fully inside its future target block and place a separated class-colour key in visible context. Labels are never used by the self-supervised loss.\n\n| Scene ingredient | Public specification |\n| --- | --- |\n| Layout | RGB tensor `[3,32,32]`; patch size4, giving an8×8 patch grid. Position IDs0–3 have `(cx,cy)` centers `(8,8),(23,8),(8,23),(23,23)`. |\n| Object0 | Square: `abs(x-cx)<=3` and `abs(y-cy)<=3`; RGB `(.95,.10,.10)`. |\n| Object1 | Circle: `(x-cx)**2+(y-cy)**2<=9`; RGB `(.10,.35,.98)`. |\n| Object2 | Diamond: `abs(x-cx)+abs(y-cy)<=3`; RGB `(.10,.90,.32)`. |\n| Background | Start at `.04`, add `.015*torch.rand([3,32,32], generator=generator)`. The generator uses the supplied scene seed. Clamp final pixels to `[0,1]`. |\n| Jitter | Draw x shift then y shift uniformly from integers `[-jitter,jitter]` with that generator. The production example uses `jitter=0`. |\n| Visible key | Fill rows `0:4`, columns `12:16` with the object's RGB. This key remains visible; the object is fully hidden by the target block. |\n| Target mask | Four patches in a2×2 block. Position IDs0–3 start at patch `(row,column)` `(1,1),(1,5),(5,1),(5,5)`; each patch is4×4 pixels. |\n| Dataset order | Loop object, then position, then example. Scene seed is `seed + 10000*object_id + 1000*position_id + example_id`; return `SceneBatch(images, object_labels, position_labels)`. |\n\n**Work one scene on paper first.** For object0, position0 and zero jitter, the square occupies rows5–11 and columns5–11 (49 pixels), centered at `(8,8)`. Its target is the2×2 block of4×4 patches starting at patch `(row=1,column=1)`, covering pixel rows `4:12` and columns `4:12` (indices4–11). Hiding that block removes every square pixel. The red key at pixel rows `0:4` and columns `12:16` remains visible. A model can therefore predict the hidden class from context, but it cannot copy a surviving object pixel. Verify that separation before moving on to training.",
+      "counts": {
+        "page": 1,
+        "exercises": 1,
+        "reference": 1
+      }
+    }
+  ],
+  "rationale": [
+    "GW-141-01",
+    "GW-141-02"
+  ]
+}

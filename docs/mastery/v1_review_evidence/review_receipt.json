@@ -1,0 +1,88 @@
+{
+  "timestamp_utc": "2026-10-20T09:35:19.691266+00:00",
+  "decision": "changes_required",
+  "manifest_sha256": "a0d3d316d181f189f57978f5eabb6ddd11f63cd9283d8b1f6294f5763b1d0c4a",
+  "author_files": [
+    {
+      "path": "mastery_hub/units/graph_prediction/lesson.py",
+      "sha256": "7681f24d8f44039614f3b77567bf22f20597dee852890ca91b8b72e185ae2bb3",
+      "matches_manifest": true
+    },
+    {
+      "path": "mastery_hub/units/graph_prediction/exercises.ipynb",
+      "sha256": "ab05af58e4afce25ee9deb1252a540e0222d855bf637dfaee7aef5917bc861a6",
+      "matches_manifest": true
+    },
+    {
+      "path": "scripts/build_graph_prediction_notebook.py",
+      "sha256": "82e8087e71e349b506d2338291d6971340954432a2bf7a2bc1a287d5be221cc1",
+      "matches_manifest": true
+    },
+    {
+      "path": "tests/mastery/test_graph_prediction.py",
+      "sha256": "5994b272ed44938450f62694c85ed9104db7a17616a8e1ea1022980feeffcd3c",
+      "matches_manifest": true
+    },
+    {
+      "path": "docs/mastery/graph_prediction_protocol.json",
+      "sha256": "c0300f608e926abeb03c17573105ac94aa7cb0684c9bdeb401b3146f7a1994cd",
+      "matches_manifest": true
+    },
+    {
+      "path": "docs/mastery/graph_prediction_source_review.json",
+      "sha256": "5e66575b2fe30e1e43dc71514ca4592f37cb0bb2ad6a08335b134daacb9954f9",
+      "matches_manifest": true
+    },
+    {
+      "path": "docs/mastery/graph_prediction_design.md",
+      "sha256": "dac71826ff5e5edf3f60953739f3497cdd5fe13980e6012b834bf105f980e5ba",
+      "matches_manifest": true
+    },
+    {
+      "path": "docs/mastery/graph_prediction_static_check_1.txt",
+      "sha256": "f8923cc457b0d0887900aee37b3291b61306499bee5c3794b9b1f532967789df",
+      "matches_manifest": true
+    },
+    {
+      "path": "docs/mastery/graph_prediction_static_check_2.txt",
+      "sha256": "34057c5ac120d82929e35e9cf4eaf13b5acc4d14b73389469fefd481d0936a6d",
+      "matches_manifest": true
+    },
+    {
+      "path": "docs/mastery/graph_prediction_static_receipt.json",
+      "sha256": "430c88685643d5bdecb17b75b2c00b8bc66f2801b732694dde8ea981eb5b7791",
+      "matches_manifest": true
+    }
+  ],
+  "all_author_files_unchanged_and_manifest_bound": true,
+  "blank_notebook": {
+    "cells": 24,
+    "code_cells": 12,
+    "executed": 0,
+    "output_cells": 0
+  },
+  "target_executions": 0,
+  "target_result_computations": 0,
+  "reviewer_outputs": {
+    "generator_check.log": "34057c5ac120d82929e35e9cf4eaf13b5acc4d14b73389469fefd481d0936a6d",
+    "REVIEW.md": "46b0129f8dde8726f84fd95d6f0b8e477d721f850311b513d2f93f0d9e71b2d0",
+    "dev_mutant_proof.json": "d34aeeaff0e52d8af3706563246fd8e687eae07360f4c77e820912548c46d832",
+    "dev_mutant_proof.log": "7c747f870a598e5625a67236f2d443fae19eed0ba7a8caee5380eaf127659361",
+    "dev_mutant_proof.py": "f0bf55da0968b05f5b98bd88dbdabdec3d4f69f845be0d5dd6f8dd95c0f929e0",
+    "pytest_57.log": "fc76674a1413bcbfcae33c923c4f1198fc06424d736dde9b5375619b7d529d53"
+  },
+  "checks": {
+    "authored_tests": "57 passed in 1.80s",
+    "generator_check": "OK: mastery_hub/units/graph_prediction/exercises.ipynb",
+    "independent_DEV_mutants": "4 incorrect implementations pass all5 current practice stages; independently derived fixtures catch all4; reference passes",
+    "extra_DEV_cpu_seconds": 0.694954757
+  },
+  "findings": [
+    "R1-P1-IG-oracle",
+    "R2-P2-denominator-minimality-oracles",
+    "R3-P2-assembly-envelope-keys"
+  ],
+  "authority": "independent bounded review; parent authorized <=10CPU seconds extra distinct DEV proof; no target authority",
+  "accepted": false,
+  "empirical_target_result_exists": false
+}

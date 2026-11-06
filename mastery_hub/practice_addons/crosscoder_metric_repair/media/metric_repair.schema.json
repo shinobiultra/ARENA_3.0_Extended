@@ -1,0 +1,60 @@
+{
+  "schema_version": 1,
+  "scope": "fresh deterministic CPU metric fixtures; no crosscoder trained",
+  "figure": "metric_repair.png",
+  "figure_sha256": "ae5f223789ca4cf98e1ff3ebc0bdf7544804a8b916ac6328706e31323ddb8d42",
+  "panels": [
+    {
+      "title": "An exact copy should score 1",
+      "sample_sizes": [
+        4,
+        8
+      ],
+      "legacy_mixed_normalization": [
+        0.75,
+        0.875
+      ],
+      "absolute_pearson": [
+        1,
+        1
+      ],
+      "orthogonal_and_constant_control": 0
+    },
+    {
+      "title": "EVAL reverses the TRAIN relationship",
+      "frozen_train_sign": -1,
+      "frozen_eval_auc": 0,
+      "orientation_free_eval_auc": 1,
+      "fixed_shuffled_rank_auc": 0.5
+    }
+  ],
+  "selection": "orientation fitted on TRAIN only; EVAL labels used for scoring only",
+  "runtime": {
+    "python": "3.14.2",
+    "numpy": "1.26.4",
+    "matplotlib": "3.11.1",
+    "elapsed_seconds_including_tests": 1.0185520720006025,
+    "fresh_cpu_kernel": true,
+    "method": "nbclient in fresh local CPU kernel",
+    "executed_code_cells": 11
+  },
+  "source_sha256": {
+    "mastery_hub/practice_addons/crosscoder_metric_repair/lesson.py": "e0ba054c849dce9ed4f864719aca1a31a0e6a602305316c1accb31d52164b1d7",
+    "mastery_hub/practice_addons/crosscoder_metric_repair/generate.py": "49e3d9bd2f82f5fee1388ed19e2a960f6f7c40c0d70907874c046f09ead5c43c",
+    "mastery_hub/practice_addons/crosscoder_metric_repair/README.md": "8b9c263518e7900cc79db93bb84e51d23c5e50727f3fd73bf56e901801a13a36",
+    "mastery_hub/practice_addons/crosscoder_metric_repair/exercises.ipynb": "1d60ae6a9cd559f200724889d49646cb2f2bccd6b116f06d016aea2ce27e68e9",
+    "mastery_hub/practice_addons/crosscoder_metric_repair/solutions.ipynb": "18a78b9ab0add9cfa04605531ae798a729ce6ba6650c0c1e195b18bcbd722f5b",
+    "tests/test_crosscoder_metric_repair.py": "b8d5f2b7e8f02bf436c47ca6bd3f013b4a5707109434d77ab5371a7c910fe992",
+    ".scratch/studiable-20261102/v1-quality/repairs/crosscoder_metric/execute_reference.py": "a7b7917b5a1b6b1ce0d6ce1b50417ec2e863a8d0a4fb5feb17619f9723abc9bf",
+    "infrastructure/chapters/chapter6_sparse_feature_methods/master_6_5.py": "64b33b0cf8f515257ca9f99481925f3a87b2d4c06d7d4338a0921abe03e7dca4",
+    ".scratch/studiable-20261102/v1-quality/repairs/architectures_sparse/metric_algorithms_proposed.py": "313c77c7de0debebc1ba719a22a7f3ffb862fdc3a5f9dfbc9a9c179ab624b8c2"
+  },
+  "limits": [
+    "public four/eight-row guided fixtures",
+    "constant Pearson defined as zero convention",
+    "quadratic pairwise AUC for teaching only",
+    "no model/native crosscoder evidence",
+    "no historical recomputation",
+    "no release or learner acceptance"
+  ]
+}

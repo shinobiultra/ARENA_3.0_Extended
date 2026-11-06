@@ -1,0 +1,32 @@
+{
+  "schema_version": 1,
+  "section": "12.2",
+  "sources": {
+    "page": {
+      "path": "chapter12_vlm_interpretability/instructions/pages/02_[12.2]_CLIP_Features_SAEs_and_Typographic_Attacks.md",
+      "sha256": "a4929fc8fccc5937cf170b9bec275fc712ca69909ca97363b0769499d558b2f0"
+    },
+    "exercises": {
+      "path": "chapter12_vlm_interpretability/exercises/part2_clip_saes_typographic/12.2_CLIP_Features_SAEs_and_Typographic_Attacks_exercises.ipynb",
+      "sha256": "07c79937d3301e2429270c53f197bf4c58d33d05becf5623a97429829587aedd"
+    },
+    "reference": {
+      "path": "chapter12_vlm_interpretability/exercises/part2_clip_saes_typographic/12.2_CLIP_Features_SAEs_and_Typographic_Attacks_solutions.ipynb",
+      "sha256": "1bbdd7ccc0ccf20d2514939b850f2907dc52efd4cd82ac6e8b04ac3350603e45"
+    }
+  },
+  "replacements": [
+    {
+      "old": "Return `(batch,6)`: normalised mean RGB from the upper half, followed by a one-hot word match. `templates` contains the three word regions and optionally a final blank region. Compare mean squared pixel error in the lower half; a blank match contributes zeros to the last three columns.",
+      "new": "Return `(batch, 6)` for `images: [batch, H, W, 3]` with even H and nonnegative RGB pixels. Average the upper half over height and width to obtain `rgb: [batch, 3]`, then divide by `maximum(rgb.sum(-1, keepdims=True), 1e-12)`. This is **sum normalization (L1 for nonnegative RGB)**, distinct from the preceding L2 `normalise_rows`: `[0.6, 0.8, 0]` becomes `[3/7, 4/7, 0]`; all-zero RGB stays zero.\n\n`templates` has shape `[3, H/2, W, 3]`, or `[4, H/2, W, 3]` when the last entry is the blank region. Compare lower-half mean squared pixel error over height, width and RGB, and use the first minimum on a tie. Template indices 0–2 produce the corresponding three-column one-hot word match; optional index 3 produces `[0, 0, 0]`. Concatenate the sum-normalized RGB and word channels.",
+      "counts": {
+        "page": 1,
+        "exercises": 1,
+        "reference": 1
+      }
+    }
+  ],
+  "rationale": [
+    "GV-05: distinguish sum-normalized RGB from L2, specify zero/blank behavior and exact shapes; immediate CPU oracle strengthened separately."
+  ]
+}

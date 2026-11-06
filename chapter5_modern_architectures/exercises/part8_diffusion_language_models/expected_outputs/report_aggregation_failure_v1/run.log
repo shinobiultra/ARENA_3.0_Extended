@@ -1,0 +1,95 @@
+W0905 20:18:27.235000 1877611 .venv/lib/python3.14/site-packages/torch/utils/_pytree.py:630] <enum 'KernelPreference'> is an Enum subclass and is now natively supported by torch.compile as an opaque value type. Calling register_constant() on Enum subclasses is deprecated and will be an error in a future release.
+W0905 20:18:27.245000 1877611 .venv/lib/python3.14/site-packages/torch/utils/_pytree.py:630] <enum 'ScaleCalculationMode'> is an Enum subclass and is now natively supported by torch.compile as an opaque value type. Calling register_constant() on Enum subclasses is deprecated and will be an error in a future release.
+diffusion 1000 1.5244249540070693
+diffusion 2000 1.4898822335526347
+diffusion 3000 1.4846289415533345
+diffusion 4000 1.4749453570693731
+diffusion 5000 1.466182538929085
+diffusion 6000 1.449513195392986
+diffusion 7000 1.4350208286195993
+diffusion 8000 1.3571489490568638
+diffusion 9000 1.3042120228831966
+diffusion 10000 1.2713616654121627
+diffusion 11000 1.254241205751896
+diffusion 12000 1.2313349964097142
+diffusion-shuffled 1000 1.5597095706810553
+diffusion-shuffled 2000 1.5156246398886044
+diffusion-shuffled 3000 1.5047940180326502
+diffusion-shuffled 4000 1.452038831077516
+diffusion-shuffled 5000 1.3422954712683957
+diffusion-shuffled 6000 1.2562948297709227
+diffusion-shuffled 7000 1.2217358037208517
+diffusion-shuffled 8000 1.1912198526163895
+diffusion-shuffled 9000 1.1723152318348486
+diffusion-shuffled 10000 1.156058181077242
+diffusion-shuffled 11000 1.1537820336719353
+diffusion-shuffled 12000 1.146333063642184
+autoregressive 1000 0.9806645354256034
+autoregressive 2000 0.9358921470120549
+autoregressive 3000 0.9376181233674288
+autoregressive 4000 0.9598755929619074
+autoregressive 5000 0.9832179248332977
+autoregressive 6000 1.0202882569283247
+autoregressive 7000 1.04528534039855
+autoregressive 8000 1.0657343715429306
+autoregressive 9000 1.0790339335799217
+autoregressive 10000 1.1095081381499767
+autoregressive 11000 1.1091078035533428
+autoregressive 12000 1.1280517261475325
+autoregressive-shuffled 1000 1.0459552062675357
+autoregressive-shuffled 2000 1.0430804304778576
+autoregressive-shuffled 3000 1.1005964316427708
+autoregressive-shuffled 4000 1.1640093643218279
+autoregressive-shuffled 5000 1.2248002775013447
+autoregressive-shuffled 6000 1.2735896091908216
+autoregressive-shuffled 7000 1.3225128017365932
+autoregressive-shuffled 8000 1.3543602675199509
+autoregressive-shuffled 9000 1.3882108181715012
+autoregressive-shuffled 10000 1.4092563092708588
+autoregressive-shuffled 11000 1.461612455546856
+autoregressive-shuffled 12000 1.4505069144070148
+Fresh generation match diffusion selected ancestral-1-greedy
+Fresh generation match diffusion selected ancestral-4-greedy
+Fresh generation match diffusion selected ancestral-8-greedy
+Fresh generation match diffusion selected ancestral-16-greedy
+Fresh generation match diffusion selected uniform-1-greedy
+Fresh generation match diffusion selected uniform-4-greedy
+Fresh generation match diffusion selected uniform-8-greedy
+Fresh generation match diffusion selected uniform-16-greedy
+Fresh generation match diffusion selected confidence-1-greedy
+Fresh generation match diffusion selected confidence-4-greedy
+Fresh generation match diffusion selected confidence-8-greedy
+Fresh generation match diffusion selected confidence-16-greedy
+Fresh generation match diffusion selected confidence-16-annealed
+Fresh generation match diffusion selected confidence-16-warm
+Fresh generation match diffusion selected confidence-block4-4
+Fresh generation match diffusion selected confidence-block8-4
+Fresh generation match diffusion endpoint ancestral-16-greedy
+Fresh generation match diffusion-shuffled selected ancestral-1-greedy
+Fresh generation match diffusion-shuffled selected ancestral-4-greedy
+Fresh generation match diffusion-shuffled selected ancestral-8-greedy
+Fresh generation match diffusion-shuffled selected ancestral-16-greedy
+Fresh generation match diffusion-shuffled selected uniform-1-greedy
+Fresh generation match diffusion-shuffled selected uniform-4-greedy
+Fresh generation match diffusion-shuffled selected uniform-8-greedy
+Fresh generation match diffusion-shuffled selected uniform-16-greedy
+Fresh generation match diffusion-shuffled selected confidence-1-greedy
+Fresh generation match diffusion-shuffled selected confidence-4-greedy
+Fresh generation match diffusion-shuffled selected confidence-8-greedy
+Fresh generation match diffusion-shuffled selected confidence-16-greedy
+Fresh generation match diffusion-shuffled selected confidence-16-annealed
+Fresh generation match diffusion-shuffled selected confidence-16-warm
+Fresh generation match diffusion-shuffled selected confidence-block4-4
+Fresh generation match diffusion-shuffled selected confidence-block8-4
+Fresh generation match diffusion-shuffled endpoint ancestral-16-greedy
+Fresh generation match autoregressive selected ar-greedy
+Fresh generation match autoregressive selected ar-warm
+Fresh generation match autoregressive endpoint ar-greedy
+Fresh generation match autoregressive-shuffled selected ar-greedy
+Fresh generation match autoregressive-shuffled selected ar-warm
+Fresh generation match autoregressive-shuffled endpoint ar-greedy
+Fresh generation match diffusion untrained ancestral-16-greedy
+Fresh generation match autoregressive untrained ar-greedy
+{"status": "PASS", "fresh_training_runs": 4, "fresh_generation_conditions": 42, "fresh_generated_examples": 21504, "max_weight_error": 0.0, "max_trace_numeric_error": 0.0, "elapsed_seconds": 134.9932096004486}
+FAIL 5.5 Toy Discrete Diffusion Language Models and Local DiffusionGemma Proof
+Wrote 1 verification reports; 0 accepted.

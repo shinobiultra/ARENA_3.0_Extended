@@ -577,7 +577,7 @@ def has_native_cpu_model_evidence(lock: dict[str, Any], report: dict[str, Any]) 
         and evidence.get("uses_cuda") is False
         and has_native_evidence(report)
     )
-    from chapter16_shapley_attribution_baselines.exercises.part18_spex.native_report import (
+    from arena_ext.legacy_sparse_evidence.native_report import (
         has_native_evidence as has_sparse_native_evidence,
     )
 
@@ -680,9 +680,31 @@ def report_contract_blockers(lock: dict[str, Any], report: dict[str, Any]) -> li
 def report_evidence_blockers() -> list[str]:
     blockers: list[str] = []
     for record in verification_report_records():
-        lock = yaml.safe_load(record["lock_path"].read_text())
-        report = json.loads(record["report_path"].read_text())
-        blockers.extend(report_contract_blockers(lock, report))
+        loaded: dict[str, dict[str, Any]] = {}
+        for key, parser in (("lock_path", yaml.safe_load), ("report_path", json.loads)):
+            path = record[key]
+            label = path.relative_to(ROOT) if path.is_relative_to(ROOT) else path
+            try:
+                value = parser(path.read_text())
+            except FileNotFoundError:
+                blockers.append(f"report evidence: missing {label}")
+            except (OSError, UnicodeError, yaml.YAMLError, json.JSONDecodeError) as exc:
+                blockers.append(f"report evidence: invalid {label}: {type(exc).__name__}: {exc}")
+            else:
+                if not isinstance(value, dict):
+                    blockers.append(f"report evidence: invalid {label}: expected a mapping")
+                else:
+                    loaded[key] = value
+        if len(loaded) != 2:
+            continue
+        try:
+            blockers.extend(report_contract_blockers(loaded["lock_path"], loaded["report_path"]))
+        except (AttributeError, KeyError, TypeError, ValueError) as exc:
+            # A malformed record must remain a blocker without hiding later
+            # records. Existing contract and source-freshness rules still apply.
+            path = record["report_path"]
+            label = path.relative_to(ROOT) if path.is_relative_to(ROOT) else path
+            blockers.append(f"report evidence: invalid contract {label}: {type(exc).__name__}: {exc}")
     return blockers
 
 

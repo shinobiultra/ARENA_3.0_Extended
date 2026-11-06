@@ -1,0 +1,1890 @@
+{
+  "schema_version": 1,
+  "review_date": "2026-11-03",
+  "snapshot": "Research Workspace / 00 Inbox; 97-record snapshot at library version 10797",
+  "batch": "INB067–INB097",
+  "record_count": 31,
+  "scope": "Reading/planning only; existing 86-lesson/205-requirement scope retained. New lesson topics are proposals pending pilot completion and human acceptance. No Zotero or GitHub writes.",
+  "read_level_policy": "Every record receives primary identity verification and explicit read-depth; none is claimed fully read. Source facts and author-reported findings are separate from our proposed lessons.",
+  "syllabus_authority": "infrastructure/extension/syllabus.yaml",
+  "syllabus_numbering_note": "Current syllabus: 8.2 Attribution Patching/EAP; 8.3 AtP*; 8.4 ACDC/Circuit Metrics. Earlier user pilot shorthand called ACDC 8.3; preserve distinction.",
+  "rows": [
+    {
+      "id": "INB067",
+      "title": "Contrastive World Models",
+      "primary_urls": [
+        "https://arxiv.org/abs/2609.22175v1"
+      ],
+      "identity_status": "VERIFIED primary title/author/identifier match; 2609.22175v1",
+      "metadata_proposals": [],
+      "reading_level": "primary metadata and abstract triage; not full paper review",
+      "full_read_priority": "P2",
+      "disposition": "existing lesson addition",
+      "target_existing_lessons": [
+        {
+          "id": "14.3",
+          "title": "Action-Conditioned World Models and Latent Planning",
+          "path": "chapter14_jepa_world_models/exercises/part3_action_conditioned_planning"
+        },
+        {
+          "id": "14.7",
+          "title": "Recurrent World Models - Dreamer, TD-MPC2 and IRIS",
+          "path": "chapter14_jepa_world_models/exercises/part7_recurrent_world_models"
+        }
+      ],
+      "reason": "Direct contrastive-versus-reconstruction comparison strengthens the existing world-model lesson without adding a model family.",
+      "priority": "P2",
+      "integration_roles": {
+        "method": "Implement patch-future InfoNCE and latent transition on a planted moving-object grid.",
+        "visualization": "Task success versus distractor strength, beside latent-state decoding.",
+        "intuition": "Direct contrastive-versus-reconstruction comparison strengthens the existing world-model lesson without adding a model family.",
+        "results-prediction": "Will a reconstruction objective retain more background than task state as distractors increase?",
+        "replication": "bounded real study; proposal only, no execution"
+      },
+      "signature_figure": "Task success versus distractor strength, beside latent-state decoding.",
+      "prediction_prompt": "Will a reconstruction objective retain more background than task state as distractors increase?",
+      "controls_student_method": {
+        "student_method": "Implement patch-future InfoNCE and latent transition on a planted moving-object grid.",
+        "controls": "Shuffled futures; matched latent dimension and optimization budget; reconstruction and momentum-prediction baselines."
+      },
+      "replication_tier": "bounded real study",
+      "compute_access_code_data": {
+        "compute": "UNKNOWN for faithful replication; model training/inference resources not profiled",
+        "access": "Primary text accessible; model/API/dataset permissions and licenses UNKNOWN unless explicitly stated below",
+        "code": "UNKNOWN; not checked",
+        "data": "UNKNOWN; not checked"
+      },
+      "source_facts": [
+        "Replaces pixel reconstruction with contrastive future-patch prediction and reports improved distractor robustness in small-scale world-model settings."
+      ],
+      "own_proposal": {
+        "method": "Implement patch-future InfoNCE and latent transition on a planted moving-object grid.",
+        "signature_figure": "Task success versus distractor strength, beside latent-state decoding.",
+        "prediction_prompt": "Will a reconstruction objective retain more background than task state as distractors increase?",
+        "controls": "Shuffled futures; matched latent dimension and optimization budget; reconstruction and momentum-prediction baselines."
+      },
+      "limitations": [
+        "No experiment, model loading, checkpoint/data download, native readiness or learner acceptance evidence.",
+        "Abstract-level result claims remain author-reported; full methods/assumptions/selection rules not independently validated."
+      ]
+    },
+    {
+      "id": "INB068",
+      "title": "Information-Theoretic Probing with Minimum Description Length",
+      "primary_urls": [
+        "https://aclanthology.org/2020.emnlp-main.14/",
+        "https://aclanthology.org/2020.emnlp-main.14.pdf"
+      ],
+      "identity_status": "VERIFIED primary title/author/identifier match; publisher/author record",
+      "metadata_proposals": [],
+      "reading_level": "primary metadata/abstract plus selected method sections and availability statements; not full paper review",
+      "full_read_priority": "P1",
+      "disposition": "core integration",
+      "target_existing_lessons": [
+        {
+          "id": "0.6",
+          "title": "How to Know When an Interpretability Result Is Fake (Practice)",
+          "path": "chapter0_fundamentals/exercises/part6_fake_interpretability_results_practice"
+        },
+        {
+          "id": "11.1",
+          "title": "PCA, SVD and Geometry Controls",
+          "path": "chapter11_representation_geometry/exercises/part1_pca_svd_geometry_controls"
+        }
+      ],
+      "reason": "A concrete bridge from cross-entropy to honest probing belongs in foundations and probe audits.",
+      "priority": "P1",
+      "integration_roles": {
+        "method": "Implement prequential label codelength, including initial uniform block and training only on prior blocks.",
+        "visualization": "Learning curves and cumulative bits for structured versus control labels.",
+        "intuition": "A concrete bridge from cross-entropy to honest probing belongs in foundations and probe audits.",
+        "results-prediction": "Can two probes have the same final accuracy and different coding cost?",
+        "replication": "CPU illustration; proposal only, no execution"
+      },
+      "signature_figure": "Learning curves and cumulative bits for structured versus control labels.",
+      "prediction_prompt": "Can two probes have the same final accuracy and different coding cost?",
+      "controls_student_method": {
+        "student_method": "Implement prequential label codelength, including initial uniform block and training only on prior blocks.",
+        "controls": "Type-consistent random labels; random representations; fixed block schedule; disjoint evaluation groups."
+      },
+      "replication_tier": "CPU illustration",
+      "compute_access_code_data": {
+        "compute": "UNKNOWN for faithful replication; CPU-sized pedagogical illustration proposed, not benchmarked",
+        "access": "Primary text accessible; model/API/dataset permissions and licenses UNKNOWN unless explicitly stated below",
+        "code": "Paper links https://github.com/lena-voita/description-length-probing; repository not executed; artifact completeness UNKNOWN",
+        "data": "UNKNOWN; not checked"
+      },
+      "source_facts": [
+        "Proposes online and variational description-length probes to account for the effort required to predict labels."
+      ],
+      "own_proposal": {
+        "method": "Implement prequential label codelength, including initial uniform block and training only on prior blocks.",
+        "signature_figure": "Learning curves and cumulative bits for structured versus control labels.",
+        "prediction_prompt": "Can two probes have the same final accuracy and different coding cost?",
+        "controls": "Type-consistent random labels; random representations; fixed block schedule; disjoint evaluation groups."
+      },
+      "limitations": [
+        "No experiment, model loading, checkpoint/data download, native readiness or learner acceptance evidence.",
+        "Abstract-level result claims remain author-reported; full methods/assumptions/selection rules not independently validated."
+      ]
+    },
+    {
+      "id": "INB069",
+      "title": "Gradient Routing Localizes and Removes Unintended Behaviors in RL",
+      "primary_urls": [
+        "https://arxiv.org/abs/2610.17062v1"
+      ],
+      "identity_status": "VERIFIED primary title/author/identifier match; 2610.17062v1",
+      "metadata_proposals": [],
+      "reading_level": "primary metadata/abstract plus selected method sections and availability statements; not full paper review",
+      "full_read_priority": "P1",
+      "disposition": "existing lesson addition",
+      "target_existing_lessons": [
+        {
+          "id": "9.5",
+          "title": "White-Box Monitors and Red-Teaming with Internals",
+          "path": "chapter9_alignment_interpretability/exercises/part5_white_box_monitors"
+        },
+        {
+          "id": "15.2",
+          "title": "LoRA vs Full Fine-Tuning",
+          "path": "chapter15_peft_misalignment/exercises/part2_lora_vs_full_finetuning"
+        }
+      ],
+      "reason": "Connects white-box monitoring to intervention and adapter removal, while preserving limitations of imperfect monitors.",
+      "priority": "P1",
+      "integration_roles": {
+        "method": "Implement per-example retain/forget gradient masks on a tiny two-behavior task; inspect the paper's anchor updates and unrouted optimizer moments separately.",
+        "visualization": "True unwanted-behavior versus useful-task performance before/after adapter ablation across monitor recall.",
+        "intuition": "Connects white-box monitoring to intervention and adapter removal, while preserving limitations of imperfect monitors.",
+        "results-prediction": "Does removing flagged training loss prevent undetected behavior, or move learning into the monitor blind spot?",
+        "replication": "CPU illustration; proposal only, no execution"
+      },
+      "signature_figure": "True unwanted-behavior versus useful-task performance before/after adapter ablation across monitor recall.",
+      "prediction_prompt": "Does removing flagged training loss prevent undetected behavior, or move learning into the monitor blind spot?",
+      "controls_student_method": {
+        "student_method": "Implement per-example retain/forget gradient masks on a tiny two-behavior task; inspect the paper's anchor updates and unrouted optimizer moments separately.",
+        "controls": "Penalty/filter baselines; random routing; oracle monitor; matched adapter capacity; unseen blind-spot contexts."
+      },
+      "replication_tier": "CPU illustration",
+      "compute_access_code_data": {
+        "compute": "UNKNOWN for faithful replication; CPU-sized pedagogical illustration proposed, not benchmarked",
+        "access": "Primary text accessible; model/API/dataset permissions and licenses UNKNOWN unless explicitly stated below",
+        "code": "Paper Appendix A names https://github.com/jnward/GRAFT; repository not executed; artifact completeness UNKNOWN",
+        "data": "UNKNOWN; not checked"
+      },
+      "source_facts": [
+        "GRAFT routes flagged trajectories into sacrificial adapter parameters; the paper reports retained target performance after ablation."
+      ],
+      "own_proposal": {
+        "method": "Implement per-example retain/forget gradient masks on a tiny two-behavior task; inspect the paper's anchor updates and unrouted optimizer moments separately.",
+        "signature_figure": "True unwanted-behavior versus useful-task performance before/after adapter ablation across monitor recall.",
+        "prediction_prompt": "Does removing flagged training loss prevent undetected behavior, or move learning into the monitor blind spot?",
+        "controls": "Penalty/filter baselines; random routing; oracle monitor; matched adapter capacity; unseen blind-spot contexts."
+      },
+      "limitations": [
+        "No experiment, model loading, checkpoint/data download, native readiness or learner acceptance evidence.",
+        "Abstract-level result claims remain author-reported; full methods/assumptions/selection rules not independently validated."
+      ]
+    },
+    {
+      "id": "INB070",
+      "title": "Recurrent Looped Transformer",
+      "primary_urls": [
+        "https://arxiv.org/abs/2610.07591v2",
+        "https://www.alphaxiv.org/abs/2609.recurrent-looped-transformer",
+        "https://yifanzhang-pro.github.io/recurrent-looped-tranformer/"
+      ],
+      "identity_status": "VERIFIED primary title/author/identifier match; 2610.07591v2",
+      "metadata_proposals": [
+        "Existing URL is an alphaXiv-exclusive September proposal, not a numeric arXiv ID. Later primary arXiv identity is 2610.07591v2 (11 Oct 2026), with five authors. Preserve proposal and later empirical version separately; do not silently replace webpage with preprint."
+      ],
+      "reading_level": "primary metadata and abstract triage; not full paper review",
+      "full_read_priority": "P2",
+      "disposition": "optional replication",
+      "target_existing_lessons": [
+        {
+          "id": "5.5",
+          "title": "State Tracking in SSMs and Transformers",
+          "path": "chapter5_modern_architectures/exercises/part5_state_tracking"
+        },
+        {
+          "id": "5.7",
+          "title": "Griffin, xLSTM, Hyena and Hybrid Models",
+          "path": "chapter5_modern_architectures/exercises/part7_griffin_xlstm_hyena"
+        }
+      ],
+      "reason": "Use as optional state-tracking comparison; do not combine early proposal claims with later empirical results silently.",
+      "priority": "P2",
+      "integration_roles": {
+        "method": "Implement one recurrent decoder-state transition and compare identical token histories with different prompt boundaries.",
+        "visualization": "State-tracking accuracy by test length and charged sequential steps.",
+        "intuition": "Use as optional state-tracking comparison; do not combine early proposal claims with later empirical results silently.",
+        "results-prediction": "Does boundary-invariant state carry imply improved language modeling or only consistent policy semantics?",
+        "replication": "CPU illustration; proposal only, no execution"
+      },
+      "signature_figure": "State-tracking accuracy by test length and charged sequential steps.",
+      "prediction_prompt": "Does boundary-invariant state carry imply improved language modeling or only consistent policy semantics?",
+      "controls_student_method": {
+        "student_method": "Implement one recurrent decoder-state transition and compare identical token histories with different prompt boundaries.",
+        "controls": "No feedback; reset-state boundary; equal parameters/tokens plus reported FLOPs and serial latency."
+      },
+      "replication_tier": "CPU illustration",
+      "compute_access_code_data": {
+        "compute": "UNKNOWN for faithful replication; CPU-sized pedagogical illustration proposed, not benchmarked",
+        "access": "Primary text accessible; model/API/dataset permissions and licenses UNKNOWN unless explicitly stated below",
+        "code": "UNKNOWN; not checked",
+        "data": "UNKNOWN; not checked"
+      },
+      "source_facts": [
+        "An earlier alphaXiv architecture proposal carries recurrent decoder state across prompt and response; the later arXiv paper adds finite algorithmic experiments."
+      ],
+      "own_proposal": {
+        "method": "Implement one recurrent decoder-state transition and compare identical token histories with different prompt boundaries.",
+        "signature_figure": "State-tracking accuracy by test length and charged sequential steps.",
+        "prediction_prompt": "Does boundary-invariant state carry imply improved language modeling or only consistent policy semantics?",
+        "controls": "No feedback; reset-state boundary; equal parameters/tokens plus reported FLOPs and serial latency."
+      },
+      "limitations": [
+        "No experiment, model loading, checkpoint/data download, native readiness or learner acceptance evidence.",
+        "Abstract-level result claims remain author-reported; full methods/assumptions/selection rules not independently validated."
+      ]
+    },
+    {
+      "id": "INB071",
+      "title": "Looped Diffusion Transformer",
+      "primary_urls": [
+        "https://arxiv.org/abs/2609.40305v1"
+      ],
+      "identity_status": "VERIFIED primary title/author/identifier match; 2609.40305v1",
+      "metadata_proposals": [
+        "Primary v1 submitted 30 Sep 2026 UTC; inbox timestamp 1 Oct 2026 may reflect timezone. Normalize only as a proposed bibliographic correction."
+      ],
+      "reading_level": "primary metadata and abstract triage; not full paper review",
+      "full_read_priority": "P3",
+      "disposition": "background",
+      "target_existing_lessons": [
+        {
+          "id": "13.5",
+          "title": "Diffusion Transformers and ConceptAttention",
+          "path": "chapter13_image_generation_interpretability/exercises/part5_dit_concept_attention"
+        }
+      ],
+      "reason": "Useful architecture reading, but training a 260M image generator exceeds a pilot integration.",
+      "priority": "P3",
+      "integration_roles": {
+        "method": "Draw shared-block unrolling and propose loop-depth versus denoising-step allocation at fixed compute.",
+        "visualization": "Quality versus measured total forward FLOPs, with loop depth separated from sampling steps.",
+        "intuition": "Useful architecture reading, but training a 260M image generator exceeds a pilot integration.",
+        "results-prediction": "Does an extra internal loop help more than an extra denoising step at the same cost?",
+        "replication": "faithful paper replication; proposal only, no execution"
+      },
+      "signature_figure": "Quality versus measured total forward FLOPs, with loop depth separated from sampling steps.",
+      "prediction_prompt": "Does an extra internal loop help more than an extra denoising step at the same cost?",
+      "controls_student_method": {
+        "student_method": "Draw shared-block unrolling and propose loop-depth versus denoising-step allocation at fixed compute.",
+        "controls": "Matched parameters and FLOPs; naive looping; deep-supervision-only; attention-modulation-only."
+      },
+      "replication_tier": "faithful paper replication",
+      "compute_access_code_data": {
+        "compute": "UNKNOWN for faithful replication; model training/inference resources not profiled",
+        "access": "Primary text accessible; model/API/dataset permissions and licenses UNKNOWN unless explicitly stated below",
+        "code": "UNKNOWN; not checked",
+        "data": "UNKNOWN; not checked"
+      },
+      "source_facts": [
+        "Looped-DiT combines intermediate-loop supervision and self-modulating attention to stabilize shared-block diffusion computation."
+      ],
+      "own_proposal": {
+        "method": "Draw shared-block unrolling and propose loop-depth versus denoising-step allocation at fixed compute.",
+        "signature_figure": "Quality versus measured total forward FLOPs, with loop depth separated from sampling steps.",
+        "prediction_prompt": "Does an extra internal loop help more than an extra denoising step at the same cost?",
+        "controls": "Matched parameters and FLOPs; naive looping; deep-supervision-only; attention-modulation-only."
+      },
+      "limitations": [
+        "No experiment, model loading, checkpoint/data download, native readiness or learner acceptance evidence.",
+        "Abstract-level result claims remain author-reported; full methods/assumptions/selection rules not independently validated."
+      ]
+    },
+    {
+      "id": "INB072",
+      "title": "Revealing and Reducing Gender Biases in Vision and Language Assistants (VLAs)",
+      "primary_urls": [
+        "https://arxiv.org/abs/2410.19314v2"
+      ],
+      "identity_status": "VERIFIED primary title/author/identifier match; 2410.19314v2",
+      "metadata_proposals": [
+        "Pin verified primary version 2410.19314v2 for future full reading; original inbox record does not reliably pin this exact version."
+      ],
+      "reading_level": "primary metadata and abstract triage; not full paper review",
+      "full_read_priority": "P2",
+      "disposition": "existing lesson addition",
+      "target_existing_lessons": [
+        {
+          "id": "12.5",
+          "title": "Object Hallucination and Modality Arbitration",
+          "path": "chapter12_vlm_interpretability/exercises/part5_object_hallucination"
+        },
+        {
+          "id": "0.6",
+          "title": "How to Know When an Interpretability Result Is Fake (Practice)",
+          "path": "chapter0_fundamentals/exercises/part6_fake_interpretability_results_practice"
+        }
+      ],
+      "reason": "Teaches evaluation design and confounds, without treating binary experimental categories as exhaustive human identities.",
+      "priority": "P2",
+      "integration_roles": {
+        "method": "Implement paired counterfactual aggregation on an explicitly constructed occupation/trait response table.",
+        "visualization": "Paired group differences with intervals and retained task performance.",
+        "intuition": "Teaches evaluation design and confounds, without treating binary experimental categories as exhaustive human identities.",
+        "results-prediction": "Could an aggregate bias reduction conceal a direction reversal on individual traits?",
+        "replication": "CPU illustration; proposal only, no execution"
+      },
+      "signature_figure": "Paired group differences with intervals and retained task performance.",
+      "prediction_prompt": "Could an aggregate bias reduction conceal a direction reversal on individual traits?",
+      "controls_student_method": {
+        "student_method": "Implement paired counterfactual aggregation on an explicitly constructed occupation/trait response table.",
+        "controls": "Matched image and wording pairs; image-only/text-only; shuffled group assignment; family-wise correction."
+      },
+      "replication_tier": "CPU illustration",
+      "compute_access_code_data": {
+        "compute": "UNKNOWN for faithful replication; CPU-sized pedagogical illustration proposed, not benchmarked",
+        "access": "Primary text accessible; model/API/dataset permissions and licenses UNKNOWN unless explicitly stated below",
+        "code": "Primary abstract names https://github.com/ExplainableML/vla-gender-bias; repository not inspected or executed",
+        "data": "UNKNOWN; not checked"
+      },
+      "source_facts": [
+        "Studies gender-associated outputs across 22 vision-language assistants and compares debiasing/performance trade-offs."
+      ],
+      "own_proposal": {
+        "method": "Implement paired counterfactual aggregation on an explicitly constructed occupation/trait response table.",
+        "signature_figure": "Paired group differences with intervals and retained task performance.",
+        "prediction_prompt": "Could an aggregate bias reduction conceal a direction reversal on individual traits?",
+        "controls": "Matched image and wording pairs; image-only/text-only; shuffled group assignment; family-wise correction."
+      },
+      "limitations": [
+        "No experiment, model loading, checkpoint/data download, native readiness or learner acceptance evidence.",
+        "Abstract-level result claims remain author-reported; full methods/assumptions/selection rules not independently validated."
+      ]
+    },
+    {
+      "id": "INB073",
+      "title": "Story Imprinting: AI Assistants Absorb Traits from Human Characters They Resemble",
+      "primary_urls": [
+        "https://arxiv.org/abs/2609.10883v1"
+      ],
+      "identity_status": "VERIFIED primary title/author/identifier match; 2609.10883v1",
+      "metadata_proposals": [],
+      "reading_level": "primary metadata and abstract triage; not full paper review",
+      "full_read_priority": "P2",
+      "disposition": "background",
+      "target_existing_lessons": [
+        {
+          "id": "9.4",
+          "title": "Emergent Misalignment Detection",
+          "path": "chapter9_alignment_interpretability/exercises/part4_emergent_misalignment"
+        },
+        {
+          "id": "15.4",
+          "title": "LoRA Phase Transitions and Misalignment Proxies",
+          "path": "chapter15_peft_misalignment/exercises/part4_lora_phase_transitions"
+        }
+      ],
+      "reason": "Relevant to emergent misalignment, but new paid fine-tuning and causal claims need a separately frozen study.",
+      "priority": "P2",
+      "integration_roles": {
+        "method": "Design counterbalanced story/assistant evaluation with training format separated from evaluation format.",
+        "visualization": "Behavior transfer matrix by character affinity and task context.",
+        "intuition": "Relevant to emergent misalignment, but new paid fine-tuning and causal claims need a separately frozen study.",
+        "results-prediction": "Would name overlap, helpfulness, or institutional prestige explain apparent character affinity?",
+        "replication": "bounded real study; proposal only, no execution"
+      },
+      "signature_figure": "Behavior transfer matrix by character affinity and task context.",
+      "prediction_prompt": "Would name overlap, helpfulness, or institutional prestige explain apparent character affinity?",
+      "controls_student_method": {
+        "student_method": "Design counterbalanced story/assistant evaluation with training format separated from evaluation format.",
+        "controls": "Matched story content; swapped attributes; base-model and persona controls; held-out story templates."
+      },
+      "replication_tier": "bounded real study",
+      "compute_access_code_data": {
+        "compute": "UNKNOWN for faithful replication; model training/inference resources not profiled",
+        "access": "Primary text accessible; model/API/dataset permissions and licenses UNKNOWN unless explicitly stated below",
+        "code": "UNKNOWN; not checked",
+        "data": "UNKNOWN; not checked"
+      },
+      "source_facts": [
+        "Reports cross-format behavioral changes after story fine-tuning, including stronger adoption from similar characters."
+      ],
+      "own_proposal": {
+        "method": "Design counterbalanced story/assistant evaluation with training format separated from evaluation format.",
+        "signature_figure": "Behavior transfer matrix by character affinity and task context.",
+        "prediction_prompt": "Would name overlap, helpfulness, or institutional prestige explain apparent character affinity?",
+        "controls": "Matched story content; swapped attributes; base-model and persona controls; held-out story templates."
+      },
+      "limitations": [
+        "No experiment, model loading, checkpoint/data download, native readiness or learner acceptance evidence.",
+        "Abstract-level result claims remain author-reported; full methods/assumptions/selection rules not independently validated."
+      ]
+    },
+    {
+      "id": "INB074",
+      "title": "Targeted Recovery of Weight-Space Mechanisms From Neural Networks",
+      "primary_urls": [
+        "https://arxiv.org/abs/2607.13047v1"
+      ],
+      "identity_status": "VERIFIED primary title/author/identifier match; 2607.13047v1",
+      "metadata_proposals": [],
+      "reading_level": "primary metadata and abstract triage; not full paper review",
+      "full_read_priority": "P2",
+      "disposition": "optional replication",
+      "target_existing_lessons": [
+        {
+          "id": "8.6",
+          "title": "Sparse Feature Circuits and SHIFT",
+          "path": "chapter8_automated_circuits/exercises/part6_sparse_feature_circuits"
+        },
+        {
+          "id": "18.2",
+          "title": "Sparse and Modular Training, KANs and Sparse Trees",
+          "path": "chapter18_intrinsic_interpretability/exercises/part2_sparse_modular_kans"
+        }
+      ],
+      "reason": "Offers a weight-space counterpart to activation circuits; large-model recovery remains a separate replication.",
+      "priority": "P2",
+      "integration_roles": {
+        "method": "Implement planted linear-network decomposition with a target component and residual catch-all.",
+        "visualization": "Target-task fidelity versus collateral loss and decomposition cost.",
+        "intuition": "Offers a weight-space counterpart to activation circuits; large-model recovery remains a separate replication.",
+        "results-prediction": "Can a small target component be faithful while the catch-all hides non-target failures?",
+        "replication": "CPU illustration; proposal only, no execution"
+      },
+      "signature_figure": "Target-task fidelity versus collateral loss and decomposition cost.",
+      "prediction_prompt": "Can a small target component be faithful while the catch-all hides non-target failures?",
+      "controls_student_method": {
+        "student_method": "Implement planted linear-network decomposition with a target component and residual catch-all.",
+        "controls": "Naive decomposition; random target subsets; full-model output check; unseen non-target inputs."
+      },
+      "replication_tier": "CPU illustration",
+      "compute_access_code_data": {
+        "compute": "UNKNOWN for faithful replication; CPU-sized pedagogical illustration proposed, not benchmarked",
+        "access": "Primary text accessible; model/API/dataset permissions and licenses UNKNOWN unless explicitly stated below",
+        "code": "UNKNOWN; not checked",
+        "data": "UNKNOWN; not checked"
+      },
+      "source_facts": [
+        "Targeted parameter decomposition uses a catch-all component to focus weight-space decomposition on specified inputs."
+      ],
+      "own_proposal": {
+        "method": "Implement planted linear-network decomposition with a target component and residual catch-all.",
+        "signature_figure": "Target-task fidelity versus collateral loss and decomposition cost.",
+        "prediction_prompt": "Can a small target component be faithful while the catch-all hides non-target failures?",
+        "controls": "Naive decomposition; random target subsets; full-model output check; unseen non-target inputs."
+      },
+      "limitations": [
+        "No experiment, model loading, checkpoint/data download, native readiness or learner acceptance evidence.",
+        "Abstract-level result claims remain author-reported; full methods/assumptions/selection rules not independently validated."
+      ]
+    },
+    {
+      "id": "INB075",
+      "title": "Late-Stage Generalization Collapse in Grokking: Detecting anti-grokking with Weightwatcher",
+      "primary_urls": [
+        "https://arxiv.org/abs/2602.02859v1"
+      ],
+      "identity_status": "VERIFIED primary title/author/identifier match; 2602.02859v1",
+      "metadata_proposals": [],
+      "reading_level": "primary metadata and abstract triage; not full paper review",
+      "full_read_priority": "P2",
+      "disposition": "existing lesson addition",
+      "target_existing_lessons": [
+        {
+          "id": "17.1",
+          "title": "Checkpoint Archaeology and Grokking",
+          "path": "chapter17_training_dynamics/exercises/part1_checkpoint_archaeology"
+        }
+      ],
+      "reason": "An important negative outcome for grokking; reported associations do not make a universal collapse detector.",
+      "priority": "P2",
+      "integration_roles": {
+        "method": "Implement shuffled weight spectra and track them against a predeclared checkpoint trajectory.",
+        "visualization": "Train/test accuracy and spectral outlier trajectories on the same time axis.",
+        "intuition": "An important negative outcome for grokking; reported associations do not make a universal collapse detector.",
+        "results-prediction": "Do spectral outliers predict future collapse on unseen seeds before using held-out accuracy?",
+        "replication": "bounded real study; proposal only, no execution"
+      },
+      "signature_figure": "Train/test accuracy and spectral outlier trajectories on the same time axis.",
+      "prediction_prompt": "Do spectral outliers predict future collapse on unseen seeds before using held-out accuracy?",
+      "controls_student_method": {
+        "student_method": "Implement shuffled weight spectra and track them against a predeclared checkpoint trajectory.",
+        "controls": "Predeclared alarm; non-collapsing seeds; norms and entropy baselines; shuffled weights; no retrospective threshold fitting."
+      },
+      "replication_tier": "bounded real study",
+      "compute_access_code_data": {
+        "compute": "UNKNOWN for faithful replication; model training/inference resources not profiled",
+        "access": "Primary text accessible; model/API/dataset permissions and licenses UNKNOWN unless explicitly stated below",
+        "code": "UNKNOWN; not checked",
+        "data": "UNKNOWN; not checked"
+      },
+      "source_facts": [
+        "Reports late generalization collapse in extended grokking runs and proposes shuffled-weight spectral diagnostics."
+      ],
+      "own_proposal": {
+        "method": "Implement shuffled weight spectra and track them against a predeclared checkpoint trajectory.",
+        "signature_figure": "Train/test accuracy and spectral outlier trajectories on the same time axis.",
+        "prediction_prompt": "Do spectral outliers predict future collapse on unseen seeds before using held-out accuracy?",
+        "controls": "Predeclared alarm; non-collapsing seeds; norms and entropy baselines; shuffled weights; no retrospective threshold fitting."
+      },
+      "limitations": [
+        "No experiment, model loading, checkpoint/data download, native readiness or learner acceptance evidence.",
+        "Abstract-level result claims remain author-reported; full methods/assumptions/selection rules not independently validated."
+      ]
+    },
+    {
+      "id": "INB076",
+      "title": "Seeing or Knowing? Visual Context Sensitivity in Multimodal Large Language Models",
+      "primary_urls": [
+        "https://arxiv.org/abs/2607.26326v2"
+      ],
+      "identity_status": "VERIFIED primary title/author/identifier match; 2607.26326v2",
+      "metadata_proposals": [
+        "Pin verified primary version 2607.26326v2 for future full reading; original inbox record does not reliably pin this exact version."
+      ],
+      "reading_level": "primary metadata and abstract triage; not full paper review",
+      "full_read_priority": "P2",
+      "disposition": "existing lesson addition",
+      "target_existing_lessons": [
+        {
+          "id": "12.4",
+          "title": "Visual Token Flow in Real VLMs",
+          "path": "chapter12_vlm_interpretability/exercises/part4_visual_token_flow"
+        },
+        {
+          "id": "12.5",
+          "title": "Object Hallucination and Modality Arbitration",
+          "path": "chapter12_vlm_interpretability/exercises/part5_object_hallucination"
+        }
+      ],
+      "reason": "Directly strengthens existing modality-arbitration lessons with an encoding-versus-use distinction.",
+      "priority": "P2",
+      "integration_roles": {
+        "method": "Implement image-versus-prior answer scoring and layer intervention on explicit counterfactual pairs.",
+        "visualization": "Layer patching heatmap beside visual-context sensitivity curves.",
+        "intuition": "Directly strengthens existing modality-arbitration lessons with an encoding-versus-use distinction.",
+        "results-prediction": "If a decoder can reconstruct an attribute, must the model use that attribute when answering?",
+        "replication": "bounded real study; proposal only, no execution"
+      },
+      "signature_figure": "Layer patching heatmap beside visual-context sensitivity curves.",
+      "prediction_prompt": "If a decoder can reconstruct an attribute, must the model use that attribute when answering?",
+      "controls_student_method": {
+        "student_method": "Implement image-versus-prior answer scoring and layer intervention on explicit counterfactual pairs.",
+        "controls": "Text-only; scrambled images; consistent versus conflicting priors; no-op/random-layer patches; held-out attributes."
+      },
+      "replication_tier": "bounded real study",
+      "compute_access_code_data": {
+        "compute": "UNKNOWN for faithful replication; model training/inference resources not profiled",
+        "access": "Primary text accessible; model/API/dataset permissions and licenses UNKNOWN unless explicitly stated below",
+        "code": "UNKNOWN; not checked",
+        "data": "UNKNOWN; not checked"
+      },
+      "source_facts": [
+        "Separates visual information availability from its use; WhatIfVis tests conflicts between visual context and language priors."
+      ],
+      "own_proposal": {
+        "method": "Implement image-versus-prior answer scoring and layer intervention on explicit counterfactual pairs.",
+        "signature_figure": "Layer patching heatmap beside visual-context sensitivity curves.",
+        "prediction_prompt": "If a decoder can reconstruct an attribute, must the model use that attribute when answering?",
+        "controls": "Text-only; scrambled images; consistent versus conflicting priors; no-op/random-layer patches; held-out attributes."
+      },
+      "limitations": [
+        "No experiment, model loading, checkpoint/data download, native readiness or learner acceptance evidence.",
+        "Abstract-level result claims remain author-reported; full methods/assumptions/selection rules not independently validated."
+      ]
+    },
+    {
+      "id": "INB077",
+      "title": "CircuitTree: Composing Circuits into A Syllable Transcriber",
+      "primary_urls": [
+        "https://arxiv.org/abs/2610.12520v1"
+      ],
+      "identity_status": "VERIFIED primary title/author/identifier match; 2610.12520v1",
+      "metadata_proposals": [],
+      "reading_level": "primary metadata and abstract triage; not full paper review",
+      "full_read_priority": "P2",
+      "disposition": "optional replication",
+      "target_existing_lessons": [
+        {
+          "id": "8.4",
+          "title": "ACDC and Circuit Metrics",
+          "path": "chapter8_automated_circuits/exercises/part4_acdc_circuit_metrics"
+        },
+        {
+          "id": "8.6",
+          "title": "Sparse Feature Circuits and SHIFT",
+          "path": "chapter8_automated_circuits/exercises/part6_sparse_feature_circuits"
+        }
+      ],
+      "reason": "Adds a composition failure mode to circuit metrics; audio training is optional and separately scoped.",
+      "priority": "P2",
+      "integration_roles": {
+        "method": "Implement union and density-aware composition on a planted modular classifier before considering audio circuits.",
+        "visualization": "Composite accuracy versus component sharing and circuit size.",
+        "intuition": "Adds a composition failure mode to circuit metrics; audio training is optional and separately scoped.",
+        "results-prediction": "Will the union of individually faithful circuits remain faithful when tasks are composed?",
+        "replication": "CPU illustration; proposal only, no execution"
+      },
+      "signature_figure": "Composite accuracy versus component sharing and circuit size.",
+      "prediction_prompt": "Will the union of individually faithful circuits remain faithful when tasks are composed?",
+      "controls_student_method": {
+        "student_method": "Implement union and density-aware composition on a planted modular classifier before considering audio circuits.",
+        "controls": "Naive union; independent circuits; same-size random circuits; permutation of composition order."
+      },
+      "replication_tier": "CPU illustration",
+      "compute_access_code_data": {
+        "compute": "UNKNOWN for faithful replication; CPU-sized pedagogical illustration proposed, not benchmarked",
+        "access": "Primary text accessible; model/API/dataset permissions and licenses UNKNOWN unless explicitly stated below",
+        "code": "UNKNOWN; not checked",
+        "data": "UNKNOWN; not checked"
+      },
+      "source_facts": [
+        "CircuitTree composes many pruned HuBERT circuits using a density-scaled tree schedule and reports syllable transcription."
+      ],
+      "own_proposal": {
+        "method": "Implement union and density-aware composition on a planted modular classifier before considering audio circuits.",
+        "signature_figure": "Composite accuracy versus component sharing and circuit size.",
+        "prediction_prompt": "Will the union of individually faithful circuits remain faithful when tasks are composed?",
+        "controls": "Naive union; independent circuits; same-size random circuits; permutation of composition order."
+      },
+      "limitations": [
+        "No experiment, model loading, checkpoint/data download, native readiness or learner acceptance evidence.",
+        "Abstract-level result claims remain author-reported; full methods/assumptions/selection rules not independently validated."
+      ]
+    },
+    {
+      "id": "INB078",
+      "title": "A Distributional View for Visual Mechanistic Interpretability: KL-Minimal Soft-Constraint Principle",
+      "primary_urls": [
+        "https://arxiv.org/abs/2605.17504v1"
+      ],
+      "identity_status": "VERIFIED primary title/author/identifier match; 2605.17504v1",
+      "metadata_proposals": [
+        "Wrong journalArticle type for the verified source: primary is an arXiv preprint; any journal version UNRESOLVED. Replace discovery-only Semantic Scholar URL with verified primary arXiv URL in any future bibliographic repair; no write made."
+      ],
+      "reading_level": "primary metadata and abstract triage; not full paper review",
+      "full_read_priority": "P2",
+      "disposition": "background",
+      "target_existing_lessons": [
+        {
+          "id": "12.7",
+          "title": "Dense Vision Features - DINO and SAM",
+          "path": "chapter12_vlm_interpretability/exercises/part7_dense_vision_features"
+        },
+        {
+          "id": "13.1",
+          "title": "Diffusion Models and Cross-Attention Attribution",
+          "path": "chapter13_image_generation_interpretability/exercises/part1_diffusion_cross_attention"
+        }
+      ],
+      "reason": "Makes KL direction and naturalness-versus-faithfulness trade-offs teachable before expensive diffusion replication.",
+      "priority": "P2",
+      "integration_roles": {
+        "method": "Derive exponential tilting on a finite image-feature surrogate; implement normalized reweighting directly.",
+        "visualization": "Activation gain versus KL distortion frontier, with example inputs.",
+        "intuition": "Makes KL direction and naturalness-versus-faithfulness trade-offs teachable before expensive diffusion replication.",
+        "results-prediction": "Can maximizing activation alone move far from the original data distribution?",
+        "replication": "CPU illustration; proposal only, no execution"
+      },
+      "signature_figure": "Activation gain versus KL distortion frontier, with example inputs.",
+      "prediction_prompt": "Can maximizing activation alone move far from the original data distribution?",
+      "controls_student_method": {
+        "student_method": "Derive exponential tilting on a finite image-feature surrogate; implement normalized reweighting directly.",
+        "controls": "Unregularized activation maximization; top-k retrieval; random feature; KL weight sweep."
+      },
+      "replication_tier": "CPU illustration",
+      "compute_access_code_data": {
+        "compute": "UNKNOWN for faithful replication; CPU-sized pedagogical illustration proposed, not benchmarked",
+        "access": "Primary text accessible; model/API/dataset permissions and licenses UNKNOWN unless explicitly stated below",
+        "code": "UNKNOWN; not checked",
+        "data": "UNKNOWN; not checked"
+      },
+      "source_facts": [
+        "Formulates visual feature interpretation as KL-minimal distribution change and instantiates energy-guided diffusion sampling."
+      ],
+      "own_proposal": {
+        "method": "Derive exponential tilting on a finite image-feature surrogate; implement normalized reweighting directly.",
+        "signature_figure": "Activation gain versus KL distortion frontier, with example inputs.",
+        "prediction_prompt": "Can maximizing activation alone move far from the original data distribution?",
+        "controls": "Unregularized activation maximization; top-k retrieval; random feature; KL weight sweep."
+      },
+      "limitations": [
+        "No experiment, model loading, checkpoint/data download, native readiness or learner acceptance evidence.",
+        "Abstract-level result claims remain author-reported; full methods/assumptions/selection rules not independently validated."
+      ]
+    },
+    {
+      "id": "INB079",
+      "title": "AutoPrompt: Eliciting Knowledge from Language Models with Automatically Generated Prompts",
+      "primary_urls": [
+        "https://arxiv.org/abs/2010.15980v2"
+      ],
+      "identity_status": "VERIFIED primary title/author/identifier match; 2010.15980v2",
+      "metadata_proposals": [
+        "Pin verified primary version 2010.15980v2 for future full reading; original inbox record does not reliably pin this exact version."
+      ],
+      "reading_level": "primary metadata and abstract triage; not full paper review",
+      "full_read_priority": "P2",
+      "disposition": "existing lesson addition",
+      "target_existing_lessons": [
+        {
+          "id": "9.5",
+          "title": "White-Box Monitors and Red-Teaming with Internals",
+          "path": "chapter9_alignment_interpretability/exercises/part5_white_box_monitors"
+        },
+        {
+          "id": "7.1",
+          "title": "Logit Lens, Tuned Lens and Patchscopes",
+          "path": "chapter7_activation_to_language/exercises/part1_lenses_patchscopes"
+        }
+      ],
+      "reason": "Historical prompt optimization explains a method and its limits; not evidence of internal causal explanation.",
+      "priority": "P2",
+      "integration_roles": {
+        "method": "Implement first-order embedding-token candidate scores then exact top-candidate evaluation.",
+        "visualization": "Trigger-search trajectory with development and held-out accuracy separated.",
+        "intuition": "Historical prompt optimization explains a method and its limits; not evidence of internal causal explanation.",
+        "results-prediction": "Can a nonsensical trigger outperform a natural prompt yet overfit the search examples?",
+        "replication": "bounded real study; proposal only, no execution"
+      },
+      "signature_figure": "Trigger-search trajectory with development and held-out accuracy separated.",
+      "prediction_prompt": "Can a nonsensical trigger outperform a natural prompt yet overfit the search examples?",
+      "controls_student_method": {
+        "student_method": "Implement first-order embedding-token candidate scores then exact top-candidate evaluation.",
+        "controls": "Random-token search; manual prompts; label-word swaps; equal search budgets; independent test templates."
+      },
+      "replication_tier": "bounded real study",
+      "compute_access_code_data": {
+        "compute": "UNKNOWN for faithful replication; model training/inference resources not profiled",
+        "access": "Primary text accessible; model/API/dataset permissions and licenses UNKNOWN unless explicitly stated below",
+        "code": "UNKNOWN; not checked",
+        "data": "UNKNOWN; not checked"
+      },
+      "source_facts": [
+        "AutoPrompt uses gradients to search discrete trigger tokens for masked language models."
+      ],
+      "own_proposal": {
+        "method": "Implement first-order embedding-token candidate scores then exact top-candidate evaluation.",
+        "signature_figure": "Trigger-search trajectory with development and held-out accuracy separated.",
+        "prediction_prompt": "Can a nonsensical trigger outperform a natural prompt yet overfit the search examples?",
+        "controls": "Random-token search; manual prompts; label-word swaps; equal search budgets; independent test templates."
+      },
+      "limitations": [
+        "No experiment, model loading, checkpoint/data download, native readiness or learner acceptance evidence.",
+        "Abstract-level result claims remain author-reported; full methods/assumptions/selection rules not independently validated."
+      ]
+    },
+    {
+      "id": "INB080",
+      "title": "SenseNova-U1.5: Towards Native Unified Visual Intelligence",
+      "primary_urls": [
+        "https://arxiv.org/abs/2609.11929v1"
+      ],
+      "identity_status": "VERIFIED primary title/author/identifier match; 2609.11929v1",
+      "metadata_proposals": [],
+      "reading_level": "primary metadata and abstract triage; not full paper review",
+      "full_read_priority": "P3",
+      "disposition": "defer out of scope",
+      "target_existing_lessons": [
+        {
+          "id": "12.3",
+          "title": "Mini VLM from Scratch",
+          "path": "chapter12_vlm_interpretability/exercises/part3_mini_vlm_from_scratch"
+        },
+        {
+          "id": "13.6",
+          "title": "Autoregressive Image Tokens",
+          "path": "chapter13_image_generation_interpretability/exercises/part6_autoregressive_image_tokens"
+        }
+      ],
+      "reason": "New foundation-model family would violate pilot-first focus; retain as background for later architecture survey.",
+      "priority": "P3",
+      "integration_roles": {
+        "method": "Use a paper diagram to compare shared autoregressive interfaces with separate encoders; no new model implementation.",
+        "visualization": "Architecture/token-path diagram with reported resource categories.",
+        "intuition": "New foundation-model family would violate pilot-first focus; retain as background for later architecture survey.",
+        "results-prediction": "Which interface simplifications reduce components without necessarily reducing training cost?",
+        "replication": "faithful paper replication; proposal only, no execution"
+      },
+      "signature_figure": "Architecture/token-path diagram with reported resource categories.",
+      "prediction_prompt": "Which interface simplifications reduce components without necessarily reducing training cost?",
+      "controls_student_method": {
+        "student_method": "Use a paper diagram to compare shared autoregressive interfaces with separate encoders; no new model implementation.",
+        "controls": "Separate understanding/generation baselines; same resolution and task; count active parameters and compute."
+      },
+      "replication_tier": "faithful paper replication",
+      "compute_access_code_data": {
+        "compute": "UNKNOWN for faithful replication; model training/inference resources not profiled",
+        "access": "Primary text accessible; model/API/dataset permissions and licenses UNKNOWN unless explicitly stated below",
+        "code": "Abstract promises open-source training code; current actual release status UNKNOWN",
+        "data": "UNKNOWN; not checked"
+      },
+      "source_facts": [
+        "Describes an 8B unified multimodal architecture and promises release of training code."
+      ],
+      "own_proposal": {
+        "method": "Use a paper diagram to compare shared autoregressive interfaces with separate encoders; no new model implementation.",
+        "signature_figure": "Architecture/token-path diagram with reported resource categories.",
+        "prediction_prompt": "Which interface simplifications reduce components without necessarily reducing training cost?",
+        "controls": "Separate understanding/generation baselines; same resolution and task; count active parameters and compute."
+      },
+      "limitations": [
+        "No experiment, model loading, checkpoint/data download, native readiness or learner acceptance evidence.",
+        "Abstract-level result claims remain author-reported; full methods/assumptions/selection rules not independently validated."
+      ]
+    },
+    {
+      "id": "INB081",
+      "title": "LLMZip: Lossless Text Compression using Large Language Models",
+      "primary_urls": [
+        "https://arxiv.org/abs/2306.04050v2"
+      ],
+      "identity_status": "VERIFIED primary title/author/identifier match; 2306.04050v2",
+      "metadata_proposals": [
+        "Wrong journalArticle type for the verified source: use preprint unless a separately verified publication is found. Missing URL resolved to arXiv:2306.04050v2; arXiv DOI 10.48550/arXiv.2306.04050. Journal/conference publication not established here."
+      ],
+      "reading_level": "primary metadata and abstract triage; not full paper review",
+      "full_read_priority": "P1",
+      "disposition": "core integration",
+      "target_existing_lessons": [
+        {
+          "id": "0.6",
+          "title": "How to Know When an Interpretability Result Is Fake (Practice)",
+          "path": "chapter0_fundamentals/exercises/part6_fake_interpretability_results_practice"
+        },
+        {
+          "id": "11.1",
+          "title": "PCA, SVD and Geometry Controls",
+          "path": "chapter11_representation_geometry/exercises/part1_pca_svd_geometry_controls"
+        }
+      ],
+      "reason": "Turns cross-entropy and bits into an observable foundations result without downloading LLaMA.",
+      "priority": "P1",
+      "integration_roles": {
+        "method": "Implement a tiny arithmetic/range-coding roundtrip and compare actual length with summed negative log probability.",
+        "visualization": "Actual bits versus ideal code length across predictable and shuffled byte strings.",
+        "intuition": "Turns cross-entropy and bits into an observable foundations result without downloading LLaMA.",
+        "results-prediction": "Does a lower predictive cross-entropy always yield smaller complete files once headers and model costs are counted?",
+        "replication": "CPU illustration; proposal only, no execution"
+      },
+      "signature_figure": "Actual bits versus ideal code length across predictable and shuffled byte strings.",
+      "prediction_prompt": "Does a lower predictive cross-entropy always yield smaller complete files once headers and model costs are counted?",
+      "controls_student_method": {
+        "student_method": "Implement a tiny arithmetic/range-coding roundtrip and compare actual length with summed negative log probability.",
+        "controls": "Uniform and empirical unigram codes; byte shuffle; exact roundtrip; tokenizer and model-side-information accounting."
+      },
+      "replication_tier": "CPU illustration",
+      "compute_access_code_data": {
+        "compute": "UNKNOWN for faithful replication; CPU-sized pedagogical illustration proposed, not benchmarked",
+        "access": "Primary text accessible; model/API/dataset permissions and licenses UNKNOWN unless explicitly stated below",
+        "code": "UNKNOWN; not checked",
+        "data": "UNKNOWN; not checked"
+      },
+      "source_facts": [
+        "Uses an LLM next-token predictor with lossless coding to estimate compressibility; preliminary comparison uses LLaMA-7B."
+      ],
+      "own_proposal": {
+        "method": "Implement a tiny arithmetic/range-coding roundtrip and compare actual length with summed negative log probability.",
+        "signature_figure": "Actual bits versus ideal code length across predictable and shuffled byte strings.",
+        "prediction_prompt": "Does a lower predictive cross-entropy always yield smaller complete files once headers and model costs are counted?",
+        "controls": "Uniform and empirical unigram codes; byte shuffle; exact roundtrip; tokenizer and model-side-information accounting."
+      },
+      "limitations": [
+        "No experiment, model loading, checkpoint/data download, native readiness or learner acceptance evidence.",
+        "Abstract-level result claims remain author-reported; full methods/assumptions/selection rules not independently validated."
+      ]
+    },
+    {
+      "id": "INB082",
+      "title": "OneCAT: Decoder-Only Auto-Regressive Model for Unified Understanding and Generation",
+      "primary_urls": [
+        "https://arxiv.org/abs/2509.03498v3"
+      ],
+      "identity_status": "VERIFIED primary title/author/identifier match; 2509.03498v3",
+      "metadata_proposals": [
+        "Pin verified primary version 2509.03498v3 for future full reading; original inbox record does not reliably pin this exact version."
+      ],
+      "reading_level": "primary metadata and abstract triage; not full paper review",
+      "full_read_priority": "P3",
+      "disposition": "background",
+      "target_existing_lessons": [
+        {
+          "id": "12.3",
+          "title": "Mini VLM from Scratch",
+          "path": "chapter12_vlm_interpretability/exercises/part3_mini_vlm_from_scratch"
+        },
+        {
+          "id": "13.6",
+          "title": "Autoregressive Image Tokens",
+          "path": "chapter13_image_generation_interpretability/exercises/part6_autoregressive_image_tokens"
+        }
+      ],
+      "reason": "Useful architecture contrast; no addition of a large new family while pilots are unfinished.",
+      "priority": "P3",
+      "integration_roles": {
+        "method": "Trace image-token scale hierarchy and identify which adapter/expert handles each modality.",
+        "visualization": "Token-flow diagram and latency decomposition by image scale.",
+        "intuition": "Useful architecture contrast; no addition of a large new family while pilots are unfinished.",
+        "results-prediction": "Does a single autoregressive objective remove modality-specific engineering?",
+        "replication": "faithful paper replication; proposal only, no execution"
+      },
+      "signature_figure": "Token-flow diagram and latency decomposition by image scale.",
+      "prediction_prompt": "Does a single autoregressive objective remove modality-specific engineering?",
+      "controls_student_method": {
+        "student_method": "Trace image-token scale hierarchy and identify which adapter/expert handles each modality.",
+        "controls": "Matched image resolution; external-tokenizer comparison; active versus total parameter accounting."
+      },
+      "replication_tier": "faithful paper replication",
+      "compute_access_code_data": {
+        "compute": "UNKNOWN for faithful replication; model training/inference resources not profiled",
+        "access": "Primary text accessible; model/API/dataset permissions and licenses UNKNOWN unless explicitly stated below",
+        "code": "UNKNOWN; not checked",
+        "data": "UNKNOWN; not checked"
+      },
+      "source_facts": [
+        "OneCAT combines multimodal understanding and generation using decoder-only autoregression and modality-specific experts."
+      ],
+      "own_proposal": {
+        "method": "Trace image-token scale hierarchy and identify which adapter/expert handles each modality.",
+        "signature_figure": "Token-flow diagram and latency decomposition by image scale.",
+        "prediction_prompt": "Does a single autoregressive objective remove modality-specific engineering?",
+        "controls": "Matched image resolution; external-tokenizer comparison; active versus total parameter accounting."
+      },
+      "limitations": [
+        "No experiment, model loading, checkpoint/data download, native readiness or learner acceptance evidence.",
+        "Abstract-level result claims remain author-reported; full methods/assumptions/selection rules not independently validated."
+      ]
+    },
+    {
+      "id": "INB083",
+      "title": "A Sovereign, Open-Source Foundation Model for German and English",
+      "primary_urls": [
+        "https://arxiv.org/abs/2607.09424v3"
+      ],
+      "identity_status": "VERIFIED primary title/author/identifier match; 2607.09424v3",
+      "metadata_proposals": [
+        "Pin verified primary version 2607.09424v3 for future full reading; original inbox record does not reliably pin this exact version."
+      ],
+      "reading_level": "primary metadata and abstract triage; not full paper review",
+      "full_read_priority": "P3",
+      "disposition": "defer out of scope",
+      "target_existing_lessons": [
+        {
+          "id": "5.2",
+          "title": "Mixture of Experts from Scratch",
+          "path": "chapter5_modern_architectures/exercises/part2_mixture_of_experts"
+        },
+        {
+          "id": "5.7",
+          "title": "Griffin, xLSTM, Hyena and Hybrid Models",
+          "path": "chapter5_modern_architectures/exercises/part7_griffin_xlstm_hyena"
+        }
+      ],
+      "reason": "A 30B-total model and sovereign infrastructure are peripheral to current pilot completion.",
+      "priority": "P3",
+      "integration_roles": {
+        "method": "Design a transparent resource/model-card comparison without loading the model.",
+        "visualization": "Cache growth and active-versus-total parameters, labeled as reported or unmeasured.",
+        "intuition": "A 30B-total model and sovereign infrastructure are peripheral to current pilot completion.",
+        "results-prediction": "Can active parameter count alone predict throughput across different cache architectures?",
+        "replication": "faithful paper replication; proposal only, no execution"
+      },
+      "signature_figure": "Cache growth and active-versus-total parameters, labeled as reported or unmeasured.",
+      "prediction_prompt": "Can active parameter count alone predict throughput across different cache architectures?",
+      "controls_student_method": {
+        "student_method": "Design a transparent resource/model-card comparison without loading the model.",
+        "controls": "Equal context, batch, precision and hardware; dense/hybrid baselines; data-license accounting."
+      },
+      "replication_tier": "faithful paper replication",
+      "compute_access_code_data": {
+        "compute": "UNKNOWN for faithful replication; model training/inference resources not profiled",
+        "access": "Primary text accessible; model/API/dataset permissions and licenses UNKNOWN unless explicitly stated below",
+        "code": "UNKNOWN; not checked",
+        "data": "Abstract distinguishes permissively releasable data-construction artifacts from commercially licensed source accounting; full data access UNKNOWN"
+      },
+      "source_facts": [
+        "Soofi S is a German/English hybrid Mamba-Transformer MoE; release claims include mixture accounting and partial licensed-source statistics."
+      ],
+      "own_proposal": {
+        "method": "Design a transparent resource/model-card comparison without loading the model.",
+        "signature_figure": "Cache growth and active-versus-total parameters, labeled as reported or unmeasured.",
+        "prediction_prompt": "Can active parameter count alone predict throughput across different cache architectures?",
+        "controls": "Equal context, batch, precision and hardware; dense/hybrid baselines; data-license accounting."
+      },
+      "limitations": [
+        "No experiment, model loading, checkpoint/data download, native readiness or learner acceptance evidence.",
+        "Abstract-level result claims remain author-reported; full methods/assumptions/selection rules not independently validated."
+      ]
+    },
+    {
+      "id": "INB084",
+      "title": "Language Generation with Strictly Proper Scoring Rules",
+      "primary_urls": [
+        "https://proceedings.mlr.press/v235/shao24c.html",
+        "https://arxiv.org/abs/2405.18906v1",
+        "https://github.com/shaochenze/ScoringRulesLM"
+      ],
+      "identity_status": "VERIFIED primary title/author/identifier match; 2405.18906v1",
+      "metadata_proposals": [
+        "Resolve missing URL/date to ICML 2024, PMLR 235:44474–44488; type conferencePaper. Associated arXiv DOI 10.48550/arXiv.2405.18906; no publisher DOI verified."
+      ],
+      "reading_level": "primary proceedings abstract, selected scoring-rule method text and official code README; not full paper review",
+      "full_read_priority": "P1",
+      "disposition": "core integration",
+      "target_existing_lessons": [
+        {
+          "id": "0.6",
+          "title": "How to Know When an Interpretability Result Is Fake (Practice)",
+          "path": "chapter0_fundamentals/exercises/part6_fake_interpretability_results_practice"
+        },
+        {
+          "id": "11.1",
+          "title": "PCA, SVD and Geometry Controls",
+          "path": "chapter11_representation_geometry/exercises/part1_pca_svd_geometry_controls"
+        }
+      ],
+      "reason": "Foundational distinction among a training loss, calibration, decision metrics and token versus sequence scoring.",
+      "priority": "P1",
+      "integration_roles": {
+        "method": "Implement log, Brier and spherical scores on a finite categorical simplex and derive their expected optimum.",
+        "visualization": "Expected loss landscapes and reliability curves with deliberately overconfident predictions.",
+        "intuition": "Foundational distinction among a training loss, calibration, decision metrics and token versus sequence scoring.",
+        "results-prediction": "Will a score reward honest probabilities even when top-1 accuracy is unchanged?",
+        "replication": "CPU illustration; proposal only, no execution"
+      },
+      "signature_figure": "Expected loss landscapes and reliability curves with deliberately overconfident predictions.",
+      "prediction_prompt": "Will a score reward honest probabilities even when top-1 accuracy is unchanged?",
+      "controls_student_method": {
+        "student_method": "Implement log, Brier and spherical scores on a finite categorical simplex and derive their expected optimum.",
+        "controls": "Misreported probability vectors; log-score baseline; fixed supports; sign-convention tests; separate scratch versus fine-tuning claims."
+      },
+      "replication_tier": "CPU illustration",
+      "compute_access_code_data": {
+        "compute": "UNKNOWN for faithful replication; CPU-sized pedagogical illustration proposed, not benchmarked",
+        "access": "Primary text accessible; model/API/dataset permissions and licenses UNKNOWN unless explicitly stated below",
+        "code": "Official README inspected; fairseq-based scoring_rule_loss.py is named. README says scratch training underperforms CE while CE-pretrained fine-tuning improves; no execution or install.",
+        "data": "UNKNOWN; not checked"
+      },
+      "source_facts": [
+        "Adapts proper scores to token-level conditional distributions; official code warns results differ between pretraining and fine-tuning."
+      ],
+      "own_proposal": {
+        "method": "Implement log, Brier and spherical scores on a finite categorical simplex and derive their expected optimum.",
+        "signature_figure": "Expected loss landscapes and reliability curves with deliberately overconfident predictions.",
+        "prediction_prompt": "Will a score reward honest probabilities even when top-1 accuracy is unchanged?",
+        "controls": "Misreported probability vectors; log-score baseline; fixed supports; sign-convention tests; separate scratch versus fine-tuning claims."
+      },
+      "limitations": [
+        "No experiment, model loading, checkpoint/data download, native readiness or learner acceptance evidence.",
+        "Abstract-level result claims remain author-reported; full methods/assumptions/selection rules not independently validated."
+      ]
+    },
+    {
+      "id": "INB085",
+      "title": "Selectivity and Tolerance (“Invariance”) Both Increase as Visual Information Propagates from Cortical Area V4 to IT",
+      "primary_urls": [
+        "https://www.jneurosci.org/content/30/39/12978",
+        "https://www.jneurosci.org/content/jneuro/30/39/12978.full.pdf",
+        "https://pmc.ncbi.nlm.nih.gov/articles/PMC2975390/"
+      ],
+      "identity_status": "VERIFIED primary title/author/identifier match; publisher/author record",
+      "metadata_proposals": [],
+      "reading_level": "primary metadata and abstract triage; not full paper review",
+      "full_read_priority": "P2",
+      "disposition": "background",
+      "target_existing_lessons": [
+        {
+          "id": "12.7",
+          "title": "Dense Vision Features - DINO and SAM",
+          "path": "chapter12_vlm_interpretability/exercises/part7_dense_vision_features"
+        },
+        {
+          "id": "11.2",
+          "title": "CCA, SVCCA and Representation Alignment",
+          "path": "chapter11_representation_geometry/exercises/part2_cca_svcca_alignment"
+        }
+      ],
+      "reason": "Clarifies ambiguous invariance language; artificial response simulations cannot reproduce biological evidence.",
+      "priority": "P2",
+      "integration_roles": {
+        "method": "Implement identity-across-transform readout on synthetic response populations; interpret biological experiment separately.",
+        "visualization": "Identity decoding matrices across position/scale alongside selectivity curves.",
+        "intuition": "Clarifies ambiguous invariance language; artificial response simulations cannot reproduce biological evidence.",
+        "results-prediction": "Can a population gain both selectivity and tolerance without every neuron becoming invariant?",
+        "replication": "CPU illustration; proposal only, no execution"
+      },
+      "signature_figure": "Identity decoding matrices across position/scale alongside selectivity curves.",
+      "prediction_prompt": "Can a population gain both selectivity and tolerance without every neuron becoming invariant?",
+      "controls_student_method": {
+        "student_method": "Implement identity-across-transform readout on synthetic response populations; interpret biological experiment separately.",
+        "controls": "Matched population size/SNR; within-transform versus cross-transform decoding; identity scrambling."
+      },
+      "replication_tier": "CPU illustration",
+      "compute_access_code_data": {
+        "compute": "UNKNOWN for faithful replication; CPU-sized pedagogical illustration proposed, not benchmarked",
+        "access": "Primary text accessible; model/API/dataset permissions and licenses UNKNOWN unless explicitly stated below",
+        "code": "UNKNOWN; not checked",
+        "data": "UNKNOWN; not checked"
+      },
+      "source_facts": [
+        "Rust and DiCarlo compare population selectivity and tolerance in V4 and IT; tolerance involves transformation generalization, not merely narrow tuning."
+      ],
+      "own_proposal": {
+        "method": "Implement identity-across-transform readout on synthetic response populations; interpret biological experiment separately.",
+        "signature_figure": "Identity decoding matrices across position/scale alongside selectivity curves.",
+        "prediction_prompt": "Can a population gain both selectivity and tolerance without every neuron becoming invariant?",
+        "controls": "Matched population size/SNR; within-transform versus cross-transform decoding; identity scrambling."
+      },
+      "limitations": [
+        "No experiment, model loading, checkpoint/data download, native readiness or learner acceptance evidence.",
+        "Abstract-level result claims remain author-reported; full methods/assumptions/selection rules not independently validated."
+      ]
+    },
+    {
+      "id": "INB086",
+      "title": "Beyond SAEs: Consistent Concept Discovery with Sparse Coding",
+      "primary_urls": [
+        "https://arxiv.org/abs/2610.23801v1"
+      ],
+      "identity_status": "VERIFIED primary title/author/identifier match; 2610.23801v1",
+      "metadata_proposals": [],
+      "reading_level": "primary metadata/abstract plus selected method sections and availability statements; not full paper review",
+      "full_read_priority": "P1",
+      "disposition": "existing lesson addition",
+      "target_existing_lessons": [
+        {
+          "id": "6.1",
+          "title": "SAE Variants",
+          "path": "chapter6_sparse_feature_methods/exercises/part1_sae_variants"
+        },
+        {
+          "id": "6.3",
+          "title": "Feature Splitting, Absorption and Dashboards",
+          "path": "chapter6_sparse_feature_methods/exercises/part3_sae_pathologies_dashboards"
+        }
+      ],
+      "reason": "An explicit amortized-inference versus per-sample optimization comparison improves the existing SAE pilot.",
+      "priority": "P1",
+      "integration_roles": {
+        "method": "Implement nonnegative FISTA and support-only refit, then match learned atoms across seeds.",
+        "visualization": "Dictionary-match matrices and sparsity/reconstruction/consistency frontiers.",
+        "intuition": "An explicit amortized-inference versus per-sample optimization comparison improves the existing SAE pilot.",
+        "results-prediction": "Can two dictionaries reconstruct equally well yet disagree about recovered concepts?",
+        "replication": "CPU illustration; proposal only, no execution"
+      },
+      "signature_figure": "Dictionary-match matrices and sparsity/reconstruction/consistency frontiers.",
+      "prediction_prompt": "Can two dictionaries reconstruct equally well yet disagree about recovered concepts?",
+      "controls_student_method": {
+        "student_method": "Implement nonnegative FISTA and support-only refit, then match learned atoms across seeds.",
+        "controls": "Same-L0 SAE; no-refit/no-regularizer ablations; fixed inference budget; planted truth; chance dictionary matching."
+      },
+      "replication_tier": "CPU illustration",
+      "compute_access_code_data": {
+        "compute": "UNKNOWN for faithful replication; CPU-sized pedagogical illustration proposed, not benchmarked",
+        "access": "Primary text accessible; model/API/dataset permissions and licenses UNKNOWN unless explicitly stated below",
+        "code": "Primary paper links official code, model weights and project page; contents/licenses/complete reproduction UNKNOWN; no artifacts downloaded",
+        "data": "UNKNOWN; not checked"
+      },
+      "source_facts": [
+        "ConSDL alternates FISTA sparse inference, support refitting and dictionary updates with a co-active similarity penalty."
+      ],
+      "own_proposal": {
+        "method": "Implement nonnegative FISTA and support-only refit, then match learned atoms across seeds.",
+        "signature_figure": "Dictionary-match matrices and sparsity/reconstruction/consistency frontiers.",
+        "prediction_prompt": "Can two dictionaries reconstruct equally well yet disagree about recovered concepts?",
+        "controls": "Same-L0 SAE; no-refit/no-regularizer ablations; fixed inference budget; planted truth; chance dictionary matching."
+      },
+      "limitations": [
+        "No experiment, model loading, checkpoint/data download, native readiness or learner acceptance evidence.",
+        "Abstract-level result claims remain author-reported; full methods/assumptions/selection rules not independently validated."
+      ]
+    },
+    {
+      "id": "INB087",
+      "title": "Proving and Improving the Platonic Representation Hypothesis with JEPAs",
+      "primary_urls": [
+        "https://arxiv.org/abs/2610.39302v1"
+      ],
+      "identity_status": "VERIFIED primary title/author/identifier match; 2610.39302v1",
+      "metadata_proposals": [],
+      "reading_level": "primary identity/abstract triage only here; substantive review delegated to prh_jepa.md",
+      "full_read_priority": "P1",
+      "disposition": "existing lesson addition",
+      "target_existing_lessons": [
+        {
+          "id": "11.2",
+          "title": "CCA, SVCCA and Representation Alignment",
+          "path": "chapter11_representation_geometry/exercises/part2_cca_svcca_alignment"
+        },
+        {
+          "id": "14.4",
+          "title": "The JEPA Family",
+          "path": "chapter14_jepa_world_models/exercises/part4_jepa_family"
+        }
+      ],
+      "reason": "Delegate substantive appraisal to the named PRH owner; this row preserves inbox coverage.",
+      "priority": "P1",
+      "integration_roles": {
+        "method": "See prh_jepa.md; do not duplicate theorem assumptions or merge with the earlier PRH paper.",
+        "visualization": "See dedicated view-quality/alignment exercise in prh_jepa.md.",
+        "intuition": "Delegate substantive appraisal to the named PRH owner; this row preserves inbox coverage.",
+        "results-prediction": "Does an alignment theorem apply when positive-pair assumptions fail?",
+        "replication": "CPU illustration; proposal only, no execution"
+      },
+      "signature_figure": "See dedicated view-quality/alignment exercise in prh_jepa.md.",
+      "prediction_prompt": "Does an alignment theorem apply when positive-pair assumptions fail?",
+      "controls_student_method": {
+        "student_method": "See prh_jepa.md; do not duplicate theorem assumptions or merge with the earlier PRH paper.",
+        "controls": "Dedicated companion specifies view, rotation and leakage controls."
+      },
+      "replication_tier": "CPU illustration",
+      "compute_access_code_data": {
+        "compute": "UNKNOWN for faithful replication; CPU-sized pedagogical illustration proposed, not benchmarked",
+        "access": "Primary text accessible; model/API/dataset permissions and licenses UNKNOWN unless explicitly stated below",
+        "code": "UNKNOWN; not checked",
+        "data": "UNKNOWN; not checked"
+      },
+      "source_facts": [
+        "Primary identity confirmed for the PRH-with-JEPAs follow-up; theorem and empirical claims are reviewed in the dedicated companion."
+      ],
+      "own_proposal": {
+        "method": "See prh_jepa.md; do not duplicate theorem assumptions or merge with the earlier PRH paper.",
+        "signature_figure": "See dedicated view-quality/alignment exercise in prh_jepa.md.",
+        "prediction_prompt": "Does an alignment theorem apply when positive-pair assumptions fail?",
+        "controls": "Dedicated companion specifies view, rotation and leakage controls."
+      },
+      "limitations": [
+        "No experiment, model loading, checkpoint/data download, native readiness or learner acceptance evidence.",
+        "Abstract-level result claims remain author-reported; full methods/assumptions/selection rules not independently validated."
+      ],
+      "dedicated_review": "prh_jepa.md"
+    },
+    {
+      "id": "INB088",
+      "title": "A Mechanistic Understanding of Pronoun Fidelity in LLMs",
+      "primary_urls": [
+        "https://arxiv.org/abs/2606.16407v1"
+      ],
+      "identity_status": "VERIFIED primary title/author/identifier match; 2606.16407v1",
+      "metadata_proposals": [
+        "Wrong book type: verified source is a preprint. Missing DOI resolved to arXiv DOI 10.48550/arXiv.2606.16407; primary preprint v1, 15 Jun 2026. Semantic Scholar link is discovery-only."
+      ],
+      "reading_level": "primary metadata and abstract triage; not full paper review",
+      "full_read_priority": "P2",
+      "disposition": "existing lesson addition",
+      "target_existing_lessons": [
+        {
+          "id": "11.3",
+          "title": "Causal Abstraction and Distributed Alignment Search",
+          "path": "chapter11_representation_geometry/exercises/part3_causal_abstraction_das"
+        },
+        {
+          "id": "9.5",
+          "title": "White-Box Monitors and Red-Teaming with Internals",
+          "path": "chapter9_alignment_interpretability/exercises/part5_white_box_monitors"
+        }
+      ],
+      "reason": "A concrete multi-mechanism application of DAS; retain fairness categories and template limits explicitly.",
+      "priority": "P2",
+      "integration_roles": {
+        "method": "Implement a counterbalanced pronoun template grid and interchange-intervention accuracy scoring.",
+        "visualization": "Mechanism-by-layer interchange accuracy with competing hypotheses.",
+        "intuition": "A concrete multi-mechanism application of DAS; retain fairness categories and template limits explicitly.",
+        "results-prediction": "Does a high behavioral fit establish one exclusive mechanism when several subspaces coexist?",
+        "replication": "bounded real study; proposal only, no execution"
+      },
+      "signature_figure": "Mechanism-by-layer interchange accuracy with competing hypotheses.",
+      "prediction_prompt": "Does a high behavioral fit establish one exclusive mechanism when several subspaces coexist?",
+      "controls_student_method": {
+        "student_method": "Implement a counterbalanced pronoun template grid and interchange-intervention accuracy scoring.",
+        "controls": "Pronoun/name/occupation swaps; held-out templates; random subspaces; donor interchange; non-target retention."
+      },
+      "replication_tier": "bounded real study",
+      "compute_access_code_data": {
+        "compute": "UNKNOWN for faithful replication; model training/inference resources not profiled",
+        "access": "Primary text accessible; model/API/dataset permissions and licenses UNKNOWN unless explicitly stated below",
+        "code": "UNKNOWN; not checked",
+        "data": "UNKNOWN; not checked"
+      },
+      "source_facts": [
+        "Uses Boundless DAS to analyze simultaneous group-binding, recency and stereotypical subspaces in pronoun fidelity."
+      ],
+      "own_proposal": {
+        "method": "Implement a counterbalanced pronoun template grid and interchange-intervention accuracy scoring.",
+        "signature_figure": "Mechanism-by-layer interchange accuracy with competing hypotheses.",
+        "prediction_prompt": "Does a high behavioral fit establish one exclusive mechanism when several subspaces coexist?",
+        "controls": "Pronoun/name/occupation swaps; held-out templates; random subspaces; donor interchange; non-target retention."
+      },
+      "limitations": [
+        "No experiment, model loading, checkpoint/data download, native readiness or learner acceptance evidence.",
+        "Abstract-level result claims remain author-reported; full methods/assumptions/selection rules not independently validated."
+      ]
+    },
+    {
+      "id": "INB089",
+      "title": "Neural Networks Are Already Clean",
+      "primary_urls": [
+        "https://already-clean.goodfire.com/"
+      ],
+      "identity_status": "VERIFIED primary title/author/identifier match; publisher/author record",
+      "metadata_proposals": [
+        "Author is Nick Cammarata; Goodfire is publisher/affiliation, not part of the personal surname. Web essay/working hypothesis, 2026; exact day and DOI UNRESOLVED."
+      ],
+      "reading_level": "author essay introduction, provenance and selected claims; not complete essay review",
+      "full_read_priority": "P2",
+      "disposition": "background",
+      "target_existing_lessons": [
+        {
+          "id": "6.1",
+          "title": "SAE Variants",
+          "path": "chapter6_sparse_feature_methods/exercises/part1_sae_variants"
+        },
+        {
+          "id": "6.3",
+          "title": "Feature Splitting, Absorption and Dashboards",
+          "path": "chapter6_sparse_feature_methods/exercises/part3_sae_pathologies_dashboards"
+        }
+      ],
+      "reason": "Useful adversarial reading for SAE assumptions, not established evidence that superposition is solved.",
+      "priority": "P2",
+      "integration_roles": {
+        "method": "Compare blinded neuron-level and SAE-feature explanations on a fixed small set rather than accepting a paradigm claim.",
+        "visualization": "Coverage versus intervention specificity for native neurons and learned features.",
+        "intuition": "Useful adversarial reading for SAE assumptions, not established evidence that superposition is solved.",
+        "results-prediction": "Does an interpretable-looking native neuron have causal specificity or reflect selection bias?",
+        "replication": "bounded real study; proposal only, no execution"
+      },
+      "signature_figure": "Coverage versus intervention specificity for native neurons and learned features.",
+      "prediction_prompt": "Does an interpretable-looking native neuron have causal specificity or reflect selection bias?",
+      "controls_student_method": {
+        "student_method": "Compare blinded neuron-level and SAE-feature explanations on a fixed small set rather than accepting a paradigm claim.",
+        "controls": "Random neuron/feature samples; blind labels; held-out examples; equal selection budgets; causal ablations."
+      },
+      "replication_tier": "bounded real study",
+      "compute_access_code_data": {
+        "compute": "UNKNOWN for faithful replication; model training/inference resources not profiled",
+        "access": "Primary text accessible; model/API/dataset permissions and licenses UNKNOWN unless explicitly stated below",
+        "code": "UNKNOWN; not checked",
+        "data": "UNKNOWN; not checked"
+      },
+      "source_facts": [
+        "Author labels this a working hypothesis and informal essay about native neurons and circuits, challenging interpretations of polysemanticity."
+      ],
+      "own_proposal": {
+        "method": "Compare blinded neuron-level and SAE-feature explanations on a fixed small set rather than accepting a paradigm claim.",
+        "signature_figure": "Coverage versus intervention specificity for native neurons and learned features.",
+        "prediction_prompt": "Does an interpretable-looking native neuron have causal specificity or reflect selection bias?",
+        "controls": "Random neuron/feature samples; blind labels; held-out examples; equal selection budgets; causal ablations."
+      },
+      "limitations": [
+        "No experiment, model loading, checkpoint/data download, native readiness or learner acceptance evidence.",
+        "Abstract-level result claims remain author-reported; full methods/assumptions/selection rules not independently validated."
+      ]
+    },
+    {
+      "id": "INB090",
+      "title": "Make it SING: Analyzing Semantic Invariants in Classifiers",
+      "primary_urls": [
+        "https://arxiv.org/abs/2603.14610v2"
+      ],
+      "identity_status": "VERIFIED primary title/author/identifier match; 2603.14610v2",
+      "metadata_proposals": [
+        "Pin verified primary version 2603.14610v2 for future full reading; original inbox record does not reliably pin this exact version."
+      ],
+      "reading_level": "primary metadata and abstract triage; not full paper review",
+      "full_read_priority": "P2",
+      "disposition": "existing lesson addition",
+      "target_existing_lessons": [
+        {
+          "id": "11.1",
+          "title": "PCA, SVD and Geometry Controls",
+          "path": "chapter11_representation_geometry/exercises/part1_pca_svd_geometry_controls"
+        },
+        {
+          "id": "12.7",
+          "title": "Dense Vision Features - DINO and SAM",
+          "path": "chapter12_vlm_interpretability/exercises/part7_dense_vision_features"
+        }
+      ],
+      "reason": "A visible linear-algebra bridge from SVD to invariance; semantic captions are not ground truth by themselves.",
+      "priority": "P2",
+      "integration_roles": {
+        "method": "Implement an SVD null-space projector and verify logit preservation for a linear classifier before nonlinear image claims.",
+        "visualization": "Input/feature variations with logit drift and retained semantic attributes.",
+        "intuition": "A visible linear-algebra bridge from SVD to invariance; semantic captions are not ground truth by themselves.",
+        "results-prediction": "Can identical classifier outputs coexist with a large change in semantic content?",
+        "replication": "CPU illustration; proposal only, no execution"
+      },
+      "signature_figure": "Input/feature variations with logit drift and retained semantic attributes.",
+      "prediction_prompt": "Can identical classifier outputs coexist with a large change in semantic content?",
+      "controls_student_method": {
+        "student_method": "Implement an SVD null-space projector and verify logit preservation for a linear classifier before nonlinear image claims.",
+        "controls": "Row-space perturbation; norm-matched random direction; numerical tolerance; off-manifold check."
+      },
+      "replication_tier": "CPU illustration",
+      "compute_access_code_data": {
+        "compute": "UNKNOWN for faithful replication; CPU-sized pedagogical illustration proposed, not benchmarked",
+        "access": "Primary text accessible; model/API/dataset permissions and licenses UNKNOWN unless explicitly stated below",
+        "code": "UNKNOWN; not checked",
+        "data": "UNKNOWN; not checked"
+      },
+      "source_facts": [
+        "SING studies semantic variation in classifier null-space directions using multimodal feature mappings."
+      ],
+      "own_proposal": {
+        "method": "Implement an SVD null-space projector and verify logit preservation for a linear classifier before nonlinear image claims.",
+        "signature_figure": "Input/feature variations with logit drift and retained semantic attributes.",
+        "prediction_prompt": "Can identical classifier outputs coexist with a large change in semantic content?",
+        "controls": "Row-space perturbation; norm-matched random direction; numerical tolerance; off-manifold check."
+      },
+      "limitations": [
+        "No experiment, model loading, checkpoint/data download, native readiness or learner acceptance evidence.",
+        "Abstract-level result claims remain author-reported; full methods/assumptions/selection rules not independently validated."
+      ]
+    },
+    {
+      "id": "INB091",
+      "title": "Self-Play Pretraining with Zero Data",
+      "primary_urls": [
+        "https://arxiv.org/abs/2609.30063v1"
+      ],
+      "identity_status": "VERIFIED primary title/author/identifier match; 2609.30063v1",
+      "metadata_proposals": [],
+      "reading_level": "primary metadata and abstract triage; not full paper review",
+      "full_read_priority": "P3",
+      "disposition": "optional replication",
+      "target_existing_lessons": [
+        {
+          "id": "17.4",
+          "title": "Training Dynamics Across Architectures",
+          "path": "chapter17_training_dynamics/exercises/part4_cross_architecture_dynamics"
+        },
+        {
+          "id": "14.5",
+          "title": "Maze Transformers and World Models",
+          "path": "chapter14_jepa_world_models/exercises/part5_maze_transformers"
+        }
+      ],
+      "reason": "An interesting training-dynamics capstone, but a universal-program self-play campaign is outside pilot work.",
+      "priority": "P3",
+      "integration_roles": {
+        "method": "Specify a bounded synthetic sequence curriculum and loss accounting; retain the universal-machine claim as paper reading.",
+        "visualization": "Held-out natural-data loss versus total charged generator-plus-learner compute.",
+        "intuition": "An interesting training-dynamics capstone, but a universal-program self-play campaign is outside pilot work.",
+        "results-prediction": "Does adaptation beat a fixed program distribution after generator cost is included?",
+        "replication": "faithful paper replication; proposal only, no execution"
+      },
+      "signature_figure": "Held-out natural-data loss versus total charged generator-plus-learner compute.",
+      "prediction_prompt": "Does adaptation beat a fixed program distribution after generator cost is included?",
+      "controls_student_method": {
+        "student_method": "Specify a bounded synthetic sequence curriculum and loss accounting; retain the universal-machine claim as paper reading.",
+        "controls": "Fixed synthetic curriculum; random programs; equal combined compute; untouched transfer data."
+      },
+      "replication_tier": "faithful paper replication",
+      "compute_access_code_data": {
+        "compute": "UNKNOWN for faithful replication; model training/inference resources not profiled",
+        "access": "Primary text accessible; model/API/dataset permissions and licenses UNKNOWN unless explicitly stated below",
+        "code": "UNKNOWN; not checked",
+        "data": "UNKNOWN; not checked"
+      },
+      "source_facts": [
+        "Uses program-generating self-play to train a learner without natural training data and reports transfer scaling."
+      ],
+      "own_proposal": {
+        "method": "Specify a bounded synthetic sequence curriculum and loss accounting; retain the universal-machine claim as paper reading.",
+        "signature_figure": "Held-out natural-data loss versus total charged generator-plus-learner compute.",
+        "prediction_prompt": "Does adaptation beat a fixed program distribution after generator cost is included?",
+        "controls": "Fixed synthetic curriculum; random programs; equal combined compute; untouched transfer data."
+      },
+      "limitations": [
+        "No experiment, model loading, checkpoint/data download, native readiness or learner acceptance evidence.",
+        "Abstract-level result claims remain author-reported; full methods/assumptions/selection rules not independently validated."
+      ]
+    },
+    {
+      "id": "INB092",
+      "title": "Rethinking Projector Training in Multimodal LLMs",
+      "primary_urls": [
+        "https://arxiv.org/abs/2610.18598v1"
+      ],
+      "identity_status": "VERIFIED primary title/author/identifier match; 2610.18598v1",
+      "metadata_proposals": [],
+      "reading_level": "primary metadata/abstract plus selected method sections and availability statements; not full paper review",
+      "full_read_priority": "P1",
+      "disposition": "existing lesson addition",
+      "target_existing_lessons": [
+        {
+          "id": "12.3",
+          "title": "Mini VLM from Scratch",
+          "path": "chapter12_vlm_interpretability/exercises/part3_mini_vlm_from_scratch"
+        },
+        {
+          "id": "11.1",
+          "title": "PCA, SVD and Geometry Controls",
+          "path": "chapter11_representation_geometry/exercises/part1_pca_svd_geometry_controls"
+        },
+        {
+          "id": "11.2",
+          "title": "CCA, SVCCA and Representation Alignment",
+          "path": "chapter11_representation_geometry/exercises/part2_cca_svcca_alignment"
+        }
+      ],
+      "reason": "Strong foundations-to-Mini-VLM bridge, provided moment matching is not conflated with semantic correspondence.",
+      "priority": "P1",
+      "integration_roles": {
+        "method": "Implement centered top-k PCA affine moment matching and audit preactivation versus post-GELU moments.",
+        "visualization": "Covariance alignment and held-out paired retrieval side by side.",
+        "intuition": "Strong foundations-to-Mini-VLM bridge, provided moment matching is not conflated with semantic correspondence.",
+        "results-prediction": "Can perfect marginal covariance matching still give incorrect image-text pairing?",
+        "replication": "CPU illustration; proposal only, no execution"
+      },
+      "signature_figure": "Covariance alignment and held-out paired retrieval side by side.",
+      "prediction_prompt": "Can perfect marginal covariance matching still give incorrect image-text pairing?",
+      "controls_student_method": {
+        "student_method": "Implement centered top-k PCA affine moment matching and audit preactivation versus post-GELU moments.",
+        "controls": "Random orthogonal map; paired Procrustes oracle; shuffled pairs; rank/eigenvalue-gap sweeps; no test-set fitting."
+      },
+      "replication_tier": "CPU illustration",
+      "compute_access_code_data": {
+        "compute": "UNKNOWN for faithful replication; CPU-sized pedagogical illustration proposed, not benchmarked",
+        "access": "Primary text accessible; model/API/dataset permissions and licenses UNKNOWN unless explicitly stated below",
+        "code": "Primary reproducibility checklist names https://github.com/mlbio-epfl/PORTAL; repository contents and runability UNKNOWN",
+        "data": "UNKNOWN; not checked"
+      },
+      "source_facts": [
+        "PORTAL initializes a projector using marginal means and PCA spreads; it skips projector alignment training, not the subsequent multimodal training pipeline."
+      ],
+      "own_proposal": {
+        "method": "Implement centered top-k PCA affine moment matching and audit preactivation versus post-GELU moments.",
+        "signature_figure": "Covariance alignment and held-out paired retrieval side by side.",
+        "prediction_prompt": "Can perfect marginal covariance matching still give incorrect image-text pairing?",
+        "controls": "Random orthogonal map; paired Procrustes oracle; shuffled pairs; rank/eigenvalue-gap sweeps; no test-set fitting."
+      },
+      "limitations": [
+        "No experiment, model loading, checkpoint/data download, native readiness or learner acceptance evidence.",
+        "Abstract-level result claims remain author-reported; full methods/assumptions/selection rules not independently validated."
+      ]
+    },
+    {
+      "id": "INB093",
+      "title": "VISOR++: Universal Visual Inputs based Steering for Large Vision Language Models",
+      "primary_urls": [
+        "https://arxiv.org/abs/2509.25533v2"
+      ],
+      "identity_status": "VERIFIED primary title/author/identifier match; 2509.25533v2",
+      "metadata_proposals": [
+        "Pin verified primary version 2509.25533v2 for future full reading; original inbox record does not reliably pin this exact version."
+      ],
+      "reading_level": "primary metadata and abstract triage; not full paper review",
+      "full_read_priority": "P2",
+      "disposition": "optional replication",
+      "target_existing_lessons": [
+        {
+          "id": "9.1",
+          "title": "Refusal Directions and Representation Engineering",
+          "path": "chapter9_alignment_interpretability/exercises/part1_refusal_directions"
+        },
+        {
+          "id": "12.2",
+          "title": "CLIP Features, SAEs and Typographic Attacks",
+          "path": "chapter12_vlm_interpretability/exercises/part2_clip_saes_typographic"
+        },
+        {
+          "id": "12.5",
+          "title": "Object Hallucination and Modality Arbitration",
+          "path": "chapter12_vlm_interpretability/exercises/part5_object_hallucination"
+        }
+      ],
+      "reason": "A useful intervention-access contrast; substantial VLM optimization and API access remain separately authorized.",
+      "priority": "P2",
+      "integration_roles": {
+        "method": "Compare activation steering with a benign visual task-direction surrogate and distinguish white-box crafting from input-only application.",
+        "visualization": "Transfer matrix: source/target models and task behavior versus utility.",
+        "intuition": "A useful intervention-access contrast; substantial VLM optimization and API access remain separately authorized.",
+        "results-prediction": "Does input-only deployment imply that the steering image was obtained without internal access?",
+        "replication": "bounded real study; proposal only, no execution"
+      },
+      "signature_figure": "Transfer matrix: source/target models and task behavior versus utility.",
+      "prediction_prompt": "Does input-only deployment imply that the steering image was obtained without internal access?",
+      "controls_student_method": {
+        "student_method": "Compare activation steering with a benign visual task-direction surrogate and distinguish white-box crafting from input-only application.",
+        "controls": "Random/norm-matched images; activation steering; unseen model and held-out task; unchanged utility."
+      },
+      "replication_tier": "bounded real study",
+      "compute_access_code_data": {
+        "compute": "UNKNOWN for faithful replication; model training/inference resources not profiled",
+        "access": "Primary text accessible; model/API/dataset permissions and licenses UNKNOWN unless explicitly stated below",
+        "code": "UNKNOWN; not checked",
+        "data": "UNKNOWN; not checked"
+      },
+      "source_facts": [
+        "VISOR++ optimizes visual inputs to induce target activation patterns and reports behavioral transfer across VLMs."
+      ],
+      "own_proposal": {
+        "method": "Compare activation steering with a benign visual task-direction surrogate and distinguish white-box crafting from input-only application.",
+        "signature_figure": "Transfer matrix: source/target models and task behavior versus utility.",
+        "prediction_prompt": "Does input-only deployment imply that the steering image was obtained without internal access?",
+        "controls": "Random/norm-matched images; activation steering; unseen model and held-out task; unchanged utility."
+      },
+      "limitations": [
+        "No experiment, model loading, checkpoint/data download, native readiness or learner acceptance evidence.",
+        "Abstract-level result claims remain author-reported; full methods/assumptions/selection rules not independently validated."
+      ]
+    },
+    {
+      "id": "INB094",
+      "title": "Steered LLM Activations are Non-Surjective",
+      "primary_urls": [
+        "https://arxiv.org/abs/2604.09839v2"
+      ],
+      "identity_status": "VERIFIED primary title/author/identifier match; 2604.09839v2",
+      "metadata_proposals": [
+        "Pin verified primary version 2604.09839v2 for future full reading; original inbox record does not reliably pin this exact version."
+      ],
+      "reading_level": "primary metadata and abstract triage; not full paper review",
+      "full_read_priority": "P1",
+      "disposition": "existing lesson addition",
+      "target_existing_lessons": [
+        {
+          "id": "9.1",
+          "title": "Refusal Directions and Representation Engineering",
+          "path": "chapter9_alignment_interpretability/exercises/part1_refusal_directions"
+        },
+        {
+          "id": "11.1",
+          "title": "PCA, SVD and Geometry Controls",
+          "path": "chapter11_representation_geometry/exercises/part1_pca_svd_geometry_controls"
+        }
+      ],
+      "reason": "An essential limit on interpreting steering as prompting; finite enumeration is an illustration, not a proof for arbitrary models.",
+      "priority": "P1",
+      "integration_roles": {
+        "method": "Enumerate all short prompts of a finite toy encoder and compare steering points with the finite reachable set.",
+        "visualization": "Reachable activation cloud, steered points and nearest-prompt distances.",
+        "intuition": "An essential limit on interpreting steering as prompting; finite enumeration is an illustration, not a proof for arbitrary models.",
+        "results-prediction": "Does absence of an exact prompt preimage prevent the same output or approximate behavioral equivalence?",
+        "replication": "CPU illustration; proposal only, no execution"
+      },
+      "signature_figure": "Reachable activation cloud, steered points and nearest-prompt distances.",
+      "prediction_prompt": "Does absence of an exact prompt preimage prevent the same output or approximate behavioral equivalence?",
+      "controls_student_method": {
+        "student_method": "Enumerate all short prompts of a finite toy encoder and compare steering points with the finite reachable set.",
+        "controls": "Unsteered reachable points; random equal-norm shifts; prompt-length bounds; exact versus approximate matching."
+      },
+      "replication_tier": "CPU illustration",
+      "compute_access_code_data": {
+        "compute": "UNKNOWN for faithful replication; CPU-sized pedagogical illustration proposed, not benchmarked",
+        "access": "Primary text accessible; model/API/dataset permissions and licenses UNKNOWN unless explicitly stated below",
+        "code": "UNKNOWN; not checked",
+        "data": "UNKNOWN; not checked"
+      },
+      "source_facts": [
+        "Argues under stated assumptions that continuously steered activations almost surely lack an exact discrete-prompt preimage."
+      ],
+      "own_proposal": {
+        "method": "Enumerate all short prompts of a finite toy encoder and compare steering points with the finite reachable set.",
+        "signature_figure": "Reachable activation cloud, steered points and nearest-prompt distances.",
+        "prediction_prompt": "Does absence of an exact prompt preimage prevent the same output or approximate behavioral equivalence?",
+        "controls": "Unsteered reachable points; random equal-norm shifts; prompt-length bounds; exact versus approximate matching."
+      },
+      "limitations": [
+        "No experiment, model loading, checkpoint/data download, native readiness or learner acceptance evidence.",
+        "Abstract-level result claims remain author-reported; full methods/assumptions/selection rules not independently validated."
+      ]
+    },
+    {
+      "id": "INB095",
+      "title": "What Do Visual-Head Discovery Scores Actually Find? Attention Source, Necessity, and Random-Control Pitfalls in Vision-Language Models",
+      "primary_urls": [
+        "https://arxiv.org/abs/2610.13111v1"
+      ],
+      "identity_status": "VERIFIED primary title/author/identifier match; 2610.13111v1",
+      "metadata_proposals": [
+        "Duplicate of INB002 by identical DOI 10.48550/arXiv.2610.13111, title and authors; keep both inbox records and one canonical review."
+      ],
+      "reading_level": "primary metadata and abstract triage; not full paper review",
+      "full_read_priority": "P1",
+      "disposition": "duplicate",
+      "target_existing_lessons": [
+        {
+          "id": "12.4",
+          "title": "Visual Token Flow in Real VLMs",
+          "path": "chapter12_vlm_interpretability/exercises/part4_visual_token_flow"
+        },
+        {
+          "id": "12.5",
+          "title": "Object Hallucination and Modality Arbitration",
+          "path": "chapter12_vlm_interpretability/exercises/part5_object_hallucination"
+        },
+        {
+          "id": "0.6",
+          "title": "How to Know When an Interpretability Result Is Fake (Practice)",
+          "path": "chapter0_fundamentals/exercises/part6_fake_interpretability_results_practice"
+        }
+      ],
+      "reason": "Duplicate-by-DOI receipt only; no Zotero merge or mutation.",
+      "priority": "P1",
+      "integration_roles": {
+        "method": "Refer to canonical INB002 review; retain this bibliographic row without duplicate integration work.",
+        "visualization": "Refer to INB002 necessity versus steerability figure.",
+        "intuition": "Duplicate-by-DOI receipt only; no Zotero merge or mutation.",
+        "results-prediction": "Could random head sets steer just as well while failing necessity tests?",
+        "replication": "bounded real study; proposal only, no execution"
+      },
+      "signature_figure": "Refer to INB002 necessity versus steerability figure.",
+      "prediction_prompt": "Could random head sets steer just as well while failing necessity tests?",
+      "controls_student_method": {
+        "student_method": "Refer to canonical INB002 review; retain this bibliographic row without duplicate integration work.",
+        "controls": "Layer-matched random sets; matched cardinality; discovery/evaluation splits; multiple comparisons."
+      },
+      "replication_tier": "bounded real study",
+      "compute_access_code_data": {
+        "compute": "UNKNOWN for faithful replication; model training/inference resources not profiled",
+        "access": "Primary text accessible; model/API/dataset permissions and licenses UNKNOWN unless explicitly stated below",
+        "code": "UNKNOWN; not checked",
+        "data": "UNKNOWN; not checked"
+      },
+      "source_facts": [
+        "Same arXiv DOI as INB002; primary paper distinguishes head steerability from necessity using layer-matched random sets."
+      ],
+      "own_proposal": {
+        "method": "Refer to canonical INB002 review; retain this bibliographic row without duplicate integration work.",
+        "signature_figure": "Refer to INB002 necessity versus steerability figure.",
+        "prediction_prompt": "Could random head sets steer just as well while failing necessity tests?",
+        "controls": "Layer-matched random sets; matched cardinality; discovery/evaluation splits; multiple comparisons."
+      },
+      "limitations": [
+        "No experiment, model loading, checkpoint/data download, native readiness or learner acceptance evidence.",
+        "Abstract-level result claims remain author-reported; full methods/assumptions/selection rules not independently validated."
+      ],
+      "duplicate_of": "INB002"
+    },
+    {
+      "id": "INB096",
+      "title": "Correcting Attribution Patching with a Few Exact Measurements",
+      "primary_urls": [
+        "https://arxiv.org/abs/2610.27393v1"
+      ],
+      "identity_status": "VERIFIED primary title/author/identifier match; 2610.27393v1",
+      "metadata_proposals": [],
+      "reading_level": "primary metadata/abstract plus selected method sections and availability statements; not full paper review",
+      "full_read_priority": "P1",
+      "disposition": "existing lesson addition",
+      "target_existing_lessons": [
+        {
+          "id": "8.2",
+          "title": "Attribution Patching and EAP",
+          "path": "chapter8_automated_circuits/exercises/part2_attribution_patching_eap"
+        },
+        {
+          "id": "8.3",
+          "title": "AtP* from Scratch",
+          "path": "chapter8_automated_circuits/exercises/part3_atp_star"
+        }
+      ],
+      "reason": "A direct efficiency and failure-analysis follow-up to attribution patching; full large-model replication is separate.",
+      "priority": "P1",
+      "integration_roles": {
+        "method": "Implement exact finite interventions, first-order estimates and pilot-median residual correction at a fixed charged budget.",
+        "visualization": "MAE and top-k recall versus exact-patch budget, with calibration and held-out prompts separate.",
+        "intuition": "A direct efficiency and failure-analysis follow-up to attribution patching; full large-model replication is separate.",
+        "results-prediction": "When does a small signed correction beat verifying only the largest attribution estimates?",
+        "replication": "CPU illustration; proposal only, no execution"
+      },
+      "signature_figure": "MAE and top-k recall versus exact-patch budget, with calibration and held-out prompts separate.",
+      "prediction_prompt": "When does a small signed correction beat verifying only the largest attribution estimates?",
+      "controls_student_method": {
+        "student_method": "Implement exact finite interventions, first-order estimates and pilot-median residual correction at a fixed charged budget.",
+        "controls": "Verify-more; random pilot; wrong-sign/shuffled residuals; unbiased-error task; identical total acquisitions."
+      },
+      "replication_tier": "CPU illustration",
+      "compute_access_code_data": {
+        "compute": "UNKNOWN for faithful replication; CPU-sized pedagogical illustration proposed, not benchmarked",
+        "access": "Primary text accessible; model/API/dataset permissions and licenses UNKNOWN unless explicitly stated below",
+        "code": "UNKNOWN; not checked",
+        "data": "UNKNOWN; not checked"
+      },
+      "source_facts": [
+        "Guided-AP uses exact pilot measurements to estimate shared signed residuals and correct unmeasured attribution estimates."
+      ],
+      "own_proposal": {
+        "method": "Implement exact finite interventions, first-order estimates and pilot-median residual correction at a fixed charged budget.",
+        "signature_figure": "MAE and top-k recall versus exact-patch budget, with calibration and held-out prompts separate.",
+        "prediction_prompt": "When does a small signed correction beat verifying only the largest attribution estimates?",
+        "controls": "Verify-more; random pilot; wrong-sign/shuffled residuals; unbiased-error task; identical total acquisitions."
+      },
+      "limitations": [
+        "No experiment, model loading, checkpoint/data download, native readiness or learner acceptance evidence.",
+        "Abstract-level result claims remain author-reported; full methods/assumptions/selection rules not independently validated."
+      ]
+    },
+    {
+      "id": "INB097",
+      "title": "Dissecting the Safety Circuit: Neuronal Intervention for Transferable Adversarial Attacks on VLMs",
+      "primary_urls": [
+        "https://proceedings.mlr.press/v306/xie26f.html"
+      ],
+      "identity_status": "VERIFIED primary title/author/identifier match; publisher/author record",
+      "metadata_proposals": [
+        "Wrong journalArticle type: official publisher records ICML 2026 conference paper, PMLR 306:139323–139338, 6–11 Jul 2026. Missing URL resolved. DOI UNRESOLVED; none asserted."
+      ],
+      "reading_level": "primary metadata and abstract triage; not full paper review",
+      "full_read_priority": "P2",
+      "disposition": "optional replication",
+      "target_existing_lessons": [
+        {
+          "id": "9.5",
+          "title": "White-Box Monitors and Red-Teaming with Internals",
+          "path": "chapter9_alignment_interpretability/exercises/part5_white_box_monitors"
+        },
+        {
+          "id": "12.5",
+          "title": "Object Hallucination and Modality Arbitration",
+          "path": "chapter12_vlm_interpretability/exercises/part5_object_hallucination"
+        }
+      ],
+      "reason": "Useful mechanistic-transfer critique; publisher type correction is concrete, while attack execution is outside this reading task.",
+      "priority": "P2",
+      "integration_roles": {
+        "method": "Read methods and design benign policy-preference transfer tests before any attack implementation.",
+        "visualization": "Source-target intervention transfer with utility and circuit-localization controls.",
+        "intuition": "Useful mechanistic-transfer critique; publisher type correction is concrete, while attack execution is outside this reading task.",
+        "results-prediction": "Does a linearly probeable safety feature identify a necessary and transferable circuit?",
+        "replication": "bounded real study; proposal only, no execution"
+      },
+      "signature_figure": "Source-target intervention transfer with utility and circuit-localization controls.",
+      "prediction_prompt": "Does a linearly probeable safety feature identify a necessary and transferable circuit?",
+      "controls_student_method": {
+        "student_method": "Read methods and design benign policy-preference transfer tests before any attack implementation.",
+        "controls": "Probe-only versus causal ablation; random neurons; norm-matched edits; held-out models; task-utility retention."
+      },
+      "replication_tier": "bounded real study",
+      "compute_access_code_data": {
+        "compute": "UNKNOWN for faithful replication; model training/inference resources not profiled",
+        "access": "Primary text accessible; model/API/dataset permissions and licenses UNKNOWN unless explicitly stated below",
+        "code": "UNKNOWN; not checked",
+        "data": "UNKNOWN; not checked"
+      },
+      "source_facts": [
+        "SCIA uses safety-related circuit interventions to study transfer of adversarial VLM perturbations; official record is ICML 2026 proceedings."
+      ],
+      "own_proposal": {
+        "method": "Read methods and design benign policy-preference transfer tests before any attack implementation.",
+        "signature_figure": "Source-target intervention transfer with utility and circuit-localization controls.",
+        "prediction_prompt": "Does a linearly probeable safety feature identify a necessary and transferable circuit?",
+        "controls": "Probe-only versus causal ablation; random neurons; norm-matched edits; held-out models; task-utility retention."
+      },
+      "limitations": [
+        "No experiment, model loading, checkpoint/data download, native readiness or learner acceptance evidence.",
+        "Abstract-level result claims remain author-reported; full methods/assumptions/selection rules not independently validated."
+      ]
+    }
+  ]
+}

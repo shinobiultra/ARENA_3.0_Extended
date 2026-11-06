@@ -1,0 +1,11 @@
+{
+  "scope": "actual v1 envelope dictionary expression only; fake clock/assembly; no graph or target execution",
+  "source_lesson_sha256": "1c9d8e47977130cfad1c5889e90605f2cfbadf14b8b006c428c54af8689cc423",
+  "source_expression": "{'kind':'fresh_cpu_graph_interventions','elapsed_seconds':time.monotonic()-started,**assembled}",
+  "trusted_elapsed_seconds": 123.0,
+  "observed_student_override_seconds": 0.0,
+  "observed_student_kind_collision": "forged-fixture",
+  "red_bug_reproduced": true,
+  "target_attempts": 0,
+  "failed_prior_proof_attempt": "An initial proof assertion expected recorder kind to survive despite the same merge collision; assertion failed. Both student elapsed and kind overwrite the old recorder envelope. No target/graph function was called."
+}

@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="920" height="340" viewBox="0 0 920 340" role="img" aria-labelledby="title desc">
+  <title id="title">JEPA world-model validation loop</title>
+  <desc id="desc">A validation loop showing toy ground truth, frozen V-JEPA latents, prediction probes, baselines, and bounded claims.</desc>
+  <defs>
+    <marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+      <path d="M2,2 L10,6 L2,10 Z" fill="#30343f"/>
+    </marker>
+    <filter id="softShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="4" stdDeviation="5" flood-color="#102030" flood-opacity="0.18"/>
+    </filter>
+  </defs>
+  <rect width="920" height="340" fill="#f7f8fb"/>
+  <text x="36" y="44" font-family="Inter, Arial, sans-serif" font-size="24" font-weight="700" fill="#172033">When does a frozen video latent deserve a world-state interpretation?</text>
+  <text x="36" y="74" font-family="Inter, Arial, sans-serif" font-size="14" fill="#4d5566">Pass toy ground truth first, then require every real-latent claim to beat a matched control.</text>
+
+  <g filter="url(#softShadow)">
+    <rect x="44" y="112" width="150" height="106" rx="8" fill="#ffffff" stroke="#2f80ed" stroke-width="2"/>
+    <text x="66" y="144" font-family="Inter, Arial, sans-serif" font-size="15" font-weight="700" fill="#14213d">Toy ground truth</text>
+    <text x="66" y="171" font-family="Inter, Arial, sans-serif" font-size="13" fill="#485064">known targets</text>
+    <text x="66" y="192" font-family="Inter, Arial, sans-serif" font-size="13" fill="#485064">known states</text>
+  </g>
+
+  <g filter="url(#softShadow)">
+    <rect x="250" y="112" width="150" height="106" rx="8" fill="#ffffff" stroke="#00a676" stroke-width="2"/>
+    <text x="276" y="144" font-family="Inter, Arial, sans-serif" font-size="15" font-weight="700" fill="#14213d">Frozen latents</text>
+    <text x="276" y="171" font-family="Inter, Arial, sans-serif" font-size="13" fill="#485064">V-JEPA2 ViT-L</text>
+    <text x="276" y="192" font-family="Inter, Arial, sans-serif" font-size="13" fill="#485064">generated videos</text>
+  </g>
+
+  <g filter="url(#softShadow)">
+    <rect x="456" y="112" width="150" height="106" rx="8" fill="#ffffff" stroke="#f2994a" stroke-width="2"/>
+    <text x="481" y="144" font-family="Inter, Arial, sans-serif" font-size="15" font-weight="700" fill="#14213d">World checks</text>
+    <text x="481" y="171" font-family="Inter, Arial, sans-serif" font-size="13" fill="#485064">masked predict</text>
+    <text x="481" y="192" font-family="Inter, Arial, sans-serif" font-size="13" fill="#485064">probe and rollout</text>
+  </g>
+
+  <g filter="url(#softShadow)">
+    <rect x="662" y="112" width="150" height="106" rx="8" fill="#ffffff" stroke="#eb5757" stroke-width="2"/>
+    <text x="689" y="144" font-family="Inter, Arial, sans-serif" font-size="15" font-weight="700" fill="#14213d">Controls fail</text>
+    <text x="689" y="171" font-family="Inter, Arial, sans-serif" font-size="13" fill="#485064">shuffled labels</text>
+    <text x="689" y="192" font-family="Inter, Arial, sans-serif" font-size="13" fill="#485064">copy/random patch</text>
+  </g>
+
+  <path d="M198 165 H238" stroke="#30343f" stroke-width="2.2" marker-end="url(#arrow)"/>
+  <path d="M404 165 H444" stroke="#30343f" stroke-width="2.2" marker-end="url(#arrow)"/>
+  <path d="M610 165 H650" stroke="#30343f" stroke-width="2.2" marker-end="url(#arrow)"/>
+
+  <g>
+    <rect x="158" y="254" width="604" height="48" rx="8" fill="#172033"/>
+    <text x="184" y="284" font-family="Inter, Arial, sans-serif" font-size="15" font-weight="700" fill="#ffffff">Accepted claim: generated-video frozen-latent evidence, not real-video world-model proof.</text>
+  </g>
+</svg>

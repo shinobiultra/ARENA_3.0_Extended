@@ -1,34 +1,83 @@
-"""Reference implementation for [15.2] LoRA vs Full Finetuning.
+# %%
 
-The learner notebook reimplements the functions in this module. This file exists so
-tests and the serialized CUDA verification runner have a stable reference target.
-"""
 
 from __future__ import annotations
 
-import copy
-import math
+MAIN = __name__ == "__main__"
+
+# %%
+
 import time
+import copy
+
+import json
+
+import math
+
+import sys
+
 from dataclasses import asdict, dataclass
+
 from pathlib import Path
-from typing import Any, Iterable, Sequence
+
+from typing import Any, Sequence
 
 import matplotlib.pyplot as plt
+
 import numpy as np
+
+import pandas as pd
+
 import torch as t
+
 import torch.nn.functional as F
+
+from IPython.display import Image, display
+
 from torch import nn
 
+chapter = "chapter15_peft_misalignment"
+
+section = "part2_lora_vs_full_finetuning"
+
+root_dir = Path(__file__).resolve().parents[3]
+
+section_dir = root_dir / chapter / "exercises" / section
+
+asset_dir = root_dir / chapter / "instructions" / "assets"
+
+if MAIN:
+    if str(root_dir) not in sys.path:
+        sys.path.append(str(root_dir))
+
+if MAIN:
+    from chapter15_peft_misalignment.exercises.part2_lora_vs_full_finetuning import tests
 
 MODEL_ID = "roneneldan/TinyStories-1M"
-MODEL_REVISION = "77f1b168e219585646439073245fe87e56b3023e"
-TARGET_MODULES = (
-    "transformer.h.6.attn.attention.q_proj",
-    "transformer.h.6.attn.attention.v_proj",
-)
-INTERVENTION_LAYER = 6
-LABEL_TEXT = (" red", " blue")
 
+MODEL_REVISION = "77f1b168e219585646439073245fe87e56b3023e"
+
+TARGET_MODULES = ('transformer.h.6.attn.attention.q_proj', 'transformer.h.6.attn.attention.v_proj')
+
+INTERVENTION_LAYER = 6
+
+LABEL_TEXT = (' red', ' blue')
+
+EXERCISE_ID = "15_2_lora_vs_full_finetuning"
+
+GT_TIER = "GT-1"
+
+DIFFICULTY = 4
+
+IMPORTANCE = 4
+
+EXPECTED_RUNTIME = "under two minutes for bounded CPU preflight; minutes for full CUDA comparison"
+
+REQUIRES_GPU = True
+
+RUN_BOUNDED_CPU = False
+
+RUN_FULL_CUDA = False
 
 @dataclass(frozen=True)
 class PromptExample:
@@ -37,13 +86,11 @@ class PromptExample:
     subject: str
     template_id: str
 
-
 @dataclass(frozen=True)
 class TrainTrace:
     losses: list[float]
     steps: int
     examples_seen: int
-
 
 @dataclass(frozen=True)
 class BehaviorMetrics:
@@ -52,7 +99,6 @@ class BehaviorMetrics:
     predictions: list[int]
     target_probabilities: list[float]
 
-
 @dataclass(frozen=True)
 class SpectrumMetrics:
     singular_values: list[float]
@@ -60,13 +106,33 @@ class SpectrumMetrics:
     stable_rank: float
     update_norm: float
 
-
 @dataclass(frozen=True)
 class DriftMetrics:
     direction: t.Tensor
     top_variance_fraction: float
     mean_drift_norm: float
 
+# %%
+
+def toy_lora_delta(a: t.Tensor, b: t.Tensor, *, alpha: float) -> t.Tensor:
+    """Return ``alpha / rank * B @ A`` after checking the low-rank shapes."""
+
+    if a.ndim != 2 or b.ndim != 2:
+        raise ValueError("A and B must both be matrices")
+    rank = a.shape[0]
+    if rank == 0 or b.shape[1] != rank:
+        raise ValueError("B's second dimension must equal the positive LoRA rank")
+    return (float(alpha) / rank) * (b @ a)
+
+# %%
+
+if MAIN:
+    tests.test_toy_lora_delta_uses_scaled_b_times_a(toy_lora_delta)
+
+if MAIN:
+    print('Toy LoRA oracle passed.')
+
+# %%
 
 class LoRALinear(nn.Module):
     """A transparent LoRA wrapper around an actual ``nn.Linear`` layer."""
@@ -113,17 +179,15 @@ class LoRALinear(nn.Module):
             self.merged = False
         return self
 
+# %%
 
-def toy_lora_delta(a: t.Tensor, b: t.Tensor, *, alpha: float) -> t.Tensor:
-    """Return ``alpha / rank * B @ A`` after checking the low-rank shapes."""
+if MAIN:
+    tests.test_lora_linear_starts_as_exact_base_and_trains_only_factors(LoRALinear)
 
-    if a.ndim != 2 or b.ndim != 2:
-        raise ValueError("A and B must both be matrices")
-    rank = a.shape[0]
-    if rank == 0 or b.shape[1] != rank:
-        raise ValueError("B's second dimension must equal the positive LoRA rank")
-    return (float(alpha) / rank) * (b @ a)
+if MAIN:
+    print('LoRA no-op initialization passed.')
 
+# %%
 
 def _get_parent_and_leaf(model: nn.Module, qualified_name: str) -> tuple[nn.Module, str]:
     parts = qualified_name.split(".")
@@ -132,6 +196,7 @@ def _get_parent_and_leaf(model: nn.Module, qualified_name: str) -> tuple[nn.Modu
         parent = parent[int(part)] if part.isdigit() else getattr(parent, part)
     return parent, parts[-1]
 
+# %%
 
 def inject_lora(
     model: nn.Module,
@@ -153,7 +218,6 @@ def inject_lora(
         inserted[name] = wrapped
     return inserted
 
-
 def freeze_except_lora(model: nn.Module) -> int:
     """Freeze the transformer and return the exact trainable LoRA parameter count."""
 
@@ -165,12 +229,18 @@ def freeze_except_lora(model: nn.Module) -> int:
             module.lora_b.requires_grad_(True)
     return sum(parameter.numel() for parameter in model.parameters() if parameter.requires_grad)
 
+# %%
 
-def set_full_finetuning(model: nn.Module) -> int:
-    for parameter in model.parameters():
-        parameter.requires_grad_(True)
-    return sum(parameter.numel() for parameter in model.parameters() if parameter.requires_grad)
+if MAIN:
+    tests.test_inject_lora_replaces_real_named_linear_modules(inject_lora, LoRALinear)
 
+if MAIN:
+    tests.test_freeze_except_lora_exposes_exact_parameter_budget(freeze_except_lora, LoRALinear)
+
+if MAIN:
+    print('Named injection and freezing passed.')
+
+# %%
 
 def merge_unmerge_max_diff(module: LoRALinear, inputs: t.Tensor) -> tuple[float, float]:
     """Measure unmerged/merged parity and restoration after unmerging."""
@@ -185,6 +255,15 @@ def merge_unmerge_max_diff(module: LoRALinear, inputs: t.Tensor) -> tuple[float,
         restoration = float((module.base.weight - before_weight).abs().max().item())
     return parity, restoration
 
+# %%
+
+if MAIN:
+    tests.test_merge_unmerge_preserves_logits_and_base_weight(merge_unmerge_max_diff, LoRALinear)
+
+if MAIN:
+    print('Merge/unmerge parity passed.')
+
+# %%
 
 def make_codebook_examples() -> tuple[list[PromptExample], list[PromptExample]]:
     """Create train and disjoint-template held-out splits for a safe codebook task."""
@@ -217,7 +296,6 @@ def make_codebook_examples() -> tuple[list[PromptExample], list[PromptExample]]:
     ]
     return train, heldout
 
-
 def randomize_training_labels(examples: Sequence[PromptExample], *, seed: int) -> list[PromptExample]:
     """Permute labels while preserving the exact prompts and class balance."""
 
@@ -231,6 +309,21 @@ def randomize_training_labels(examples: Sequence[PromptExample], *, seed: int) -
         for example, label in zip(examples, permuted.tolist(), strict=True)
     ]
 
+# %%
+
+if MAIN:
+    tests.test_codebook_split_has_disjoint_templates_and_twenty_heldout_examples(make_codebook_examples)
+
+if MAIN:
+    tests.test_random_label_control_preserves_prompts_and_balance(make_codebook_examples, randomize_training_labels)
+
+if MAIN:
+    train_examples, heldout_examples = make_codebook_examples()
+
+if MAIN:
+    pd.DataFrame([asdict(x) for x in heldout_examples[:6]])
+
+# %%
 
 def label_token_ids(tokenizer: Any, *, device: t.device | str) -> t.Tensor:
     ids = []
@@ -240,7 +333,6 @@ def label_token_ids(tokenizer: Any, *, device: t.device | str) -> t.Tensor:
             raise ValueError(f"Expected {text!r} to be one token, got {encoded}")
         ids.append(encoded[0])
     return t.tensor(ids, dtype=t.long, device=device)
-
 
 def tokenize_prompts(tokenizer: Any, examples: Sequence[PromptExample], *, device: t.device | str) -> dict[str, t.Tensor]:
     tokenizer.pad_token = tokenizer.eos_token
@@ -253,11 +345,9 @@ def tokenize_prompts(tokenizer: Any, examples: Sequence[PromptExample], *, devic
     )
     return {key: value.to(device) for key, value in encoded.items()}
 
-
 def two_label_logits(model: nn.Module, batch: dict[str, t.Tensor], label_ids: t.Tensor) -> t.Tensor:
     outputs = model(**batch, use_cache=False)
     return outputs.logits[:, -1, :].index_select(-1, label_ids)
-
 
 def protected_replay_batch(tokenizer: Any, *, device: t.device | str) -> tuple[dict[str, t.Tensor], t.Tensor]:
     """Return a tiny unrelated next-token task used identically for every method."""
@@ -278,6 +368,7 @@ def protected_replay_batch(tokenizer: Any, *, device: t.device | str) -> tuple[d
         target_ids.append(encoded[0])
     return batch, t.tensor(target_ids, dtype=t.long, device=device)
 
+# %%
 
 def train_on_codebook(
     model: nn.Module,
@@ -331,6 +422,7 @@ def train_on_codebook(
     model.eval()
     return TrainTrace(losses=losses, steps=steps, examples_seen=steps * batch_size)
 
+# %%
 
 @t.no_grad()
 def evaluate_behavior(
@@ -353,6 +445,32 @@ def evaluate_behavior(
         target_probabilities=target.cpu().tolist(),
     )
 
+def set_full_finetuning(model: nn.Module) -> int:
+    for parameter in model.parameters():
+        parameter.requires_grad_(True)
+    return sum(parameter.numel() for parameter in model.parameters() if parameter.requires_grad)
+
+def load_pinned_model(*, device: t.device | str, dtype: t.dtype = t.float32) -> tuple[nn.Module, Any]:
+    from transformers import AutoModelForCausalLM, AutoTokenizer
+
+    tokenizer = AutoTokenizer.from_pretrained(MODEL_ID, revision=MODEL_REVISION)
+    model = AutoModelForCausalLM.from_pretrained(
+        MODEL_ID,
+        revision=MODEL_REVISION,
+        dtype=dtype,
+    ).to(device)
+    model.config.use_cache = False
+    return model, tokenizer
+
+# %%
+
+if MAIN:
+    tests.test_matched_training_loop_learns_exact_next_token_organism(train_on_codebook)
+
+if MAIN:
+    print('Matched training-loop organism passed.')
+
+# %%
 
 def snapshot_target_weights(model: nn.Module, target_modules: Sequence[str]) -> dict[str, t.Tensor]:
     modules = dict(model.named_modules())
@@ -361,7 +479,6 @@ def snapshot_target_weights(model: nn.Module, target_modules: Sequence[str]) -> 
         for name in target_modules
         if isinstance(modules[name], nn.Linear)
     }
-
 
 def extract_target_update_matrix(
     model: nn.Module,
@@ -386,7 +503,6 @@ def extract_target_update_matrix(
         raise ValueError("target update matrices must share an input width before stacking")
     return t.cat(updates, dim=0)
 
-
 def summarize_spectrum(update_matrix: t.Tensor, *, eps: float = 1e-12) -> SpectrumMetrics:
     singular = t.linalg.svdvals(update_matrix.float())
     squared = singular.square()
@@ -400,10 +516,20 @@ def summarize_spectrum(update_matrix: t.Tensor, *, eps: float = 1e-12) -> Spectr
         update_norm=float(update_matrix.norm().item()),
     )
 
+# %%
+
+if MAIN:
+    tests.test_spectrum_distinguishes_rank_one_from_full_rank(summarize_spectrum)
+
+if MAIN:
+    print('Spectrum toy oracles passed.')
+
+# %%
 
 def _block(model: nn.Module, layer: int) -> nn.Module:
     return model.transformer.h[layer]
 
+# %%
 
 @t.no_grad()
 def capture_last_hidden(
@@ -430,7 +556,6 @@ def capture_last_hidden(
         raise RuntimeError(f"expected one activation capture, got {len(captured)}")
     return captured[0]
 
-
 def dominant_activation_drift(base_hidden: t.Tensor, tuned_hidden: t.Tensor) -> DriftMetrics:
     if base_hidden.shape != tuned_hidden.shape or base_hidden.ndim != 2:
         raise ValueError("base and tuned hidden states must be matching matrices")
@@ -447,6 +572,15 @@ def dominant_activation_drift(base_hidden: t.Tensor, tuned_hidden: t.Tensor) -> 
         mean_drift_norm=float(drift.norm(dim=1).mean().item()),
     )
 
+# %%
+
+if MAIN:
+    tests.test_dominant_activation_drift_recovers_planted_direction(dominant_activation_drift)
+
+if MAIN:
+    print('Activation-drift oracle passed.')
+
+# %%
 
 @t.no_grad()
 def evaluate_direction_ablation(
@@ -481,6 +615,15 @@ def evaluate_direction_ablation(
     finally:
         handle.remove()
 
+# %%
+
+if MAIN:
+    tests.test_direction_ablation_removes_exact_adaptation_component(evaluate_direction_ablation)
+
+if MAIN:
+    print('Causal direction-ablation organism passed.')
+
+# %%
 
 def make_same_norm_random_lora(
     base_model: nn.Module,
@@ -508,6 +651,15 @@ def make_same_norm_random_lora(
     model.eval()
     return model
 
+# %%
+
+if MAIN:
+    tests.test_same_norm_random_lora_matches_learned_norm(make_same_norm_random_lora)
+
+if MAIN:
+    print('Same-norm random adapter oracle passed.')
+
+# %%
 
 @t.no_grad()
 def protected_next_token_nll(model: nn.Module, tokenizer: Any) -> float:
@@ -515,20 +667,6 @@ def protected_next_token_nll(model: nn.Module, tokenizer: Any) -> float:
     batch, targets = protected_replay_batch(tokenizer, device=device)
     logits = model(**batch, use_cache=False).logits[:, -1, :]
     return float(F.cross_entropy(logits.float(), targets).item())
-
-
-def load_pinned_model(*, device: t.device | str, dtype: t.dtype = t.float32) -> tuple[nn.Module, Any]:
-    from transformers import AutoModelForCausalLM, AutoTokenizer
-
-    tokenizer = AutoTokenizer.from_pretrained(MODEL_ID, revision=MODEL_REVISION)
-    model = AutoModelForCausalLM.from_pretrained(
-        MODEL_ID,
-        revision=MODEL_REVISION,
-        dtype=dtype,
-    ).to(device)
-    model.config.use_cache = False
-    return model, tokenizer
-
 
 def _train_variant(
     base_model: nn.Module,
@@ -564,6 +702,71 @@ def _train_variant(
     )
     return model, trace, trainable
 
+def plot_signature_result(result: dict[str, Any], output_path: Path) -> None:
+    """Render behavior, spectra, activation drift, and causal evidence together."""
+
+    names = ["base", "lora_r1", "lora_r4", "full", "random_labels", "same_norm_random"]
+    labels = ["Base", "LoRA r=1", "LoRA r=4", "Full FT", "Random labels", "Random low-rank"]
+    colors = ["#5B6573", "#007C91", "#00A36C", "#D1495B", "#A56CC1", "#C58B2A"]
+    fig, axes = plt.subplots(2, 2, figsize=(13, 8.5), constrained_layout=True)
+
+    behavior = result["behavior"]
+    axes[0, 0].bar(labels, [behavior[name]["accuracy"] for name in names], color=colors)
+    axes[0, 0].axhline(0.5, color="black", linestyle="--", linewidth=1, label="chance")
+    axes[0, 0].set_ylim(0, 1.05)
+    axes[0, 0].set_ylabel("Held-out accuracy")
+    axes[0, 0].set_title("Behavior on disjoint prompt templates")
+    axes[0, 0].tick_params(axis="x", rotation=20)
+    axes[0, 0].legend(frameon=False)
+
+    for name, label, color in zip(names[1:], labels[1:], colors[1:], strict=True):
+        singular = np.asarray(result["spectra"][name]["singular_values"][:12])
+        axes[0, 1].plot(np.arange(1, len(singular) + 1), singular / max(singular[0], 1e-12), marker="o", label=label, color=color)
+    axes[0, 1].set_yscale("log")
+    axes[0, 1].set_xlabel("Singular-value index")
+    axes[0, 1].set_ylabel("Normalized singular value")
+    axes[0, 1].set_title("Actual transformer update spectra")
+    axes[0, 1].legend(frameon=False, fontsize=8)
+
+    tuned_names = names[1:]
+    drift = result["activation_drift"]
+    x = np.arange(len(tuned_names))
+    axes[1, 0].bar(
+        x,
+        [drift[name]["top_variance_fraction"] for name in tuned_names],
+        color=colors[1:],
+    )
+    axes[1, 0].set_xticks(x, labels[1:], rotation=20)
+    axes[1, 0].set_ylim(0, 1.05)
+    axes[1, 0].set_ylabel("Top drift variance fraction")
+    axes[1, 0].set_title(f"Layer {INTERVENTION_LAYER} activation mechanism")
+
+    intervention = result["causal_intervention"]
+    width = 0.38
+    axes[1, 1].bar(
+        x - width / 2,
+        [intervention[name]["target_probability_drop"] for name in tuned_names],
+        width,
+        label="Dominant drift direction",
+        color=colors[1:],
+    )
+    axes[1, 1].bar(
+        x + width / 2,
+        [intervention[name]["random_direction_drop"] for name in tuned_names],
+        width,
+        label="Random direction",
+        color="#B7BCC4",
+    )
+    axes[1, 1].axhline(0, color="black", linewidth=0.8)
+    axes[1, 1].set_xticks(x, labels[1:], rotation=20)
+    axes[1, 1].set_ylabel("Target-probability drop")
+    axes[1, 1].set_title("Causal projection ablation")
+    axes[1, 1].legend(frameon=False, fontsize=8)
+
+    fig.suptitle("[15.2] LoRA and full finetuning: same task, different update mechanisms", fontsize=15)
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    fig.savefig(output_path, dpi=170)
+    plt.close(fig)
 
 def run_reference_experiment(
     *,
@@ -709,102 +912,30 @@ def run_reference_experiment(
         ],
     }
     if make_figure:
-        output = asset_path or Path(__file__).resolve().parents[2] / "instructions/assets/lora_full_signature_panel.png"
+        output = asset_path or asset_dir / "lora_full_signature_panel.png"
         plot_signature_result(result, output)
         result["signature_asset"] = str(output)
     return result
 
+# %%
 
-def plot_signature_result(result: dict[str, Any], output_path: Path) -> None:
-    """Render behavior, spectra, activation drift, and causal evidence together."""
+if MAIN:
+    if RUN_BOUNDED_CPU:
+        cpu_result = run_reference_experiment(device="cpu", steps=2, batch_size=4, seed=0)
+        cpu_table = pd.DataFrame({
+            name: {
+                "accuracy": values["accuracy"],
+                "target_probability": values["target_probability"],
+                "protected_nll_change": cpu_result["protected_nll_change"].get(name, 0.0),
+            }
+            for name, values in cpu_result["behavior"].items()
+        }).T
+        display(cpu_table.round(3))
+        print("Pipeline preflight only: run the CUDA cell for the trained signature result.")
+    else:
+        print("Set RUN_BOUNDED_CPU=True after completing the exercises.")
 
-    names = ["base", "lora_r1", "lora_r4", "full", "random_labels", "same_norm_random"]
-    labels = ["Base", "LoRA r=1", "LoRA r=4", "Full FT", "Random labels", "Random low-rank"]
-    colors = ["#5B6573", "#007C91", "#00A36C", "#D1495B", "#A56CC1", "#C58B2A"]
-    fig, axes = plt.subplots(2, 2, figsize=(13, 8.5), constrained_layout=True)
-
-    behavior = result["behavior"]
-    axes[0, 0].bar(labels, [behavior[name]["accuracy"] for name in names], color=colors)
-    axes[0, 0].axhline(0.5, color="black", linestyle="--", linewidth=1, label="chance")
-    axes[0, 0].set_ylim(0, 1.05)
-    axes[0, 0].set_ylabel("Held-out accuracy")
-    axes[0, 0].set_title("Behavior on disjoint prompt templates")
-    axes[0, 0].tick_params(axis="x", rotation=20)
-    axes[0, 0].legend(frameon=False)
-
-    for name, label, color in zip(names[1:], labels[1:], colors[1:], strict=True):
-        singular = np.asarray(result["spectra"][name]["singular_values"][:12])
-        axes[0, 1].plot(np.arange(1, len(singular) + 1), singular / max(singular[0], 1e-12), marker="o", label=label, color=color)
-    axes[0, 1].set_yscale("log")
-    axes[0, 1].set_xlabel("Singular-value index")
-    axes[0, 1].set_ylabel("Normalized singular value")
-    axes[0, 1].set_title("Actual transformer update spectra")
-    axes[0, 1].legend(frameon=False, fontsize=8)
-
-    tuned_names = names[1:]
-    drift = result["activation_drift"]
-    x = np.arange(len(tuned_names))
-    axes[1, 0].bar(
-        x,
-        [drift[name]["top_variance_fraction"] for name in tuned_names],
-        color=colors[1:],
-    )
-    axes[1, 0].set_xticks(x, labels[1:], rotation=20)
-    axes[1, 0].set_ylim(0, 1.05)
-    axes[1, 0].set_ylabel("Top drift variance fraction")
-    axes[1, 0].set_title(f"Layer {INTERVENTION_LAYER} activation mechanism")
-
-    intervention = result["causal_intervention"]
-    width = 0.38
-    axes[1, 1].bar(
-        x - width / 2,
-        [intervention[name]["target_probability_drop"] for name in tuned_names],
-        width,
-        label="Dominant drift direction",
-        color=colors[1:],
-    )
-    axes[1, 1].bar(
-        x + width / 2,
-        [intervention[name]["random_direction_drop"] for name in tuned_names],
-        width,
-        label="Random direction",
-        color="#B7BCC4",
-    )
-    axes[1, 1].axhline(0, color="black", linewidth=0.8)
-    axes[1, 1].set_xticks(x, labels[1:], rotation=20)
-    axes[1, 1].set_ylabel("Target-probability drop")
-    axes[1, 1].set_title("Causal projection ablation")
-    axes[1, 1].legend(frameon=False, fontsize=8)
-
-    fig.suptitle("[15.2] LoRA and full finetuning: same task, different update mechanisms", fontsize=15)
-    output_path.parent.mkdir(parents=True, exist_ok=True)
-    fig.savefig(output_path, dpi=170)
-    plt.close(fig)
-
-
-def run_smoke_test(cpu: bool = True) -> dict[str, Any]:
-    a = t.tensor([[1.0, 2.0]])
-    b = t.tensor([[3.0], [4.0]])
-    delta = toy_lora_delta(a, b, alpha=2.0)
-    layer = LoRALinear(nn.Linear(2, 2, bias=False), rank=1, alpha=2.0)
-    with t.no_grad():
-        layer.lora_a.copy_(a)
-        layer.lora_b.copy_(b)
-    parity, restoration = merge_unmerge_max_diff(layer, t.tensor([[1.0, -1.0]]))
-    train, heldout = make_codebook_examples()
-    return {
-        "cpu": bool(cpu),
-        "delta": delta.tolist(),
-        "delta_rank": int(t.linalg.matrix_rank(delta).item()),
-        "merge_max_abs_diff": parity,
-        "unmerge_restoration_max_abs_diff": restoration,
-        "train_examples": len(train),
-        "heldout_examples": len(heldout),
-        "disjoint_templates": not ({x.template_id for x in train} & {x.template_id for x in heldout}),
-        "model_id": MODEL_ID,
-        "model_revision": MODEL_REVISION,
-    }
-
+# %%
 
 def _cuda_metadata(max_vram_gb: float) -> dict[str, Any]:
     if not t.cuda.is_available():
@@ -813,7 +944,6 @@ def _cuda_metadata(max_vram_gb: float) -> dict[str, Any]:
     t.cuda.empty_cache()
     t.cuda.reset_peak_memory_stats(device)
     return {"device": device, "max_vram_gb": float(max_vram_gb)}
-
 
 def run_gpu_test(max_vram_gb: float = 24.0) -> dict[str, Any]:
     metadata = _cuda_metadata(max_vram_gb)
@@ -874,7 +1004,6 @@ def run_gpu_test(max_vram_gb: float = 24.0) -> dict[str, Any]:
         "within_vram_budget": peak_vram_gb <= max_vram_gb,
     }
 
-
 def run_full_experiment(max_vram_gb: float = 24.0) -> dict[str, Any]:
     metadata = _cuda_metadata(max_vram_gb)
     start = time.perf_counter()
@@ -900,6 +1029,173 @@ def run_full_experiment(max_vram_gb: float = 24.0) -> dict[str, Any]:
         "within_vram_budget": True,
     }
 
+# %%
 
-if __name__ == "__main__":
-    print(run_smoke_test())
+if MAIN:
+    signature_path = asset_dir / "lora_full_signature_panel.png"
+
+if MAIN:
+    if RUN_FULL_CUDA:
+        full_result = run_full_experiment(max_vram_gb=24.0)
+        display(Image(filename=str(signature_path)))
+    else:
+        if signature_path.exists():
+            display(Image(filename=str(signature_path)))
+        print("CUDA execution is serialized by the parent. The displayed asset is generated by this notebook pipeline, not loaded from a report.")
+
+# %%
+
+if MAIN:
+    verification_report_path = section_dir / "verification_report.json"
+
+if MAIN:
+    if verification_report_path.exists():
+        committed_verification = json.loads(verification_report_path.read_text())
+        assert committed_verification["notebook_id"] == EXERCISE_ID
+        print("Supporting CUDA evidence:", committed_verification["gpu_name"], committed_verification["peak_vram_gb"], "GiB")
+    else:
+        print("No committed verification_report.json yet; the parent must run the strict CUDA hook before release.")
+
+# %%
+
+if MAIN:
+    PLAY_RANK = 2
+
+if MAIN:
+    PLAY_LAYER = 6
+
+if MAIN:
+    PLAY_PROTECTED_WEIGHT = 0.2
+
+if MAIN:
+    print({"rank": PLAY_RANK, "layer": PLAY_LAYER, "protected_weight": PLAY_PROTECTED_WEIGHT})
+
+# Re-run the relevant cells with one changed variable. Record your prediction first.
+
+# %%
+
+@t.no_grad()
+def lora_matrix_play(*, rank: int, layer: int, protected_weight: float, seed: int = 0) -> dict[str, Any]:
+    """Exact quadratic matrix fixture; no pretrained model or optimizer is used.
+
+    Minimize ||D - target||_F^2 + protected_weight * ||D||_F^2 subject
+    to rank(D) <= rank. Synthetic sites have different prescribed spectra.
+    The replay term is a matrix displacement proxy, not language-model NLL.
+    """
+    if rank not in (1, 2, 3, 4) or layer not in (0, 1) or not math.isfinite(protected_weight) or protected_weight < 0:
+        raise ValueError("Use rank 1..4, synthetic site 0/1, and a finite nonnegative replay weight.")
+    spectra = ((3.0, 1.0, 0.3, 0.1), (1.5, 1.2, 0.8, 0.4))
+    target = t.diag(t.tensor(spectra[layer], dtype=t.float64))
+    u, singular, vh = t.linalg.svd(target, full_matrices=False)
+    a = vh[:rank]
+    b = u[:, :rank] * (singular[:rank] / (1 + protected_weight))
+    update = toy_lora_delta(a, b, alpha=float(rank))
+    base = nn.Sequential(nn.Linear(4, 4, bias=False, dtype=t.float64))
+    base[0].weight.copy_(t.eye(4, dtype=t.float64))
+    wrapper = LoRALinear(copy.deepcopy(base[0]), rank=rank, alpha=float(rank))
+    wrapper.lora_a.copy_(a)
+    wrapper.lora_b.copy_(b)
+    inputs = t.eye(4, dtype=t.float64)
+    t.testing.assert_close(wrapper(inputs), base(inputs) + inputs @ update.T)
+    random_model = make_same_norm_random_lora(
+        base, ["0"], rank=rank, alpha=float(rank), target_norm=float(update.norm()), seed=seed
+    )
+    random_update = random_model[0].delta_weight().detach()
+    candidates = {
+        "Zero update": t.zeros_like(target),
+        "Rank-constrained fit": update,
+        "Unconstrained fit": target / (1 + protected_weight),
+        "Same-norm random": random_update,
+    }
+    scale = float(target.square().sum())
+    metrics = {}
+    for name, delta in candidates.items():
+        task_error = float((delta - target).square().sum()) / scale
+        replay_displacement = float(delta.square().sum()) / scale
+        metrics[name] = {
+            "task_error": task_error,
+            "replay_displacement": replay_displacement,
+            "objective": task_error + protected_weight * replay_displacement,
+        }
+    drift = dominant_activation_drift(base(inputs), wrapper(inputs))
+    return {
+        "rank": rank, "layer": layer, "protected_weight": protected_weight, "seed": seed,
+        "target": target, "update": update, "random_update": random_update,
+        "candidates": candidates, "metrics": metrics,
+        "spectrum": summarize_spectrum(update), "drift": drift,
+    }
+
+
+def check_lora_matrix_play(result: dict[str, Any]) -> None:
+    """Hand-worked diagonal oracle, independent of the fixture's SVD path."""
+    entries = [3.0, 1.0, 0.3, 0.1] if result["layer"] == 0 else [1.5, 1.2, 0.8, 0.4]
+    expected_entries = [value / (1 + result["protected_weight"]) if index < result["rank"] else 0.0 for index, value in enumerate(entries)]
+    expected = t.diag(t.tensor(expected_entries, dtype=t.float64))
+    t.testing.assert_close(result["update"], expected, atol=1e-12, rtol=1e-12)
+    t.testing.assert_close(result["random_update"].norm(), expected.norm(), atol=1e-6, rtol=1e-6)
+    assert result["metrics"]["Zero update"]["task_error"] == 1.0
+    fit = result["metrics"]["Rank-constrained fit"]["objective"]
+    assert fit <= result["metrics"]["Zero update"]["objective"] + 1e-12
+    assert fit <= result["metrics"]["Same-norm random"]["objective"] + 1e-12
+    assert result["metrics"]["Unconstrained fit"]["objective"] <= fit + 1e-12
+    print("Exact diagonal, factor-forward, same-norm and objective controls passed.")
+
+
+if MAIN:
+    # Change one knob, commit a forecast, then rerun only this CPU fixture cell.
+    PLAY_FIXTURE_RANK = 2
+    PLAY_FIXTURE_LAYER = 0
+    PLAY_FIXTURE_PROTECTED_WEIGHT = 0.2
+    PLAY_FIXTURE_SEED = 0
+    matrix_play = lora_matrix_play(
+        rank=PLAY_FIXTURE_RANK, layer=PLAY_FIXTURE_LAYER,
+        protected_weight=PLAY_FIXTURE_PROTECTED_WEIGHT, seed=PLAY_FIXTURE_SEED,
+    )
+    check_lora_matrix_play(matrix_play)
+    fig, axes = plt.subplots(1, 2, figsize=(12, 4.3), constrained_layout=True)
+    for name, delta in {"Prescribed target": matrix_play["target"], "Rank-constrained fit": matrix_play["update"], "Same-norm random": matrix_play["random_update"]}.items():
+        singular = summarize_spectrum(delta).singular_values
+        axes[0].plot(range(1, 5), singular, marker="o", label=name)
+    axes[0].set(xlabel="Singular-value index", ylabel="Singular value", title="Analytic fixture: measured update spectra")
+    axes[0].legend(fontsize=8)
+    names = list(matrix_play["metrics"])
+    positions = np.arange(len(names))
+    axes[1].bar(positions - .18, [matrix_play["metrics"][name]["task_error"] for name in names], .36, label="Matrix task error")
+    axes[1].bar(positions + .18, [matrix_play["metrics"][name]["replay_displacement"] for name in names], .36, label="Replay displacement proxy")
+    axes[1].set_xticks(positions, names, rotation=15)
+    axes[1].set(ylabel="Squared error / target squared norm", title="Analytic fixture: target fit versus base preservation")
+    axes[1].legend(fontsize=8)
+    fig.suptitle(f"CPU matrix play: rank={PLAY_FIXTURE_RANK}, synthetic site={PLAY_FIXTURE_LAYER}, replay weight={PLAY_FIXTURE_PROTECTED_WEIGHT}")
+    (section_dir / "media").mkdir(exist_ok=True)
+    fig.savefig(section_dir / "media/lora_matrix_play.png", dpi=160)
+    plt.show()
+    print("Selected fixture:", PLAY_FIXTURE_RANK, PLAY_FIXTURE_LAYER, PLAY_FIXTURE_PROTECTED_WEIGHT)
+    print("Measured effective update rank:", round(matrix_play["spectrum"].effective_rank, 4))
+    print("Top uncentered drift-energy fraction:", round(matrix_play["drift"].top_variance_fraction, 4))
+
+# %%
+
+def run_smoke_test(cpu: bool = True) -> dict[str, Any]:
+    a = t.tensor([[1.0, 2.0]])
+    b = t.tensor([[3.0], [4.0]])
+    delta = toy_lora_delta(a, b, alpha=2.0)
+    layer = LoRALinear(nn.Linear(2, 2, bias=False), rank=1, alpha=2.0)
+    with t.no_grad():
+        layer.lora_a.copy_(a)
+        layer.lora_b.copy_(b)
+    parity, restoration = merge_unmerge_max_diff(layer, t.tensor([[1.0, -1.0]]))
+    train, heldout = make_codebook_examples()
+    return {
+        "cpu": bool(cpu),
+        "delta": delta.tolist(),
+        "delta_rank": int(t.linalg.matrix_rank(delta).item()),
+        "merge_max_abs_diff": parity,
+        "unmerge_restoration_max_abs_diff": restoration,
+        "train_examples": len(train),
+        "heldout_examples": len(heldout),
+        "disjoint_templates": not ({x.template_id for x in train} & {x.template_id for x in heldout}),
+        "model_id": MODEL_ID,
+        "model_revision": MODEL_REVISION,
+    }
+
+# %%

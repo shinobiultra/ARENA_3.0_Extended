@@ -1,0 +1,226 @@
+{
+  "seeds": [
+    0,
+    1,
+    2
+  ],
+  "updates": 12000,
+  "development_every": 1000,
+  "batch_size": 32,
+  "width": 64,
+  "layers": 2,
+  "heads": 4,
+  "vocabulary": 768,
+  "max_length": 64,
+  "learning_rate": 0.002,
+  "weight_decay": 0.01,
+  "gradient_clip": 1.0,
+  "training_diffusion_steps": 16,
+  "checkpoint_rule": "earliest minimum of each kind's own fixed development objective",
+  "sensitivity_checkpoint": "final update, regardless of development or final quality",
+  "primary_diffusion": "ancestral-16-greedy",
+  "primary_ar": "ar-greedy",
+  "diffusion_configs": [
+    {
+      "name": "ancestral-1-greedy",
+      "sampler": "ancestral",
+      "steps": 1,
+      "temperatures": [
+        0.0,
+        0.0
+      ],
+      "block_size": null
+    },
+    {
+      "name": "ancestral-4-greedy",
+      "sampler": "ancestral",
+      "steps": 4,
+      "temperatures": [
+        0.0,
+        0.0
+      ],
+      "block_size": null
+    },
+    {
+      "name": "ancestral-8-greedy",
+      "sampler": "ancestral",
+      "steps": 8,
+      "temperatures": [
+        0.0,
+        0.0
+      ],
+      "block_size": null
+    },
+    {
+      "name": "ancestral-16-greedy",
+      "sampler": "ancestral",
+      "steps": 16,
+      "temperatures": [
+        0.0,
+        0.0
+      ],
+      "block_size": null
+    },
+    {
+      "name": "uniform-1-greedy",
+      "sampler": "uniform",
+      "steps": 1,
+      "temperatures": [
+        0.0,
+        0.0
+      ],
+      "block_size": null
+    },
+    {
+      "name": "uniform-4-greedy",
+      "sampler": "uniform",
+      "steps": 4,
+      "temperatures": [
+        0.0,
+        0.0
+      ],
+      "block_size": null
+    },
+    {
+      "name": "uniform-8-greedy",
+      "sampler": "uniform",
+      "steps": 8,
+      "temperatures": [
+        0.0,
+        0.0
+      ],
+      "block_size": null
+    },
+    {
+      "name": "uniform-16-greedy",
+      "sampler": "uniform",
+      "steps": 16,
+      "temperatures": [
+        0.0,
+        0.0
+      ],
+      "block_size": null
+    },
+    {
+      "name": "confidence-1-greedy",
+      "sampler": "confidence",
+      "steps": 1,
+      "temperatures": [
+        0.0,
+        0.0
+      ],
+      "block_size": null
+    },
+    {
+      "name": "confidence-4-greedy",
+      "sampler": "confidence",
+      "steps": 4,
+      "temperatures": [
+        0.0,
+        0.0
+      ],
+      "block_size": null
+    },
+    {
+      "name": "confidence-8-greedy",
+      "sampler": "confidence",
+      "steps": 8,
+      "temperatures": [
+        0.0,
+        0.0
+      ],
+      "block_size": null
+    },
+    {
+      "name": "confidence-16-greedy",
+      "sampler": "confidence",
+      "steps": 16,
+      "temperatures": [
+        0.0,
+        0.0
+      ],
+      "block_size": null
+    },
+    {
+      "name": "confidence-16-annealed",
+      "sampler": "confidence",
+      "steps": 16,
+      "temperatures": [
+        1.0,
+        0.2
+      ],
+      "block_size": null
+    },
+    {
+      "name": "confidence-16-warm",
+      "sampler": "confidence",
+      "steps": 16,
+      "temperatures": [
+        0.8,
+        0.8
+      ],
+      "block_size": null
+    },
+    {
+      "name": "confidence-block4-4",
+      "sampler": "confidence",
+      "steps": 4,
+      "temperatures": [
+        0.0,
+        0.0
+      ],
+      "block_size": 4
+    },
+    {
+      "name": "confidence-block8-4",
+      "sampler": "confidence",
+      "steps": 4,
+      "temperatures": [
+        0.0,
+        0.0
+      ],
+      "block_size": 8
+    }
+  ],
+  "ar_configs": [
+    {
+      "name": "ar-greedy",
+      "temperatures": [
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "name": "ar-warm",
+      "temperatures": [
+        0.8,
+        0.8
+      ]
+    }
+  ],
+  "modes": [
+    "diffusion",
+    "diffusion-shuffled",
+    "autoregressive",
+    "autoregressive-shuffled"
+  ],
+  "untrained_baselines": [
+    "diffusion",
+    "autoregressive"
+  ],
+  "final_examples_per_task": 128,
+  "trace_selection": "first two final IDs in source order per task",
+  "generation_seed": 1000,
+  "timing_seed": 990,
+  "timing_batch": "first eight final inputs per task",
+  "timing_warmups": 2,
+  "timing_repeats": 5,
+  "generation_batch_size": 32,
+  "data_provenance_sha256": "22044a58bdd510b9645dee3864ae573e1d92c891ef25da6115579c27f87310c0",
+  "final_loaded_when_frozen": false,
+  "dtype": "float32",
+  "device": "cuda",
+  "predictive_entropy_temperature": 1.0,
+  "confidence_temperature": 1.0,
+  "full_model_quality_or_paper_replication": false
+}

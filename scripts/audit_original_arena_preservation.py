@@ -30,6 +30,7 @@ COMPATIBILITY_PATCH_RATIONALES = {
     "AGENTS.md": "repo-local agent instructions for ARENA-style salvage without changing original lessons",
     "Extension-Roadmap.md": "user-authored extension specification",
     "HANDOFF.md": "extension salvage execution handoff; no original lesson content",
+    "MASTERY-HUB.md": "entrypoint for the additive CPU mastery companion; no original lesson content",
     "guidance_2-0.md": "review guidance for the ARENA-style rewrite",
     "README.md": "entrypoint documentation for the extended course",
     "install.sh": "original installer redirected to the pinned original requirements split",
@@ -69,8 +70,27 @@ ADDITIVE_EXTENSION_PREFIXES = (
     "chapter15_peft_misalignment/",
     "chapter16_shapley_attribution_baselines/",
     "chapter17_training_dynamics/",
+    "chapter18_intrinsic_interpretability/",
     "data/generated/refusal_proxy_prompts_v1/",
     "docs/",
+    # Master sources are allowed only for named extension chapters. Never allow
+    # infrastructure/chapters/ wholesale: it also contains original ARENA masters.
+    "infrastructure/chapters/chapter5_modern_architectures/",
+    "infrastructure/chapters/chapter6_sparse_feature_methods/",
+    "infrastructure/chapters/chapter7_activation_to_language/",
+    "infrastructure/chapters/chapter8_automated_circuits/",
+    "infrastructure/chapters/chapter9_alignment_interpretability/",
+    "infrastructure/chapters/chapter10_capstone_research_sprint/",
+    "infrastructure/chapters/chapter11_representation_geometry/",
+    "infrastructure/chapters/chapter12_vlm_interpretability/",
+    "infrastructure/chapters/chapter13_image_generation_interpretability/",
+    "infrastructure/chapters/chapter14_jepa_world_models/",
+    "infrastructure/chapters/chapter15_peft_misalignment/",
+    "infrastructure/chapters/chapter16_shapley_attribution_baselines/",
+    "infrastructure/chapters/chapter17_training_dynamics/",
+    "infrastructure/chapters/chapter18_intrinsic_interpretability/",
+    "infrastructure/extension/",
+    "mastery_hub/",
     "research_projects/",
     "scripts/",
     "tests/",
@@ -122,12 +142,21 @@ def _is_prefix_match(path: str, prefixes: tuple[str, ...]) -> bool:
     return any(path == prefix.rstrip("/") or path.startswith(prefix) for prefix in prefixes)
 
 
+# Q008 exact native Practice additions; original chapter permissions remain finite.
+ADDITIVE_ORIGINAL_CHAPTER_EXACT_FILES = frozenset(['infrastructure/chapters/chapter0_fundamentals/master_0_6.py', 'infrastructure/chapters/chapter0_fundamentals/master_0_6.ipynb', 'infrastructure/chapters/chapter1_transformer_interp/master_1_6.py', 'infrastructure/chapters/chapter1_transformer_interp/master_1_6.ipynb', 'chapter0_fundamentals/instructions/pages/06_[0.6]_How_to_Know_When_an_Interpretability_Result_Is_Fake_Practice.md', 'chapter0_fundamentals/instructions/pages/06_[0.6]_How_to_Know_When_an_Interpretability_Result_Is_Fake_Practice.py', 'chapter1_transformer_interp/instructions/pages/40_[1.6]_Local_Frontier_ML_Infrastructure_Practice.md', 'chapter1_transformer_interp/instructions/pages/40_[1.6]_Local_Frontier_ML_Infrastructure_Practice.py'])
+ADDITIVE_ORIGINAL_CHAPTER_PRACTICE_DIRS = ('chapter0_fundamentals/exercises/part6_fake_interpretability_results_practice/', 'chapter1_transformer_interp/exercises/part6_frontier_ml_infrastructure_practice/')
+
+
 def is_allowed_preservation_change(path: str) -> bool:
     """Return whether a changed path is compatible with append-only extension work."""
 
     normalized = path.strip()
     if normalized.startswith("./"):
         normalized = normalized[2:]
+    if normalized in ADDITIVE_ORIGINAL_CHAPTER_EXACT_FILES:
+        return True
+    if ".." not in normalized.split("/") and _is_prefix_match(normalized, ADDITIVE_ORIGINAL_CHAPTER_PRACTICE_DIRS):
+        return True
     if normalized in COMPATIBILITY_PATCH_RATIONALES:
         return True
     if _is_prefix_match(normalized, ADDITIVE_EXTENSION_PREFIXES):

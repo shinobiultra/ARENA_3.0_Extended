@@ -1,0 +1,1014 @@
+{
+  "schema_version": 1,
+  "date": "2026-11-03",
+  "batch": "INB034-INB066",
+  "source_snapshot": "Inbox snapshot supplied by lead: 10797, 97 records, 2026-11-03",
+  "scope": "Initial paper-by-paper triage and planning only. No original ARENA edits, lesson adoption, model/dataset downloads, computation or Zotero writes.",
+  "reading_policy": "Metadata/abstract screening for all research records; selected method reading explicitly named per row. Not full-text systematic review or paper replication.",
+  "status": "draft proposals, not accepted curriculum or readiness evidence",
+  "rows": [
+    {
+      "id": "INB034",
+      "title": "Arbitration Failure, Not Perceptual Blindness: How Vision-Language Models Resolve Visual-Linguistic Conflicts",
+      "primary_urls": [
+        "https://arxiv.org/abs/2604.09364",
+        "https://arxiv.org/html/2604.09364v2"
+      ],
+      "source_version": "arXiv v2, 2026-04-13",
+      "identity_status": "verified title and authors on primary source",
+      "reading_level": "abstract plus selected methods: section 6, Figure 3 caption and token-type decomposition",
+      "disposition": "existing lesson addition",
+      "target_existing_lesson": "12.5 Object Hallucination and Modality Arbitration; 7.1 Logit Lens",
+      "priority": 1,
+      "source_facts": "Reports preserved visual encoding despite wrong answers and stronger effects of full-sequence than last-token patches.",
+      "proposal_reason": "Direct bridge from decoded layer trajectories to causal arbitration, with patch scope as an experimental variable.",
+      "integration_roles": {
+        "method": "Implement visual-versus-prior logit trajectories and a patch dispatcher over token groups.",
+        "visualization": "Layerwise visual/prior logit curves beside patch flip rates by token group.",
+        "intuition": "Direct bridge from decoded layer trajectories to causal arbitration, with patch scope as an experimental variable.",
+        "results_prediction": "If visual information is decodable early, must a last-token patch recover a visually correct answer?",
+        "replication": "bounded real study; planning only"
+      },
+      "signature_figure": "Layerwise visual/prior logit curves beside patch flip rates by token group.",
+      "prediction_prompt": "If visual information is decodable early, must a last-token patch recover a visually correct answer?",
+      "student_method": "Implement visual-versus-prior logit trajectories and a patch dispatcher over token groups.",
+      "controls": "Last token, image tokens, text tokens, full sequence; same-image sham; matched image sizes and prompt lengths.",
+      "replication_tier": "bounded real study",
+      "compute_access": "UNKNOWN: paper-scale hardware/runtime not checked; no execution authorized",
+      "code_data_availability": "UNKNOWN: code/data/checkpoint access not checked",
+      "claim_boundary": "Source facts are reported claims, not independently replicated. All lesson/lab designs are our proposals."
+    },
+    {
+      "id": "INB035",
+      "title": "The Solvability of Interpretability Evaluation Metrics",
+      "primary_urls": [
+        "https://arxiv.org/abs/2205.08696"
+      ],
+      "source_version": "arXiv v2, 2023-02-03; EACL Findings 2023 noted",
+      "identity_status": "verified title and authors on primary source",
+      "reading_level": "metadata and abstract",
+      "disposition": "existing lesson addition",
+      "target_existing_lesson": "16.8 SHAP vs Activation Patching; 8.4 ACDC and Circuit Metrics",
+      "priority": 1,
+      "source_facts": "Optimizes comprehensiveness/sufficiency explanations by beam search and questions their use as independent quality metrics.",
+      "proposal_reason": "A small counterexample makes metric optimization versus explanation validation visible before circuit benchmarking.",
+      "integration_roles": {
+        "method": "Implement exhaustive subset scoring and beam search on a tiny transparent classifier.",
+        "visualization": "Deletion/sufficiency curves for metric-optimized, attribution and random subsets.",
+        "intuition": "A small counterexample makes metric optimization versus explanation validation visible before circuit benchmarking.",
+        "results_prediction": "Will the explanation selected for best deletion score also recover the planted causal variables?",
+        "replication": "CPU illustration; planning only"
+      },
+      "signature_figure": "Deletion/sufficiency curves for metric-optimized, attribution and random subsets.",
+      "prediction_prompt": "Will the explanation selected for best deletion score also recover the planted causal variables?",
+      "student_method": "Implement exhaustive subset scoring and beam search on a tiny transparent classifier.",
+      "controls": "Exact subset optimum, random same-size subsets, planted irrelevant correlates; separate selection metric from validation metric.",
+      "replication_tier": "CPU illustration",
+      "compute_access": "UNKNOWN: paper-scale hardware/runtime not checked; no execution authorized",
+      "code_data_availability": "Abstract reports solvex package release; installability, data and dependencies unchecked.",
+      "claim_boundary": "Source facts are reported claims, not independently replicated. All lesson/lab designs are our proposals."
+    },
+    {
+      "id": "INB036",
+      "title": "Beyond the Linear Representation Hypothesis: Non-Linear Activation Steering in Text-to-Image Models",
+      "primary_urls": [
+        "https://arxiv.org/abs/2610.06945"
+      ],
+      "source_version": "arXiv v1, 2026-10-03",
+      "identity_status": "verified title and authors on primary source",
+      "reading_level": "metadata and abstract",
+      "disposition": "optional replication",
+      "target_existing_lesson": "13.3 Concept Directions and Diffusion LoRA; 11.6 Feature Manifolds",
+      "priority": 2,
+      "source_facts": "Proposes KANSteer curves through intermediate concept states for text-to-image steering.",
+      "proposal_reason": "Useful later counterexample to straight-line interpolation; a new standalone KAN topic is unnecessary.",
+      "integration_roles": {
+        "method": "Fit a one-dimensional curve and compare its interpolation to an endpoint chord on known curved data.",
+        "visualization": "Matched endpoint chord and curve, with intermediate attribute labels and off-path error.",
+        "intuition": "Useful later counterexample to straight-line interpolation; a new standalone KAN topic is unnecessary.",
+        "results_prediction": "Can accurate endpoint steering still miss every meaningful intermediate state?",
+        "replication": "CPU illustration; planning only"
+      },
+      "signature_figure": "Matched endpoint chord and curve, with intermediate attribute labels and off-path error.",
+      "prediction_prompt": "Can accurate endpoint steering still miss every meaningful intermediate state?",
+      "student_method": "Fit a one-dimensional curve and compare its interpolation to an endpoint chord on known curved data.",
+      "controls": "Straight chord, piecewise linear curve, shuffled intermediate order, held-out intermediate states.",
+      "replication_tier": "CPU illustration",
+      "compute_access": "UNKNOWN: paper-scale hardware/runtime not checked; no execution authorized",
+      "code_data_availability": "UNKNOWN: code/data/checkpoint access not checked",
+      "claim_boundary": "Source facts are reported claims, not independently replicated. All lesson/lab designs are our proposals."
+    },
+    {
+      "id": "INB037",
+      "title": "World Modeling in Transformers",
+      "primary_urls": [
+        "https://arxiv.org/abs/2609.21748"
+      ],
+      "source_version": "arXiv v1, 2026-09-18",
+      "identity_status": "verified title and authors on primary source",
+      "reading_level": "metadata and abstract",
+      "disposition": "existing lesson addition",
+      "target_existing_lesson": "14.5 Maze Transformers and World Models; 5.5 State Tracking",
+      "priority": 2,
+      "source_facts": "Analyzes TaxiGPT localization failures as interference among superposed intersection features.",
+      "proposal_reason": "Distinguishes possessing state information from using it correctly during navigation.",
+      "integration_roles": {
+        "method": "Implement localization probes and counterfactual position swaps on a tiny documented maze fixture.",
+        "visualization": "Maze with true versus decoded locations and legal-move errors before/after swaps.",
+        "intuition": "Distinguishes possessing state information from using it correctly during navigation.",
+        "results_prediction": "Can a failed route coexist with accurate location decoding, and what intervention separates the accounts?",
+        "replication": "bounded real study; planning only"
+      },
+      "signature_figure": "Maze with true versus decoded locations and legal-move errors before/after swaps.",
+      "prediction_prompt": "Can a failed route coexist with accurate location decoding, and what intervention separates the accounts?",
+      "student_method": "Implement localization probes and counterfactual position swaps on a tiny documented maze fixture.",
+      "controls": "Held-out routes, randomized locations, same-affordance versus different-affordance swaps.",
+      "replication_tier": "bounded real study",
+      "compute_access": "UNKNOWN: paper-scale hardware/runtime not checked; no execution authorized",
+      "code_data_availability": "UNKNOWN: code/data/checkpoint access not checked",
+      "claim_boundary": "Source facts are reported claims, not independently replicated. All lesson/lab designs are our proposals."
+    },
+    {
+      "id": "INB038",
+      "title": "Do Sparse Autoencoders Capture Concept Manifolds?",
+      "primary_urls": [
+        "https://arxiv.org/abs/2604.28119",
+        "https://arxiv.org/html/2604.28119v1"
+      ],
+      "source_version": "arXiv v1, 2026-04-30",
+      "identity_status": "verified title and authors on primary source",
+      "reading_level": "abstract plus selected methods: sections 3-4.1, Definitions 1-3 and synthetic Figure 4 caption",
+      "disposition": "existing lesson addition",
+      "target_existing_lesson": "11.6 Feature Manifolds; 6.3 Feature Splitting, Absorption and Dashboards",
+      "priority": 1,
+      "source_facts": "Distinguishes compact subspace capture from local tiling and dilution; uses restricted reconstruction and coactivation structure.",
+      "proposal_reason": "Turns the familiar one-feature-one-concept picture into a falsifiable population-code lesson.",
+      "integration_roles": {
+        "method": "Construct a circle plus an independent line; implement sparse coding, restricted reconstruction and feature tuning curves.",
+        "visualization": "Manifold angle versus atom activation heatmap, beside reconstruction and restricted-capture curves.",
+        "intuition": "Turns the familiar one-feature-one-concept picture into a falsifiable population-code lesson.",
+        "results_prediction": "Can two dictionaries have equal reconstruction error while only one uses a compact coherent group for the whole circle?",
+        "replication": "CPU illustration; planning only"
+      },
+      "signature_figure": "Manifold angle versus atom activation heatmap, beside reconstruction and restricted-capture curves.",
+      "prediction_prompt": "Can two dictionaries have equal reconstruction error while only one uses a compact coherent group for the whole circle?",
+      "student_method": "Construct a circle plus an independent line; implement sparse coding, restricted reconstruction and feature tuning curves.",
+      "controls": "Equal reconstruction budget, rotated circle, permuted angles, correlated nuisance variable; train/held-out manifold positions.",
+      "replication_tier": "CPU illustration",
+      "compute_access": "UNKNOWN: paper-scale hardware/runtime not checked; no execution authorized",
+      "code_data_availability": "UNKNOWN: code/data/checkpoint access not checked",
+      "claim_boundary": "Source facts are reported claims, not independently replicated. All lesson/lab designs are our proposals."
+    },
+    {
+      "id": "INB039",
+      "title": "A Mechanistic Account of Attention Sinks in GPT-2: One Circuit, Broader Implications for Mitigation",
+      "primary_urls": [
+        "https://arxiv.org/abs/2604.14722"
+      ],
+      "source_version": "arXiv v1, 2026-04-16",
+      "identity_status": "verified arXiv identity from DOI; stored Semantic Scholar URL is secondary",
+      "reading_level": "metadata and abstract",
+      "disposition": "existing lesson addition",
+      "target_existing_lesson": "8.1 Activation Patching Refresher; 5.1 Gemma from Scratch",
+      "priority": 2,
+      "source_facts": "Attributes GPT-2 sinks to one interacting circuit but notes sinks persist in architectures missing its components.",
+      "proposal_reason": "Excellent warning against exporting a model-specific head story into an architectural necessity claim.",
+      "integration_roles": {
+        "method": "Decompose attention logits into query-bias, positional-MLP and key terms; ablate each separately.",
+        "visualization": "First-position attention and task loss under component interventions.",
+        "intuition": "Excellent warning against exporting a model-specific head story into an architectural necessity claim.",
+        "results_prediction": "Does eliminating this circuit in GPT-2 imply all models without its query bias cannot have attention sinks?",
+        "replication": "bounded real study; planning only"
+      },
+      "signature_figure": "First-position attention and task loss under component interventions.",
+      "prediction_prompt": "Does eliminating this circuit in GPT-2 imply all models without its query bias cannot have attention sinks?",
+      "student_method": "Decompose attention logits into query-bias, positional-MLP and key terms; ablate each separately.",
+      "controls": "Random components, BOS/token-position swaps, different architecture, downstream loss alongside attention mass.",
+      "replication_tier": "bounded real study",
+      "compute_access": "UNKNOWN: paper-scale hardware/runtime not checked; no execution authorized",
+      "code_data_availability": "UNKNOWN: code/data/checkpoint access not checked",
+      "claim_boundary": "Source facts are reported claims, not independently replicated. All lesson/lab designs are our proposals."
+    },
+    {
+      "id": "INB040",
+      "title": "The Geometric Wall: Manifold Structure Predicts Layerwise Sparse Autoencoder Scaling Laws",
+      "primary_urls": [
+        "https://arxiv.org/abs/2605.09887",
+        "https://arxiv.org/html/2605.09887v1"
+      ],
+      "source_version": "arXiv v1, 2026-05-11",
+      "identity_status": "verified title and authors on primary source",
+      "reading_level": "abstract plus selected methods: sections 2.4, 3.1-3.2 and code-availability statement",
+      "disposition": "optional replication",
+      "target_existing_lesson": "6.2 Gemma Scope and Feature Steering; 11.6 Feature Manifolds",
+      "priority": 1,
+      "source_facts": "Studies 844 SAE checkpoints across 68 layers; most-layer fits exclude an asymptotic floor because width coverage is limited.",
+      "proposal_reason": "Scaling-law fitting is more valuable here as an identifiability and held-out prediction exercise than as a new universal law.",
+      "integration_roles": {
+        "method": "Fit log-error surfaces, calculate width exponents and test geometry-to-exponent regression on held-out layers.",
+        "visualization": "Observed versus predicted width exponents with depth-only comparator; floor-fit profiles versus width coverage.",
+        "intuition": "Scaling-law fitting is more valuable here as an identifiability and held-out prediction exercise than as a new universal law.",
+        "results_prediction": "Can two widths distinguish an irreducible error floor from a slowly decaying power law?",
+        "replication": "CPU illustration; planning only"
+      },
+      "signature_figure": "Observed versus predicted width exponents with depth-only comparator; floor-fit profiles versus width coverage.",
+      "prediction_prompt": "Can two widths distinguish an irreducible error floor from a slowly decaying power law?",
+      "student_method": "Fit log-error surfaces, calculate width exponents and test geometry-to-exponent regression on held-out layers.",
+      "controls": "Depth-only and shuffled-geometry regressions, separate geometry/error samples, richer-width synthetic ground truth.",
+      "replication_tier": "CPU illustration",
+      "compute_access": "UNKNOWN: paper-scale hardware/runtime not checked; no execution authorized",
+      "code_data_availability": "Paper links anonymous fitting/validation repository; contents, releases and data access unchecked.",
+      "claim_boundary": "Source facts are reported claims, not independently replicated. All lesson/lab designs are our proposals."
+    },
+    {
+      "id": "INB041",
+      "title": "Matryoshka attribution: Learning to attribute language model outputs to representations and weights",
+      "primary_urls": [
+        "https://arxiv.org/abs/2609.25518"
+      ],
+      "source_version": "arXiv v1, 2026-09-22",
+      "identity_status": "verified title and authors on primary source",
+      "reading_level": "metadata and abstract",
+      "disposition": "optional replication",
+      "target_existing_lesson": "8.4 ACDC and Circuit Metrics; 8.8 Benchmarking Circuit Discovery",
+      "priority": 2,
+      "source_facts": "Learns nested component subsets with sigmoid top-k masks and randomized sparsity during training.",
+      "proposal_reason": "Adds a learned circuit ordering comparator without treating a reported leaderboard rank as durable evidence.",
+      "integration_roles": {
+        "method": "Implement differentiable top-k masks on a planted finite computation graph and sample k during optimization.",
+        "visualization": "Faithfulness versus size for one learned nesting, independent masks and greedy ranking.",
+        "intuition": "Adds a learned circuit ordering comparator without treating a reported leaderboard rank as durable evidence.",
+        "results_prediction": "Must the best circuit at size k be a subset of the best circuit at size k+1?",
+        "replication": "CPU illustration; planning only"
+      },
+      "signature_figure": "Faithfulness versus size for one learned nesting, independent masks and greedy ranking.",
+      "prediction_prompt": "Must the best circuit at size k be a subset of the best circuit at size k+1?",
+      "student_method": "Implement differentiable top-k masks on a planted finite computation graph and sample k during optimization.",
+      "controls": "Exact optimal subsets, same-size random masks, held-out task variants, matched optimization steps.",
+      "replication_tier": "CPU illustration",
+      "compute_access": "UNKNOWN: paper-scale hardware/runtime not checked; no execution authorized",
+      "code_data_availability": "UNKNOWN: code/data/checkpoint access not checked",
+      "claim_boundary": "Source facts are reported claims, not independently replicated. All lesson/lab designs are our proposals."
+    },
+    {
+      "id": "INB042",
+      "title": "Few-Step Generation via Data-Space Iteration",
+      "primary_urls": [
+        "https://arxiv.org/abs/2610.12102"
+      ],
+      "source_version": "arXiv v1, 2026-10-08",
+      "identity_status": "verified title and authors on primary source",
+      "reading_level": "metadata and abstract",
+      "disposition": "background",
+      "target_existing_lesson": "13.1 Diffusion Models and Cross-Attention Attribution",
+      "priority": 3,
+      "source_facts": "Proposes repeated data-space refinement instead of a manually discretized flow trajectory.",
+      "proposal_reason": "Useful objective/sampling contrast after core diffusion; not a reason to expand the method curriculum.",
+      "integration_roles": {
+        "method": "Trace a supplied toy denoiser under two explicit iteration rules.",
+        "visualization": "Trajectory overlays and final error versus equal network-evaluation budget.",
+        "intuition": "Useful objective/sampling contrast after core diffusion; not a reason to expand the method curriculum.",
+        "results_prediction": "Does using fewer named timesteps guarantee less computation at matched quality?",
+        "replication": "CPU illustration; planning only"
+      },
+      "signature_figure": "Trajectory overlays and final error versus equal network-evaluation budget.",
+      "prediction_prompt": "Does using fewer named timesteps guarantee less computation at matched quality?",
+      "student_method": "Trace a supplied toy denoiser under two explicit iteration rules.",
+      "controls": "Equal evaluations, fixed initialization, schedule-tuned comparator; distinguish illustration from distillation replication.",
+      "replication_tier": "CPU illustration",
+      "compute_access": "UNKNOWN: paper-scale hardware/runtime not checked; no execution authorized",
+      "code_data_availability": "UNKNOWN: code/data/checkpoint access not checked",
+      "claim_boundary": "Source facts are reported claims, not independently replicated. All lesson/lab designs are our proposals."
+    },
+    {
+      "id": "INB043",
+      "title": "Transfer between Modalities with MetaQueries",
+      "primary_urls": [
+        "https://arxiv.org/abs/2504.06256",
+        "https://github.com/facebookresearch/metaquery"
+      ],
+      "source_version": "arXiv v1, 2025-04-08",
+      "identity_status": "resolved missing URL/DOI via matching official arXiv title/authors and author repository",
+      "reading_level": "metadata and abstract",
+      "disposition": "background",
+      "target_existing_lesson": "12.3 Mini VLM from Scratch; 13.5 Diffusion Transformers and ConceptAttention",
+      "priority": 3,
+      "source_facts": "Uses learnable queries between a frozen multimodal LM and a diffusion decoder.",
+      "proposal_reason": "Architecture diagram clarifies that unified outputs need not require jointly training every backbone.",
+      "integration_roles": {
+        "method": "Implement a query-to-latent adapter in a tiny supplied interface fixture.",
+        "visualization": "Gradient-flow diagram and adapter output before/after query permutation.",
+        "intuition": "Architecture diagram clarifies that unified outputs need not require jointly training every backbone.",
+        "results_prediction": "If the backbone is frozen, can its knowledge still affect a trained decoder interface?",
+        "replication": "CPU illustration; planning only"
+      },
+      "signature_figure": "Gradient-flow diagram and adapter output before/after query permutation.",
+      "prediction_prompt": "If the backbone is frozen, can its knowledge still affect a trained decoder interface?",
+      "student_method": "Implement a query-to-latent adapter in a tiny supplied interface fixture.",
+      "controls": "Frozen/random queries, query permutation, text-only conditions; exclude full model training.",
+      "replication_tier": "CPU illustration",
+      "compute_access": "UNKNOWN: paper-scale hardware/runtime not checked; no execution authorized",
+      "code_data_availability": "Official repository exposes code/configuration and describes data licensing; download completeness and runtime unchecked.",
+      "claim_boundary": "Source facts are reported claims, not independently replicated. All lesson/lab designs are our proposals."
+    },
+    {
+      "id": "INB044",
+      "title": "MIB: A Mechanistic Interpretability Benchmark",
+      "primary_urls": [
+        "https://arxiv.org/abs/2504.13151",
+        "https://arxiv.org/html/2504.13151v2"
+      ],
+      "source_version": "arXiv v2, 2025-06-09; ICML 2025",
+      "identity_status": "verified title and authors on primary source",
+      "reading_level": "abstract plus selected methods: sections 2.3-3.1 and circuit metric equations; not full benchmark audit",
+      "disposition": "existing lesson addition",
+      "target_existing_lesson": "8.4 ACDC and Circuit Metrics; 8.8 Benchmarking Circuit Discovery; 11.3 Causal Abstraction",
+      "priority": 1,
+      "source_facts": "Separates circuit localization from causal-variable localization and CPR from CMD.",
+      "proposal_reason": "Provides the right evaluation vocabulary for comparing circuit methods without conflating performance and matching model computation.",
+      "integration_roles": {
+        "method": "Implement size-indexed circuit curves, normalized faithfulness, integrated CPR and CMD on an exact graph.",
+        "visualization": "Paired CPR/CMD curves where removing a suppressive component improves task score but worsens model matching.",
+        "intuition": "Provides the right evaluation vocabulary for comparing circuit methods without conflating performance and matching model computation.",
+        "results_prediction": "Can a circuit score above full-model performance while being a worse explanation of that model?",
+        "replication": "CPU illustration; planning only"
+      },
+      "signature_figure": "Paired CPR/CMD curves where removing a suppressive component improves task score but worsens model matching.",
+      "prediction_prompt": "Can a circuit score above full-model performance while being a worse explanation of that model?",
+      "student_method": "Implement size-indexed circuit curves, normalized faithfulness, integrated CPR and CMD on an exact graph.",
+      "controls": "Empty/full circuit, same-size random graphs, negative-contribution nodes, counterfactual task validity; declare zero-denominator behavior.",
+      "replication_tier": "CPU illustration",
+      "compute_access": "UNKNOWN: paper-scale hardware/runtime not checked; no execution authorized",
+      "code_data_availability": "UNKNOWN: code/data/checkpoint access not checked",
+      "claim_boundary": "Source facts are reported claims, not independently replicated. All lesson/lab designs are our proposals."
+    },
+    {
+      "id": "INB045",
+      "title": "Exploiting Vision Encoder Vulnerabilities for Universal Adversarial Perturbations on Large Vision-Language Models",
+      "primary_urls": [
+        "https://arxiv.org/abs/2412.08108"
+      ],
+      "source_version": "arXiv v3, 2026-06-29",
+      "identity_status": "verified title and authors on primary source",
+      "reading_level": "metadata and abstract",
+      "disposition": "optional replication",
+      "target_existing_lesson": "12.2 CLIP Features, SAEs and Typographic Attacks",
+      "priority": 2,
+      "source_facts": "Reports universal perturbations targeting middle-layer value components of vision encoders and transfer through shared encoders.",
+      "proposal_reason": "Can sharpen localization of vulnerability beyond final embeddings; keep it within controlled robustness study planning.",
+      "integration_roles": {
+        "method": "Implement a component-selection audit on authorized benign image-category mismatches.",
+        "visualization": "Layer/component vulnerability heatmap beside transfer across encoder-sharing pairs.",
+        "intuition": "Can sharpen localization of vulnerability beyond final embeddings; keep it within controlled robustness study planning.",
+        "results_prediction": "Should changing only the language decoder remove a perturbation learned against a shared vision encoder?",
+        "replication": "bounded real study; planning only"
+      },
+      "signature_figure": "Layer/component vulnerability heatmap beside transfer across encoder-sharing pairs.",
+      "prediction_prompt": "Should changing only the language decoder remove a perturbation learned against a shared vision encoder?",
+      "student_method": "Implement a component-selection audit on authorized benign image-category mismatches.",
+      "controls": "Same-norm random perturbation, matched optimizer budgets, held-out images, shared/different encoder.",
+      "replication_tier": "bounded real study",
+      "compute_access": "UNKNOWN: paper-scale hardware/runtime not checked; no execution authorized",
+      "code_data_availability": "UNKNOWN: code/data/checkpoint access not checked",
+      "claim_boundary": "Source facts are reported claims, not independently replicated. All lesson/lab designs are our proposals."
+    },
+    {
+      "id": "INB046",
+      "title": "Local Support Learning",
+      "primary_urls": [
+        "https://arxiv.org/abs/2610.02126"
+      ],
+      "source_version": "arXiv v1, 2026-10-01",
+      "identity_status": "verified title and authors on primary source",
+      "reading_level": "metadata and abstract",
+      "disposition": "optional replication",
+      "target_existing_lesson": "15.2 LoRA vs Full Fine-Tuning",
+      "priority": 2,
+      "source_facts": "Pairs an adapter with a GMM likelihood gate to localize updates to its training distribution.",
+      "proposal_reason": "Concrete retention-versus-adaptation trade-off using existing PEFT mechanics.",
+      "integration_roles": {
+        "method": "Implement a Gaussian likelihood gate multiplying a rank-one update on two synthetic input regions.",
+        "visualization": "Adaptation and retained-task error versus region overlap and gate threshold.",
+        "intuition": "Concrete retention-versus-adaptation trade-off using existing PEFT mechanics.",
+        "results_prediction": "When new and old activation distributions overlap, can a closed-world likelihood gate preserve both tasks?",
+        "replication": "CPU illustration; planning only"
+      },
+      "signature_figure": "Adaptation and retained-task error versus region overlap and gate threshold.",
+      "prediction_prompt": "When new and old activation distributions overlap, can a closed-world likelihood gate preserve both tasks?",
+      "student_method": "Implement a Gaussian likelihood gate multiplying a rank-one update on two synthetic input regions.",
+      "controls": "Ungated adapter, random gate, oracle domain labels, overlap sweep; evaluate old data only after selection.",
+      "replication_tier": "CPU illustration",
+      "compute_access": "UNKNOWN: paper-scale hardware/runtime not checked; no execution authorized",
+      "code_data_availability": "UNKNOWN: code/data/checkpoint access not checked",
+      "claim_boundary": "Source facts are reported claims, not independently replicated. All lesson/lab designs are our proposals."
+    },
+    {
+      "id": "INB047",
+      "title": "A Geometric Unification of Concept Learning with Concept Cones",
+      "primary_urls": [
+        "https://arxiv.org/abs/2512.07355",
+        "https://arxiv.org/html/2512.07355v2"
+      ],
+      "source_version": "arXiv v2, 2026-06-07",
+      "identity_status": "verified title and authors on primary source",
+      "reading_level": "abstract plus selected methods: section 2.2 cone definition and section 2.3 operationalization",
+      "disposition": "existing lesson addition",
+      "target_existing_lesson": "18.1 Concept Bottlenecks, Backpacks and IIT; 6.3 Feature Splitting",
+      "priority": 1,
+      "source_facts": "Unifies nonnegative concept dictionaries through conic hulls and measures recovery of human-defined CBM directions by SAE cones.",
+      "proposal_reason": "Connects supervised and discovered concepts while keeping human plausibility separate from causal faithfulness.",
+      "integration_roles": {
+        "method": "Implement nonnegative least-squares reconstruction of reference concept directions and compare unrestricted spans.",
+        "visualization": "2D cone containment diagram plus recovery residual versus sparsity.",
+        "intuition": "Connects supervised and discovered concepts while keeping human plausibility separate from causal faithfulness.",
+        "results_prediction": "Can two dictionaries span the same plane but differ in the human concept directions their nonnegative codes recover?",
+        "replication": "CPU illustration; planning only"
+      },
+      "signature_figure": "2D cone containment diagram plus recovery residual versus sparsity.",
+      "prediction_prompt": "Can two dictionaries span the same plane but differ in the human concept directions their nonnegative codes recover?",
+      "student_method": "Implement nonnegative least-squares reconstruction of reference concept directions and compare unrestricted spans.",
+      "controls": "Signed least squares, rotated/random cones, mislabeled reference concepts; test intervention effects separately.",
+      "replication_tier": "CPU illustration",
+      "compute_access": "UNKNOWN: paper-scale hardware/runtime not checked; no execution authorized",
+      "code_data_availability": "UNKNOWN: code/data/checkpoint access not checked",
+      "claim_boundary": "Source facts are reported claims, not independently replicated. All lesson/lab designs are our proposals."
+    },
+    {
+      "id": "INB048",
+      "title": "Model metamers reveal divergent invariances between biological and artificial neural networks",
+      "primary_urls": [
+        "https://www.nature.com/articles/s41593-023-01442-0",
+        "https://github.com/jenellefeather/model_metamers_pytorch"
+      ],
+      "source_version": "Nature Neuroscience 26, 2017-2034 (2023); DOI 10.1038/s41593-023-01442-0",
+      "identity_status": "verified title and authors on primary source",
+      "reading_level": "abstract and selected publisher methods/results/limitations and code/data availability excerpts",
+      "disposition": "existing lesson addition",
+      "target_existing_lesson": "12.7 Dense Vision Features - DINO and SAM; 11.2 Representation Alignment",
+      "priority": 1,
+      "source_facts": "Synthesizes stimuli matched at a model stage; late-stage model matches often fail human recognition, across vision and audition.",
+      "proposal_reason": "A direct counterexample to equating representation match, benchmark similarity and shared perceptual invariance.",
+      "integration_roles": {
+        "method": "Implement feature-matching loss and input-gradient steps first on a transparent non-injective map.",
+        "visualization": "Reference/early/late matched-image gallery beside feature error and independent recognition.",
+        "intuition": "A direct counterexample to equating representation match, benchmark similarity and shared perceptual invariance.",
+        "results_prediction": "If internal activations match almost perfectly, must a person recognize the same object?",
+        "replication": "CPU illustration; planning only"
+      },
+      "signature_figure": "Reference/early/late matched-image gallery beside feature error and independent recognition.",
+      "prediction_prompt": "If internal activations match almost perfectly, must a person recognize the same object?",
+      "student_method": "Implement feature-matching loss and input-gradient steps first on a transparent non-injective map.",
+      "controls": "Noise and reference initializations, pixel-match control, independent model, anti-aliasing comparator; genuine human recognition requires separately designed evaluation.",
+      "replication_tier": "CPU illustration",
+      "compute_access": "UNKNOWN: paper-scale hardware/runtime not checked; no execution authorized",
+      "code_data_availability": "Publisher lists public code, human data, checkpoints and metamer viewer; Word-Speaker-Noise data requires author request; repository contents/runtime unchecked.",
+      "claim_boundary": "Source facts are reported claims, not independently replicated. All lesson/lab designs are our proposals."
+    },
+    {
+      "id": "INB049",
+      "title": "Adaptive Probe-based Steering for Robust LLM Jailbreaking",
+      "primary_urls": [
+        "https://arxiv.org/abs/2605.20286"
+      ],
+      "source_version": "arXiv v1, 2026-05-19; ICML 2026 noted",
+      "identity_status": "verified arXiv identity from DOI; stored Semantic Scholar URL is secondary",
+      "reading_level": "metadata and abstract",
+      "disposition": "background",
+      "target_existing_lesson": "9.1 Refusal Directions and Representation Engineering",
+      "priority": 3,
+      "source_facts": "Adapts steering strengths from contrastive activation statistics and reports stronger probe-based attacks.",
+      "proposal_reason": "Useful caveat about tuning and robustness of refusal direction lessons; no new jailbreak implementation needed.",
+      "integration_roles": {
+        "method": "Derive normalized steering magnitude on a benign sentiment-direction fixture.",
+        "visualization": "Behavior shift and unrelated-task degradation versus normalized versus fixed strength.",
+        "intuition": "Useful caveat about tuning and robustness of refusal direction lessons; no new jailbreak implementation needed.",
+        "results_prediction": "Can improved target shift simply come from larger perturbation norms?",
+        "replication": "CPU illustration; planning only"
+      },
+      "signature_figure": "Behavior shift and unrelated-task degradation versus normalized versus fixed strength.",
+      "prediction_prompt": "Can improved target shift simply come from larger perturbation norms?",
+      "student_method": "Derive normalized steering magnitude on a benign sentiment-direction fixture.",
+      "controls": "Equal perturbation norm, random direction, held-out templates and unrelated-task loss.",
+      "replication_tier": "CPU illustration",
+      "compute_access": "UNKNOWN: paper-scale hardware/runtime not checked; no execution authorized",
+      "code_data_availability": "Abstract links attack code; code/data contents and controlled reproducibility unchecked.",
+      "claim_boundary": "Source facts are reported claims, not independently replicated. All lesson/lab designs are our proposals."
+    },
+    {
+      "id": "INB050",
+      "title": "Vision-Default, Prior-Override: Causal Mechanisms of Perception-Knowledge Conflict in Vision-Language Models",
+      "primary_urls": [
+        "https://arxiv.org/abs/2606.28273"
+      ],
+      "source_version": "arXiv v1, 2026-06-26",
+      "identity_status": "verified title and authors on primary source",
+      "reading_level": "metadata and abstract",
+      "disposition": "existing lesson addition",
+      "target_existing_lesson": "12.5 Object Hallucination and Modality Arbitration",
+      "priority": 1,
+      "source_facts": "Reports sparse late attention heads necessary for prior overrides and distinguishes routing from writing heads.",
+      "proposal_reason": "Pairs well with INB034: compare component granularity rather than assume a single generic vision-versus-language story.",
+      "integration_roles": {
+        "method": "Implement head-wise noising and direct answer-logit projection with a held-out conflict prompt set.",
+        "visualization": "Head-by-layer causal heatmap with visual/prior answer transition matrix.",
+        "intuition": "Pairs well with INB034: compare component granularity rather than assume a single generic vision-versus-language story.",
+        "results_prediction": "Would removing prior-override heads help equally on visually and prior-grounded baseline trials?",
+        "replication": "bounded real study; planning only"
+      },
+      "signature_figure": "Head-by-layer causal heatmap with visual/prior answer transition matrix.",
+      "prediction_prompt": "Would removing prior-override heads help equally on visually and prior-grounded baseline trials?",
+      "student_method": "Implement head-wise noising and direct answer-logit projection with a held-out conflict prompt set.",
+      "controls": "Same-size random heads, sham ablation, congruent images, prompt paraphrases; test attention routing separately from output writing.",
+      "replication_tier": "bounded real study",
+      "compute_access": "UNKNOWN: paper-scale hardware/runtime not checked; no execution authorized",
+      "code_data_availability": "UNKNOWN: code/data/checkpoint access not checked",
+      "claim_boundary": "Source facts are reported claims, not independently replicated. All lesson/lab designs are our proposals."
+    },
+    {
+      "id": "INB051",
+      "title": "AI Models Can Provably Hide Arbitrary Capabilities",
+      "primary_urls": [
+        "https://arxiv.org/abs/2610.13928"
+      ],
+      "source_version": "arXiv v2, 2026-10-14",
+      "identity_status": "verified title and authors on primary source",
+      "reading_level": "metadata and abstract",
+      "disposition": "background",
+      "target_existing_lesson": "9.5 White-Box Monitors and Red-Teaming with Internals; 10.1 Capstone Research Sprint",
+      "priority": 3,
+      "source_facts": "Constructs hidden computations with cryptographic hardness assumptions and tests elicitation methods on a small proxy task.",
+      "proposal_reason": "Boundary reading: failure to elicit does not imply absence; worst-case construction is not evidence ordinary models hide such circuits.",
+      "integration_roles": {
+        "method": "Work through a harmless finite trigger table to distinguish absence from inaccessible behavior.",
+        "visualization": "Coverage diagram of tested inputs and untested trigger conditions.",
+        "intuition": "Boundary reading: failure to elicit does not imply absence; worst-case construction is not evidence ordinary models hide such circuits.",
+        "results_prediction": "What does a negative probe result rule out without a bound on the trigger space?",
+        "replication": "CPU illustration; planning only"
+      },
+      "signature_figure": "Coverage diagram of tested inputs and untested trigger conditions.",
+      "prediction_prompt": "What does a negative probe result rule out without a bound on the trigger space?",
+      "student_method": "Work through a harmless finite trigger table to distinguish absence from inaccessible behavior.",
+      "controls": "Known present/absent behavior; explicit query budget and assumptions; do not claim toy example replicates cryptographic theorem.",
+      "replication_tier": "CPU illustration",
+      "compute_access": "UNKNOWN: paper-scale hardware/runtime not checked; no execution authorized",
+      "code_data_availability": "UNKNOWN: code/data/checkpoint access not checked",
+      "claim_boundary": "Source facts are reported claims, not independently replicated. All lesson/lab designs are our proposals."
+    },
+    {
+      "id": "INB052",
+      "title": "AnyAttack: Towards Large-scale Self-supervised Adversarial Attacks on Vision-language Models",
+      "primary_urls": [
+        "https://jiamingzhang94.github.io/anyattack/",
+        "https://openaccess.thecvf.com/content/CVPR2025/papers/Zhang_Anyattack_Towards_Large-scale_Self-supervised_Adversarial_Attacks_on_Vision-language_Models_CVPR_2025_paper.pdf",
+        "https://arxiv.org/abs/2410.05346"
+      ],
+      "source_version": "CVPR 2025 published title; arXiv title variant",
+      "identity_status": "resolved title via author project and CVPR paper; current arXiv title differs; publication is conference paper, not journal",
+      "reading_level": "private stored abstract plus primary project summary and CVPR title/abstract",
+      "disposition": "background",
+      "target_existing_lesson": "12.2 CLIP Features, SAEs and Typographic Attacks",
+      "priority": 3,
+      "source_facts": "Published AnyAttack framework trains a transferable adversarial generator using large-scale self-supervision.",
+      "proposal_reason": "Threat-model comparison only: faithful pretraining is far beyond a short learner exercise.",
+      "integration_roles": {
+        "method": "Compare targeted transfer estimands and split diagrams against per-image optimization.",
+        "visualization": "Targeted-success transfer matrix with explicit image and target hold-outs.",
+        "intuition": "Threat-model comparison only: faithful pretraining is far beyond a short learner exercise.",
+        "results_prediction": "Does success on one encoder establish transfer to a different encoder or merely another decoder?",
+        "replication": "faithful paper replication; planning only"
+      },
+      "signature_figure": "Targeted-success transfer matrix with explicit image and target hold-outs.",
+      "prediction_prompt": "Does success on one encoder establish transfer to a different encoder or merely another decoder?",
+      "student_method": "Compare targeted transfer estimands and split diagrams against per-image optimization.",
+      "controls": "Random matched-norm noise, per-image optimization at matched budget; source/target separation.",
+      "replication_tier": "faithful paper replication",
+      "compute_access": "UNKNOWN: paper-scale hardware/runtime not checked; no execution authorized",
+      "code_data_availability": "Author project links code/models; contents, training data accessibility and weights unchecked.",
+      "claim_boundary": "Source facts are reported claims, not independently replicated. All lesson/lab designs are our proposals."
+    },
+    {
+      "id": "INB053",
+      "title": "Corrupted but Correct: Why Vision-Language Models Lie to Themselves Internally",
+      "primary_urls": [
+        "https://arxiv.org/abs/2610.03445"
+      ],
+      "source_version": "arXiv v2, 2026-10-27",
+      "identity_status": "verified title and authors on primary source",
+      "reading_level": "metadata and abstract",
+      "disposition": "existing lesson addition",
+      "target_existing_lesson": "12.5 Object Hallucination and Modality Arbitration; 7.1 Logit Lens",
+      "priority": 2,
+      "source_facts": "Reports teacher-forced target-loss versus free-generation dissociation and flags circularity in one probe estimate.",
+      "proposal_reason": "Excellent exercise in choosing the behavioral readout before interpreting a successful optimization.",
+      "integration_roles": {
+        "method": "Implement teacher-forced log-probability and free-generation scoring with explicit prefix conditions.",
+        "visualization": "Teacher-forced loss versus generated target success, colored by first-token outcome.",
+        "intuition": "Excellent exercise in choosing the behavioral readout before interpreting a successful optimization.",
+        "results_prediction": "Can near-zero target-caption training loss coexist with never generating the target caption?",
+        "replication": "bounded real study; planning only"
+      },
+      "signature_figure": "Teacher-forced loss versus generated target success, colored by first-token outcome.",
+      "prediction_prompt": "Can near-zero target-caption training loss coexist with never generating the target caption?",
+      "student_method": "Implement teacher-forced log-probability and free-generation scoring with explicit prefix conditions.",
+      "controls": "Matched prefixes, clean images, unconditioned decoding, independent probe split; audit invariant ranks before attributing a mechanism.",
+      "replication_tier": "bounded real study",
+      "compute_access": "UNKNOWN: paper-scale hardware/runtime not checked; no execution authorized",
+      "code_data_availability": "UNKNOWN: code/data/checkpoint access not checked",
+      "claim_boundary": "Source facts are reported claims, not independently replicated. All lesson/lab designs are our proposals."
+    },
+    {
+      "id": "INB054",
+      "title": "Mechanisms of Prompt-Induced Hallucination in Vision–Language Models",
+      "primary_urls": [
+        "https://aclanthology.org/2026.acl-long.1941/"
+      ],
+      "source_version": "ACL 2026 conference paper; DOI 10.18653/v1/2026.acl-long.1941",
+      "identity_status": "verified ACL title/authors/DOI; conference paper rather than unqualified journal article",
+      "reading_level": "metadata and abstract",
+      "disposition": "existing lesson addition",
+      "target_existing_lesson": "12.5 Object Hallucination and Modality Arbitration",
+      "priority": 1,
+      "source_facts": "Studies overcounting prompts and model-specific heads whose ablation reduces prompt-induced counting hallucinations.",
+      "proposal_reason": "A small count-controlled image fixture can make prompt copying versus visual correction visible.",
+      "integration_roles": {
+        "method": "Implement count-consistent versus overcounted prompt pairs and head ablation scoring.",
+        "visualization": "Actual count by stated count response matrix before/after ablation.",
+        "intuition": "A small count-controlled image fixture can make prompt copying versus visual correction visible.",
+        "results_prediction": "Will a head identified on low object counts also correct overcounting at higher counts?",
+        "replication": "bounded real study; planning only"
+      },
+      "signature_figure": "Actual count by stated count response matrix before/after ablation.",
+      "prediction_prompt": "Will a head identified on low object counts also correct overcounting at higher counts?",
+      "student_method": "Implement count-consistent versus overcounted prompt pairs and head ablation scoring.",
+      "controls": "Congruent prompts, understated counts, random heads, object-layout swaps and held-out counts.",
+      "replication_tier": "bounded real study",
+      "compute_access": "UNKNOWN: paper-scale hardware/runtime not checked; no execution authorized",
+      "code_data_availability": "UNKNOWN: code/data/checkpoint access not checked",
+      "claim_boundary": "Source facts are reported claims, not independently replicated. All lesson/lab designs are our proposals."
+    },
+    {
+      "id": "INB055",
+      "title": "Monitoring and Discovering Reward Hacking with Internal Representations during LLM Evaluations",
+      "primary_urls": [
+        "https://arxiv.org/abs/2609.19101"
+      ],
+      "source_version": "arXiv v2, 2026-10-09",
+      "identity_status": "verified title and authors on primary source",
+      "reading_level": "metadata and abstract",
+      "disposition": "optional replication",
+      "target_existing_lesson": "9.5 White-Box Monitors and Red-Teaming with Internals",
+      "priority": 2,
+      "source_facts": "Reports difference-of-means reward-hacking monitors and comparisons at matched false-positive rate.",
+      "proposal_reason": "Fits existing monitor curriculum if issue/task identity leakage and definition of hacking are addressed.",
+      "integration_roles": {
+        "method": "Implement training-only mean-difference direction, threshold calibration and held-out ROC/precision-recall scoring.",
+        "visualization": "Matched-FPR detection curves by held-out environment, with lead-time distribution.",
+        "intuition": "Fits existing monitor curriculum if issue/task identity leakage and definition of hacking are addressed.",
+        "results_prediction": "If probe positives are reviewed only after scoring, can discovered cases provide an unbiased precision estimate?",
+        "replication": "bounded real study; planning only"
+      },
+      "signature_figure": "Matched-FPR detection curves by held-out environment, with lead-time distribution.",
+      "prediction_prompt": "If probe positives are reviewed only after scoring, can discovered cases provide an unbiased precision estimate?",
+      "student_method": "Implement training-only mean-difference direction, threshold calibration and held-out ROC/precision-recall scoring.",
+      "controls": "Task/rollout-group splits, shuffled labels, behavior-only baseline, negative-control tasks, blinded adjudication.",
+      "replication_tier": "bounded real study",
+      "compute_access": "UNKNOWN: paper-scale hardware/runtime not checked; no execution authorized",
+      "code_data_availability": "UNKNOWN: code/data/checkpoint access not checked",
+      "claim_boundary": "Source facts are reported claims, not independently replicated. All lesson/lab designs are our proposals."
+    },
+    {
+      "id": "INB056",
+      "title": "Better late than never: Getting into interpretability in 2025",
+      "primary_urls": [
+        "https://bennokrojer.com/interp.html"
+      ],
+      "source_version": "Author webpage read 2026-11-03; essay refers to 2025",
+      "identity_status": "missing title resolved to Better late than never: Getting into interpretability in 2025; same URL as INB061; not a LatentLens paper record",
+      "reading_level": "author essay read",
+      "disposition": "background",
+      "target_existing_lesson": "10.1 Capstone Research Sprint",
+      "priority": 3,
+      "source_facts": "Author essay discusses research taste, abstraction levels, multimodal interpretability and actionability.",
+      "proposal_reason": "Use a short research-framing reading rather than treating a personal perspective as an empirical method.",
+      "integration_roles": {
+        "method": "Write one testable claim at behavioral, algorithmic and implementation levels for an existing capstone.",
+        "visualization": "Claim-to-evidence ladder with one concrete counterexample per level.",
+        "intuition": "Use a short research-framing reading rather than treating a personal perspective as an empirical method.",
+        "results_prediction": "What observation would change your favored explanation rather than merely add an attractive visualization?",
+        "replication": "CPU illustration; planning only"
+      },
+      "signature_figure": "Claim-to-evidence ladder with one concrete counterexample per level.",
+      "prediction_prompt": "What observation would change your favored explanation rather than merely add an attractive visualization?",
+      "student_method": "Write one testable claim at behavioral, algorithmic and implementation levels for an existing capstone.",
+      "controls": "Competing explanations and a null outcome; distinguish quoted opinion from testable claim.",
+      "replication_tier": "CPU illustration",
+      "compute_access": "UNKNOWN: paper-scale hardware/runtime not checked; no execution authorized",
+      "code_data_availability": "Public essay; no associated replication data/code asserted.",
+      "claim_boundary": "Source facts are reported claims, not independently replicated. All lesson/lab designs are our proposals."
+    },
+    {
+      "id": "INB057",
+      "title": "Computer Security. ESORICS 2025 International Workshops: ANUBIS 2025, SECAI 2025, SecAssure 2025, STMUS 2025, Toulouse, France, September 22–24, 2025, Revised Selected Papers, Part II",
+      "primary_urls": [
+        "https://link.springer.com/book/10.1007/978-3-032-16092-8"
+      ],
+      "source_version": "Springer conference proceedings, copyright 2026; DOI 10.1007/978-3-032-16092-8",
+      "identity_status": "verified publisher title/DOI; edited conference-proceedings volume",
+      "reading_level": "publisher metadata and table-of-contents screening only; no chapter read",
+      "disposition": "defer/out of scope",
+      "target_existing_lesson": "10.1 Capstone Research Sprint: bibliographic screening only",
+      "priority": 3,
+      "source_facts": "Publisher identifies an edited ESORICS workshop proceedings volume, not one interpretability study.",
+      "proposal_reason": "A volume-level entry cannot justify integrating an unspecified chapter. Preserve it until the relevant chapter is identified.",
+      "integration_roles": {
+        "method": "No method selected; first identify an exact chapter and its question.",
+        "visualization": "Proposed bibliography tree: proceedings to chapter to claim.",
+        "intuition": "A volume-level entry cannot justify integrating an unspecified chapter. Preserve it until the relevant chapter is identified.",
+        "results_prediction": "Which chapter provides the claim, and would its experiment actually address the learner question?",
+        "replication": "CPU illustration; planning only"
+      },
+      "signature_figure": "Proposed bibliography tree: proceedings to chapter to claim.",
+      "prediction_prompt": "Which chapter provides the claim, and would its experiment actually address the learner question?",
+      "student_method": "No method selected; first identify an exact chapter and its question.",
+      "controls": "Require chapter identity and primary full text before designing a result.",
+      "replication_tier": "CPU illustration",
+      "compute_access": "UNKNOWN: paper-scale hardware/runtime not checked; no execution authorized",
+      "code_data_availability": "Publisher metadata/table of contents accessible; chapter full-text access/code/data UNKNOWN.",
+      "claim_boundary": "Source facts are reported claims, not independently replicated. All lesson/lab designs are our proposals."
+    },
+    {
+      "id": "INB058",
+      "title": "Evaluating the Causal Faithfulness of SHAP as a Candidate Attribution Method for SAE Features",
+      "primary_urls": [
+        "https://arxiv.org/abs/2610.17898",
+        "https://arxiv.org/html/2610.17898v1"
+      ],
+      "source_version": "arXiv v1, 2026-10-13; preprint",
+      "identity_status": "verified title and authors on primary source",
+      "reading_level": "abstract plus selected methods: sections 3.3-3.6, including probe target, reconstruction baseline and intervention scope mismatch",
+      "disposition": "existing lesson addition",
+      "target_existing_lesson": "16.8 SHAP vs Activation Patching; 6.2 Gemma Scope and Feature Steering",
+      "priority": 1,
+      "source_facts": "Distinguishes attribution agreement from LM causal faithfulness; reports an active-feature confound and insertion/deletion asymmetry.",
+      "proposal_reason": "Directly tests the most tempting unsupported conclusion in the existing attribution-agreement lesson.",
+      "integration_roles": {
+        "method": "Implement signed and magnitude correlations against interventions, active-only stratification and a declared multiple-testing family.",
+        "visualization": "Agreement matrix beside causal-effect scatterplots and insertion-versus-deletion detection curves.",
+        "intuition": "Directly tests the most tempting unsupported conclusion in the existing attribution-agreement lesson.",
+        "results_prediction": "Can SHAP and IG agree perfectly while both fail to predict the LM effect of deleting a feature?",
+        "replication": "CPU illustration; planning only"
+      },
+      "signature_figure": "Agreement matrix beside causal-effect scatterplots and insertion-versus-deletion detection curves.",
+      "prediction_prompt": "Can SHAP and IG agree perfectly while both fail to predict the LM effect of deleting a feature?",
+      "student_method": "Implement signed and magnitude correlations against interventions, active-only stratification and a declared multiple-testing family.",
+      "controls": "Reconstruction-only SAE pass, matched token scope, active-only and activity-matched random features, shuffled scores, held-out minimal pairs.",
+      "replication_tier": "CPU illustration",
+      "compute_access": "UNKNOWN: paper-scale hardware/runtime not checked; no execution authorized",
+      "code_data_availability": "UNKNOWN: code/data/checkpoint access not checked",
+      "claim_boundary": "Source facts are reported claims, not independently replicated. All lesson/lab designs are our proposals."
+    },
+    {
+      "id": "INB059",
+      "title": "DepthBench: Measuring How Residual Connections Enable More Computational Depth",
+      "primary_urls": [
+        "https://arxiv.org/abs/2609.32534"
+      ],
+      "source_version": "arXiv v1, 2026-09-26",
+      "identity_status": "verified title and authors on primary source",
+      "reading_level": "metadata and abstract",
+      "disposition": "background",
+      "target_existing_lesson": "17.4 Training Dynamics Across Architectures",
+      "priority": 3,
+      "source_facts": "Compares depth/width allocations at matched parameter count and pretraining recipe across residual architectures.",
+      "proposal_reason": "A fairness checklist for architecture comparisons; recreating ten training families is not needed.",
+      "integration_roles": {
+        "method": "Compute parameter counts and effective-depth diagnostics on supplied finite network traces.",
+        "visualization": "Loss versus depth at fixed parameter budgets, with per-layer causal removal.",
+        "intuition": "A fairness checklist for architecture comparisons; recreating ten training families is not needed.",
+        "results_prediction": "Does doubling layer count imply doubling useful sequential computation?",
+        "replication": "CPU illustration; planning only"
+      },
+      "signature_figure": "Loss versus depth at fixed parameter budgets, with per-layer causal removal.",
+      "prediction_prompt": "Does doubling layer count imply doubling useful sequential computation?",
+      "student_method": "Compute parameter counts and effective-depth diagnostics on supplied finite network traces.",
+      "controls": "Matched parameters and tokens, report FLOPs/walltime separately, shallow-wide and identity-layer controls.",
+      "replication_tier": "CPU illustration",
+      "compute_access": "UNKNOWN: paper-scale hardware/runtime not checked; no execution authorized",
+      "code_data_availability": "UNKNOWN: code/data/checkpoint access not checked",
+      "claim_boundary": "Source facts are reported claims, not independently replicated. All lesson/lab designs are our proposals."
+    },
+    {
+      "id": "INB060",
+      "title": "Same Task, Different Circuits: Disentangling Modality-Specific Mechanisms in VLMs",
+      "primary_urls": [
+        "https://arxiv.org/abs/2506.09047"
+      ],
+      "source_version": "arXiv v3, 2025-10-03",
+      "identity_status": "verified title and authors on primary source",
+      "reading_level": "metadata and abstract",
+      "disposition": "existing lesson addition",
+      "target_existing_lesson": "12.4 Visual Token Flow in Real VLMs; 12.5 Modality Arbitration",
+      "priority": 1,
+      "source_facts": "Reports largely separate modality circuits with late representation alignment and late-to-early visual patching gains.",
+      "proposal_reason": "Complements cross-modal task vectors without equating shared high-level content with shared low-level circuits.",
+      "integration_roles": {
+        "method": "Implement late-to-early state injection and compare modality circuit overlap on matched tasks.",
+        "visualization": "Layer-pair intervention heatmap beside image/text circuit overlap.",
+        "intuition": "Complements cross-modal task vectors without equating shared high-level content with shared low-level circuits.",
+        "results_prediction": "Can two modalities align in a late task representation while still using disjoint circuits?",
+        "replication": "bounded real study; planning only"
+      },
+      "signature_figure": "Layer-pair intervention heatmap beside image/text circuit overlap.",
+      "prediction_prompt": "Can two modalities align in a late task representation while still using disjoint circuits?",
+      "student_method": "Implement late-to-early state injection and compare modality circuit overlap on matched tasks.",
+      "controls": "Same-layer patch, wrong-task late state, random same-norm state, text-only/image-only baselines.",
+      "replication_tier": "bounded real study",
+      "compute_access": "UNKNOWN: paper-scale hardware/runtime not checked; no execution authorized",
+      "code_data_availability": "UNKNOWN: code/data/checkpoint access not checked",
+      "claim_boundary": "Source facts are reported claims, not independently replicated. All lesson/lab designs are our proposals."
+    },
+    {
+      "id": "INB061",
+      "title": "Better late than never: Getting into interpretability in 2025",
+      "primary_urls": [
+        "https://bennokrojer.com/interp.html"
+      ],
+      "source_version": "Author webpage read 2026-11-03",
+      "identity_status": "duplicate of INB056 by exact URL; title resolved to Better late than never: Getting into interpretability in 2025; not LatentLens",
+      "reading_level": "same author essay as INB056",
+      "disposition": "duplicate",
+      "target_existing_lesson": "10.1 Capstone Research Sprint: refer to INB056",
+      "priority": 3,
+      "source_facts": "Same public URL and resolved essay title as INB056.",
+      "proposal_reason": "Duplicate bibliographic record only; retain both Inbox IDs without inventing a second paper.",
+      "integration_roles": {
+        "method": "No independent lab; reuse INB056 framing exercise.",
+        "visualization": "No independent figure; reuse INB056 claim-to-evidence ladder.",
+        "intuition": "Duplicate bibliographic record only; retain both Inbox IDs without inventing a second paper.",
+        "results_prediction": "Would counting two records for one URL falsely suggest two independent pieces of evidence?",
+        "replication": "CPU illustration; planning only"
+      },
+      "signature_figure": "No independent figure; reuse INB056 claim-to-evidence ladder.",
+      "prediction_prompt": "Would counting two records for one URL falsely suggest two independent pieces of evidence?",
+      "student_method": "No independent lab; reuse INB056 framing exercise.",
+      "controls": "Canonical URL equality; do not deduplicate distinct papers based only on common author.",
+      "replication_tier": "CPU illustration",
+      "compute_access": "UNKNOWN: paper-scale hardware/runtime not checked; no execution authorized",
+      "code_data_availability": "Public essay; no independent code/data artifact.",
+      "claim_boundary": "Source facts are reported claims, not independently replicated. All lesson/lab designs are our proposals."
+    },
+    {
+      "id": "INB062",
+      "title": "Vision-Language Models Create Cross-Modal Task Representations",
+      "primary_urls": [
+        "https://arxiv.org/abs/2410.22330",
+        "https://proceedings.mlr.press/v267/luo25c.html",
+        "https://task-vectors-are-cross-modal.github.io/"
+      ],
+      "source_version": "arXiv v2, 2025-05-07; ICML 2025 PMLR 267:41157-41176",
+      "identity_status": "resolved missing identifiers with exact PMLR/arXiv authors and title; conference paper, not journal article",
+      "reading_level": "abstract plus author-project cross-modal patching explanation; no full-paper audit",
+      "disposition": "existing lesson addition",
+      "target_existing_lesson": "12.4 Visual Token Flow in Real VLMs; 11.2 Representation Alignment",
+      "priority": 1,
+      "source_facts": "Finds task-vector transfer across modality and format; paper title previously Task Vectors are Cross-Modal.",
+      "proposal_reason": "A causal transfer matrix supplies stronger evidence than a colored embedding projection.",
+      "integration_roles": {
+        "method": "Extract task summaries at the stated token/layer and patch across held-out modality-task pairs.",
+        "visualization": "Source-modality by target-modality task-transfer accuracy with wrong-task controls.",
+        "intuition": "A causal transfer matrix supplies stronger evidence than a colored embedding projection.",
+        "results_prediction": "Does task-wise t-SNE clustering predict successful cross-modal patching on held-out examples?",
+        "replication": "bounded real study; planning only"
+      },
+      "signature_figure": "Source-modality by target-modality task-transfer accuracy with wrong-task controls.",
+      "prediction_prompt": "Does task-wise t-SNE clustering predict successful cross-modal patching on held-out examples?",
+      "student_method": "Extract task summaries at the stated token/layer and patch across held-out modality-task pairs.",
+      "controls": "Wrong-task and random vectors, same-modality patch, zero vector, prompting baseline; select layer on separate split.",
+      "replication_tier": "bounded real study",
+      "compute_access": "UNKNOWN: paper-scale hardware/runtime not checked; no execution authorized",
+      "code_data_availability": "Official repository search summary states code and data available; contents/licenses/runtime unchecked.",
+      "claim_boundary": "Source facts are reported claims, not independently replicated. All lesson/lab designs are our proposals."
+    },
+    {
+      "id": "INB063",
+      "title": "When Models Manipulate Manifolds: The Geometry of a Counting Task",
+      "primary_urls": [
+        "https://arxiv.org/abs/2601.04480"
+      ],
+      "source_version": "arXiv v1, 2026-01-08",
+      "identity_status": "verified title and authors on primary source",
+      "reading_level": "metadata and abstract",
+      "disposition": "existing lesson addition",
+      "target_existing_lesson": "11.6 Feature Manifolds; 8.7 Circuit Tracing with Attribution Graphs",
+      "priority": 1,
+      "source_facts": "Reports curved character-count manifolds and geometric transformations during fixed-width linebreaking in Claude 3.5 Haiku.",
+      "proposal_reason": "A concrete task joins geometric coordinates, sparse feature families and causal decision boundaries.",
+      "integration_roles": {
+        "method": "Implement character-count accumulation and controlled coordinate interventions on a transparent linebreaking fixture.",
+        "visualization": "Count manifold colored by remaining line width, beside break-probability intervention curves.",
+        "intuition": "A concrete task joins geometric coordinates, sparse feature families and causal decision boundaries.",
+        "results_prediction": "Can a curved count representation support a linear break/no-break readout after a geometric transformation?",
+        "replication": "CPU illustration; planning only"
+      },
+      "signature_figure": "Count manifold colored by remaining line width, beside break-probability intervention curves.",
+      "prediction_prompt": "Can a curved count representation support a linear break/no-break readout after a geometric transformation?",
+      "student_method": "Implement character-count accumulation and controlled coordinate interventions on a transparent linebreaking fixture.",
+      "controls": "Token count versus character count, variable token lengths, shuffled counts, boundary-matched counterexamples.",
+      "replication_tier": "CPU illustration",
+      "compute_access": "UNKNOWN: paper-scale hardware/runtime not checked; no execution authorized",
+      "code_data_availability": "Paper studies a proprietary model; full internal access and released artifacts UNKNOWN. CPU fixture would not replicate Claude findings.",
+      "claim_boundary": "Source facts are reported claims, not independently replicated. All lesson/lab designs are our proposals."
+    },
+    {
+      "id": "INB064",
+      "title": "Chameleon: Mixed-Modal Early-Fusion Foundation Models",
+      "primary_urls": [
+        "https://arxiv.org/abs/2405.09818"
+      ],
+      "source_version": "arXiv v2, 2025-03-21",
+      "identity_status": "verified title and authors on primary source",
+      "reading_level": "metadata and abstract",
+      "disposition": "background",
+      "target_existing_lesson": "13.6 Autoregressive Image Tokens; 12.3 Mini VLM from Scratch",
+      "priority": 3,
+      "source_facts": "Describes early-fusion token models for interleaved text/image understanding and generation.",
+      "proposal_reason": "Architecture comparator explains early fusion without adding another full model family implementation.",
+      "integration_roles": {
+        "method": "Implement a mixed token mask and next-token loss accounting on a supplied sequence.",
+        "visualization": "Interleaved token timeline with per-modality loss contributions.",
+        "intuition": "Architecture comparator explains early fusion without adding another full model family implementation.",
+        "results_prediction": "Would a single averaged token loss fairly compare text and image performance?",
+        "replication": "CPU illustration; planning only"
+      },
+      "signature_figure": "Interleaved token timeline with per-modality loss contributions.",
+      "prediction_prompt": "Would a single averaged token loss fairly compare text and image performance?",
+      "student_method": "Implement a mixed token mask and next-token loss accounting on a supplied sequence.",
+      "controls": "Separate per-modality denominators, shuffled modality segments and text-only comparator.",
+      "replication_tier": "CPU illustration",
+      "compute_access": "UNKNOWN: paper-scale hardware/runtime not checked; no execution authorized",
+      "code_data_availability": "UNKNOWN: code/data/checkpoint access not checked",
+      "claim_boundary": "Source facts are reported claims, not independently replicated. All lesson/lab designs are our proposals."
+    },
+    {
+      "id": "INB065",
+      "title": "Janus-Pro: Unified Multimodal Understanding and Generation with Data and Model Scaling",
+      "primary_urls": [
+        "https://arxiv.org/abs/2501.17811"
+      ],
+      "source_version": "arXiv v1, 2025-01-29",
+      "identity_status": "resolved missing URL/DOI from exact arXiv title/authors; research preprint rather than demonstrated journal publication",
+      "reading_level": "metadata and abstract",
+      "disposition": "background",
+      "target_existing_lesson": "13.6 Autoregressive Image Tokens; 12.3 Mini VLM from Scratch",
+      "priority": 3,
+      "source_facts": "Reports Janus-Pro improvements from training strategy, data expansion and model scaling.",
+      "proposal_reason": "Use as confounding example: simultaneous recipe changes do not isolate one architectural cause.",
+      "integration_roles": {
+        "method": "Decompose a claimed gain into a hypothetical factorial ablation design.",
+        "visualization": "Factorial table separating model size, data and training recipe.",
+        "intuition": "Use as confounding example: simultaneous recipe changes do not isolate one architectural cause.",
+        "results_prediction": "Can the headline before/after result identify which of three simultaneous changes caused the gain?",
+        "replication": "CPU illustration; planning only"
+      },
+      "signature_figure": "Factorial table separating model size, data and training recipe.",
+      "prediction_prompt": "Can the headline before/after result identify which of three simultaneous changes caused the gain?",
+      "student_method": "Decompose a claimed gain into a hypothetical factorial ablation design.",
+      "controls": "Single-factor and interaction comparisons, matched inference protocol; no new training proposed.",
+      "replication_tier": "CPU illustration",
+      "compute_access": "UNKNOWN: paper-scale hardware/runtime not checked; no execution authorized",
+      "code_data_availability": "Primary abstract states code/models publicly available; actual repository, data and deployment constraints unchecked.",
+      "claim_boundary": "Source facts are reported claims, not independently replicated. All lesson/lab designs are our proposals."
+    },
+    {
+      "id": "INB066",
+      "title": "SANA: Efficient High-Resolution Image Synthesis with Linear Diffusion Transformers",
+      "primary_urls": [
+        "https://arxiv.org/abs/2410.10629",
+        "https://github.com/NVlabs/Sana"
+      ],
+      "source_version": "arXiv v3, 2024-10-20",
+      "identity_status": "resolved broken hyphenation and missing URL/DOI with exact arXiv authors; technical preprint, journal status unverified",
+      "reading_level": "metadata and abstract",
+      "disposition": "background",
+      "target_existing_lesson": "13.5 Diffusion Transformers and ConceptAttention; 5.6 Linear Attention",
+      "priority": 3,
+      "source_facts": "Describes deep compression and linear-attention diffusion transformers for efficient image synthesis.",
+      "proposal_reason": "Useful computational-scaling reading; paper throughput claims require matched hardware and quality before reuse.",
+      "integration_roles": {
+        "method": "Implement token-count and attention-memory accounting across resolutions/compression factors.",
+        "visualization": "Resolution versus tokens, estimated attention memory and measured-quality placeholders.",
+        "intuition": "Useful computational-scaling reading; paper throughput claims require matched hardware and quality before reuse.",
+        "results_prediction": "Does 32x spatial compression reduce tokens by 4x or 16x relative to 8x compression?",
+        "replication": "CPU illustration; planning only"
+      },
+      "signature_figure": "Resolution versus tokens, estimated attention memory and measured-quality placeholders.",
+      "prediction_prompt": "Does 32x spatial compression reduce tokens by 4x or 16x relative to 8x compression?",
+      "student_method": "Implement token-count and attention-memory accounting across resolutions/compression factors.",
+      "controls": "Dense versus linear attention, equal resolution/batch/precision, report quality and warmup separately.",
+      "replication_tier": "CPU illustration",
+      "compute_access": "UNKNOWN: paper-scale hardware/runtime not checked; no execution authorized",
+      "code_data_availability": "Official NVlabs/Sana repository exists; exact original-paper checkpoints/data/runtime/license audit unchecked.",
+      "claim_boundary": "Source facts are reported claims, not independently replicated. All lesson/lab designs are our proposals."
+    }
+  ]
+}

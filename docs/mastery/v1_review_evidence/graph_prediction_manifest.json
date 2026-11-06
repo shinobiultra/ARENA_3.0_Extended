@@ -1,0 +1,66 @@
+{
+  "schema": "arena-graph-prediction-scratch-candidate",
+  "schema_version": 1,
+  "timestamp_utc": "2026-10-20T09:23:27.001331+00:00",
+  "candidate_selection": "one exact precomputed-free weight candidate adopted for implementation only before any target evaluation",
+  "source_review_decision": "root delegated instruction on 2026-10-20; scientific adoption/publication/integration/target attempt deferred",
+  "allowlist": [
+    {
+      "path": "mastery_hub/units/graph_prediction/lesson.py",
+      "sha256": "7681f24d8f44039614f3b77567bf22f20597dee852890ca91b8b72e185ae2bb3",
+      "bytes": 53715
+    },
+    {
+      "path": "mastery_hub/units/graph_prediction/exercises.ipynb",
+      "sha256": "ab05af58e4afce25ee9deb1252a540e0222d855bf637dfaee7aef5917bc861a6",
+      "bytes": 22110
+    },
+    {
+      "path": "scripts/build_graph_prediction_notebook.py",
+      "sha256": "82e8087e71e349b506d2338291d6971340954432a2bf7a2bc1a287d5be221cc1",
+      "bytes": 4885
+    },
+    {
+      "path": "tests/mastery/test_graph_prediction.py",
+      "sha256": "5994b272ed44938450f62694c85ed9104db7a17616a8e1ea1022980feeffcd3c",
+      "bytes": 16966
+    },
+    {
+      "path": "docs/mastery/graph_prediction_protocol.json",
+      "sha256": "c0300f608e926abeb03c17573105ac94aa7cb0684c9bdeb401b3146f7a1994cd",
+      "bytes": 7157
+    },
+    {
+      "path": "docs/mastery/graph_prediction_source_review.json",
+      "sha256": "5e66575b2fe30e1e43dc71514ca4592f37cb0bb2ad6a08335b134daacb9954f9",
+      "bytes": 3171
+    },
+    {
+      "path": "docs/mastery/graph_prediction_design.md",
+      "sha256": "dac71826ff5e5edf3f60953739f3497cdd5fe13980e6012b834bf105f980e5ba",
+      "bytes": 10596
+    },
+    {
+      "path": "docs/mastery/graph_prediction_static_check_1.txt",
+      "sha256": "f8923cc457b0d0887900aee37b3291b61306499bee5c3794b9b1f532967789df",
+      "bytes": 99
+    },
+    {
+      "path": "docs/mastery/graph_prediction_static_check_2.txt",
+      "sha256": "34057c5ac120d82929e35e9cf4eaf13b5acc4d14b73389469fefd481d0936a6d",
+      "bytes": 55
+    },
+    {
+      "path": "docs/mastery/graph_prediction_static_receipt.json",
+      "sha256": "430c88685643d5bdecb17b75b2c00b8bc66f2801b732694dde8ea981eb5b7791",
+      "bytes": 9041
+    }
+  ],
+  "excluded": [
+    "__pycache__",
+    "pytest cache",
+    "temporary test fixtures"
+  ],
+  "target_executions": 0,
+  "accepted": false
+}

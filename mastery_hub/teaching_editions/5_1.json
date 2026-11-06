@@ -1,0 +1,50 @@
+{
+  "schema_version": 1,
+  "section": "5.1",
+  "sources": {
+    "page": {
+      "path": "chapter5_modern_architectures/instructions/pages/01_[5.1]_Gemma_from_Scratch.md",
+      "sha256": "b625327b55ba2b4a116fb03ea3a794450c69cdcabb226bb5cc5692bda922c6f8"
+    },
+    "exercises": {
+      "path": "chapter5_modern_architectures/exercises/part1_gemma_from_scratch/5.1_Gemma_from_Scratch_exercises.ipynb",
+      "sha256": "c0e267634d3efe4e032d5b3b80bcd70df7c871a1412df86fb9b35eaa8219b0a4"
+    },
+    "reference": {
+      "path": "chapter5_modern_architectures/exercises/part1_gemma_from_scratch/5.1_Gemma_from_Scratch_solutions.ipynb",
+      "sha256": "19292c3c889242e88a53a62c1075a721a2674077a27bc5af12416f5e73b81a2f"
+    }
+  },
+  "replacements": [
+    {
+      "old": "Can seven transparent Gemma primitives reproduce an independent reference decoder at every residual-stream\nstage, not merely return a tensor of the right shape?",
+      "new": "Can seven transparent Gemma primitives reproduce the local regression decoder at every residual-stream\nstage, not merely return a tensor of the right shape?",
+      "counts": {
+        "page": 1,
+        "exercises": 1,
+        "reference": 1
+      }
+    },
+    {
+      "old": "**Claim.** With identical deterministic weights, the completed model will match the independent reference\nexactly across embeddings, both decoder blocks, final normalization, and logits.",
+      "new": "**Claim.** With identical deterministic weights, the completed model will match the local regression reference\nexactly across embeddings, both decoder blocks, final normalization, and logits. This first comparison checks self-consistency: its core decoder substantially duplicates the learner code. The later Hugging Face convention bridge supplies the independent implementation comparison; exact agreement here alone does not.",
+      "counts": {
+        "page": 1,
+        "exercises": 1,
+        "reference": 1
+      }
+    },
+    {
+      "old": "The independent reference receives the same deterministic state dict and inputs as your model. The exact\nimplementation is the positive baseline. Each negative control changes one architecture convention while\nleaving weights and inputs fixed:",
+      "new": "The local regression reference receives the same deterministic state dict and inputs as your model. The exact implementation is a self-consistency baseline; substantially duplicated decoder code can share a mistake. Each negative control changes one architecture convention while leaving weights and inputs fixed. Interpret the exact error curve as a regression check; reserve independent implementation evidence for the later Hugging Face convention bridge:",
+      "counts": {
+        "page": 1,
+        "exercises": 1,
+        "reference": 1
+      }
+    }
+  ],
+  "rationale": [
+    "AS-5.1-1: qualify independence at the question and claim."
+  ]
+}

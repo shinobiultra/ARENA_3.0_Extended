@@ -1,0 +1,103 @@
+notebook_id: 5_4_mamba_state_tracking
+section: '5.4'
+title: Mamba State Tracking
+exercise_metadata:
+  EXERCISE_ID: 5_4_mamba_state_tracking
+  GT_TIER: GT-1
+  DIFFICULTY: 4
+  IMPORTANCE: 4
+  EXPECTED_RUNTIME: seconds on toy contract; minutes on local real-model path
+  REQUIRES_GPU: true
+gt_tier: GT-1
+evidence_level: toy_state_tracking_plus_trained_mamba_transformer_comparison_learned_intervention_and_official_hidden_state_preflight
+claim_scope: GT-1 synthetic state-tracking controls plus a trained tiny Mamba bracket-depth
+  organism with held-out longer-sequence generalization and random-label control,
+  a trained tiny causal Transformer baseline on the same generated task, learned Mamba
+  hidden-state interventions with matched random-direction controls, and a pinned
+  official Mamba-130M-HF hidden-state extraction preflight.
+required_gpu_gb: 1
+max_allowed_gpu_gb: 24
+models:
+- id: toy_or_generated_inputs
+  source: generated
+  revision: seed_0
+  precision: float32
+  gated: false
+- id: course_tiny_mamba_state_classifier_v1
+  source: generated_training_run
+  revision: seed_0_steps_160
+  precision: float32
+  gated: false
+  claim_scope: trained_bracket_depth_state_tracking_organism
+- id: course_tiny_causal_transformer_state_classifier_v1
+  source: generated_training_run
+  revision: seed_2_steps_160
+  precision: float32
+  gated: false
+  claim_scope: trained_transformer_bracket_depth_baseline
+- id: state-spaces/mamba-130m-hf
+  source: huggingface
+  revision: 1e76775f628fbf1350fbe4dbb3d971ba64af25a1
+  precision: float16
+  gated: false
+  claim_scope: official_hidden_state_extraction_preflight
+datasets:
+- id: 5_4_mamba_state_tracking_toy_inputs
+  source: generated
+  seed: 0
+- id: course_generated_bracket_depth_tracking_v1
+  source: generated
+  seed: 0
+  train_seq_len: 16
+  heldout_seq_len: 32
+  max_depth: 3
+  random_label_control: true
+expected_metrics:
+  tests_passed: true
+  accepted: true
+  max_allowed_gpu_gb: 24
+  tiny_mamba_preflight_passed: true
+  tiny_mamba_short_accuracy_min: 0.9
+  tiny_mamba_long_accuracy_min: 0.85
+  tiny_mamba_long_late_accuracy_min: 0.8
+  tiny_mamba_random_label_long_accuracy_max: 0.55
+  tiny_transformer_short_accuracy_min: 0.95
+  tiny_transformer_long_accuracy_max: 0.75
+  tiny_transformer_long_late_accuracy_max: 0.4
+  tiny_transformer_comparison_passed: true
+  tiny_mamba_minus_transformer_long_accuracy_min: 0.2
+  tiny_mamba_minus_transformer_long_late_accuracy_min: 0.4
+  learned_state_intervention_passed: true
+  learned_state_intervention_success_rate_min: 0.9
+  learned_state_intervention_random_target_rate_max: 0.5
+  learned_state_intervention_target_logit_delta_min: 1.0
+  learned_hidden_probe_test_accuracy_min: 0.8
+  official_mamba_preflight_passed: true
+  official_mamba_hidden_std_min: 0.1
+  official_mamba_hidden_shape:
+  - 4
+  - 11
+  - 768
+  official_mamba_fast_kernel_available: true
+controls:
+- baseline_or_reference_check
+- negative_control_where_applicable
+- shape_dtype_or_exact_value_check
+- parity_cumulative_xor_contract
+- bracket_depth_bounded_state_contract
+- heldout_position_probe_contract
+- probe_direction_intervention_contract
+- trained_tiny_mamba_bracket_depth
+- heldout_longer_sequence_generalization
+- random_label_training_control
+- trained_tiny_transformer_bracket_depth_baseline
+- mamba_vs_transformer_long_sequence_comparison
+- learned_mamba_hidden_state_intervention
+- matched_norm_random_hidden_state_intervention_control
+- pinned_official_mamba_130m_hf_hidden_state_extraction
+- mamba_ssm_and_causal_conv1d_fast_kernels_required
+safety_notes:
+- No unsafe prompts, unsafe adapters, raw gated weights, or large data artifacts.
+- The trained Mamba path uses generated bracket-depth data only. Official Mamba-130M-HF
+  is used for hidden-state extraction, not as a solved state-tracking model. The Transformer
+  comparison and learned-state intervention are local generated-task organism checks.

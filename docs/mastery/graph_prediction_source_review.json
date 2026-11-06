@@ -1,0 +1,71 @@
+{
+  "timestamp_utc": "2026-10-20T09:07:28.722944+00:00",
+  "scope": "Text/JSON/AST-only companion design review; no numerical method execution",
+  "inputs": {
+    "/home/bitwise/Documents/ARENA_3.0_Extended/scripts/build_circuit_prediction_notebook.py": {
+      "sha256": "b49fa4dd6c462f2756f7d2503e83b7aae80c3ffc6e250eaddcdc38d3a4cacba3",
+      "bytes": 4537
+    },
+    "/home/bitwise/Documents/ARENA_3.0_Extended/mastery_hub/units/circuit_prediction/lesson.py": {
+      "sha256": "514aa1468f6aa205f6bfd96d246b0f7472421922d8eb510a451414c988dce0bb",
+      "bytes": 55792
+    },
+    "/home/bitwise/Documents/ARENA_3.0_Extended/tests/mastery/test_circuit_prediction.py": {
+      "sha256": "a07f3695c61002f5b7dde86f2140fb1d68489a1177dd26f90f6051401b8cd6f8",
+      "bytes": 27246
+    },
+    "/home/bitwise/Documents/ARENA_3.0_Extended/mastery_hub/app.py": {
+      "sha256": "258b5f94f625b95a5840a2717946063dfed73f50bc1af6f8268bfcfff23ef6a6",
+      "bytes": 24822
+    },
+    "/tmp/arena-graph-migration-20261020/preservation.json": {
+      "sha256": "8d8c855e49cfc26d2b1c64bc2a7b39ddcf7617782f9cbd3ab195849a5c401cc5",
+      "bytes": 19733
+    },
+    "/tmp/arena-graph-migration-20261020/proposed_case.json": {
+      "sha256": "39f9701ca191a58518db2b21cd082e68a54a32e984ee2d5297d51e4ba1fad17c",
+      "bytes": 6049
+    },
+    "/tmp/arena-graph-review-20261020/REVIEW.md": {
+      "sha256": "69adeeb0704edc83f1db5d0dc77d029f448c2508be80bfc2128da568eb796eb6",
+      "bytes": 4781
+    },
+    "/home/bitwise/Documents/ARENA_3.0_Extended/mastery_hub/units/circuit_prediction/exercises.ipynb": {
+      "sha256": "58ba23fb480df928300d01f8bd79c32743e8558d6096863654935553349061a8",
+      "bytes": 19160
+    },
+    "/home/bitwise/Documents/ARENA_3.0_Extended/mastery_hub/units/shapley_prediction/lesson.py": {
+      "sha256": "b06426d5c9757328578ccff543ef3cec4cbca7e8fd23ec6a83c4aa6fdc4ed97b",
+      "bytes": 46220
+    },
+    "/home/bitwise/Documents/ARENA_3.0_Extended/mastery_hub/units/shapley_prediction/exercises.ipynb": {
+      "sha256": "66eed0ccd8159ffa5b63349eda8bb99303b5c32cfbe1f65d0656a0ab298729e0",
+      "bytes": 19959
+    },
+    "/home/bitwise/Documents/ARENA_3.0_Extended/mastery_hub/units/sage_prediction/lesson.py": {
+      "sha256": "94abc5badfb7a7c11994093e25447d2bcfb25eab66628f02a6f3979eb3fbb8de",
+      "bytes": 52992
+    },
+    "/home/bitwise/Documents/ARENA_3.0_Extended/mastery_hub/units/sage_prediction/exercises.ipynb": {
+      "sha256": "55d5241a0fb8382d97a4d844f573a6350f6c9ba9a70f7bc4c3154c66fb6a478c",
+      "bytes": 21499
+    },
+    "/home/bitwise/Documents/ARENA_3.0_Extended/mastery_hub/units/ssd_prediction/lesson.py": {
+      "sha256": "431e5cc0ab598e11b98f033038d958ab9d4df603201d6d924303d0a049a1a659",
+      "bytes": 47147
+    },
+    "/home/bitwise/Documents/ARENA_3.0_Extended/mastery_hub/units/ssd_prediction/exercises.ipynb": {
+      "sha256": "3c2e36206a4ef372363a36331dc12f0a26a5f367b5f291fd0640a24ed795ea17",
+      "bytes": 15127
+    }
+  },
+  "outputs": [
+    "RECOMMENDATION.md",
+    "protocol_draft.json",
+    "source_inspection.json"
+  ],
+  "target_executions": 0,
+  "forecasts_entered": 0,
+  "repository_writes": 0,
+  "accepted": false
+}

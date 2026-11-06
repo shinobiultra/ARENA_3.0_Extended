@@ -1,0 +1,32 @@
+{
+  "schema_version": 1,
+  "section": "8.8",
+  "sources": {
+    "page": {
+      "path": "chapter8_automated_circuits/instructions/pages/08_[8.8]_Benchmarking_Circuit_Discovery_on_Compiled_Transformers.md",
+      "sha256": "001277dc2c3487a888b6094de64ff6903477d2095cd5e7b9076769e52942049d"
+    },
+    "exercises": {
+      "path": "chapter8_automated_circuits/exercises/part8_circuit_benchmarks/8.8_Benchmarking_Circuit_Discovery_on_Compiled_Transformers_exercises.ipynb",
+      "sha256": "3f28fa228310782a0d490f901d3c1f303f9824d74c62eccd9303a44d557a30db"
+    },
+    "reference": {
+      "path": "chapter8_automated_circuits/exercises/part8_circuit_benchmarks/8.8_Benchmarking_Circuit_Discovery_on_Compiled_Transformers_solutions.ipynb",
+      "sha256": "20b3734aa45d5d66f2f24a4932307fc8876fc3fa82cd605a7a40299f18620248"
+    }
+  },
+  "replacements": [
+    {
+      "old": "The test checks EAP against a finite difference, and checks that the IG scores approximately add up to $m(\\mathbf{1}) - m(\\mathbf{0})$.",
+      "new": "The tests independently recompute full-minus-one forward effects at several edges of your graph. A separate tiny CPU graph has four unequal signed causal effects and two zero-effect distractors; it checks every edge against analytic exact effects, endpoint EAP derivatives and edgewise integrated gradients. This rejects all-zero or permuted scores even when their shape or total looks plausible. The supplied graph also checks EAP against a finite difference and approximate IG completeness $m(\\mathbf{1}) - m(\\mathbf{0})$. Endpoint derivatives, path allocations and independent edge removals answer different questions on nonlinear graphs; agreement of totals alone is insufficient.",
+      "counts": {
+        "page": 1,
+        "exercises": 1,
+        "reference": 1
+      }
+    }
+  ],
+  "rationale": [
+    "LC-8.8-01: document independent exact and edgewise analytic CPU oracle tests; no compiled/native model measurement implied."
+  ]
+}

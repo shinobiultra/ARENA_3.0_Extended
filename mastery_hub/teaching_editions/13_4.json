@@ -1,0 +1,59 @@
+{
+  "schema_version": 1,
+  "section": "13.4",
+  "sources": {
+    "page": {
+      "path": "chapter13_image_generation_interpretability/instructions/pages/04_[13.4]_Sparse_Autoencoders_for_Diffusion_Models.md",
+      "sha256": "047aafe8973b8167151a81fb2a2a62cfd95cfad8a6fa0d563eef557c3cf8cab8"
+    },
+    "exercises": {
+      "path": "chapter13_image_generation_interpretability/exercises/part4_diffusion_saes/13.4_Sparse_Autoencoders_for_Diffusion_Models_exercises.ipynb",
+      "sha256": "5009e7f86b70160a5e449890c64592822b0f2482b1faa73f9089362415695b4e"
+    },
+    "reference": {
+      "path": "chapter13_image_generation_interpretability/exercises/part4_diffusion_saes/13.4_Sparse_Autoencoders_for_Diffusion_Models_solutions.ipynb",
+      "sha256": "067fd9cfe063bd5adf5ad4b29e03975dab6ab6b069e2d08d6f5e216d1e9258b4"
+    }
+  },
+  "replacements": [
+    {
+      "old": "> - Implement the visible operations for treat image-generating hidden states as mixtures of sparse components.\n> - Explain the tensor axes and use an independent small-case check.",
+      "new": "> - Construct hidden states from the known image factors and distinguish modeled factors from the leftover residual.\n> - Predict which visible image regions a selected dictionary feature can affect.",
+      "counts": {
+        "page": 2,
+        "exercises": 2,
+        "reference": 2
+      }
+    },
+    {
+      "old": "> - Implement the visible operations for implement sparse encoding, decoding and the reconstruction/sparsity trade-off.\n> - Explain the tensor axes and use an independent small-case check.",
+      "new": "> - Implement thresholded SAE encoding and decoding with explicit batch, feature and hidden axes.\n> - Normalize reconstruction loss and sparsity loss consistently, then explain why lower reconstruction error alone does not establish causal selectivity.",
+      "counts": {
+        "page": 2,
+        "exercises": 2,
+        "reference": 2
+      }
+    },
+    {
+      "old": "> - Implement the visible operations for ablate or amplify one feature while preserving the reconstruction residual.\n> - Explain the tensor axes and use an independent small-case check.",
+      "new": "> - Apply a feature edit as h + decode(z_edited) - decode(z), preserving h - decode(z).\n> - Predict how a larger threshold changes the part retained in the residual and weakens the removable feature effect.",
+      "counts": {
+        "page": 2,
+        "exercises": 2,
+        "reference": 2
+      }
+    },
+    {
+      "old": "> - Implement the visible operations for measure intervention specificity and distinguish a nuisance correlation from a causal effect.\n> - Explain the tensor axes and use an independent small-case check.",
+      "new": "> - Compare target ablation, wrong-feature ablation and full reconstruction replacement on both target and nuisance regions.\n> - Reverse association labels and explain why correlation changes while the actual intervention remains fixed.",
+      "counts": {
+        "page": 2,
+        "exercises": 2,
+        "reference": 2
+      }
+    }
+  ],
+  "rationale": [
+    "GW-134-01"
+  ]
+}

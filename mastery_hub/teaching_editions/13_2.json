@@ -1,0 +1,42 @@
+{
+  "schema_version": 1,
+  "section": "13.2",
+  "sources": {
+    "page": {
+      "path": "chapter13_image_generation_interpretability/instructions/pages/02_[13.2]_Denoising-Time_Causal_Patching.md",
+      "sha256": "eb206fee9b64a4b0d3e785dce5ab281bfd4fa09afae6d148de33c9c15c7352a6"
+    },
+    "exercises": {
+      "path": "chapter13_image_generation_interpretability/exercises/part2_denoising_time_causal_patching/13.2_Denoising-Time_Causal_Patching_exercises.ipynb",
+      "sha256": "55ae5246aae1603bd894f45aad45a065eb70f021fea92816723e6c2113a7b5b0"
+    },
+    "reference": {
+      "path": "chapter13_image_generation_interpretability/exercises/part2_denoising_time_causal_patching/13.2_Denoising-Time_Causal_Patching_solutions.ipynb",
+      "sha256": "a1b585423650db88b140b9ac23b05a3e266da57f0186c62554056a8419c5d897"
+    }
+  },
+  "replacements": [
+    {
+      "old": "Implement a schedule with an exact clean endpoint and the closed-form sample from $q(x_t\\mid x_0)$. Broadcasting must work for a different timestep per image.",
+      "new": "Implement a schedule with an exact clean endpoint and the closed-form sample from $q(x_t\\mid x_0)$. Use these conventions before writing either function:\n\n- `n_steps=T` means **T noisy endpoints plus the clean endpoint**, indexed `0,...,T`. Return `DiffusionSchedule(betas=..., alphas=..., alpha_bars=...)`, each tensor of shape `[T+1]` on `device`.\n- Set $\\beta_0=0$ and linearly space $\\beta_1,\\ldots,\\beta_T$ from `beta_start` to `beta_end`, including both endpoints. Require `T>=2` and `0<beta_start<beta_end<1`.\n- $\\alpha_t=1-\\beta_t$ and $\\bar\\alpha_t=\\prod_{s=0}^t\\alpha_s$, so $\\bar\\alpha_0=1$. A bar denotes the **cumulative product**, not a batch average.\n\nFor a clean image $x_0$ and supplied standard-normal noise $\\epsilon$, the forward sample is\n\n$$x_t=\\sqrt{\\bar\\alpha_t}\\,x_0+\\sqrt{1-\\bar\\alpha_t}\\,\\epsilon.$$\n\n`x_start` and `noise` have identical shape `[B,C,H,W]`; `timesteps` is an integer tensor `[B]`. Select one $\\bar\\alpha_t$ per image and reshape to `[B,1,1,1]` before multiplying. Return `[B,C,H,W]` without drawing new randomness: supplying the noise makes comparisons reproducible. Reject unequal image/noise shapes, a timestep tensor other than `[B]`, or an index outside `[0,T]` with `ValueError`.\n\n**Two anchors.** At `t=0`, the noise coefficient is zero and the output is exactly `x_start`. With four steps and betas `[0,.1,.2,.3,.4]`, cumulative signal is `[1,.9,.72,.504,.3024]`. At `t=1`, a scalar pixel `x0=2`, `epsilon=-1` becomes $2\\sqrt{.9}-\\sqrt{.1}\\approx1.58114$. The same pixel at `t=3` becomes $2\\sqrt{.504}-\\sqrt{.496}\\approx0.71559$. Predict why changing the sign of the supplied noise changes both positive-time outputs but leaves `t=0` fixed.",
+      "counts": {
+        "page": 1,
+        "exercises": 1,
+        "reference": 1
+      }
+    },
+    {
+      "old": "Render the shape mask from integer labels, fill it with the requested RGB concept, then implement the timestep embedding and denoiser whose first concept channels receive that\nlabel only inside the object mask. The planted bottleneck is visible ground truth, not an unexplained helper.",
+      "new": "Build this as three small stages: renderer, time embedding, then denoiser. The planted bottleneck is visible ground truth for this toy world. These are the public constants and shapes needed by the tests; choosing a different renderer would change that world.\n\n| Input or component | Exact contract |\n| --- | --- |\n| Labels | Integer `[B,4]` in order `(shape,color,row,column)`. Shape `0=square,1=circle`; color `0=red,1=green,2=blue`; row/column `0` or `1`. Reject empty/invalid labels and `size<8`. |\n| Pixel coordinates | Integer `y,x` in `0,...,size-1`; center `(cy,cx)=(size/4+row*size/2,size/4+column*size/2)`. Radius `r=.17*size`. Square: `abs(dx)<=r` and `abs(dy)<=r`; circle: `dx**2+dy**2<=r**2`. |\n| Image and mask | Image `[B,3,size,size]`, background `(-1,-1,-1)`; object RGB red `(1,-1,-1)`, green `(-1,1,-1)`, blue `(-1,-1,1)`. Mask is boolean `[B,size,size]`. At size16, the square has25 pixels and the circle21. |\n| Time embedding | Rank-one times `[B]`, even `width>=4`. For `h=width/2`, frequencies $f_i=\\exp[-\\log(10000)i/(h-1)]$, $i=0,\\ldots,h-1$. Concatenate **all sines then all cosines** of `t*f`; result `[B,width]`. At zero it is `[0,...,0,1,...,1]`. |\n| Residual block | `x + Conv2d(SiLU(x), width→width, kernel3, padding1)`; spatial size unchanged. |\n\nFor example, label `[0,0,0,0]` is a red square centered at `(4,4)` in a16×16 image: pixels `y=2,...,6` and `x=2,...,6` are red. `[1,2,1,1]` is a blue circle centered at `(12,12)` with21 pixels. Check these before building the network.\n\n**Denoiser wiring (default `width=12`, `concept_channels=4`).** Require width divisible by4 and `1<=concept_channels<=width//2`. Keep the module names in the stub's worked interface so cache and patch hooks can locate them:\n\n1. Concatenate noisy RGB with two coordinate planes `yy,xx`, linearly spaced from−1 to1: `[B,5,H,W]`. A kernel3/padding1 convolution `input_projection` maps5→width.\n2. Embed times at `width`, then `time_projection = Linear(width,width) → SiLU → Linear(width,width)`. Add this `[B,width,1,1]` bias before `blocks['early']`, a residual block.\n3. `condition_feature(labels,H)` sums shape and color embeddings of width `concept_channels`, multiplies by the exact object mask, and pads zeros in the remaining channels. Add it **after early** and pass the sum through `blocks['concept'] = Identity()`; this is the hook location. Changing only color cannot alter early activations or the unplanted channels at this point.\n4. Apply `blocks['middle']`, then `blocks['late']` (residual blocks), then `output_projection = SiLU → Conv2d(width,3,kernel3,padding1)`. Predict clean RGB `[B,3,H,W]`, not noise. `patch_layer(name)` returns the named block and rejects an unknown name.\n\nAfter each stage, run its existing small test before continuing (copy these calls into a scratch code cell):\n\n```python\ntests.test_rendered_world_has_exact_labels_and_masks(render_object_world)\ntests.test_sinusoidal_timestep_embedding_has_paired_coordinates(sinusoidal_timestep_embedding)\ntests.test_hookable_denoiser_exposes_the_planted_concept_location(\n    HookableObjectDenoiser, reference.register_activation_cache\n)\n```\n\nThe last call checks the planted location as well as output shape. Preserve its toy interpretation when comparing later with SD1.5.",
+      "counts": {
+        "page": 1,
+        "exercises": 1,
+        "reference": 1
+      }
+    }
+  ],
+  "rationale": [
+    "GW-132-01",
+    "GW-132-02"
+  ]
+}

@@ -1,0 +1,251 @@
+{
+  "policy_version": "mini-vlm-checked-recovery-design-v1",
+  "adopted_design_sha256": "3d44fc838fb466c62a77d691c9db3f58c4852b2e32de85464a945dd2774d565d",
+  "addon_files": {
+    "mastery_hub/practice_addons/mini_vlm_checked_recovery/README.md": "689a434cbcdbfaf6e96624d640036df01407c5eb89c9584f13f268d80bc729b9",
+    "mastery_hub/practice_addons/mini_vlm_checked_recovery/exercises.ipynb": "fa34480ae62f6e0d4201b151beed72c2ab1e07880accaafb620cd93376aba163",
+    "tests/mastery/test_vlm_checked_recovery_addon.py": "dfdf4091dc14b956552488842e5370f266706c84d65dd64aa259e19b12b783bd"
+  },
+  "unchanged_canonical_inputs": [
+    {
+      "path": ".agents/skills/arena-3-salvage/SKILL.md",
+      "sha256": "57c1cfd4c9cbb9ae4f72ee960dd0188d712bfde5a911bcb8dba76bc132735566",
+      "bytes": 5037
+    },
+    {
+      "path": "AGENTS.md",
+      "sha256": "5b927c87cd41683e4066b21f7a7092a15d459ead586d9128f88ef48fb39ca315",
+      "bytes": 2550
+    },
+    {
+      "path": "chapter12_vlm_interpretability/exercises/part1_clip_siglip/12.1_CLIP_and_SigLIP_from_Scratch_exercises.ipynb",
+      "sha256": "b50ecf7e4b1071b5cc4f6bbc5d7d8b75a638a94c04b4c7896075f68df1216d5b",
+      "bytes": 2172506
+    },
+    {
+      "path": "chapter12_vlm_interpretability/exercises/part1_clip_siglip/12.1_CLIP_and_SigLIP_from_Scratch_solutions.ipynb",
+      "sha256": "4f5da14ffa60a047aeafc1aca0c2d5cd0e474e6df29b13f674baeb159eb5eaea",
+      "bytes": 2203621
+    },
+    {
+      "path": "chapter12_vlm_interpretability/exercises/part1_clip_siglip/tests.py",
+      "sha256": "88fe498d1e8cd43b3e875352712a2fc310541ce05d17c2cdc4baca359eef0e18",
+      "bytes": 28911
+    },
+    {
+      "path": "chapter12_vlm_interpretability/exercises/part1_clip_siglip/utils.py",
+      "sha256": "570ba7cdf69296c86373446701762a950128aa9c8a5d4c27239860ccfbeb7bd0",
+      "bytes": 24407
+    },
+    {
+      "path": "chapter12_vlm_interpretability/exercises/part3_mini_vlm_from_scratch/12.3_Mini_VLM_from_Scratch_exercises.ipynb",
+      "sha256": "757fec8ec719230b2f1043c7e7c0835fe9d8d43af6aece547efeaf1f745daac1",
+      "bytes": 6123176
+    },
+    {
+      "path": "chapter12_vlm_interpretability/exercises/part3_mini_vlm_from_scratch/12.3_Mini_VLM_from_Scratch_solutions.ipynb",
+      "sha256": "a7d6170062044e88ae25c0e5794154b0c253a811aed02b780f84534f802cb16f",
+      "bytes": 6385316
+    },
+    {
+      "path": "chapter12_vlm_interpretability/exercises/part3_mini_vlm_from_scratch/README.md",
+      "sha256": "f8ecbb386ac2b475c362272d31ec43afdb60b91839f2c64e25c80f94d8f7b8ac",
+      "bytes": 1299
+    },
+    {
+      "path": "chapter12_vlm_interpretability/exercises/part3_mini_vlm_from_scratch/media/accuracy_controls.png",
+      "sha256": "9439e673d682a65b4810cd1a290afa1575738eb4128ff1751693841b05f2e2a3",
+      "bytes": 37027
+    },
+    {
+      "path": "chapter12_vlm_interpretability/exercises/part3_mini_vlm_from_scratch/media/ask_example.png",
+      "sha256": "48c9c9d70bae01626accd5ca1a312ce6a3c53c2cd635680c4745490e12d44305",
+      "bytes": 99718
+    },
+    {
+      "path": "chapter12_vlm_interpretability/exercises/part3_mini_vlm_from_scratch/media/attention_knockout.png",
+      "sha256": "c5e73e32686f4ff72f28879e98ebc9f3eeb2292e0bb541ec8a0b5499a30ff289",
+      "bytes": 56672
+    },
+    {
+      "path": "chapter12_vlm_interpretability/exercises/part3_mini_vlm_from_scratch/media/attention_overlay.png",
+      "sha256": "87acc83076e414475b3da7026b7c237823e905bfd58a14a7b056f66256b7fc81",
+      "bytes": 320406
+    },
+    {
+      "path": "chapter12_vlm_interpretability/exercises/part3_mini_vlm_from_scratch/media/attention_to_object.png",
+      "sha256": "97215322adab47f02285a2c141959e8c4382bf958bb930963920ee31f4583e28",
+      "bytes": 67937
+    },
+    {
+      "path": "chapter12_vlm_interpretability/exercises/part3_mini_vlm_from_scratch/media/image_token_lens.png",
+      "sha256": "bcdc668b42447401cc40b5569741cd9ba5f48a60dbf4c81bc22a91fb153773a6",
+      "bytes": 78900
+    },
+    {
+      "path": "chapter12_vlm_interpretability/exercises/part3_mini_vlm_from_scratch/media/patching_recovery.png",
+      "sha256": "2ca2017621cf5e542c2471d4186d914449e88372d66bb26db2602097601335cc",
+      "bytes": 50697
+    },
+    {
+      "path": "chapter12_vlm_interpretability/exercises/part3_mini_vlm_from_scratch/media/patching_token_maps.png",
+      "sha256": "c1dc460f383544b3abb396cc5f3e4d516aba2a00a74915b01ccaba134813ebfc",
+      "bytes": 349741
+    },
+    {
+      "path": "chapter12_vlm_interpretability/exercises/part3_mini_vlm_from_scratch/media/qwen_controls.png",
+      "sha256": "431db640a2bce10198af9432bd2290458f67e9d807a108d8f4bcb2532a548aa1",
+      "bytes": 28896
+    },
+    {
+      "path": "chapter12_vlm_interpretability/exercises/part3_mini_vlm_from_scratch/media/real_vs_mini_patching.png",
+      "sha256": "d5626dcccb2d27d3e17b90d4f6c8f10900957f48f35f4da9325a6cfbb3a58d35",
+      "bytes": 80585
+    },
+    {
+      "path": "chapter12_vlm_interpretability/exercises/part3_mini_vlm_from_scratch/media/scene_gallery.png",
+      "sha256": "a17d6cdc7d517bfb30b136155b3b897a6c83147af3169071a63db67d4ca00b52",
+      "bytes": 1171729
+    },
+    {
+      "path": "chapter12_vlm_interpretability/exercises/part3_mini_vlm_from_scratch/media/siglip_patch_pca.png",
+      "sha256": "8d5f71f9636aa9ae8d966f6630573ae1d57e58693112d9e747b07b3471e9d90f",
+      "bytes": 455724
+    },
+    {
+      "path": "chapter12_vlm_interpretability/exercises/part3_mini_vlm_from_scratch/media/token_sets.png",
+      "sha256": "aab47d973bd4b3d3051741f2bd38c42ff476c5e9488f085b400205ccd3c51494",
+      "bytes": 330416
+    },
+    {
+      "path": "chapter12_vlm_interpretability/exercises/part3_mini_vlm_from_scratch/media/training_curves.png",
+      "sha256": "6f29b71421e144667c91bb5e462df8ff3cc39bb29f9bb211185bfe213573ca6d",
+      "bytes": 37412
+    },
+    {
+      "path": "chapter12_vlm_interpretability/exercises/part3_mini_vlm_from_scratch/media/vlm_architecture.png",
+      "sha256": "f3aaf468b5ea0f6a1f46a286fe4cce39f99754a1d4009034b2cb28c1b79b8daf",
+      "bytes": 49245
+    },
+    {
+      "path": "chapter12_vlm_interpretability/exercises/part3_mini_vlm_from_scratch/media/vlm_gallery.png",
+      "sha256": "6dfccaa6e7fd7d33975b99999871c13548a67f7e594bdc46e5af3b2231069550",
+      "bytes": 1183094
+    },
+    {
+      "path": "chapter12_vlm_interpretability/exercises/part3_mini_vlm_from_scratch/solutions.py",
+      "sha256": "1ee5ad7112c5f483a5b5444a9b09bce62060e08e6d51537c5cbcf32a614b4029",
+      "bytes": 68744
+    },
+    {
+      "path": "chapter12_vlm_interpretability/exercises/part3_mini_vlm_from_scratch/tests.py",
+      "sha256": "b3c0e4969e2e9c8e575dd9f4d825b445b81635aac7a0a414ac2a27a81dd352f5",
+      "bytes": 39695
+    },
+    {
+      "path": "chapter12_vlm_interpretability/exercises/part3_mini_vlm_from_scratch/utils.py",
+      "sha256": "bda4caacaad6766a08a9061da436f240ddc2708e866ef1b97170880890d9531d",
+      "bytes": 27423
+    },
+    {
+      "path": "chapter12_vlm_interpretability/exercises/part3_mini_vlm_from_scratch/verification_report.schema.json",
+      "sha256": "ecd833883885077ad5d7a0e239d984d01462255e94266212cf195ab4d4e27b3d",
+      "bytes": 2669
+    },
+    {
+      "path": "chapter12_vlm_interpretability/instructions/pages/01_[12.1]_CLIP_and_SigLIP_from_Scratch.md",
+      "sha256": "2e17e3aea340b69b5db997d788b7161a8c67e578d92a887efd3f4173be600ca4",
+      "bytes": 206960
+    },
+    {
+      "path": "chapter12_vlm_interpretability/instructions/pages/03_[12.3]_Mini_VLM_from_Scratch.md",
+      "sha256": "bf47cb3f7bcb8bcb910792b6c60a61864316dacac4b9dc89caf29bfa8f48c4e6",
+      "bytes": 208837
+    },
+    {
+      "path": "chapter1_transformer_interp/exercises/part2_intro_to_mech_interp/1.2_Intro_to_Mech_Interp_exercises.ipynb",
+      "sha256": "2cc59e383472a1738566f345829799c6a6d371e4a81e9f25a958f40f69a3c9bb",
+      "bytes": 230146
+    },
+    {
+      "path": "chapter8_automated_circuits/exercises/part4_acdc_circuit_metrics/8.4_ACDC_and_Circuit_Metrics_exercises.ipynb",
+      "sha256": "80022e96857ab352d1a1839a8004b5914875e984405ff6535f5e684bec36ea73",
+      "bytes": 951947
+    },
+    {
+      "path": "chapter8_automated_circuits/exercises/part4_acdc_circuit_metrics/8.4_ACDC_and_Circuit_Metrics_solutions.ipynb",
+      "sha256": "49aa72791d98c508818b7619292a0d88076d4ece14d67e72ebc123d0afa43e2a",
+      "bytes": 1026985
+    },
+    {
+      "path": "chapter8_automated_circuits/exercises/part4_acdc_circuit_metrics/tests.py",
+      "sha256": "94bc19a4fb1fe6ebe07e0d704205e2bc3a82075eb6ee65579b5181c75006bda7",
+      "bytes": 15890
+    },
+    {
+      "path": "chapter8_automated_circuits/exercises/part4_acdc_circuit_metrics/utils.py",
+      "sha256": "a991544f1bec18a22bb6519f9bdffd12ae31112414b2cd2aaeaab062add62de2",
+      "bytes": 15562
+    },
+    {
+      "path": "chapter8_automated_circuits/instructions/pages/04_[8.4]_ACDC_and_Circuit_Metrics.md",
+      "sha256": "a4a5f5c06ea008c1ad512b4eba8dfe214f912574dfcb359c10b05a427ca9ae5c",
+      "bytes": 96333
+    },
+    {
+      "path": "infrastructure/chapters/chapter12_vlm_interpretability/master_12_1.py",
+      "sha256": "47c1b0aafec6115a759f4ee7ba52aa407f9e9af4dff28599454cead7e3f95df3",
+      "bytes": 209258
+    },
+    {
+      "path": "infrastructure/chapters/chapter12_vlm_interpretability/master_12_3.py",
+      "sha256": "197cfc06c49cb0802456a0ccd3da1ec819c3d45ea30b42ae9cf44a1194f2fb37",
+      "bytes": 209106
+    },
+    {
+      "path": "infrastructure/chapters/chapter8_automated_circuits/master_8_4.py",
+      "sha256": "ece97a194dc58e234f4b7c97ae91567ca7c2217b173928e23d7b2f6eba58132a",
+      "bytes": 99702
+    },
+    {
+      "path": "infrastructure/core/config.yaml",
+      "sha256": "59333b18d8000f9381067716681f49f638f646d9f892843cc48a4aee61e2409d",
+      "bytes": 112244
+    },
+    {
+      "path": "infrastructure/core/config_extension.yaml",
+      "sha256": "357a9c3c45ffe63ac1501774f96008b0da66e9259733aa0ff2cfd0f41b74a8d8",
+      "bytes": 79199
+    },
+    {
+      "path": "infrastructure/extension/source_preservation_contracts.json",
+      "sha256": "a91ec2b25e62bd68ca11075b39035aec2aed0078a4e60f0afa5aabd333a0d62f",
+      "bytes": 1066297
+    },
+    {
+      "path": "infrastructure/extension/syllabus.yaml",
+      "sha256": "0731f9675193ac82bcfe67ca8b1634ce2972fc432e99c37a501c0b9187f32d64",
+      "bytes": 71876
+    },
+    {
+      "path": "mastery_hub/extension_checkpoints.json",
+      "sha256": "3ad7c2d9e69c90ce90aeed865a31fd0a4824e86be5140a4d963a607c5ee5ac7e",
+      "bytes": 379831
+    },
+    {
+      "path": "mastery_hub/units/extension_predictions/exercises.ipynb",
+      "sha256": "f4247bfe0c9ab5ec71bf1b3453ff3f9735654130a2a928c1dc9496acf3e78fe4",
+      "bytes": 829932
+    },
+    {
+      "path": "mastery_hub/units/extension_predictions/lesson.py",
+      "sha256": "fe0e58e0577b1c348537ab7f33cee9aca4d6c2ae24b5c8562822fb0424cb8659",
+      "bytes": 30335
+    }
+  ],
+  "historical_canonical_files_modified": [],
+  "scientific_execution": false,
+  "notebook_execution": false,
+  "current_candidate": "engineering implementation; root adoption pending",
+  "next_boundary": "independent review, root adoption; separate future native/learner acceptance"
+}

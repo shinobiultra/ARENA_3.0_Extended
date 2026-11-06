@@ -1,0 +1,20 @@
+{
+  "accepted": true,
+  "background_patch_absolute_effect": 0.0,
+  "conflict_accuracy": 0.0,
+  "example_count": 192,
+  "full_visual_directional_effect": 8.0,
+  "hallucination_rate": 0.25,
+  "image_question_accuracy": 1.0,
+  "joint_accuracy": 0.75,
+  "notebook_id": "12_5_object_hallucination_arbitration",
+  "object_patch_directional_effect": 8.0,
+  "object_patch_flip_fraction": 1.0,
+  "organism": "pixel_prompt_ground_truth_vlm_v2",
+  "random_patch_absolute_effect": 0.0,
+  "selected_layer": 0,
+  "shuffled_images_accuracy": 0.484375,
+  "test_pair_count": 8,
+  "text_only_accuracy": 0.5,
+  "validation_pair_count": 8
+}

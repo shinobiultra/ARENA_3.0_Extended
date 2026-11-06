@@ -1,0 +1,32 @@
+{
+  "schema_version": 1,
+  "section": "6.4",
+  "sources": {
+    "page": {
+      "path": "chapter6_sparse_feature_methods/instructions/pages/04_[6.4]_Transcoders_and_Skip_Transcoders.md",
+      "sha256": "2a6055a3c3ad469b9bcd9f0dbbee06e4d05f25de64d7726239e1ecc4f5a767bd"
+    },
+    "exercises": {
+      "path": "chapter6_sparse_feature_methods/exercises/part4_transcoders/6.4_Transcoders_and_Skip_Transcoders_exercises.ipynb",
+      "sha256": "29f6e99135c5fdffa4f941e6f4893fe6656511fb7fe693edefcd598c0d9031fa"
+    },
+    "reference": {
+      "path": "chapter6_sparse_feature_methods/exercises/part4_transcoders/6.4_Transcoders_and_Skip_Transcoders_solutions.ipynb",
+      "sha256": "f6f168fb3b5e73fd8a719312872b48e47ca13e68ed0cba3c0bed2dbff5198fb3"
+    }
+  },
+  "replacements": [
+    {
+      "old": "Implement the complete replacement path. Return pre-activations as well as sparse features so later exercises can see which ReLU gates are open.",
+      "new": "Implement the complete replacement path. Return pre-activations as well as sparse features so later exercises can see which ReLU gates are open.\n\nBefore advancing, run this additional independent checkpoint in a new working-copy cell. It changes gate patterns, dimensions, decoder weights and biases; hard-coding the public red-square answer must fail. Work out the preactivations by hand before running it.\n\n```python\nx = t.tensor([[1.,0.],[0.,1.]])\nE = t.tensor([[2.,-1.],[-1.,3.],[1.,1.]])\nb = t.tensor([-1.,-2.,-.5])\nD = t.tensor([[1.,2.],[-2.,1.],[.5,-1.]])\nd = t.tensor([.25,-.5])\np, f = encode(x,E,b)\nt.testing.assert_close(p,t.tensor([[1.,-3.,.5],[-2.,1.,.5]]))\nt.testing.assert_close(f,t.tensor([[1.,0.,.5],[0.,1.,.5]]))\nexpected = t.tensor([[1.5,1.],[-1.5,0.]])\nt.testing.assert_close(decode(f,D,d),expected)\ny = transcoder_forward(x,E,D,encoder_bias=b,decoder_bias=d)\nt.testing.assert_close(y.reconstructed_activations,expected)\n```\n\nFor the later signed-path exercise, use the same tensors and readout `[1,-1]`: feature-to-score rows must be `[-1,0,.75]` and `[0,-3,.75]`, with input-plus-bias contributions summing to those rows. The decoder bias separately contributes `.75` to each total score (`.5` and `-1.5`); it must not be silently assigned to a sparse feature.\n",
+      "counts": {
+        "page": 1,
+        "exercises": 1,
+        "reference": 1
+      }
+    }
+  ],
+  "rationale": [
+    "AS-6.4-1: additional general linear/ReLU fixture and changed signed readout before signature."
+  ]
+}

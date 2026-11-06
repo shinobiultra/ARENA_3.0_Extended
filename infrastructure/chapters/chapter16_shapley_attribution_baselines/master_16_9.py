@@ -44,15 +44,26 @@ r'''
 # ! TAGS: []
 
 r'''
-Here is a small experiment. We take 128 handwritten digits, half of them 1s and half of them 7s, and train a tiny neural network to tell them apart. Before training, we secretly flip the labels of 12 of the images, so that six 1s are labelled "7" and six 7s are labelled "1". The trained network still classifies 63 of the 64 test images correctly, with a test loss of 0.149. If we switch off the 12 mislabelled images and rerun exactly the same training, it gets all 64 right and the test loss drops to 0.057.
+Here is a small experiment. We take 128 handwritten digits, half of them 1s and half of them 7s, and train a tiny neural network to tell them apart. Before training, we secretly
+flip the labels of 12 of the images, so that six 1s are labelled "7" and six 7s are labelled "1". The trained network still classifies 63 of the 64 test images correctly, with a
+test loss of 0.149. If we switch off the 12 mislabelled images and rerun exactly the same training, it gets all 64 right and the test loss drops to 0.057.
 
 Now suppose you didn't know which 12 images were mislabelled. Could you find them by asking the trained model *which of its training examples helped it, and which ones hurt?*
 
-This is the question of **data attribution** (or **data valuation**), and it matters well beyond toy digit classifiers. Which documents in a pretraining corpus actually make a language model better? Which examples in a fine-tuning set are responsible for a bad behaviour? If a model reproduces copyrighted text, which training data does it owe that to? Interpretability usually asks which *activations* or *components* cause an output; data attribution asks which *training data* caused the model to be the way it is.
+This is the question of **data attribution** (or **data valuation**), and it matters well beyond toy digit classifiers. Which documents in a pretraining corpus actually make a
+language model better? Which examples in a fine-tuning set are responsible for a bad behaviour? If a model reproduces copyrighted text, which training data does it owe that to?
+Interpretability usually asks which *activations* or *components* cause an output; data attribution asks which *training data* caused the model to be the way it is.
 
-The most principled answer comes from cooperative game theory. **Data Shapley** (Ghorbani & Zou, 2019) treats every training example as a player in a game whose payoff is the performance of a model trained on a set of players, and gives each example its Shapley value: its average marginal contribution, over all the ways the dataset could have been assembled. It has exactly the properties you'd want from a fair credit assignment. The catch is that computing it requires training a model on many (in principle, all $2^n$) subsets of the data.
+The most principled answer comes from cooperative game theory. **Data Shapley** (Ghorbani & Zou, 2019) treats every training example as a player in a game whose payoff is the
+performance of a model trained on a set of players, and gives each example its Shapley value: its average marginal contribution, over all the ways the dataset could have been
+assembled. It has exactly the properties you'd want from a fair credit assignment. The catch is that computing it requires training a model on many (in principle, all $2^n$)
+subsets of the data.
 
-**In-Run Data Shapley** (Wang, Mittal, Song & Jia, ICLR 2025) changes the question slightly, in a way that makes it almost free to answer. Instead of asking about every possible training run, it asks how much each example contributed to *this particular* training run, one gradient step at a time. With a first-order Taylor expansion, each step's contribution is a dot product between a training example's gradient and the validation gradient; with a trick called the **ghost dot product**, all of these dot products can be computed during the ordinary backward pass without ever storing a per-example gradient. The authors used it to attribute the pretraining data of GPT-2-sized models, something retraining-based methods could never do.
+**In-Run Data Shapley** (Wang, Mittal, Song & Jia, ICLR 2025) changes the question slightly, in a way that makes it almost free to answer. Instead of asking about every possible
+training run, it asks how much each example contributed to *this particular* training run, one gradient step at a time. With a first-order Taylor expansion, each step's
+contribution is a dot product between a training example's gradient and the validation gradient; with a trick called the **ghost dot product**, all of these dot products can be
+computed during the ordinary backward pass without ever storing a per-example gradient. The authors used it to attribute the pretraining data of GPT-2-sized models, something
+retraining-based methods could never do.
 
 By the end of this section you'll have built all of it from scratch, on problems small enough that we can check every answer:
 
@@ -62,9 +73,14 @@ By the end of this section you'll have built all of it from scratch, on problems
 - In-Run Data Shapley with first-order, second-order and exact per-step credit, accumulated over a real SGD run on the digits;
 - and a validation of all of it: against exact values on the toy problem, against 25,600-training-run Monte Carlo Data Shapley on the digits, and against the ground truth of actually deleting data and retraining.
 
-We'll pay particular attention to **controls**. Every attribution score in this notebook is compared against randomly chosen points, against scores computed for the wrong target (shuffled validation labels), and against cheap baselines like leave-one-out. Some of the results are not flattering to the method you're implementing. On our digits, first-order In-Run credit claims about 2.5 times more improvement than actually happened; plain leave-one-out finds the flipped labels about as well as In-Run credit does; and on the examples that *aren't* mislabelled, In-Run credit and retraining-based Data Shapley mostly disagree about which ones matter. Those findings are part of the lesson, so we'll keep them in plain view.
+We'll pay particular attention to **controls**. Every attribution score in this notebook is compared against randomly chosen points, against scores computed for the wrong target
+(shuffled validation labels), and against cheap baselines like leave-one-out. Some of the results are not flattering to the method you're implementing. On our digits, first-order
+In-Run credit claims about 2.5 times more improvement than actually happened; plain leave-one-out finds the flipped labels about as well as In-Run credit does; and on the examples
+that *aren't* mislabelled, In-Run credit and retraining-based Data Shapley mostly disagree about which ones matter. Those findings are part of the lesson, so we'll keep them in
+plain view.
 
-This section assumes you know what a Shapley value is (section [16.1] covers this from scratch; we'll recap what we need), and that you're comfortable with SGD and backpropagation at the level of [0.3] Optimization and [0.4] Backprop. Everything runs on a CPU in about a minute, using float64 so that our identity checks hold to many decimal places.
+This section assumes you know what a Shapley value is (section [16.1] covers this from scratch; we'll recap what we need), and that you're comfortable with SGD and backpropagation
+at the level of [0.3] Optimization and [0.4] Backprop. Everything runs on a CPU in about a minute, using float64 so that our identity checks hold to many decimal places.
 '''
 
 # ! CELL TYPE: markdown
@@ -76,7 +92,9 @@ r'''
 
 ### 1️⃣ Data Shapley by Retraining
 
-You'll define data valuation as a cooperative game, implement a learning algorithm that can be run on any subset of the data, and compute exact Data Shapley values on an 8-point logistic regression problem with a duplicated point, a mislabelled point and a rare point, by training 256 models. You'll compare against leave-one-out and check that the negative credit follows the bad label when we move it.
+You'll define data valuation as a cooperative game, implement a learning algorithm that can be run on any subset of the data, and compute exact Data Shapley values on an 8-point
+logistic regression problem with a duplicated point, a mislabelled point and a rare point, by training 256 models. You'll compare against leave-one-out and check that the negative
+credit follows the bad label when we move it.
 
 > ##### Learning Objectives
 >
@@ -86,7 +104,8 @@ You'll define data valuation as a cooperative game, implement a learning algorit
 
 ### 2️⃣ Monte Carlo Data Shapley
 
-Exact Data Shapley is exponential in the number of examples. You'll implement the permutation-sampling Monte Carlo estimator and its truncated variant (TMC-Shapley), and measure how the error falls with the number of models trained, and what truncation costs in bias.
+Exact Data Shapley is exponential in the number of examples. You'll implement the permutation-sampling Monte Carlo estimator and its truncated variant (TMC-Shapley), and measure
+how the error falls with the number of models trained, and what truncation costs in bias.
 
 > ##### Learning Objectives
 >
@@ -96,7 +115,9 @@ Exact Data Shapley is exponential in the number of examples. You'll implement th
 
 ### 3️⃣ Per-Example Gradients and Ghost Dot Products
 
-In-Run Data Shapley needs dot products between per-example gradients. You'll write the forward and backward pass of an MLP by hand so you can see exactly where per-example gradients come from, derive the **ghost dot product** identity that computes their dot products without materialising them, and use it to see what training examples are "saying" to the validation set at the start and end of training.
+In-Run Data Shapley needs dot products between per-example gradients. You'll write the forward and backward pass of an MLP by hand so you can see exactly where per-example
+gradients come from, derive the **ghost dot product** identity that computes their dot products without materialising them, and use it to see what training examples are "saying" to
+the validation set at the start and end of training.
 
 > ##### Learning Objectives
 >
@@ -106,7 +127,9 @@ In-Run Data Shapley needs dot products between per-example gradients. You'll wri
 
 ### 4️⃣ In-Run Data Shapley
 
-You'll define the per-step **local game** that In-Run Data Shapley allocates, compute its exact Shapley values by brute force, derive and implement the first- and second-order approximations, and accumulate all three over a real SGD run. You'll validate them on the toy problem against exact Data Shapley, and on the digits by checking whether the credit adds up to what actually happened.
+You'll define the per-step **local game** that In-Run Data Shapley allocates, compute its exact Shapley values by brute force, derive and implement the first- and second-order
+approximations, and accumulate all three over a real SGD run. You'll validate them on the toy problem against exact Data Shapley, and on the digits by checking whether the credit
+adds up to what actually happened.
 
 > ##### Learning Objectives
 >
@@ -116,7 +139,8 @@ You'll define the per-step **local game** that In-Run Data Shapley allocates, co
 
 ### 5️⃣ Does the Credit Mean Anything?
 
-Finally, you'll compare In-Run credit with Monte Carlo Data Shapley computed from 25,600 training runs, and test every method with the experiment that matters: delete the lowest- or highest-credit examples, retrain, and measure test loss, against matched random deletions, three training seeds and a shuffled-label control.
+Finally, you'll compare In-Run credit with Monte Carlo Data Shapley computed from 25,600 training runs, and test every method with the experiment that matters: delete the lowest-
+or highest-credit examples, retrain, and measure test loss, against matched random deletions, three training seeds and a shuffled-label control.
 
 > ##### Learning Objectives
 >
@@ -126,7 +150,8 @@ Finally, you'll compare In-Run credit with Monte Carlo Data Shapley computed fro
 
 ### ☆ Bonus
 
-Extensions and open questions, including how the SGD derivation breaks under Adam (and the 2026 Adam-aware variant of In-Run Data Shapley), the connection to TracIn, and further reading.
+Extensions and open questions, including how the SGD derivation breaks under Adam (and the 2026 Adam-aware variant of In-Run Data Shapley), the connection to TracIn, and further
+reading.
 '''
 
 # ! CELL TYPE: markdown
@@ -226,28 +251,34 @@ r'''
 r'''
 ## Data valuation as a cooperative game
 
-Suppose we have a training set $D = \{z_1, \dots, z_n\}$, a learning algorithm $\mathcal{A}$ that turns any subset $S \subseteq D$ into a trained model $\mathcal{A}(S)$, and a way of scoring a model, for example its loss on a held-out validation set. Together these define a **utility function** on subsets of the data:
+Suppose we have a training set $D = \{z_1, \dots, z_n\}$, a learning algorithm $\mathcal{A}$ that turns any subset $S \subseteq D$ into a trained model $\mathcal{A}(S)$, and a way
+of scoring a model, for example its loss on a held-out validation set. Together these define a **utility function** on subsets of the data:
 
 $$
 v(S) = L_{val}\big(\mathcal{A}(\varnothing)\big) - L_{val}\big(\mathcal{A}(S)\big)
 $$
 
-i.e. how much training on $S$ improves validation loss, compared to not training at all. (We use loss *improvement* throughout this section, so that positive credit means "helpful". The In-Run Data Shapley paper uses the opposite sign convention, loss *change*, so be careful when comparing equations.)
+i.e. how much training on $S$ improves validation loss, compared to not training at all. (We use loss *improvement* throughout this section, so that positive credit means
+"helpful". The In-Run Data Shapley paper uses the opposite sign convention, loss *change*, so be careful when comparing equations.)
 
-This is a cooperative game in exactly the sense of section [16.1]: the training examples are the players, and $v(S)$ is the payoff when the players in $S$ "work together". The **Data Shapley value** of example $i$ is its Shapley value in this game,
+This is a cooperative game in exactly the sense of section [16.1]: the training examples are the players, and $v(S)$ is the payoff when the players in $S$ "work together". The
+**Data Shapley value** of example $i$ is its Shapley value in this game,
 
 $$
 \phi_i = \sum_{S \subseteq D \setminus \{i\}} \frac{|S|!\,(n - |S| - 1)!}{n!} \Big[ v(S \cup \{i\}) - v(S) \Big],
 $$
 
-the average of its marginal contribution $v(S \cup \{i\}) - v(S)$ over all orderings in which the dataset could have been assembled. The Shapley axioms translate into very natural requirements on a data valuation:
+the average of its marginal contribution $v(S \cup \{i\}) - v(S)$ over all orderings in which the dataset could have been assembled. The Shapley axioms translate into very natural
+requirements on a data valuation:
 
 - **Efficiency**: $\sum_i \phi_i = v(D)$. The values split up exactly the improvement the full dataset produced.
 - **Symmetry**: two examples that contribute identically to every subset get the same value. In particular, exact duplicates get equal credit.
 - **Null player**: an example that never changes the utility gets zero.
 - **Linearity**: the value for a sum of two utilities (e.g. two validation sets) is the sum of the values.
 
-It's worth stressing what Data Shapley is *not*. It isn't a property of an example on its own: it depends on the rest of the dataset, on the learning algorithm (architecture, optimiser, learning rate, number of steps, initialisation) and on the utility (which validation set, which metric). Change any of them and the values change. You'll see this concretely in the "Try it yourself" cell at the end of this section, and again in section 4️⃣, where In-Run Data Shapley changes the question in a subtle but important way.
+It's worth stressing what Data Shapley is *not*. It isn't a property of an example on its own: it depends on the rest of the dataset, on the learning algorithm (architecture,
+optimiser, learning rate, number of steps, initialisation) and on the utility (which validation set, which metric). Change any of them and the values change. You'll see this
+concretely in the "Try it yourself" cell at the end of this section, and again in section 4️⃣, where In-Run Data Shapley changes the question in a subtle but important way.
 '''
 
 # ! CELL TYPE: markdown
@@ -257,7 +288,8 @@ It's worth stressing what Data Shapley is *not*. It isn't a property of an examp
 r'''
 ## A toy problem with known answers
 
-We'll start with a problem small enough to enumerate: 8 training points in 2D, and a logistic regression classifier. The points were chosen so that we know, before computing anything, roughly what a good valuation should say about some of them:
+We'll start with a problem small enough to enumerate: 8 training points in 2D, and a logistic regression classifier. The points were chosen so that we know, before computing
+anything, roughly what a good valuation should say about some of them:
 
 - Points **0 and 1** are exact duplicates (same features, same label). Symmetry says they must get equal credit.
 - Point **6** sits at exactly the same location as points 0 and 1, but with the *opposite* label. It's a mislabelled copy, and it should be harmful.
@@ -303,12 +335,16 @@ r'''
 r'''
 ### What does "training on a subset" mean?
 
-Data Shapley needs a learning algorithm we can run on *any* subset $S$, including the empty set and single points. We have to make a choice about how the loss is normalised. There are two natural options:
+Data Shapley needs a learning algorithm we can run on *any* subset $S$, including the empty set and single points. We have to make a choice about how the loss is normalised. There
+are two natural options:
 
 1. Average the loss over the examples in $S$: $\frac{1}{|S|}\sum_{i \in S} \ell_i$. Then a model trained on 2 points takes steps as large as one trained on 8.
 2. Sum the loss over $S$ but keep dividing by the full dataset size $n$: $\frac{1}{n}\sum_{i \in S} \ell_i$. This is what you get if you take the full training run and simply *switch off* the gradients of the examples not in $S$.
 
-Both are legitimate, and they define different games with different Shapley values. We'll use **option 2 (a fixed denominator)** throughout this notebook, for one reason: it's the convention In-Run Data Shapley uses, where removing an example from a minibatch means "this example's gradient never gets added to the update", not "the other examples get a bigger learning rate". Using the same convention everywhere means every game in this notebook is about the same learning algorithm. (You can try option 1 in the "Try it yourself" cell at the end of this section.)
+Both are legitimate, and they define different games with different Shapley values. We'll use **option 2 (a fixed denominator)** throughout this notebook, for one reason: it's the
+convention In-Run Data Shapley uses, where removing an example from a minibatch means "this example's gradient never gets added to the update", not "the other examples get a bigger
+learning rate". Using the same convention everywhere means every game in this notebook is about the same learning algorithm. (You can try option 1 in the "Try it yourself" cell at
+the end of this section.)
 '''
 
 # ! CELL TYPE: markdown
@@ -325,7 +361,8 @@ r'''
 > You should spend up to 10-15 minutes on this exercise.
 > ```
 
-Implement `train_on_subset`, which trains a logistic regression classifier $p(y = 1 \mid x) = \sigma(x^\top w + b)$ on the examples in `coalition`, and `subset_utility`, which returns the validation loss improvement $v(S)$.
+Implement `train_on_subset`, which trains a logistic regression classifier $p(y = 1 \mid x) = \sigma(x^\top w + b)$ on the examples in `coalition`, and `subset_utility`, which
+returns the validation loss improvement $v(S)$.
 
 The learning algorithm is:
 
@@ -333,9 +370,12 @@ The learning algorithm is:
 - take `steps` steps of full-batch gradient descent on $\frac{1}{n}\sum_{i \in S} \text{BCE}(x_i^\top w + b, y_i)$, where $n$ is the total number of training examples (not $|S|$);
 - return `(w, b)`.
 
-The gradient of the binary cross-entropy with respect to the logit $s_i = x_i^\top w + b$ is $\sigma(s_i) - y_i$, so you don't need autograd: the gradient for $w$ is $\frac{1}{n}\sum_{i\in S} (\sigma(s_i) - y_i)\, x_i$ and for $b$ it's $\frac{1}{n}\sum_{i\in S} (\sigma(s_i) - y_i)$. A clean way to implement "sum over $S$" is to multiply the errors by a 0/1 mask.
+The gradient of the binary cross-entropy with respect to the logit $s_i = x_i^\top w + b$ is $\sigma(s_i) - y_i$, so you don't need autograd: the gradient for $w$ is
+$\frac{1}{n}\sum_{i\in S} (\sigma(s_i) - y_i)\, x_i$ and for $b$ it's $\frac{1}{n}\sum_{i\in S} (\sigma(s_i) - y_i)$. A clean way to implement "sum over $S$" is to multiply the
+errors by a 0/1 mask.
 
-For `subset_utility`, use `F.binary_cross_entropy_with_logits` (which averages over the validation set) and return a Python float. Note that the untrained model ($w = 0$, $b = 0$) predicts 0.5 for everything, so $v(\varnothing) = 0$.
+For `subset_utility`, use `F.binary_cross_entropy_with_logits` (which averages over the validation set) and return a Python float. Note that the untrained model ($w = 0$, $b = 0$)
+predicts 0.5 for everything, so $v(\varnothing) = 0$.
 '''
 
 # ! CELL TYPE: code
@@ -454,7 +494,10 @@ v({0, 1, 2, 3, 4, 5, 6, 7}) = +0.5082</pre>
 
 </details>
 
-A few things to notice. Training on the mislabelled point alone is very harmful. Training on point 0 *and* its mislabelled copy 6 gives exactly zero: their gradients are equal and opposite at every step (at the same $x$, $\sigma(s) - 1$ and $\sigma(s) - 0$ cancel when $\sigma(s) = 0.5$, which is where the model starts and stays). And adding the mislabelled point to the two duplicates more than halves their benefit. The marginal contribution of point 6 clearly depends on who else is in the coalition, which is exactly why we need to average over coalitions.
+A few things to notice. Training on the mislabelled point alone is very harmful. Training on point 0 *and* its mislabelled copy 6 gives exactly zero: their gradients are equal and
+opposite at every step (at the same $x$, $\sigma(s) - 1$ and $\sigma(s) - 0$ cancel when $\sigma(s) = 0.5$, which is where the model starts and stays). And adding the mislabelled
+point to the two duplicates more than halves their benefit. The marginal contribution of point 6 clearly depends on who else is in the coalition, which is exactly why we need to
+average over coalitions.
 '''
 
 # ! CELL TYPE: markdown
@@ -478,7 +521,8 @@ Implement `exact_data_shapley`. It takes a utility function on coalitions (`froz
 
 Return both the values (a tensor of shape `(n,)`) and the dict of coalition values, which we'll reuse later.
 
-The weight $\frac{|S|!(n-|S|-1)!}{n!}$ can be written as $\frac{1}{n \binom{n-1}{|S|}}$, which is easier to compute with `math.comb`. You may have written something very similar in [16.1]; the only difference here is that each utility evaluation trains a model, so we're careful to evaluate each coalition once.
+The weight $\frac{|S|!(n-|S|-1)!}{n!}$ can be written as $\frac{1}{n \binom{n-1}{|S|}}$, which is easier to compute with `math.comb`. You may have written something very similar in
+[16.1]; the only difference here is that each utility evaluation trains a model, so we're careful to evaluate each coalition once.
 '''
 
 # ! CELL TYPE: code
@@ -522,13 +566,15 @@ r'''
 <details>
 <summary>Hint</summary>
 
-`itertools.combinations(range(n), size)` for `size` in `range(n + 1)` enumerates every subset. For the values, loop over players `i`, then over subsets `S` of the *other* players, and add `weight * (table[S | {i}] - table[S])`.
+`itertools.combinations(range(n), size)` for `size` in `range(n + 1)` enumerates every subset. For the values, loop over players `i`, then over subsets `S` of the *other* players,
+and add `weight * (table[S | {i}] - table[S])`.
 </details>
 
 <details>
 <summary>Help - the test says my values don't match the permutation oracle.</summary>
 
-The test checks your function against the definition of the Shapley value as an average over all $n!$ orderings, on a few small games. The most common mistake is the weight: it should be $\frac{1}{n\binom{n-1}{|S|}}$ where $|S|$ is the size of the coalition *without* player $i$. Another is enumerating coalitions that already contain $i$.
+The test checks your function against the definition of the Shapley value as an average over all $n!$ orderings, on a few small games. The most common mistake is the weight: it
+should be $\frac{1}{n\binom{n-1}{|S|}}$ where $|S|$ is the size of the coalition *without* player $i$. Another is enumerating coalitions that already contain $i$.
 </details>
 '''
 
@@ -575,7 +621,8 @@ sum of values = 0.5082,   v(full dataset) = 0.5082</pre>
 
 </details>
 
-The values do what we hoped: the duplicates are tied, the mislabelled point gets a large negative value, the rare positive is the least valuable of the helpful points, and the values sum to $v(D)$ (efficiency).
+The values do what we hoped: the duplicates are tied, the mislabelled point gets a large negative value, the rare positive is the least valuable of the helpful points, and the
+values sum to $v(D)$ (efficiency).
 '''
 
 # ! CELL TYPE: markdown
@@ -598,7 +645,8 @@ $$
 \text{LOO}_i = v(D) - v(D \setminus \{i\})
 $$
 
-LOO needs only $n + 1$ trainings rather than $2^n$, and it's what most people mean when they talk informally about "the effect of a training example". It is also the marginal contribution of $i$ in just one of the $2^{n-1}$ coalitions that Data Shapley averages over: the biggest one. Implement it.
+LOO needs only $n + 1$ trainings rather than $2^n$, and it's what most people mean when they talk informally about "the effect of a training example". It is also the marginal
+contribution of $i$ in just one of the $2^{n-1}$ coalitions that Data Shapley averages over: the biggest one. Implement it.
 '''
 
 # ! CELL TYPE: code
@@ -627,7 +675,10 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-We'll compute LOO by looking values up in the table we already have (no new training needed), and then add a **control**. If the negative value of point 6 really comes from its *label* rather than from anything about its position in the list or its features, then moving the bad label should move the negative value with it. So we swap the labels of points 0 and 6: now point 0 is the mislabelled copy and point 6 is the correct one. Everything else (features, validation set, learning algorithm) is unchanged. This trains another 256 models.
+We'll compute LOO by looking values up in the table we already have (no new training needed), and then add a **control**. If the negative value of point 6 really comes from its
+*label* rather than from anything about its position in the list or its features, then moving the bad label should move the negative value with it. So we swap the labels of points
+0 and 6: now point 0 is the mislabelled copy and point 6 is the correct one. Everything else (features, validation set, learning algorithm) is unchanged. This trains another 256
+models.
 '''
 
 # ! CELL TYPE: code
@@ -668,11 +719,19 @@ r'''
 <details>
 <summary>Help - how should I interpret this plot?</summary>
 
-**Exact Data Shapley (blue)** is what we saw above: the duplicates are tied at 0.131, the mislabelled copy is strongly negative (-0.328), the rare positive is the least valuable helpful point (0.057), and the values add up to $v(D) = 0.508$.
+**Exact Data Shapley (blue)** is what we saw above: the duplicates are tied at 0.131, the mislabelled copy is strongly negative (-0.328), the rare positive is the least valuable
+helpful point (0.057), and the values add up to $v(D) = 0.508$.
 
-**Leave-one-out (pink)** gets every *sign* right, but look at the scale. The LOO values add up to only 0.110, a fifth of $v(D)$: LOO doesn't satisfy efficiency, because it only measures what each point adds *on top of everything else*, and most of what a point does can also be done by other points. The clearest case is the duplicates. Each gets an LOO value of 0.025, less than a fifth of its Data Shapley value, because when you remove one copy, the other copy is still there doing exactly the same job. Two copies of a useful example look nearly worthless to LOO; this is the standard argument for Data Shapley over leave-one-out in the data valuation literature. Conversely, point 3 has the *largest* LOO value (0.074): it's the only training point near the validation point at $(2, -0.5)$, so nothing can stand in for it. LOO ranks it first; Data Shapley ranks it fifth, behind both duplicates.
+**Leave-one-out (pink)** gets every *sign* right, but look at the scale. The LOO values add up to only 0.110, a fifth of $v(D)$: LOO doesn't satisfy efficiency, because it only
+measures what each point adds *on top of everything else*, and most of what a point does can also be done by other points. The clearest case is the duplicates. Each gets an LOO
+value of 0.025, less than a fifth of its Data Shapley value, because when you remove one copy, the other copy is still there doing exactly the same job. Two copies of a useful
+example look nearly worthless to LOO; this is the standard argument for Data Shapley over leave-one-out in the data valuation literature. Conversely, point 3 has the *largest* LOO
+value (0.074): it's the only training point near the validation point at $(2, -0.5)$, so nothing can stand in for it. LOO ranks it first; Data Shapley ranks it fifth, behind both
+duplicates.
 
-**The control (grey)** behaves exactly as it should. After swapping the labels of points 0 and 6, point 0 gets -0.328 and point 6 gets 0.131: the two values have swapped exactly, and nothing else has changed. That's because points 0 and 6 have identical features, so swapping their labels is just renaming two players. The negative value belongs to the bad label, not to a position in the list.
+**The control (grey)** behaves exactly as it should. After swapping the labels of points 0 and 6, point 0 gets -0.328 and point 6 gets 0.131: the two values have swapped exactly,
+and nothing else has changed. That's because points 0 and 6 have identical features, so swapping their labels is just renaming two players. The negative value belongs to the bad
+label, not to a position in the list.
 </details>
 '''
 
@@ -683,7 +742,8 @@ r'''
 r'''
 ## Try it yourself - change the game
 
-Data Shapley values are a property of the *whole game*: the data, the learning algorithm and the utility. Use the cell below to change one thing at a time and see how the values respond. Some ideas:
+Data Shapley values are a property of the *whole game*: the data, the learning algorithm and the utility. Use the cell below to change one thing at a time and see how the values
+respond. Some ideas:
 
 - Flip the label of the rare positive (point 7). Does it become harmful, or merely useless?
 - Make point 7 a *third* duplicate of point 0 (same features, same label). What happens to the values of points 0, 1 and 7, and to their LOO values?
@@ -726,7 +786,9 @@ r'''
 6: MISLABELLED copy of A                -0.3278           -0.3248  -0.1341
 7: rare positive                         0.0572           -0.1548  -0.0691</pre>
 
-With a flipped label, point 7 goes from slightly helpful (0.057) to clearly harmful (-0.155), although less harmful than the mislabelled copy of A (-0.325), whose label contradicts two other training points. Notice that the *other* values change too: since the values must add up to $v(D)$, and the game has changed, every example's share is recomputed. Point 2, the positive example nearest to point 7's region, becomes more valuable (0.116 to 0.169): with point 7 now pulling the wrong way there, point 2 is doing more of the work.
+With a flipped label, point 7 goes from slightly helpful (0.057) to clearly harmful (-0.155), although less harmful than the mislabelled copy of A (-0.325), whose label contradicts
+two other training points. Notice that the *other* values change too: since the values must add up to $v(D)$, and the game has changed, every example's share is recomputed. Point
+2, the positive example nearest to point 7's region, becomes more valuable (0.116 to 0.169): with point 7 now pulling the wrong way there, point 2 is doing more of the work.
 </details>
 '''
 
@@ -741,7 +803,8 @@ r'''
 - On a problem with 8 points we can compute it exactly, by training 256 models. The values satisfy efficiency and symmetry, give the mislabelled point a large negative value, and follow the bad label when we move it.
 - Leave-one-out only looks at one coalition, the full dataset, and that's exactly where redundancy hides value: a duplicated point looks almost worthless because its copy can stand in for it.
 
-The obvious problem is the $2^n$. For our 128 digits, $2^{128} \approx 3 \times 10^{38}$ trainings is not an option. The next section is about estimating Data Shapley with fewer trainings.
+The obvious problem is the $2^n$. For our 128 digits, $2^{128} \approx 3 \times 10^{38}$ trainings is not an option. The next section is about estimating Data Shapley with fewer
+trainings.
 '''
 
 # ! CELL TYPE: markdown
@@ -759,17 +822,20 @@ r'''
 r'''
 ## Sampling orderings instead of enumerating subsets
 
-Recall the other way of writing the Shapley value: imagine the training examples arriving one at a time in a uniformly random order $\pi$. When example $i$ arrives, it joins the set $P_i^\pi$ of examples that arrived before it, and we credit it with its marginal contribution. The Shapley value is the expected credit:
+Recall the other way of writing the Shapley value: imagine the training examples arriving one at a time in a uniformly random order $\pi$. When example $i$ arrives, it joins the
+set $P_i^\pi$ of examples that arrived before it, and we credit it with its marginal contribution. The Shapley value is the expected credit:
 
 $$
 \phi_i = \mathbb{E}_{\pi}\Big[ v\big(P_i^\pi \cup \{i\}\big) - v\big(P_i^\pi\big) \Big]
 $$
 
-This suggests an obvious estimator. Sample $M$ random orderings. For each one, start from the empty set and add the examples one at a time, training a model at each step; the difference between consecutive utilities is the marginal contribution of the example just added. Average over orderings.
+This suggests an obvious estimator. Sample $M$ random orderings. For each one, start from the empty set and add the examples one at a time, training a model at each step; the
+difference between consecutive utilities is the marginal contribution of the example just added. Average over orderings.
 
 One ordering costs $n$ trainings and gives one marginal contribution for *every* example, so $M$ orderings cost $nM$ trainings. The estimator is unbiased, and by the central limit theorem its error falls like $1/\sqrt{M}$: to halve the error, you need four times as many trainings. This is the "Monte Carlo" (or permutation sampling) estimator of Data Shapley, from Ghorbani & Zou ([*Data Shapley: Equitable Valuation of Data for Machine Learning*](https://arxiv.org/abs/1904.02868), 2019) and Jia et al. ([*Towards Efficient Data Valuation Based on the Shapley Value*](https://arxiv.org/abs/1902.10275), 2019).
 
-To see what each estimator *costs*, we'll wrap the utility function in a small class that counts how many times it's called. On the toy problem every coalition's utility is already in `toy_table`, so the "training" is a dictionary lookup, but we'll count each lookup as one training run, since that's what it would cost on a problem where we couldn't enumerate.
+To see what each estimator *costs*, we'll wrap the utility function in a small class that counts how many times it's called. On the toy problem every coalition's utility is already
+in `toy_table`, so the "training" is a dictionary lookup, but we'll count each lookup as one training run, since that's what it would cost on a problem where we couldn't enumerate.
 '''
 
 # ! CELL TYPE: code
@@ -807,7 +873,8 @@ Implement `mc_data_shapley`. To make results reproducible (and testable), use th
 - create one generator, `gen = t.Generator().manual_seed(seed)`;
 - draw each ordering with `t.randperm(n, generator=gen)`.
 
-Call `utility_fn` once on the empty coalition at the start, and then exactly once each time you add an example to the coalition (so $1 + nM$ calls in total). Return the average marginal contribution of each example, a tensor of shape `(n,)`.
+Call `utility_fn` once on the empty coalition at the start, and then exactly once each time you add an example to the coalition (so $1 + nM$ calls in total). Return the average
+marginal contribution of each example, a tensor of shape `(n,)`.
 '''
 
 # ! CELL TYPE: code
@@ -847,7 +914,8 @@ r'''
 <details>
 <summary>Hint</summary>
 
-For each ordering, keep track of the current coalition and its utility (`previous`). For each example `i` in the ordering, add it to the coalition, evaluate the new utility, credit `i` with the difference, and update `previous`.
+For each ordering, keep track of the current coalition and its utility (`previous`). For each example `i` in the ordering, add it to the coalition, evaluate the new utility, credit
+`i` with the difference, and update `previous`.
 </details>
 '''
 
@@ -858,9 +926,12 @@ For each ordering, keep track of the current coalition and its utility (`previou
 r'''
 ## Truncation
 
-Ghorbani & Zou made an observation that saves a lot of compute in practice. Once a coalition is large, adding one more example barely changes a trained model: the marginal contributions of the examples late in an ordering are tiny. So if the utility of the current coalition is already within some **tolerance** $\tau$ of the full dataset's utility $v(D)$, we can stop training and set the marginal contributions of all the remaining examples in that ordering to zero. This is **Truncated Monte Carlo Shapley** (TMC-Shapley).
+Ghorbani & Zou made an observation that saves a lot of compute in practice. Once a coalition is large, adding one more example barely changes a trained model: the marginal
+contributions of the examples late in an ordering are tiny. So if the utility of the current coalition is already within some **tolerance** $\tau$ of the full dataset's utility
+$v(D)$, we can stop training and set the marginal contributions of all the remaining examples in that ordering to zero. This is **Truncated Monte Carlo Shapley** (TMC-Shapley).
 
-Truncation is not free. It introduces a bias: the remaining examples' contributions aren't exactly zero, and summed over the rest of the ordering they add up to $v(D) - v(P)$, which can be as large as $\tau$. Unlike the Monte Carlo noise, this bias does not shrink as you sample more orderings.
+Truncation is not free. It introduces a bias: the remaining examples' contributions aren't exactly zero, and summed over the rest of the ordering they add up to $v(D) - v(P)$,
+which can be as large as $\tau$. Unlike the Monte Carlo noise, this bias does not shrink as you sample more orderings.
 '''
 
 # ! CELL TYPE: markdown
@@ -877,7 +948,10 @@ r'''
 > You should spend up to 10 minutes on this exercise.
 > ```
 
-Implement `tmc_data_shapley`. Use the same randomness recipe as before. At the start, evaluate the utility of the empty coalition and of the full dataset (2 calls). Then for each ordering, before adding each example, check whether the current coalition's utility is within `tolerance` of $v(D)$, i.e. `abs(v_full - previous) < tolerance`. If it is, the example's marginal contribution is zero and you don't call `utility_fn`; since nothing changes, the same will be true for every later example in this ordering, so you can stop. Otherwise, proceed as in `mc_data_shapley`.
+Implement `tmc_data_shapley`. Use the same randomness recipe as before. At the start, evaluate the utility of the empty coalition and of the full dataset (2 calls). Then for each
+ordering, before adding each example, check whether the current coalition's utility is within `tolerance` of $v(D)$, i.e. `abs(v_full - previous) < tolerance`. If it is, the
+example's marginal contribution is zero and you don't call `utility_fn`; since nothing changes, the same will be true for every later example in this ordering, so you can stop.
+Otherwise, proceed as in `mc_data_shapley`.
 
 With `tolerance=0`, your function should give exactly the same values as `mc_data_shapley` (with two more utility calls).
 '''
@@ -924,7 +998,8 @@ r'''
 <details>
 <summary>Help - should I still draw the rest of the permutation after truncating?</summary>
 
-You don't need to: `t.randperm` draws a whole ordering at once, so breaking out of the loop over its elements doesn't change the state of the generator for the next ordering. (If you drew examples one at a time, you'd have to be careful about this to match the test.)
+You don't need to: `t.randperm` draws a whole ordering at once, so breaking out of the loop over its elements doesn't change the state of the generator for the next ordering. (If
+you drew examples one at a time, you'd have to be careful about this to match the test.)
 </details>
 '''
 
@@ -935,7 +1010,8 @@ You don't need to: `t.randperm` draws a whole ordering at once, so breaking out 
 r'''
 ## How much accuracy does each training buy?
 
-Now let's measure both estimators against the exact values. For each budget of $M$ orderings and each of 20 random seeds, we run the estimator, count the utility calls and record the worst-case error $\max_i |\hat\phi_i - \phi_i|$. We'll use two truncation tolerances: 0.01 and 0.05, which are about 2% and 10% of $v(D) \approx 0.51$.
+Now let's measure both estimators against the exact values. For each budget of $M$ orderings and each of 20 random seeds, we run the estimator, count the utility calls and record
+the worst-case error $\max_i |\hat\phi_i - \phi_i|$. We'll use two truncation tolerances: 0.01 and 0.05, which are about 2% and 10% of $v(D) \approx 0.51$.
 
 We also put two reference points on the plot: exact enumeration (256 trainings, error zero) and leave-one-out (9 trainings, with its own error measured against Data Shapley).
 '''
@@ -988,13 +1064,18 @@ r'''
 <details>
 <summary>Help - how should I interpret this plot?</summary>
 
-**Monte Carlo (blue)** behaves like a textbook Monte Carlo estimator: on the log-log plot it's a straight line with slope about $-\tfrac{1}{2}$. Its worst-case error is 0.137 with 4 orderings (33 trainings), 0.067 with 16, 0.034 with 64 and 0.016 with 256 (2,049 trainings): each 4× increase in compute halves the error.
+**Monte Carlo (blue)** behaves like a textbook Monte Carlo estimator: on the log-log plot it's a straight line with slope about $-\tfrac{1}{2}$. Its worst-case error is 0.137 with
+4 orderings (33 trainings), 0.067 with 16, 0.034 with 64 and 0.016 with 256 (2,049 trainings): each 4× increase in compute halves the error.
 
-**Exact enumeration (dashed line)** costs 256 trainings and has zero error. At the same cost (32 orderings, 257 trainings), Monte Carlo still has a worst-case error of 0.050, and needs about 8 times more trainings to get to 0.016. On 8 points, enumerating is simply the better deal.
+**Exact enumeration (dashed line)** costs 256 trainings and has zero error. At the same cost (32 orderings, 257 trainings), Monte Carlo still has a worst-case error of 0.050, and
+needs about 8 times more trainings to get to 0.016. On 8 points, enumerating is simply the better deal.
 
-**Leave-one-out (diamond)** costs only 9 trainings, and its distance from Data Shapley (0.20) is smaller than Monte Carlo's with the same budget (one ordering, about 0.28). But unlike Monte Carlo, it can't be improved with more compute: it's an exact answer to a different question.
+**Leave-one-out (diamond)** costs only 9 trainings, and its distance from Data Shapley (0.20) is smaller than Monte Carlo's with the same budget (one ordering, about 0.28). But
+unlike Monte Carlo, it can't be improved with more compute: it's an exact answer to a different question.
 
-**Truncation** saves trainings, but less than you might hope on this problem, and at a price. With tolerance 0.01, 256 orderings use 1,721 trainings instead of 2,049 (16% fewer), but the error levels off at about 0.04 instead of continuing to fall. With tolerance 0.05, the saving is 54%, but the error is stuck at about 0.14 from 16 orderings onwards. That floor is the truncation bias: more orderings average away noise, not bias.
+**Truncation** saves trainings, but less than you might hope on this problem, and at a price. With tolerance 0.01, 256 orderings use 1,721 trainings instead of 2,049 (16% fewer),
+but the error levels off at about 0.04 instead of continuing to fall. With tolerance 0.05, the saving is 54%, but the error is stuck at about 0.14 from 16 orderings onwards. That
+floor is the truncation bias: more orderings average away noise, not bias.
 </details>
 '''
 
@@ -1006,7 +1087,10 @@ r'''
 <details>
 <summary>Question - why does truncation help so little on this problem, when it saves a lot on real datasets?</summary>
 
-Truncation only saves trainings when coalitions get close to $v(D)$ well before the end of the ordering. With 8 examples, a typical prefix of 4 or 5 examples is still far from the full dataset (and until the mislabelled point arrives, a coalition's utility can be *higher* than $v(D)$: removing point 6 raises the utility from 0.508 to 0.635, and being above $v(D)$ by more than the tolerance doesn't trigger truncation either). On a dataset with thousands of examples, the learning curve flattens long before the end of the ordering, so most of each ordering can be skipped. We'll measure exactly how much truncation would save on our 128 digits in section 5️⃣.
+Truncation only saves trainings when coalitions get close to $v(D)$ well before the end of the ordering. With 8 examples, a typical prefix of 4 or 5 examples is still far from the
+full dataset (and until the mislabelled point arrives, a coalition's utility can be *higher* than $v(D)$: removing point 6 raises the utility from 0.508 to 0.635, and being above
+$v(D)$ by more than the tolerance doesn't trigger truncation either). On a dataset with thousands of examples, the learning curve flattens long before the end of the ordering, so
+most of each ordering can be skipped. We'll measure exactly how much truncation would save on our 128 digits in section 5️⃣.
 </details>
 '''
 
@@ -1017,13 +1101,19 @@ Truncation only saves trainings when coalitions get close to $v(D)$ well before 
 r'''
 ## The scaling problem
 
-On 8 points, Monte Carlo is actually a *worse* deal than exact enumeration: 256 trainings buys you the exact answer one way, and an answer with a worst-case error of about 0.05 (32 orderings) the other. Monte Carlo only pays off when $2^n$ is astronomically larger than the number of trainings you can afford, which is to say, on any real dataset.
+On 8 points, Monte Carlo is actually a *worse* deal than exact enumeration: 256 trainings buys you the exact answer one way, and an answer with a worst-case error of about 0.05 (32
+orderings) the other. Monte Carlo only pays off when $2^n$ is astronomically larger than the number of trainings you can afford, which is to say, on any real dataset.
 
-But "affordable" is relative. Each ordering costs $n$ trainings. For our 128 digits, the 200 orderings we'll use in section 5️⃣ mean 25,600 trainings of a small network, per training seed. That's possible only because the network is tiny and each training takes milliseconds. For a dataset of $10^6$ examples, a single ordering is $10^6$ trainings; for a language model's pretraining set, even *one* retraining is a major expense. Retraining-based Data Shapley simply doesn't exist at that scale.
+But "affordable" is relative. Each ordering costs $n$ trainings. For our 128 digits, the 200 orderings we'll use in section 5️⃣ mean 25,600 trainings of a small network, per
+training seed. That's possible only because the network is tiny and each training takes milliseconds. For a dataset of $10^6$ examples, a single ordering is $10^6$ trainings; for a
+language model's pretraining set, even *one* retraining is a major expense. Retraining-based Data Shapley simply doesn't exist at that scale.
 
-There's also a conceptual issue, pointed out by Wang et al. Retraining-based Data Shapley values a training example's contribution to a *learning algorithm*: it's the same for every model the algorithm could produce, and with a stochastic algorithm (random init, random minibatches) it's really an average over many possible training runs. Often, though, we care about one specific model, the one we trained and deployed. Which examples made *that* model good or bad?
+There's also a conceptual issue, pointed out by Wang et al. Retraining-based Data Shapley values a training example's contribution to a *learning algorithm*: it's the same for
+every model the algorithm could produce, and with a stochastic algorithm (random init, random minibatches) it's really an average over many possible training runs. Often, though,
+we care about one specific model, the one we trained and deployed. Which examples made *that* model good or bad?
 
-Both problems are solved by changing the question. That's In-Run Data Shapley, and to build it we first need an efficient way of computing dot products between per-example gradients.
+Both problems are solved by changing the question. That's In-Run Data Shapley, and to build it we first need an efficient way of computing dot products between per-example
+gradients.
 '''
 
 # ! CELL TYPE: markdown
@@ -1053,13 +1143,15 @@ r'''
 r'''
 ## The digits
 
-From now on we'll work with a real (if small) dataset: the 8×8 handwritten digits that ship with scikit-learn (a copy of the UCI optical digits test set). We keep only 1s and 7s, and make three disjoint splits:
+From now on we'll work with a real (if small) dataset: the 8×8 handwritten digits that ship with scikit-learn (a copy of the UCI optical digits test set). We keep only 1s and 7s,
+and make three disjoint splits:
 
 - **train**: 128 images (64 of each digit), which we'll value;
 - **validation**: 48 images (24 of each), which define the utility, i.e. what "helpful" means;
 - **test**: 64 images (32 of each), which we only ever use to evaluate the effect of deleting data. No attribution score is computed from the test set.
 
-Then we flip the labels of 12 training images, 6 of each class. These are our planted "bad" examples. Real label noise is messier than this (it's often concentrated on genuinely ambiguous images), but planting it gives us something we can check every method against.
+Then we flip the labels of 12 training images, 6 of each class. These are our planted "bad" examples. Real label noise is messier than this (it's often concentrated on genuinely
+ambiguous images), but planting it gives us something we can check every method against.
 
 The data loading is in `utils.load_digit_splits`; the label flipping is below so you can see exactly what we did.
 '''
@@ -1129,11 +1221,15 @@ r'''
 r'''
 ## A network whose backward pass we can see
 
-Our model is a multilayer perceptron with tanh hidden layers and a single output logit. We store the parameters as a plain list of `(W, b)` pairs, one per layer, with `W` of shape `(d_in, d_out)`, so a layer computes `h @ W + b`. For the digits we'll use one hidden layer of width 16, i.e. $64 \to 16 \to 1$, which has $64 \cdot 16 + 16 + 16 + 1 = 1073$ parameters. A network with *no* hidden layers, `[(W, b)]`, is just logistic regression, which we'll use to rerun the toy problem in section 4️⃣.
+Our model is a multilayer perceptron with tanh hidden layers and a single output logit. We store the parameters as a plain list of `(W, b)` pairs, one per layer, with `W` of shape
+`(d_in, d_out)`, so a layer computes `h @ W + b`. For the digits we'll use one hidden layer of width 16, i.e. $64 \to 16 \to 1$, which has $64 \cdot 16 + 16 + 16 + 1 = 1073$
+parameters. A network with *no* hidden layers, `[(W, b)]`, is just logistic regression, which we'll use to rerun the toy problem in section 4️⃣.
 
-We'll write the forward and backward passes ourselves, without autograd. That's not because autograd can't compute per-example gradients (`torch.func.vmap` + `torch.func.grad` can). It's because we want to see *what a per-example gradient is made of*, and that structure is exactly what the ghost dot product exploits.
+We'll write the forward and backward passes ourselves, without autograd. That's not because autograd can't compute per-example gradients (`torch.func.vmap` + `torch.func.grad`
+can). It's because we want to see *what a per-example gradient is made of*, and that structure is exactly what the ghost dot product exploits.
 
-Notation: layer $k$ (counting from 0) takes input $a_k$ (so $a_0 = x$), and computes the pre-activation $s_k = a_k W_k + b_k$. For hidden layers the next input is $a_{k+1} = \tanh(s_k)$; the last layer's $s_{L-1}$ is the logit. For a single example with label $y$, the loss is $\ell = \text{BCE}(s_{L-1}, y)$.
+Notation: layer $k$ (counting from 0) takes input $a_k$ (so $a_0 = x$), and computes the pre-activation $s_k = a_k W_k + b_k$. For hidden layers the next input is $a_{k+1} =
+\tanh(s_k)$; the last layer's $s_{L-1}$ is the logit. For a single example with label $y$, the loss is $\ell = \text{BCE}(s_{L-1}, y)$.
 '''
 
 # ! CELL TYPE: code
@@ -1162,7 +1258,8 @@ r'''
 > You should spend up to 5 minutes on this exercise.
 > ```
 
-Implement `mlp_forward`, which returns the logits (shape `(batch,)`) and the list of every layer's **input** $[a_0, a_1, \dots, a_{L-1}]$ (each of shape `(batch, d_in)` for that layer). We'll need the layer inputs for the backward pass. Apply tanh after every layer except the last.
+Implement `mlp_forward`, which returns the logits (shape `(batch,)`) and the list of every layer's **input** $[a_0, a_1, \dots, a_{L-1}]$ (each of shape `(batch, d_in)` for that
+layer). We'll need the layer inputs for the backward pass. Apply tanh after every layer except the last.
 '''
 
 # ! CELL TYPE: code
@@ -1215,7 +1312,8 @@ def mlp_loss(params: Params, x: Float[Tensor, "batch d_in"], y: Float[Tensor, " 
 r'''
 ## Per-example gradients are outer products
 
-Write $d_k = \partial \ell / \partial s_k$ for the gradient of one example's loss with respect to layer $k$'s pre-activation (we'll call it the layer's **output gradient**). Two facts give us everything:
+Write $d_k = \partial \ell / \partial s_k$ for the gradient of one example's loss with respect to layer $k$'s pre-activation (we'll call it the layer's **output gradient**). Two
+facts give us everything:
 
 **1. The output gradients come from the usual backward recursion.** For the final layer, the derivative of the binary cross-entropy with respect to the logit is simply
 
@@ -1239,7 +1337,9 @@ $$
 
 (Throughout, we treat $a_k$ and $d_k$ as *row* vectors, as they are in the code, so $a_k^\top d_k$ is a column times a row: a matrix.)
 
-So for a batch of $B$ examples, the pair $(A_k, D_k)$ of shapes `(B, d_in)` and `(B, d_out)` is a compressed representation of all $B$ per-example gradients of layer $k$. We'll call these pairs the **factors** of the gradient. Ordinary backprop computes exactly these factors and then immediately sums over the batch ($A_k^\top D_k$) to get the batch gradient. We're going to stop just before that sum.
+So for a batch of $B$ examples, the pair $(A_k, D_k)$ of shapes `(B, d_in)` and `(B, d_out)` is a compressed representation of all $B$ per-example gradients of layer $k$. We'll
+call these pairs the **factors** of the gradient. Ordinary backprop computes exactly these factors and then immediately sums over the batch ($A_k^\top D_k$) to get the batch
+gradient. We're going to stop just before that sum.
 '''
 
 # ! CELL TYPE: markdown
@@ -1256,7 +1356,9 @@ r'''
 > You should spend up to 15-20 minutes on this exercise.
 > ```
 
-Implement `backprop_factors`, which returns a list with one `(a_k, d_k)` pair per layer (in forward order), for the **unreduced** per-example losses: don't divide by the batch size anywhere. `a_k` is layer $k$'s input, shape `(batch, d_in)`, and `d_k` is its output gradient, shape `(batch, d_out)`; for the last layer `d_out = 1`, so remember to add a trailing dimension.
+Implement `backprop_factors`, which returns a list with one `(a_k, d_k)` pair per layer (in forward order), for the **unreduced** per-example losses: don't divide by the batch size
+anywhere. `a_k` is layer $k$'s input, shape `(batch, d_in)`, and `d_k` is its output gradient, shape `(batch, d_out)`; for the last layer `d_out = 1`, so remember to add a trailing
+dimension.
 
 There's no test cell directly below this one: the easiest way to check the factors is to turn them into full gradients and compare against autograd, which is the next exercise.
 '''
@@ -1293,7 +1395,8 @@ r'''
 <details>
 <summary>Hint</summary>
 
-Start from `d = (t.sigmoid(logits) - y)[:, None]` and loop over layers backwards. At layer `k`, record `(layer_inputs[k], d)`, then (if `k > 0`) propagate: `d = (d @ W_k.T) * (1 - layer_inputs[k] ** 2)`. Note that `layer_inputs[k]` is $a_k = \tanh(s_{k-1})$, so it's the right thing to use for the tanh derivative of layer $k - 1$. Reverse the list at the end.
+Start from `d = (t.sigmoid(logits) - y)[:, None]` and loop over layers backwards. At layer `k`, record `(layer_inputs[k], d)`, then (if `k > 0`) propagate: `d = (d @ W_k.T) * (1 -
+layer_inputs[k] ** 2)`. Note that `layer_inputs[k]` is $a_k = \tanh(s_{k-1})$, so it's the right thing to use for the tanh derivative of layer $k - 1$. Reverse the list at the end.
 </details>
 '''
 
@@ -1311,7 +1414,9 @@ r'''
 > You should spend up to 10 minutes on this exercise.
 > ```
 
-To check the factors (and to have a slow reference implementation to compare against), implement `per_example_grads`, which turns the factors into explicit per-example gradient vectors, shape `(batch, n_params)`. Use this parameter order: for each layer in turn, the weight gradient flattened in `(d_in, d_out)` row-major order, then the bias gradient. (That's the order you get from `t.cat([W.flatten(), b] for each layer)`.)
+To check the factors (and to have a slow reference implementation to compare against), implement `per_example_grads`, which turns the factors into explicit per-example gradient
+vectors, shape `(batch, n_params)`. Use this parameter order: for each layer in turn, the weight gradient flattened in `(d_in, d_out)` row-major order, then the bias gradient.
+(That's the order you get from `t.cat([W.flatten(), b] for each layer)`.)
 
 The test compares your result, built from your `backprop_factors`, against per-example gradients from autograd.
 '''
@@ -1347,7 +1452,8 @@ r'''
 <details>
 <summary>Hint</summary>
 
-For one layer, `a[:, :, None] * d[:, None, :]` has shape `(batch, d_in, d_out)` and contains every example's outer product. Flatten the last two dimensions, then concatenate it and `d` (the bias gradient) for every layer along dimension 1.
+For one layer, `a[:, :, None] * d[:, None, :]` has shape `(batch, d_in, d_out)` and contains every example's outer product. Flatten the last two dimensions, then concatenate it and
+`d` (the bias gradient) for every layer along dimension 1.
 </details>
 '''
 
@@ -1358,21 +1464,27 @@ For one layer, `a[:, :, None] * d[:, None, :]` has shape `(batch, d_in, d_out)` 
 r'''
 ## The ghost dot product
 
-In-Run Data Shapley needs, at every training step, the dot product between each training example's gradient and the validation gradient. Materialising the per-example gradients costs $O(B \cdot P)$ memory for a batch of $B$ examples and a model with $P$ parameters. For a language model with $P = 10^9$ that's out of the question.
+In-Run Data Shapley needs, at every training step, the dot product between each training example's gradient and the validation gradient. Materialising the per-example gradients
+costs $O(B \cdot P)$ memory for a batch of $B$ examples and a model with $P$ parameters. For a language model with $P = 10^9$ that's out of the question.
 
 But look at the dot product of two per-example weight gradients of the same layer. Since they're both outer products,
 
 $$
-\big\langle a_i^\top d_i,\; a_j^\top d_j \big\rangle_F = \sum_{p, q} a_{ip}\, d_{iq}\, a_{jp}\, d_{jq} = \Big(\sum_p a_{ip} a_{jp}\Big)\Big(\sum_q d_{iq} d_{jq}\Big) = (a_i \cdot a_j)(d_i \cdot d_j).
+\big\langle a_i^\top d_i,\; a_j^\top d_j \big\rangle_F = \sum_{p, q} a_{ip}\, d_{iq}\, a_{jp}\, d_{jq} = \Big(\sum_p a_{ip} a_{jp}\Big)\Big(\sum_q d_{iq} d_{jq}\Big) = (a_i \cdot
+a_j)(d_i \cdot d_j).
 $$
 
-The dot product of two $d_{in} \times d_{out}$ matrices has become the product of two dot products, of length $d_{in}$ and $d_{out}$. The bias gradients add $d_i \cdot d_j$, and different layers own different parameters, so the full gradient dot product is a sum over layers:
+The dot product of two $d_{in} \times d_{out}$ matrices has become the product of two dot products, of length $d_{in}$ and $d_{out}$. The bias gradients add $d_i \cdot d_j$, and
+different layers own different parameters, so the full gradient dot product is a sum over layers:
 
 $$
 g_i \cdot g_j = \sum_{k} \big(a_{k,i} \cdot a_{k,j} + 1\big)\big(d_{k,i} \cdot d_{k,j}\big).
 $$
 
-For two batches at once, this is a pair of Gram matrices per layer and an elementwise product: $(A_k A_k'^\top + 1) \odot (D_k D_k'^\top)$. This is the **ghost dot product** (the name comes from "ghost clipping" in differentially private training, which uses the same trick to compute per-example gradient *norms*; see Li et al. in the further reading). In-Run Data Shapley applies it with the validation examples appended to the training batch, so that one backward pass over `[training batch; validation batch]` produces every factor needed for all the train-validation dot products, at roughly the cost of an ordinary training step.
+For two batches at once, this is a pair of Gram matrices per layer and an elementwise product: $(A_k A_k'^\top + 1) \odot (D_k D_k'^\top)$. This is the **ghost dot product** (the
+name comes from "ghost clipping" in differentially private training, which uses the same trick to compute per-example gradient *norms*; see Li et al. in the further reading).
+In-Run Data Shapley applies it with the validation examples appended to the training batch, so that one backward pass over `[training batch; validation batch]` produces every
+factor needed for all the train-validation dot products, at roughly the cost of an ordinary training step.
 
 <details>
 <summary>Aside - when does this identity break?</summary>
@@ -1399,7 +1511,8 @@ r'''
 > You should spend up to 10 minutes on this exercise.
 > ```
 
-Implement `ghost_dot_products`, which takes the factors of two batches (of sizes $B_1$ and $B_2$, for the same network) and returns the `(B_1, B_2)` matrix of per-example gradient dot products. No tensor in your implementation should have a dimension of size `n_params`.
+Implement `ghost_dot_products`, which takes the factors of two batches (of sizes $B_1$ and $B_2$, for the same network) and returns the `(B_1, B_2)` matrix of per-example gradient
+dot products. No tensor in your implementation should have a dimension of size `n_params`.
 '''
 
 # ! CELL TYPE: code
@@ -1414,6 +1527,8 @@ def ghost_dot_products(
     # raise NotImplementedError()
     # END EXERCISE
     # SOLUTION
+    if len(factors_1) != len(factors_2):
+        raise ValueError("Gradient factors must describe the same number of layers.")
     total = 0.0
     for (a_1, d_1), (a_2, d_2) in zip(factors_1, factors_2):
         total = total + (a_1 @ a_2.T + 1) * (d_1 @ d_2.T)
@@ -1434,7 +1549,8 @@ r'''
 <details>
 <summary>Hint</summary>
 
-For each layer, `a_1 @ a_2.T` is the `(B_1, B_2)` Gram matrix of inputs and `d_1 @ d_2.T` the Gram matrix of output gradients. Add 1 to the first (for the bias), multiply elementwise, and sum over layers.
+For each layer, `a_1 @ a_2.T` is the `(B_1, B_2)` Gram matrix of inputs and `d_1 @ d_2.T` the Gram matrix of output gradients. Add 1 to the first (for the bias), multiply
+elementwise, and sum over layers.
 </details>
 '''
 
@@ -1521,7 +1637,9 @@ The batch gradient of layer $k$ is $\sum_i a_{k,i}^\top d_{k,i} = A_k^\top D_k$,
 r'''
 ## Training on the digits
 
-Our training recipe for the digits: the $64 \to 16 \to 1$ MLP, plain SGD with learning rate 0.1, minibatches of 4, and 4 epochs over the 128 training images, for $T = 128$ steps in total. The **schedule** (which images are in which minibatch, in which order) is fixed by a seed, as is the initialisation. We'll use three seeds, 0, 1 and 2, for every experiment on the digits, and report all three.
+Our training recipe for the digits: the $64 \to 16 \to 1$ MLP, plain SGD with learning rate 0.1, minibatches of 4, and 4 epochs over the 128 training images, for $T = 128$ steps in
+total. The **schedule** (which images are in which minibatch, in which order) is fixed by a seed, as is the initialisation. We'll use three seeds, 0, 1 and 2, for every experiment
+on the digits, and report all three.
 
 Let's train the seed-0 model, and compare it against the same run with the flipped images switched off. This is the experiment from the introduction.
 '''
@@ -1574,7 +1692,9 @@ flipped images switched off   val loss 0.0420 (acc 100.0%)   test loss 0.0571 (a
 
 </details>
 
-1s versus 7s is an easy task: both models classify every validation image correctly, and the model trained on all 128 images gets only one of the 64 test images wrong. The 12 flipped labels show up mostly in the *loss*: the model trained on them is less confident on clean data, because it has been told that some perfectly normal-looking 1s are 7s. Throughout the rest of the notebook, "helpful" means "reduces validation loss", and the test loss is what we'll use to check whether deleting data really helped.
+1s versus 7s is an easy task: both models classify every validation image correctly, and the model trained on all 128 images gets only one of the 64 test images wrong. The 12
+flipped labels show up mostly in the *loss*: the model trained on them is less confident on clean data, because it has been told that some perfectly normal-looking 1s are 7s.
+Throughout the rest of the notebook, "helpful" means "reduces validation loss", and the test loss is what we'll use to check whether deleting data really helped.
 '''
 
 # ! CELL TYPE: markdown
@@ -1584,9 +1704,12 @@ flipped images switched off   val loss 0.0420 (acc 100.0%)   test loss 0.0571 (a
 r'''
 ## What are the training examples saying to the validation set?
 
-Before building anything on top of the ghost dot product, let's look at what it computes. The entry $g_i \cdot g_j$ for training image $i$ and validation image $j$ has a direct meaning: an SGD step on example $i$ alone changes the loss on $j$ by approximately $-\eta\, g_i \cdot g_j$. So a **positive** dot product means training on $i$ *reduces* the loss on $j$ (they "agree"), and a negative one means it increases it.
+Before building anything on top of the ghost dot product, let's look at what it computes. The entry $g_i \cdot g_j$ for training image $i$ and validation image $j$ has a direct
+meaning: an SGD step on example $i$ alone changes the loss on $j$ by approximately $-\eta\, g_i \cdot g_j$. So a **positive** dot product means training on $i$ *reduces* the loss
+on $j$ (they "agree"), and a negative one means it increases it.
 
-The cell below computes the full $128 \times 48$ matrix at initialisation and at the end of training, with the training images sorted by digit and by whether their label was flipped, and the validation images sorted by digit.
+The cell below computes the full $128 \times 48$ matrix at initialisation and at the end of training, with the training images sorted by digit and by whether their label was
+flipped, and the validation images sorted by digit.
 '''
 
 # ! CELL TYPE: code
@@ -1633,11 +1756,20 @@ r'''
 <details>
 <summary>Help - how should I interpret these heatmaps?</summary>
 
-**At initialisation**, the pattern is a checkerboard by *label*, not by digit. Every training image labelled '7', including the six 1s that were flipped to '7', has positive dot products with the validation 7s and negative ones with the validation 1s, and vice versa. A random network barely distinguishes 1s from 7s, so a training step mostly says "push the logit up" or "push it down", and the label decides which. The *size* of each entry still depends on the images, through the $a_i \cdot a_j$ factor, which is larger for similar-looking images. A 1 labelled '7' pushes in the direction that helps the validation 7s, but it *looks like* the validation 1s, so its (negative) dot products with the 1s it hurts tend to be larger than its (positive) ones with the 7s it helps. On average over the validation set, clean rows are positive (+0.280) and flipped rows slightly negative (-0.083).
+**At initialisation**, the pattern is a checkerboard by *label*, not by digit. Every training image labelled '7', including the six 1s that were flipped to '7', has positive dot
+products with the validation 7s and negative ones with the validation 1s, and vice versa. A random network barely distinguishes 1s from 7s, so a training step mostly says "push the
+logit up" or "push it down", and the label decides which. The *size* of each entry still depends on the images, through the $a_i \cdot a_j$ factor, which is larger for
+similar-looking images. A 1 labelled '7' pushes in the direction that helps the validation 7s, but it *looks like* the validation 1s, so its (negative) dot products with the 1s it
+hurts tend to be larger than its (positive) ones with the 7s it helps. On average over the validation set, clean rows are positive (+0.280) and flipped rows slightly negative
+(-0.083).
 
-**After training**, almost everything has faded. The model fits the clean training images, so their output gradients $\sigma(s) - y$ are tiny, and so are their dot products with anything (mean +0.046). The rows that stay bright are the flipped ones (mean -0.269). A 1 labelled '7' now has a strongly negative dot product with the validation 1s (a step on it would make the model worse on real 1s) and a weaker positive one with the validation 7s. A few validation columns are brighter than the rest: these are the validation images with the highest loss, whose own output gradients are therefore the largest.
+**After training**, almost everything has faded. The model fits the clean training images, so their output gradients $\sigma(s) - y$ are tiny, and so are their dot products with
+anything (mean +0.046). The rows that stay bright are the flipped ones (mean -0.269). A 1 labelled '7' now has a strongly negative dot product with the validation 1s (a step on it
+would make the model worse on real 1s) and a weaker positive one with the validation 7s. A few validation columns are brighter than the rest: these are the validation images with
+the highest loss, whose own output gradients are therefore the largest.
 
-This matrix, evaluated at every training step, is the raw material of In-Run Data Shapley. Each step credits the examples in the minibatch with their row of this matrix, averaged over the validation columns and scaled by the learning rate.
+This matrix, evaluated at every training step, is the raw material of In-Run Data Shapley. Each step credits the examples in the minibatch with their row of this matrix, averaged
+over the validation columns and scaled by the learning rate.
 </details>
 '''
 
@@ -1648,7 +1780,9 @@ This matrix, evaluated at every training step, is the raw material of In-Run Dat
 r'''
 ## What does the ghost trick buy?
 
-On our 1073-parameter network, materialising per-example gradients is cheap. The point of the ghost dot product is how the two approaches *scale*. The cell below times both ways of computing a $32 \times 48$ matrix of train-validation dot products, for networks of increasing width, and checks that they agree. (Timings depend on your machine and on what else it's doing; we take the best of 5 runs.)
+On our 1073-parameter network, materialising per-example gradients is cheap. The point of the ghost dot product is how the two approaches *scale*. The cell below times both ways of
+computing a $32 \times 48$ matrix of train-validation dot products, for networks of increasing width, and checks that they agree. (Timings depend on your machine and on what else
+it's doing; we take the best of 5 runs.)
 '''
 
 # ! CELL TYPE: code
@@ -1692,9 +1826,12 @@ r'''
 <details>
 <summary>Help - how should I interpret this plot?</summary>
 
-At the size of our digits model (about 1,000 parameters) the two approaches differ by a factor of about 5, and both take a fraction of a millisecond. As the hidden layer widens, the cost of materialising grows in proportion to the number of parameters (it builds an $80 \times P$ matrix), while the ghost dot product only needs Gram matrices of size $32 \times 48$ over vectors of length $d_{in}$ and $d_{out}$. At 135,000 parameters the ghost version is about 130 times faster, and both give the same numbers (the cell asserts this).
+At the size of our digits model (about 1,000 parameters) the two approaches differ by a factor of about 5, and both take a fraction of a millisecond. As the hidden layer widens,
+the cost of materialising grows in proportion to the number of parameters (it builds an $80 \times P$ matrix), while the ghost dot product only needs Gram matrices of size $32
+\times 48$ over vectors of length $d_{in}$ and $d_{out}$. At 135,000 parameters the ghost version is about 130 times faster, and both give the same numbers (the cell asserts this).
 
-The bigger difference for real models is memory. Materialising per-example gradients for 80 examples of a 1-billion-parameter model would take 320 GB in float32. The ghost dot product never stores anything larger than the activations and output gradients that backprop computes anyway.
+The bigger difference for real models is memory. Materialising per-example gradients for 80 examples of a 1-billion-parameter model would take 320 GB in float32. The ghost dot
+product never stores anything larger than the activations and output gradients that backprop computes anyway.
 </details>
 '''
 
@@ -1735,7 +1872,9 @@ $$
 \theta_{t+1} = \theta_t - \frac{\eta}{B} \sum_{i \in \mathcal{B}_t} g_{t,i}, \qquad g_{t,i} = \nabla_\theta\, \ell(\theta_t; z_i).
 $$
 
-The examples in the minibatch are the only ones that affect this step, so define a small cooperative game whose players are the $B$ examples in $\mathcal{B}_t$. For a coalition $S \subseteq \mathcal{B}_t$, the **local utility** is the validation loss improvement we'd get from applying only $S$'s part of the update, starting from the *same* checkpoint $\theta_t$ and keeping the same denominator:
+The examples in the minibatch are the only ones that affect this step, so define a small cooperative game whose players are the $B$ examples in $\mathcal{B}_t$. For a coalition $S
+\subseteq \mathcal{B}_t$, the **local utility** is the validation loss improvement we'd get from applying only $S$'s part of the update, starting from the *same* checkpoint
+$\theta_t$ and keeping the same denominator:
 
 $$
 U_t(S) = L_{val}(\theta_t) - L_{val}\Big(\theta_t - \frac{\eta}{B}\sum_{i \in S} g_{t,i}\Big).
@@ -1753,9 +1892,12 @@ $$
 \phi_i^{\text{in-run}} = \sum_{t\,:\, i \in \mathcal{B}_t} \phi_i(U_t).
 $$
 
-Because each local game is efficient, the In-Run values of all examples add up to the actual improvement in validation loss over the whole run. This is what the paper calls a "contribution accountant": every bit of the improvement is credited to some example at some step.
+Because each local game is efficient, the In-Run values of all examples add up to the actual improvement in validation loss over the whole run. This is what the paper calls a
+"contribution accountant": every bit of the improvement is credited to some example at some step.
 
-Notice what this does and doesn't ask. Each local game starts from $\theta_t$, the checkpoint the *real* run reached with all the data. It never asks what would have happened later if example $i$ had been missing earlier (that would need retraining). In exchange, everything can be computed during the run, with no retraining at all. With minibatches of 4, each local game has only $2^4 = 16$ coalitions, so we can even compute it exactly. That's what we'll do first.
+Notice what this does and doesn't ask. Each local game starts from $\theta_t$, the checkpoint the *real* run reached with all the data. It never asks what would have happened later
+if example $i$ had been missing earlier (that would need retraining). In exchange, everything can be computed during the run, with no retraining at all. With minibatches of 4, each
+local game has only $2^4 = 16$ coalitions, so we can even compute it exactly. That's what we'll do first.
 '''
 
 # ! CELL TYPE: markdown
@@ -1772,7 +1914,9 @@ r'''
 > You should spend up to 10-15 minutes on this exercise.
 > ```
 
-Implement `local_game_values`. Given the current parameters, the factors of the current minibatch (from `backprop_factors`), the validation set, the learning rate and the denominator, return a tensor of the $2^B$ local utilities $U_t(S)$, indexed by **bitmask**: entry `m` is the utility of the coalition $\{i : \text{bit } i \text{ of } m \text{ is } 1\}$. So entry 0 is the empty coalition (utility 0) and entry $2^B - 1$ is the whole batch.
+Implement `local_game_values`. Given the current parameters, the factors of the current minibatch (from `backprop_factors`), the validation set, the learning rate and the
+denominator, return a tensor of the $2^B$ local utilities $U_t(S)$, indexed by **bitmask**: entry `m` is the utility of the coalition $\{i : \text{bit } i \text{ of } m \text{ is }
+1\}$. So entry 0 is the empty coalition (utility 0) and entry $2^B - 1$ is the whole batch.
 
 Use `sgd_step` with 0/1 `weights` to apply each coalition's part of the update. Every coalition starts from the same `params`.
 '''
@@ -1812,7 +1956,8 @@ r'''
 <details>
 <summary>Hint</summary>
 
-For each `mask` in `range(2 ** B)`, the weights are `[(mask >> i) & 1 for i in range(B)]`. Compute `mlp_loss(params, val_x, val_y) - mlp_loss(sgd_step(params, factors, lr, denominator, weights), val_x, val_y)`.
+For each `mask` in `range(2 ** B)`, the weights are `[(mask >> i) & 1 for i in range(B)]`. Compute `mlp_loss(params, val_x, val_y) - mlp_loss(sgd_step(params, factors, lr,
+denominator, weights), val_x, val_y)`.
 </details>
 '''
 
@@ -1821,7 +1966,8 @@ For each `mask` in `range(2 ** B)`, the weights are `[(mask >> i) & 1 for i in r
 # ! TAGS: []
 
 r'''
-A local game is just another cooperative game, so we can reuse `exact_data_shapley` from section 1️⃣ to allocate it. We only need to turn the bitmask-indexed table into a function of `frozenset`s:
+A local game is just another cooperative game, so we can reuse `exact_data_shapley` from section 1️⃣ to allocate it. We only need to turn the bitmask-indexed table into a function
+of `frozenset`s:
 '''
 
 # ! CELL TYPE: code
@@ -1830,6 +1976,9 @@ A local game is just another cooperative game, so we can reuse `exact_data_shapl
 
 def exact_local_shapley(values: Float[Tensor, " two_to_the_B"]) -> Float[Tensor, " B"]:
     """Exact Shapley values of a bitmask-indexed game, using exact_data_shapley from section 1."""
+    n_coalitions = values.numel()
+    if values.ndim != 1 or n_coalitions < 2 or n_coalitions & (n_coalitions - 1):
+        raise ValueError("Expected a one-dimensional complete power-of-two coalition table.")
     batch_size = values.numel().bit_length() - 1
     shapley, _ = exact_data_shapley(lambda S: values[sum(1 << i for i in S)].item(), batch_size)
     return shapley
@@ -1842,21 +1991,25 @@ def exact_local_shapley(values: Float[Tensor, " two_to_the_B"]) -> Float[Tensor,
 r'''
 ## The first-order approximation
 
-Enumerating $2^B$ coalitions is fine for $B = 4$, but real minibatches have hundreds or thousands of examples. The paper's way out is a Taylor expansion of the local utility around $\theta_t$. Write $\alpha = \eta / B$ and $g_{val} = \nabla_\theta L_{val}(\theta_t)$. To first order,
+Enumerating $2^B$ coalitions is fine for $B = 4$, but real minibatches have hundreds or thousands of examples. The paper's way out is a Taylor expansion of the local utility around
+$\theta_t$. Write $\alpha = \eta / B$ and $g_{val} = \nabla_\theta L_{val}(\theta_t)$. To first order,
 
 $$
 U_t(S) \approx L_{val}(\theta_t) - \Big(L_{val}(\theta_t) - \alpha\, g_{val} \cdot \sum_{i \in S} g_{t,i}\Big) = \sum_{i \in S} \alpha\, g_{val} \cdot g_{t,i}.
 $$
 
-This approximate game is **additive**: the utility of a coalition is a sum of one term per member, with no interactions. The Shapley value of an additive game is just each player's own term, so
+This approximate game is **additive**: the utility of a coalition is a sum of one term per member, with no interactions. The Shapley value of an additive game is just each player's
+own term, so
 
 $$
 \phi^{(1)}_i(U_t) = \frac{\eta}{B}\, g_{t,i} \cdot g_{val}.
 $$
 
-That's the whole first-order method: the learning rate times the dot product between the example's gradient and the validation gradient, summed over the steps where the example appears. (If you've met TracIn, this should look familiar: TracIn is the same sum, evaluated at a handful of saved checkpoints rather than at every step. See [16.10].)
+That's the whole first-order method: the learning rate times the dot product between the example's gradient and the validation gradient, summed over the steps where the example
+appears. (If you've met TracIn, this should look familiar: TracIn is the same sum, evaluated at a handful of saved checkpoints rather than at every step. See [16.10].)
 
-Our validation loss is the *mean* over 48 validation images, so $g_{val}$ is the mean of the 48 per-example validation gradients, and $g_{t,i} \cdot g_{val}$ is the mean of row $i$ of the ghost dot product matrix between the batch and the validation set.
+Our validation loss is the *mean* over 48 validation images, so $g_{val}$ is the mean of the 48 per-example validation gradients, and $g_{t,i} \cdot g_{val}$ is the mean of row $i$
+of the ghost dot product matrix between the batch and the validation set.
 '''
 
 # ! CELL TYPE: markdown
@@ -1873,7 +2026,8 @@ r'''
 > You should spend up to 5 minutes on this exercise.
 > ```
 
-Implement `first_order_credit`, which takes the `(B, n_val)` matrix of dot products between the minibatch's and the validation examples' gradients, and returns the first-order credit of each minibatch example, shape `(B,)`.
+Implement `first_order_credit`, which takes the `(B, n_val)` matrix of dot products between the minibatch's and the validation examples' gradients, and returns the first-order
+credit of each minibatch example, shape `(B,)`.
 '''
 
 # ! CELL TYPE: code
@@ -1902,21 +2056,28 @@ if MAIN:
 r'''
 ## The second-order approximation
 
-The first-order game ignores two things: the curvature of the validation loss, and the fact that examples in the same minibatch *interact* (if two examples push in the same direction, the second push is worth less once the first has happened). Both show up at second order. With $H_{val} = \nabla^2_\theta L_{val}(\theta_t)$ and $\Delta_S = -\alpha \sum_{i \in S} g_{t,i}$,
+The first-order game ignores two things: the curvature of the validation loss, and the fact that examples in the same minibatch *interact* (if two examples push in the same
+direction, the second push is worth less once the first has happened). Both show up at second order. With $H_{val} = \nabla^2_\theta L_{val}(\theta_t)$ and $\Delta_S = -\alpha
+\sum_{i \in S} g_{t,i}$,
 
 $$
-U_t(S) \approx -g_{val} \cdot \Delta_S - \tfrac{1}{2} \Delta_S^\top H_{val} \Delta_S = \alpha \sum_{i \in S} g_{val} \cdot g_{t,i} - \frac{\alpha^2}{2} \sum_{i \in S} \sum_{j \in S} g_{t,i}^\top H_{val}\, g_{t,j}.
+U_t(S) \approx -g_{val} \cdot \Delta_S - \tfrac{1}{2} \Delta_S^\top H_{val} \Delta_S = \alpha \sum_{i \in S} g_{val} \cdot g_{t,i} - \frac{\alpha^2}{2} \sum_{i \in S} \sum_{j \in
+S} g_{t,i}^\top H_{val}\, g_{t,j}.
 $$
 
-The double sum contains a *self* term $g_i^\top H g_i$ for every member, and a *pairwise* term $2\, g_i^\top H g_j$ for every unordered pair. The Shapley value of a self term goes entirely to its owner, and the Shapley value of a pairwise term (a game where the payoff only appears when both $i$ and $j$ are present) is split equally between the two. Adding these up,
+The double sum contains a *self* term $g_i^\top H g_i$ for every member, and a *pairwise* term $2\, g_i^\top H g_j$ for every unordered pair. The Shapley value of a self term goes
+entirely to its owner, and the Shapley value of a pairwise term (a game where the payoff only appears when both $i$ and $j$ are present) is split equally between the two. Adding
+these up,
 
 $$
 \phi^{(2)}_i(U_t) = \underbrace{\alpha\, g_{t,i} \cdot g_{val}}_{\text{first order}} \;-\; \frac{\alpha^2}{2}\, g_{t,i}^\top H_{val} \Big(\sum_{j \in \mathcal{B}_t} g_{t,j}\Big).
 $$
 
-The sum inside the brackets is the batch gradient (times $B$), so the correction needs one **Hessian-vector product** $H_{val} v$ per step, with $v = \sum_j g_{t,j}$, followed by the dot product of each example's gradient with the vector $H_{val} v$.
+The sum inside the brackets is the batch gradient (times $B$), so the correction needs one **Hessian-vector product** $H_{val} v$ per step, with $v = \sum_j g_{t,j}$, followed by
+the dot product of each example's gradient with the vector $H_{val} v$.
 
-Computing a Hessian-vector product is a standard autograd operation ("double backward"), and it isn't what this section is about, so we've written it for you. It takes a vector in the same `Params` format as the parameters.
+Computing a Hessian-vector product is a standard autograd operation ("double backward"), and it isn't what this section is about, so we've written it for you. It takes a vector in
+the same `Params` format as the parameters.
 '''
 
 # ! CELL TYPE: code
@@ -2056,7 +2217,8 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-Before we accumulate anything, let's look at a single local game: the first minibatch of the seed-0 digits run, with the real learning rate and with a 10× larger one. Make a prediction: which approximation will be closer to the exact values, and how will that change with the learning rate?
+Before we accumulate anything, let's look at a single local game: the first minibatch of the seed-0 digits run, with the real learning rate and with a 10× larger one. Make a
+prediction: which approximation will be closer to the exact values, and how will that change with the learning rate?
 '''
 
 # ! CELL TYPE: code
@@ -2092,9 +2254,15 @@ lr  credit
     first order   0.0723  0.2039  0.1785 -0.0934  0.3613
     second order -0.6365 -0.3548 -0.4738  0.4573 -1.0078</pre>
 
-**At the real learning rate (0.1)**, the second-order credit agrees with the exact local Shapley values to about $10^{-4}$, while first-order credit overstates the step's improvement by 60% (0.036 vs 0.0225). The error isn't spread evenly: example #44 gets +0.0072 from the first-order formula but essentially nothing (+0.0002) from the exact game. The second-order term, which accounts for the curvature of the validation loss and for #44's interactions with the other three examples, removes almost all of its first-order credit. (#44 is one of the flipped images, a 1 labelled '7'. At step 0 the network can't yet tell 1s from 7s, so, as the heatmap showed, a flipped example's gradient is only weakly harmful on average, and an individual one can even look slightly helpful.)
+**At the real learning rate (0.1)**, the second-order credit agrees with the exact local Shapley values to about $10^{-4}$, while first-order credit overstates the step's
+improvement by 60% (0.036 vs 0.0225). The error isn't spread evenly: example #44 gets +0.0072 from the first-order formula but essentially nothing (+0.0002) from the exact game.
+The second-order term, which accounts for the curvature of the validation loss and for #44's interactions with the other three examples, removes almost all of its first-order
+credit. (#44 is one of the flipped images, a 1 labelled '7'. At step 0 the network can't yet tell 1s from 7s, so, as the heatmap showed, a flipped example's gradient is only weakly
+harmful on average, and an individual one can even look slightly helpful.)
 
-**At 10× the learning rate**, the step overshoots: the actual update makes the validation loss *worse* (the exact local values sum to -0.42). First-order credit is exactly 10 times larger than before (it's linear in the learning rate) and still reports an improvement. Second-order now overcorrects, to -1.01. When a step is too large for a quadratic approximation, neither Taylor expansion can be trusted, but the exact local game is still exact.
+**At 10× the learning rate**, the step overshoots: the actual update makes the validation loss *worse* (the exact local values sum to -0.42). First-order credit is exactly 10 times
+larger than before (it's linear in the learning rate) and still reports an improvement. Second-order now overcorrects, to -1.01. When a step is too large for a quadratic
+approximation, neither Taylor expansion can be trusted, but the exact local game is still exact.
 </details>
 '''
 
@@ -2112,7 +2280,8 @@ r'''
 > You should spend up to 20-25 minutes on this exercise.
 > ```
 
-Now put it together. Implement `run_in_run_shapley`, which trains the model with plain SGD over the schedule (exactly like `sgd_train` without `keep`) and, at every step, *before* updating the parameters:
+Now put it together. Implement `run_in_run_shapley`, which trains the model with plain SGD over the schedule (exactly like `sgd_train` without `keep`) and, at every step, *before*
+updating the parameters:
 
 1. computes the factors of the minibatch and of the validation set at the current parameters;
 2. computes the first-order and second-order credit of the minibatch examples (with denominator `len(batch)`);
@@ -2187,13 +2356,15 @@ r'''
 <details>
 <summary>Hint</summary>
 
-Keep three `(T, n)` matrices of zeros. At step `step`, `per_step["first"][step].index_add_(0, batch, first)` writes the batch's credits into the right columns. The totals are the sums over steps. Compute all the credits *before* calling `sgd_step`, so they're evaluated at $\theta_t$, not $\theta_{t+1}$.
+Keep three `(T, n)` matrices of zeros. At step `step`, `per_step["first"][step].index_add_(0, batch, first)` writes the batch's credits into the right columns. The totals are the
+sums over steps. Compute all the credits *before* calling `sgd_step`, so they're evaluated at $\theta_t$, not $\theta_{t+1}$.
 </details>
 
 <details>
 <summary>Help - the telescoping test fails.</summary>
 
-The exact local values of step $t$ should add up to `losses[t] - losses[t + 1]`. If they don't, check that `local_game_values` and your training step use the same denominator (`len(batch)`), and that you compute the local game at the parameters *before* the update.
+The exact local values of step $t$ should add up to `losses[t] - losses[t + 1]`. If they don't, check that `local_game_values` and your training step use the same denominator
+(`len(batch)`), and that you compute the local game at the parameters *before* the update.
 </details>
 '''
 
@@ -2204,7 +2375,9 @@ The exact local values of step $t$ should add up to `losses[t] - losses[t + 1]`.
 r'''
 ## Validation 1: In-Run vs exact Data Shapley on the toy problem
 
-On the toy problem we know the exact Data Shapley values, so let's start there. Logistic regression is our MLP with no hidden layers, and full-batch gradient descent is SGD with a schedule that contains all 8 examples at every one of the 40 steps. We first check that this really is the same learning algorithm as `train_on_subset` (it should give exactly the same parameters), then compute In-Run values with exact local games of $2^8 = 256$ coalitions per step.
+On the toy problem we know the exact Data Shapley values, so let's start there. Logistic regression is our MLP with no hidden layers, and full-batch gradient descent is SGD with a
+schedule that contains all 8 examples at every one of the 40 steps. We first check that this really is the same learning algorithm as `train_on_subset` (it should give exactly the
+same parameters), then compute In-Run values with exact local games of $2^8 = 256$ coalitions per step.
 '''
 
 # ! CELL TYPE: code
@@ -2282,11 +2455,19 @@ In-Run, second order  total 0.5079   correlation with exact Data Shapley 0.994
 <details>
 <summary>Help - how should I interpret this plot?</summary>
 
-First, the sanity checks. The accountant reproduces `train_on_subset` exactly, and the exact local values add up to 0.5082, which is both the actual improvement of the run and $v(D)$. On this gently-trained problem (small steps, 40 of them), the Taylor approximations are good: first order allocates 5% too much in total, second order is within 0.001.
+First, the sanity checks. The accountant reproduces `train_on_subset` exactly, and the exact local values add up to 0.5082, which is both the actual improvement of the run and
+$v(D)$. On this gently-trained problem (small steps, 40 of them), the Taylor approximations are good: first order allocates 5% too much in total, second order is within 0.001.
 
-**In-Run values are not Data Shapley values.** All three In-Run variants have a correlation of 0.994 with exact Data Shapley, and they agree on the big picture: the duplicates are tied, the mislabelled point is at the bottom, and the rare positive is the least valuable helpful point. But the correlation is dominated by that one outlier. Among the seven helpful points the orderings differ (point 3 is the most valuable for In-Run, but fifth for Data Shapley), and the magnitudes are very different: In-Run gives the mislabelled point -0.70, more than twice its Data Shapley value of -0.33, and correspondingly more to every helpful point, since both allocations add up to the same 0.508.
+**In-Run values are not Data Shapley values.** All three In-Run variants have a correlation of 0.994 with exact Data Shapley, and they agree on the big picture: the duplicates are
+tied, the mislabelled point is at the bottom, and the rare positive is the least valuable helpful point. But the correlation is dominated by that one outlier. Among the seven
+helpful points the orderings differ (point 3 is the most valuable for In-Run, but fifth for Data Shapley), and the magnitudes are very different: In-Run gives the mislabelled point
+-0.70, more than twice its Data Shapley value of -0.33, and correspondingly more to every helpful point, since both allocations add up to the same 0.508.
 
-Why? In-Run Data Shapley accounts for *one* trajectory: the full-data run. In that run, point 6 trains alongside its two correctly-labelled copies at every step, and at every step its gradient points in exactly the opposite direction to theirs. The accountant books each push separately: the copies' pushes as helpful, point 6's push as harmful, step after step. Data Shapley instead averages over all the sub-datasets point 6 could have been part of, and in many of those the conflict simply cancels out (recall that $v(\{0, 6\}) = 0$). Neither answer is wrong. They're answers to different questions: "what did each example do during this run?" versus "how much is each example worth to this learning algorithm, on average over the data it could have been trained with?"
+Why? In-Run Data Shapley accounts for *one* trajectory: the full-data run. In that run, point 6 trains alongside its two correctly-labelled copies at every step, and at every step
+its gradient points in exactly the opposite direction to theirs. The accountant books each push separately: the copies' pushes as helpful, point 6's push as harmful, step after
+step. Data Shapley instead averages over all the sub-datasets point 6 could have been part of, and in many of those the conflict simply cancels out (recall that $v(\{0, 6\}) = 0$).
+Neither answer is wrong. They're answers to different questions: "what did each example do during this run?" versus "how much is each example worth to this learning algorithm, on
+average over the data it could have been trained with?"
 
 Leave-one-out, again, gets the signs right and the scale wrong.
 </details>
@@ -2299,7 +2480,10 @@ Leave-one-out, again, gets the signs right and the scale wrong.
 r'''
 ## Validation 2: does the credit add up on the digits?
 
-Now the real training run: the seed-0 digits model, 128 SGD steps with minibatches of 4. We compute all three kinds of credit (the exact local games have 16 coalitions per step). We'll also run each of the three training seeds, and for each one a **control**: the same training run, but with credit computed against a validation set whose labels have been randomly shuffled. Since the validation set never affects training, the trajectory is identical; only the question we ask of it changes. Credit for a meaningless target shouldn't pick out anything meaningful.
+Now the real training run: the seed-0 digits model, 128 SGD steps with minibatches of 4. We compute all three kinds of credit (the exact local games have 16 coalitions per step).
+We'll also run each of the three training seeds, and for each one a **control**: the same training run, but with credit computed against a validation set whose labels have been
+randomly shuffled. Since the validation set never affects training, the trajectory is identical; only the question we ask of it changes. Credit for a meaningless target shouldn't
+pick out anything meaningful.
 '''
 
 # ! CELL TYPE: code
@@ -2378,11 +2562,16 @@ r'''
 <details>
 <summary>Help - how should I interpret these plots?</summary>
 
-**Left.** The exact local credit (dashed purple) lies exactly on the actual improvement in validation loss (thick grey): the per-step games telescope, so every bit of improvement, including the steps where validation loss went *up*, is accounted for. The second-order credit (dotted green) is indistinguishable at this scale: it allocates 0.609 of the actual 0.611. First-order credit (orange) climbs much faster than the real curve: by the end of training it has allocated 1.55, 2.54 times the improvement that actually happened.
+**Left.** The exact local credit (dashed purple) lies exactly on the actual improvement in validation loss (thick grey): the per-step games telescope, so every bit of improvement,
+including the steps where validation loss went *up*, is accounted for. The second-order credit (dotted green) is indistinguishable at this scale: it allocates 0.609 of the actual
+0.611. First-order credit (orange) climbs much faster than the real curve: by the end of training it has allocated 1.55, 2.54 times the improvement that actually happened.
 
-**Right.** Per example, second-order credit is almost exactly the exact local credit (correlation 0.9999; the green points sit on the diagonal). First-order credit is systematically too high for the clean-label examples, and much more scattered for the flipped ones (correlation 0.86): several flipped images whose exact credit is clearly negative get a first-order total near zero or above it. One flipped image even ends with a *positive* exact credit; we'll see where that comes from in the next plot.
+**Right.** Per example, second-order credit is almost exactly the exact local credit (correlation 0.9999; the green points sit on the diagonal). First-order credit is
+systematically too high for the clean-label examples, and much more scattered for the flipped ones (correlation 0.86): several flipped images whose exact credit is clearly negative
+get a first-order total near zero or above it. One flipped image even ends with a *positive* exact credit; we'll see where that comes from in the next plot.
 
-So with our learning rate, first-order In-Run credit is a badly calibrated accountant, and its errors land on exactly the examples we care most about. The second-order correction fixes it, at the price of one Hessian-vector product per step.
+So with our learning rate, first-order In-Run credit is a badly calibrated accountant, and its errors land on exactly the examples we care most about. The second-order correction
+fixes it, at the price of one Hessian-vector product per step.
 </details>
 '''
 
@@ -2394,9 +2583,15 @@ r'''
 <details>
 <summary>Question - the first-order method overcounts so badly. Why is the paper happy with it?</summary>
 
-The size of the second-order correction relative to the first-order term scales like $\eta\, \|H_{val}\|\, \|\sum_j g_j\|$, i.e. like the size of a step relative to the curvature. Our learning rate of 0.1 on raw pixel inputs takes large steps for such a small model: even on the very first step, the first-order prediction of the improvement (0.036) is 60% larger than what the step actually achieves (0.0225). Language-model pretraining uses tiny learning rates and many more steps, where each step changes the loss very little and the first-order approximation is much better. The paper reports that, for GPT-2, its first-order values closely match Monte Carlo estimates of the per-iteration games (Section 5.2), and its analysis of negatively-valued pretraining data uses second-order values, whose ghost implementation costs roughly twice as much as first-order (Table 1). You can see the effect of the learning rate directly in the "Try it yourself" cell below.
+The size of the second-order correction relative to the first-order term scales like $\eta\, \|H_{val}\|\, \|\sum_j g_j\|$, i.e. like the size of a step relative to the curvature.
+Our learning rate of 0.1 on raw pixel inputs takes large steps for such a small model: even on the very first step, the first-order prediction of the improvement (0.036) is 60%
+larger than what the step actually achieves (0.0225). Language-model pretraining uses tiny learning rates and many more steps, where each step changes the loss very little and the
+first-order approximation is much better. The paper reports that, for GPT-2, its first-order values closely match Monte Carlo estimates of the per-iteration games (Section 5.2),
+and its analysis of negatively-valued pretraining data uses second-order values, whose ghost implementation costs roughly twice as much as first-order (Table 1). You can see the
+effect of the learning rate directly in the "Try it yourself" cell below.
 
-There's a deeper point too. Efficiency is a property of a *game*. The first-order method allocates its approximate game perfectly; it's the game that doesn't match reality. So "the values add up" is not, by itself, evidence that an attribution method is right: you have to check what they add up *to*.
+There's a deeper point too. Efficiency is a property of a *game*. The first-order method allocates its approximate game perfectly; it's the game that doesn't match reality. So "the
+values add up" is not, by itself, evidence that an attribution method is right: you have to check what they add up *to*.
 </details>
 '''
 
@@ -2407,7 +2602,8 @@ There's a deeper point too. Efficiency is a property of a *game*. The first-orde
 r'''
 ## When does an example earn its credit?
 
-Since we recorded the credit at every step, we can follow each training example's running total through the run. Each example is visited once per epoch, so each line moves four times.
+Since we recorded the credit at every step, we can follow each training example's running total through the run. Each example is visited once per epoch, so each line moves four
+times.
 '''
 
 # ! CELL TYPE: code
@@ -2438,9 +2634,16 @@ r'''
 <details>
 <summary>Help - how should I interpret this plot?</summary>
 
-The average clean-label image (black) earns credit steadily, while the average flipped-label image (thick red) loses it, ending around -0.04. The per-epoch totals printed below the plot show *when*. In the first epoch the flipped images cost only -0.05 in total, while the clean ones earn +0.45: the network can barely tell 1s from 7s yet, so a mislabelled image is no worse than a slightly noisy one. The damage peaks in the second epoch (-0.19), once the model has learned enough that a 1 labelled '7' pushes clearly in the wrong direction, and tails off after that (-0.15, -0.11) as the model's predictions settle. The clean images' credit falls every epoch (+0.45, +0.31, +0.22, +0.12): the easy improvements come first.
+The average clean-label image (black) earns credit steadily, while the average flipped-label image (thick red) loses it, ending around -0.04. The per-epoch totals printed below the
+plot show *when*. In the first epoch the flipped images cost only -0.05 in total, while the clean ones earn +0.45: the network can barely tell 1s from 7s yet, so a mislabelled
+image is no worse than a slightly noisy one. The damage peaks in the second epoch (-0.19), once the model has learned enough that a 1 labelled '7' pushes clearly in the wrong
+direction, and tails off after that (-0.15, -0.11) as the model's predictions settle. The clean images' credit falls every epoch (+0.45, +0.31, +0.22, +0.12): the easy improvements
+come first.
 
-The individual lines are jumpy, because an example earns all of a visit's credit in a single step, and the amount depends on the state of the model at that moment. One flipped image jumps to about +0.035 just before step 60 and only partly loses it later; that's the flipped image with positive total credit from the previous plot. A single visit can be useful even for a mislabelled image, if its push happens to point in a helpful direction at that moment (for instance, pulling the logit back after the model has overshot). This is what "credit for this run" means: the same image, visited at a different time, would have earned different credit.
+The individual lines are jumpy, because an example earns all of a visit's credit in a single step, and the amount depends on the state of the model at that moment. One flipped
+image jumps to about +0.035 just before step 60 and only partly loses it later; that's the flipped image with positive total credit from the previous plot. A single visit can be
+useful even for a mislabelled image, if its push happens to point in a helpful direction at that moment (for instance, pulling the logit back after the model has overshot). This is
+what "credit for this run" means: the same image, visited at a different time, would have earned different credit.
 </details>
 '''
 
@@ -2451,7 +2654,9 @@ The individual lines are jumpy, because an example earns all of a visit's credit
 r'''
 ## Do the lowest-credit examples have flipped labels?
 
-The natural use of a data valuation is to look at the bottom of the ranking. We know which 12 examples are flipped, so for each seed and each kind of credit we count how many of them are among the 12 lowest-credit examples. Two controls: credit computed against shuffled validation labels, and a random ranking (which finds $12 \times 12 / 128 \approx 1.1$ flipped examples on average).
+The natural use of a data valuation is to look at the bottom of the ranking. We know which 12 examples are flipped, so for each seed and each kind of credit we count how many of
+them are among the 12 lowest-credit examples. Two controls: credit computed against shuffled validation labels, and a random ranking (which finds $12 \times 12 / 128 \approx 1.1$
+flipped examples on average).
 '''
 
 # ! CELL TYPE: code
@@ -2496,7 +2701,10 @@ In-Run, second order                                 10.0    11.0    11.0
 control: second order, shuffled validation labels     0.0     0.0     0.0
 control: random ranking (expected)                    1.1     1.1     1.1</pre>
 
-Exact-local and second-order credit put 10 or 11 of the 12 flipped images among the 12 lowest-credit examples, in every seed. First-order credit finds 8, 10 and 8, consistent with the scatter plot above: its errors are largest on the flipped examples. Both controls fail, as they should: a random ranking finds 1.1 on average, and credit computed against shuffled validation labels finds none at all. "None at all" is actually *worse* than random, which is suspicious for a control that's supposed to carry no information. We'll come back to this in section 5️⃣.
+Exact-local and second-order credit put 10 or 11 of the 12 flipped images among the 12 lowest-credit examples, in every seed. First-order credit finds 8, 10 and 8, consistent with
+the scatter plot above: its errors are largest on the flipped examples. Both controls fail, as they should: a random ranking finds 1.1 on average, and credit computed against
+shuffled validation labels finds none at all. "None at all" is actually *worse* than random, which is suspicious for a control that's supposed to carry no information. We'll come
+back to this in section 5️⃣.
 </details>
 '''
 
@@ -2507,7 +2715,8 @@ Exact-local and second-order credit put 10 or 11 of the 12 flipped images among 
 r'''
 ## Try it yourself - how big a step can a Taylor expansion take?
 
-The first-order approximation should get better as the learning rate shrinks, and worse as it grows. Test that: for a range of learning rates, run the accountant on seed 0 (with the same number of steps), and plot the total credit each method allocates divided by the actual improvement. A perfect accountant sits at 1.
+The first-order approximation should get better as the learning rate shrinks, and worse as it grows. Test that: for a range of learning rates, run the accountant on seed 0 (with
+the same number of steps), and plot the total credit each method allocates divided by the actual improvement. A perfect accountant sits at 1.
 
 Things to try once you've seen the default output:
 
@@ -2552,9 +2761,13 @@ lr 0.03   improvement 0.4399  first/actual 1.222  second/actual 1.001
 lr 0.1    improvement 0.6111  first/actual 2.544  second/actual 0.996
 lr 0.3    improvement 0.6253  first/actual 8.748  second/actual 0.636</pre>
 
-As expected, the first-order error grows with the learning rate: 1% too much credit at learning rate 0.003, 5% at 0.01, 22% at 0.03, 2.5× at 0.1 and almost 9× at 0.3. The second-order credit is within half a percent of the truth up to 0.1, but breaks down at 0.3, where it allocates only 64% of the improvement. The exact local games are always exact, by construction.
+As expected, the first-order error grows with the learning rate: 1% too much credit at learning rate 0.003, 5% at 0.01, 22% at 0.03, 2.5× at 0.1 and almost 9× at 0.3. The
+second-order credit is within half a percent of the truth up to 0.1, but breaks down at 0.3, where it allocates only 64% of the improvement. The exact local games are always exact,
+by construction.
 
-Notice that at learning rate 0.3 the run improves the validation loss only marginally more than at 0.1 (0.625 vs 0.611) even though each step is three times larger: most steps overshoot and partly undo each other. That's precisely the regime in which Taylor expansions of a single step fail. Small steps, like those of large-model pretraining, are where first-order In-Run credit is a faithful accountant.
+Notice that at learning rate 0.3 the run improves the validation loss only marginally more than at 0.1 (0.625 vs 0.611) even though each step is three times larger: most steps
+overshoot and partly undo each other. That's precisely the regime in which Taylor expansions of a single step fail. Small steps, like those of large-model pretraining, are where
+first-order In-Run credit is a faithful accountant.
 </details>
 '''
 
@@ -2570,7 +2783,8 @@ r'''
 - On the toy problem, In-Run values rank the examples almost exactly like exact Data Shapley, but they are a different quantity: they gave the mislabelled point more than twice as much negative credit, because In-Run credit books every push and counter-push of the one full-data trajectory, while Data Shapley averages over sub-datasets in which much of that conflict cancels out.
 - On the digits, with our learning rate, first-order credit overcounts the improvement by a factor of 2.5 and is noticeably worse at finding flipped labels than the second-order and exact-local credit, which agree with each other almost perfectly.
 
-So far, though, we've only checked that the accountant is internally consistent. Whether its credit means anything about what the *data* did to the model is a separate question, and it's the subject of the last section.
+So far, though, we've only checked that the accountant is internally consistent. Whether its credit means anything about what the *data* did to the model is a separate question,
+and it's the subject of the last section.
 '''
 
 # ! CELL TYPE: markdown
@@ -2586,12 +2800,14 @@ r'''
 # ! TAGS: []
 
 r'''
-In section 4️⃣ we checked the accountant against itself: exact local games against their Taylor approximations. That tells us the arithmetic is right. It doesn't tell us whether In-Run credit says anything true about the data, for two reasons:
+In section 4️⃣ we checked the accountant against itself: exact local games against their Taylor approximations. That tells us the arithmetic is right. It doesn't tell us whether
+In-Run credit says anything true about the data, for two reasons:
 
 1. **It's a different question from Data Shapley.** In-Run values are about one trajectory, with every local game starting from a checkpoint that all the data helped produce. Retraining-based Data Shapley is about what each example adds across many possible training sets. On the toy problem they agreed on the big picture, but there was really only one example to disagree about.
 2. **Credit is not causation.** An example that "earned" credit in one run isn't necessarily one you'd want to keep. The test that matters for data curation is an intervention: *delete the data and retrain*.
 
-So in this section we'll compute the expensive ground truth, Monte Carlo Data Shapley on the digits with thousands of real retrainings, and then run the experiment that matters: delete the examples each method ranks lowest (or highest), retrain, and measure the test loss, against matched random deletions.
+So in this section we'll compute the expensive ground truth, Monte Carlo Data Shapley on the digits with thousands of real retrainings, and then run the experiment that matters:
+delete the examples each method ranks lowest (or highest), retrain, and measure the test loss, against matched random deletions.
 '''
 
 # ! CELL TYPE: markdown
@@ -2601,7 +2817,10 @@ So in this section we'll compute the expensive ground truth, Monte Carlo Data Sh
 r'''
 ## Training many models at once
 
-Retraining-based Data Shapley on the digits uses the same learning algorithm as everything else in this notebook: the seed's initialisation and schedule, with the excluded examples switched off by a 0/1 `keep` mask (fixed denominator). One Monte Carlo ordering needs a model for each of its $n + 1 = 129$ prefixes. Rather than training them one after another, we train them as a batch of 129 independent networks, with the same forward and backward pass you wrote in section 3️⃣, plus a leading "model" dimension. This is bookkeeping rather than anything new, so we've written it for you, and the cell below checks that it agrees with your `sgd_train`.
+Retraining-based Data Shapley on the digits uses the same learning algorithm as everything else in this notebook: the seed's initialisation and schedule, with the excluded examples
+switched off by a 0/1 `keep` mask (fixed denominator). One Monte Carlo ordering needs a model for each of its $n + 1 = 129$ prefixes. Rather than training them one after another,
+we train them as a batch of 129 independent networks, with the same forward and backward pass you wrote in section 3️⃣, plus a leading "model" dimension. This is bookkeeping rather
+than anything new, so we've written it for you, and the cell below checks that it agrees with your `sgd_train`.
 '''
 
 # ! CELL TYPE: code
@@ -2668,7 +2887,8 @@ print("train_many agrees with sgd_train")
 r'''
 ## Monte Carlo Data Shapley on the digits
 
-For each ordering, we build the 129 prefix masks, train all 129 models in one call, and record the utility of every prefix: $u_k = v(\text{first } k \text{ examples of the ordering})$. Everything Monte Carlo (and truncated Monte Carlo) needs is in those numbers.
+For each ordering, we build the 129 prefix masks, train all 129 models in one call, and record the utility of every prefix: $u_k = v(\text{first } k \text{ examples of the
+ordering})$. Everything Monte Carlo (and truncated Monte Carlo) needs is in those numbers.
 '''
 
 # ! CELL TYPE: markdown
@@ -2685,12 +2905,15 @@ r'''
 > You should spend up to 10-15 minutes on this exercise.
 > ```
 
-Implement `mc_from_prefix_utilities`. It takes the orderings, shape `(M, n)`, and the prefix utilities, shape `(M, n + 1)` (where `prefix_utilities[m, k]` is the utility of the first `k` examples of ordering `m`, so column 0 is the empty set and column `n` the full dataset), and returns:
+Implement `mc_from_prefix_utilities`. It takes the orderings, shape `(M, n)`, and the prefix utilities, shape `(M, n + 1)` (where `prefix_utilities[m, k]` is the utility of the
+first `k` examples of ordering `m`, so column 0 is the empty set and column `n` the full dataset), and returns:
 
 - the Monte Carlo Shapley estimate, shape `(n,)`: the marginal contribution of the example in position $j$ of ordering $m$ is `prefix_utilities[m, j + 1] - prefix_utilities[m, j]`;
 - the number of trainings used, not counting the empty and full sets (which only need training once): $M \cdot n$ without truncation.
 
-With `tolerance > 0`, return what **truncated** Monte Carlo would have computed from the same orderings: the example in position $j$ gets zero if `abs(v_full - prefix_utilities[m, k]) < tolerance` for any $k \le j$ (once an ordering is truncated, it stays truncated), and the trainings for truncated positions are not counted. Since we trained every prefix anyway, this tells us exactly what TMC would have returned and how much it would have saved, without running it separately.
+With `tolerance > 0`, return what **truncated** Monte Carlo would have computed from the same orderings: the example in position $j$ gets zero if `abs(v_full - prefix_utilities[m,
+k]) < tolerance` for any $k \le j$ (once an ordering is truncated, it stays truncated), and the trainings for truncated positions are not counted. Since we trained every prefix
+anyway, this tells us exactly what TMC would have returned and how much it would have saved, without running it separately.
 
 Try to write this without a Python loop over orderings.
 '''
@@ -2735,7 +2958,8 @@ r'''
 <details>
 <summary>Hint</summary>
 
-`prefix_utilities.diff(dim=1)` gives the marginals by position. To credit them to examples, scatter-add them into an `(n,)` tensor with `index_add_(0, orderings.flatten(), marginals.flatten())`. For truncation, a boolean "close" matrix of shape `(M, n)` followed by `.cumsum(dim=1) > 0` marks every position at or after the first truncation point.
+`prefix_utilities.diff(dim=1)` gives the marginals by position. To credit them to examples, scatter-add them into an `(n,)` tensor with `index_add_(0, orderings.flatten(),
+marginals.flatten())`. For truncation, a boolean "close" matrix of shape `(M, n)` followed by `.cumsum(dim=1) > 0` marks every position at or after the first truncation point.
 </details>
 '''
 
@@ -2744,7 +2968,8 @@ r'''
 # ! TAGS: []
 
 r'''
-Now we run it: 200 orderings per seed, so $200 \times 128 = 25{,}600$ trainings per seed, plus leave-one-out (128 more trainings per seed) as a cheap baseline. This takes about half a minute in total on a CPU. We keep the per-ordering marginals so that we can estimate how noisy the result is.
+Now we run it: 200 orderings per seed, so $200 \times 128 = 25{,}600$ trainings per seed, plus leave-one-out (128 more trainings per seed) as a cheap baseline. This takes about
+half a minute in total on a CPU. We keep the per-ordering marginals so that we can estimate how noisy the result is.
 '''
 
 # ! CELL TYPE: code
@@ -2826,7 +3051,9 @@ r'''
 > You should spend up to 5 minutes on this exercise.
 > ```
 
-When comparing attribution methods, we usually care whether they *rank* examples the same way more than whether their values have the same scale (In-Run and Data Shapley values are in the same units, but as we'll see, they live on quite different scales). Implement `spearman_correlation`: the Pearson correlation between the ranks of the two score vectors. You can assume there are no ties. (`x.argsort().argsort()` gives the rank of every entry.)
+When comparing attribution methods, we usually care whether they *rank* examples the same way more than whether their values have the same scale (In-Run and Data Shapley values are
+in the same units, but as we'll see, they live on quite different scales). Implement `spearman_correlation`: the Pearson correlation between the ranks of the two score vectors. You
+can assume there are no ties. (`x.argsort().argsort()` gives the rank of every entry.)
 '''
 
 # ! CELL TYPE: code
@@ -2937,11 +3164,18 @@ clean only, MC split-half (100 vs 100 orderings)         0.71    0.64    0.83</p
 <details>
 <summary>Help - how should I interpret this?</summary>
 
-**Look at the left and right panels first.** Monte Carlo Data Shapley separates the two groups almost perfectly: in seed 0, every clean image has a positive value and every flipped image a negative one, and it puts 12, 12 and 11 of the flipped images in its lowest 12 across the three seeds. Leave-one-out tells exactly the same story (12, 11, 10), at 1/200th of the cost. For finding planted label noise in a dataset this small, you don't need Shapley values at all.
+**Look at the left and right panels first.** Monte Carlo Data Shapley separates the two groups almost perfectly: in seed 0, every clean image has a positive value and every flipped
+image a negative one, and it puts 12, 12 and 11 of the flipped images in its lowest 12 across the three seeds. Leave-one-out tells exactly the same story (12, 11, 10), at 1/200th
+of the cost. For finding planted label noise in a dataset this small, you don't need Shapley values at all.
 
-**Second-order In-Run credit** finds 10, 11 and 11 of the flipped images, about as many as LOO, from a single training run; first-order finds 8, 10 and 8. But the scatter plots show that In-Run credit spreads the examples out very differently. Clean examples' In-Run credit ranges up to 0.05-0.07, against at most 0.015 for Monte Carlo, and some clean images get negative In-Run credit. This is the tug-of-war effect from the toy problem again: In-Run books every push and counter-push of the one full-data run.
+**Second-order In-Run credit** finds 10, 11 and 11 of the flipped images, about as many as LOO, from a single training run; first-order finds 8, 10 and 8. But the scatter plots
+show that In-Run credit spreads the examples out very differently. Clean examples' In-Run credit ranges up to 0.05-0.07, against at most 0.015 for Monte Carlo, and some clean
+images get negative In-Run credit. This is the tug-of-war effect from the toy problem again: In-Run books every push and counter-push of the one full-data run.
 
-**On the 116 clean images, the methods mostly disagree.** Restricted to clean images, the Spearman correlation between second-order In-Run credit and Monte Carlo Data Shapley is 0.28, 0.15 and 0.49, and between LOO and Monte Carlo 0.20, 0.14 and 0.40. Is that just Monte Carlo noise? No: two independent halves of the Monte Carlo estimate agree with each other at 0.71, 0.64 and 0.83 on the same images (and the full 200-ordering estimate is more reliable than either half). The disagreement is real: the three methods rank clean images by genuinely different criteria, and for clean images, whose individual effects are small, those criteria don't line up.
+**On the 116 clean images, the methods mostly disagree.** Restricted to clean images, the Spearman correlation between second-order In-Run credit and Monte Carlo Data Shapley is
+0.28, 0.15 and 0.49, and between LOO and Monte Carlo 0.20, 0.14 and 0.40. Is that just Monte Carlo noise? No: two independent halves of the Monte Carlo estimate agree with each
+other at 0.71, 0.64 and 0.83 on the same images (and the full 200-ordering estimate is more reliable than either half). The disagreement is real: the three methods rank clean
+images by genuinely different criteria, and for clean images, whose individual effects are small, those criteria don't line up.
 
 **The shuffled-label control** is strongly *anti*-correlated with Monte Carlo Data Shapley (-0.54, -0.27, -0.47). We'll see why after the deletion experiment.
 </details>
@@ -2954,9 +3188,13 @@ clean only, MC split-half (100 vs 100 orderings)         0.71    0.64    0.83</p
 r'''
 ## The real test: delete and retrain
 
-A data valuation is only useful if acting on it does what it says. So: for each method, remove the $k$ training examples with the **lowest** scores, retrain (same initialisation, same schedule, removed examples switched off), and measure the loss on the untouched **test** set. If low credit means harmful, test loss should go down. Then do the same for the $k$ **highest**-scoring examples, where test loss should go up.
+A data valuation is only useful if acting on it does what it says. So: for each method, remove the $k$ training examples with the **lowest** scores, retrain (same initialisation,
+same schedule, removed examples switched off), and measure the loss on the untouched **test** set. If low credit means harmful, test loss should go down. Then do the same for the
+$k$ **highest**-scoring examples, where test loss should go up.
 
-There's one important subtlety, which is why we need a control. With a fixed denominator, removing *any* examples means less total gradient, so even removing random examples changes the test loss (usually it goes up a little, since the model trains less). So every curve is compared against removing $k$ **random** examples (10 random draws, matched in number). We also include the shuffled-validation-label control, and, as an oracle, removing exactly the 12 flipped examples.
+There's one important subtlety, which is why we need a control. With a fixed denominator, removing *any* examples means less total gradient, so even removing random examples
+changes the test loss (usually it goes up a little, since the model trains less). So every curve is compared against removing $k$ **random** examples (10 random draws, matched in
+number). We also include the shuffled-validation-label control, and, as an oracle, removing exactly the 12 flipped examples.
 '''
 
 # ! CELL TYPE: markdown
@@ -2973,7 +3211,8 @@ r'''
 > You should spend up to 5 minutes on this exercise.
 > ```
 
-Implement `removal_keep_masks`, which returns a `(len(ks), n)` tensor of 0/1 keep masks, where row `j` removes the `ks[j]` examples with the lowest scores (or the highest, if `lowest=False`). Row `j` should keep every other example.
+Implement `removal_keep_masks`, which returns a `(len(ks), n)` tensor of 0/1 keep masks, where row `j` removes the `ks[j]` examples with the lowest scores (or the highest, if
+`lowest=False`). Row `j` should keep every other example.
 '''
 
 # ! CELL TYPE: code
@@ -3004,7 +3243,8 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-Now we run every deletion for every seed. Each seed needs (5 scorings × 2 directions + 10 random draws) × 8 values of $k$, plus the oracle: 161 retrainings, done in one `train_many` call. Remember that the scores were all computed from the validation set; the test set is used here for the first time.
+Now we run every deletion for every seed. Each seed needs (5 scorings × 2 directions + 10 random draws) × 8 values of $k$, plus the oracle: 161 retrainings, done in one
+`train_many` call. Remember that the scores were all computed from the validation set; the test set is used here for the first time.
 '''
 
 # ! CELL TYPE: code
@@ -3105,13 +3345,24 @@ remove the 12 flipped (oracle)                     -0.0922 -0.0824 -0.1164</pre>
 <details>
 <summary>Help - how should I interpret these results?</summary>
 
-**Removing the lowest-credit examples (top row) works, for every method and every seed.** At $k = 12$, removing the 12 lowest-scoring images lowers test loss by 0.06-0.11, far outside the range of 10 random 12-image deletions (mean between -0.0004 and +0.0065, extremes -0.024 and +0.026). Monte Carlo Data Shapley and leave-one-out essentially match the oracle (in seed 0 both remove exactly the 12 flipped images, so their numbers are identical to the oracle's, -0.0922). Second-order In-Run credit recovers 83-93% of the oracle's improvement, and first-order 68-85%.
+**Removing the lowest-credit examples (top row) works, for every method and every seed.** At $k = 12$, removing the 12 lowest-scoring images lowers test loss by 0.06-0.11, far
+outside the range of 10 random 12-image deletions (mean between -0.0004 and +0.0065, extremes -0.024 and +0.026). Monte Carlo Data Shapley and leave-one-out essentially match the
+oracle (in seed 0 both remove exactly the 12 flipped images, so their numbers are identical to the oracle's, -0.0922). Second-order In-Run credit recovers 83-93% of the oracle's
+improvement, and first-order 68-85%.
 
-**Beyond $k = 12$, most of the curves turn back up.** Once the flipped images are gone, the next-lowest examples are clean ones, and deleting them costs something. The clearest case is Monte Carlo in seed 2, which goes from -0.111 at $k = 12$ to -0.025 at $k = 32$. A low score isn't a licence to delete: it's a ranking, and you still have to decide where to stop.
+**Beyond $k = 12$, most of the curves turn back up.** Once the flipped images are gone, the next-lowest examples are clean ones, and deleting them costs something. The clearest
+case is Monte Carlo in seed 2, which goes from -0.111 at $k = 12$ to -0.025 at $k = 32$. A low score isn't a licence to delete: it's a ranking, and you still have to decide where
+to stop.
 
-**Removing the highest-credit examples (bottom row) is where the methods differ most.** Leave-one-out's highest-scoring images are, by definition, the ones whose individual removal hurts the most, and removing 12 of them raises test loss by 0.06-0.11. Monte Carlo Data Shapley's highest hurt less (+0.022 to +0.048), and In-Run's least: +0.012 to +0.030 for first order, +0.023 to +0.036 for second order. In seed 0, removing the 12 highest first-order-credit images (+0.012) is within the range of removing 12 random images (up to +0.020), and removing the top 4 actually *lowers* the test loss slightly (by 0.004). So high In-Run credit is a weak guide to which examples you can't afford to lose. That's consistent with what In-Run measures: an example whose gradient did a lot of useful work in *this* run can often be replaced by other examples doing the same work in a run without it.
+**Removing the highest-credit examples (bottom row) is where the methods differ most.** Leave-one-out's highest-scoring images are, by definition, the ones whose individual removal
+hurts the most, and removing 12 of them raises test loss by 0.06-0.11. Monte Carlo Data Shapley's highest hurt less (+0.022 to +0.048), and In-Run's least: +0.012 to +0.030 for
+first order, +0.023 to +0.036 for second order. In seed 0, removing the 12 highest first-order-credit images (+0.012) is within the range of removing 12 random images (up to
++0.020), and removing the top 4 actually *lowers* the test loss slightly (by 0.004). So high In-Run credit is a weak guide to which examples you can't afford to lose. That's
+consistent with what In-Run measures: an example whose gradient did a lot of useful work in *this* run can often be replaced by other examples doing the same work in a run without
+it.
 
-So, on this problem: for finding harmful data, second-order In-Run credit from one training run is nearly as good as 25,600 retrainings (and as leave-one-out's 129); first-order is noticeably worse. For finding the most valuable data, the retraining-based methods are clearly better.
+So, on this problem: for finding harmful data, second-order In-Run credit from one training run is nearly as good as 25,600 retrainings (and as leave-one-out's 129); first-order is
+noticeably worse. For finding the most valuable data, the retraining-based methods are clearly better.
 </details>
 '''
 
@@ -3123,9 +3374,16 @@ r'''
 <details>
 <summary>Question - why does the shuffled-label control behave the way it does?</summary>
 
-With the validation labels shuffled, the validation set asks the model to predict *random* labels for 1s and 7s. The best any model can do on that is to be unconfident. So as our model learns to tell 1s from 7s confidently, its loss on the shuffled validation set goes *up* (from 0.68 to 1.53 in seed 0; it's printed with the In-Run totals in section 4️⃣). The accountant faithfully books that: the clean images, which drive the learning, get negative credit, and the flipped images, which hold the model back, get positive credit. The shuffled-label credit is therefore anti-correlated with the real credit, and the deletion experiment shows it in both rows. Deleting its lowest-credit images removes useful clean data and makes the test loss *worse* than any random deletion (+0.034, +0.018, +0.028 at $k = 12$); deleting its *highest*-credit images removes the flipped labels and helps almost as much as the oracle.
+With the validation labels shuffled, the validation set asks the model to predict *random* labels for 1s and 7s. The best any model can do on that is to be unconfident. So as our
+model learns to tell 1s from 7s confidently, its loss on the shuffled validation set goes *up* (from 0.68 to 1.53 in seed 0; it's printed with the In-Run totals in section 4️⃣).
+The accountant faithfully books that: the clean images, which drive the learning, get negative credit, and the flipped images, which hold the model back, get positive credit. The
+shuffled-label credit is therefore anti-correlated with the real credit, and the deletion experiment shows it in both rows. Deleting its lowest-credit images removes useful clean
+data and makes the test loss *worse* than any random deletion (+0.034, +0.018, +0.028 at $k = 12$); deleting its *highest*-credit images removes the flipped labels and helps almost
+as much as the oracle.
 
-The lesson is about what controls can and can't tell you. This control fails in the way that matters (its "harmful" examples aren't harmful), but it doesn't fail *randomly*, because a meaningless utility can still be systematically related to the real one. If you want a null for "is this ranking better than chance?", use matched random selections, as we did; the shuffled-label control answers a different question, "does the ranking depend on the validation target?" (yes, completely).
+The lesson is about what controls can and can't tell you. This control fails in the way that matters (its "harmful" examples aren't harmful), but it doesn't fail *randomly*,
+because a meaningless utility can still be systematically related to the real one. If you want a null for "is this ranking better than chance?", use matched random selections, as
+we did; the shuffled-label control answers a different question, "does the ranking depend on the validation target?" (yes, completely).
 </details>
 '''
 
@@ -3136,7 +3394,8 @@ The lesson is about what controls can and can't tell you. This control fails in 
 r'''
 ## Looking at the data
 
-Numbers are one thing; let's look at the images. Below are the 8 lowest- and 8 highest-credit training images of seed 0, according to second-order In-Run Data Shapley. The title shows the label the model was trained on and the credit; a red border marks a flipped label.
+Numbers are one thing; let's look at the images. Below are the 8 lowest- and 8 highest-credit training images of seed 0, according to second-order In-Run Data Shapley. The title
+shows the label the model was trained on and the credit; a red border marks a flipped label.
 '''
 
 # ! CELL TYPE: code
@@ -3170,9 +3429,13 @@ r'''
 <details>
 <summary>Help - what should I notice?</summary>
 
-All 8 of the lowest-credit images are flipped: four 1s labelled '7' and four 7s labelled '1'. Most of them are perfectly ordinary-looking digits, which is exactly what makes them harmful: the model has no way to treat them as exceptions.
+All 8 of the lowest-credit images are flipped: four 1s labelled '7' and four 7s labelled '1'. Most of them are perfectly ordinary-looking digits, which is exactly what makes them
+harmful: the model has no way to treat them as exceptions.
 
-All 8 of the highest-credit images are clean (five 1s and three 7s), and there's nothing obviously special about them: they're typical, clearly written digits. That fits the tug-of-war picture: in this run, the most valuable clean images may simply be the ones that happened to push back hardest against the flipped labels, which is a fact about the trajectory more than about the images. (That's a hypothesis, not something we've checked; the per-step credit matrix would let you test it.) Remember also, from the deletion experiment, that removing the highest-In-Run-credit images hurts only modestly more than removing random ones.
+All 8 of the highest-credit images are clean (five 1s and three 7s), and there's nothing obviously special about them: they're typical, clearly written digits. That fits the
+tug-of-war picture: in this run, the most valuable clean images may simply be the ones that happened to push back hardest against the flipped labels, which is a fact about the
+trajectory more than about the images. (That's a hypothesis, not something we've checked; the per-step credit matrix would let you test it.) Remember also, from the deletion
+experiment, that removing the highest-In-Run-credit images hurts only modestly more than removing random ones.
 </details>
 '''
 
@@ -3183,7 +3446,9 @@ All 8 of the highest-credit images are clean (five 1s and three 7s), and there's
 r'''
 ## What did each method cost?
 
-Finally, the bill. We time one plain training run, one run with each kind of In-Run accounting, and the retraining-based methods, all for seed 0. Wall-clock times on a CPU with tiny tensors are dominated by Python overhead and depend on what else your machine is doing, so treat the seconds as rough. The number of *models trained* is the machine-independent cost.
+Finally, the bill. We time one plain training run, one run with each kind of In-Run accounting, and the retraining-based methods, all for seed 0. Wall-clock times on a CPU with
+tiny tensors are dominated by Python overhead and depend on what else your machine is doing, so treat the seconds as rough. The number of *models trained* is the
+machine-independent cost.
 '''
 
 # ! CELL TYPE: code
@@ -3230,9 +3495,13 @@ In-Run, + exact local games                            1     0.17
 leave-one-out                                        129     0.04
 Monte Carlo Data Shapley (200 orderings)           25600     7.19</pre>
 
-On a CPU with a tiny model, every method is cheap in absolute terms, and the batched `train_many` makes 129 trainings (leave-one-out) take about as long as one accounted training run. That says more about tiny models and Python overhead than about the methods. Our In-Run implementation is also not optimised: it runs a separate backward pass for the validation set and an autograd Hessian-vector product at every step, so it's several times slower than plain training. The paper's ghost implementation on GPT-2 runs first-order In-Run Data Shapley at 93% of the throughput of regular training, and second-order at 45% (their Table 1).
+On a CPU with a tiny model, every method is cheap in absolute terms, and the batched `train_many` makes 129 trainings (leave-one-out) take about as long as one accounted training
+run. That says more about tiny models and Python overhead than about the methods. Our In-Run implementation is also not optimised: it runs a separate backward pass for the
+validation set and an autograd Hessian-vector product at every step, so it's several times slower than plain training. The paper's ghost implementation on GPT-2 runs first-order
+In-Run Data Shapley at 93% of the throughput of regular training, and second-order at 45% (their Table 1).
 
-The column that transfers to real models is "models trained". When one training run takes days or weeks, 129 runs are out of reach and 25,600 are absurd, while In-Run credit costs one run you were going to do anyway. Monte Carlo was also measured here by timing one ordering and multiplying by 200.
+The column that transfers to real models is "models trained". When one training run takes days or weeks, 129 runs are out of reach and 25,600 are absurd, while In-Run credit costs
+one run you were going to do anyway. Monte Carlo was also measured here by timing one ordering and multiplying by 200.
 </details>
 '''
 
@@ -3243,7 +3512,8 @@ The column that transfers to real models is "models trained". When one training 
 r'''
 ## Try it yourself - delete one image
 
-Pick a training image, remove it, retrain seed 0, and compare the change in validation loss with what each method predicted. For a single example, "remove it and retrain" is exactly what leave-one-out measures, so this is a direct test of how well each method's score predicts a one-example intervention.
+Pick a training image, remove it, retrain seed 0, and compare the change in validation loss with what each method predicted. For a single example, "remove it and retrain" is
+exactly what leave-one-out measures, so this is a direct test of how well each method's score predicts a one-example intervention.
 
 The cell below does this for the lowest- and highest-credit images and one flipped image. Try others:
 
@@ -3280,7 +3550,11 @@ r'''
 #61  (flipped=False) actual effect of keeping it (LOO) +0.0019 | In-Run 1st +0.0743, In-Run 2nd +0.0542, MC Data Shapley +0.0098
 #3   (flipped=True ) actual effect of keeping it (LOO) -0.0067 | In-Run 1st -0.0055, In-Run 2nd -0.0720, MC Data Shapley -0.0132</pre>
 
-For these three images, every method gets the *sign* of the effect right. The sizes are a different matter. Removing the lowest-credit image (#120) improves validation loss by only 0.0064, while second-order In-Run credit says -0.083, thirteen times more, and Monte Carlo Data Shapley says -0.015. That's the same pattern as the toy problem, now for harmful data. The other five flipped images of the same kind do much of the same damage whether or not #120 is there, so removing it alone changes little; Data Shapley averages over coalitions in which #120 does more of the damage on its own; and In-Run books the full force of every harmful push in the one run where all of them were present. Also note #3: first-order and second-order credit disagree by a factor of 13 for this image (-0.0055 vs -0.072), a reminder that the first-order errors are concentrated on the flipped examples.
+For these three images, every method gets the *sign* of the effect right. The sizes are a different matter. Removing the lowest-credit image (#120) improves validation loss by only
+0.0064, while second-order In-Run credit says -0.083, thirteen times more, and Monte Carlo Data Shapley says -0.015. That's the same pattern as the toy problem, now for harmful
+data. The other five flipped images of the same kind do much of the same damage whether or not #120 is there, so removing it alone changes little; Data Shapley averages over
+coalitions in which #120 does more of the damage on its own; and In-Run books the full force of every harmful push in the one run where all of them were present. Also note #3:
+first-order and second-order credit disagree by a factor of 13 for this image (-0.0055 vs -0.072), a reminder that the first-order errors are concentrated on the flipped examples.
 </details>
 '''
 
@@ -3296,7 +3570,8 @@ r'''
 - The retraining-based methods and In-Run credit are allocations of the same total improvement, but they slice it very differently. On the clean images their rankings largely disagree, by more than Monte Carlo noise can explain; In-Run credit is much more spread out; and the highest-In-Run-credit images are not much more important to retraining than random ones.
 - Every claim above was checked against matched random deletions. The shuffled-label control showed that a valuation depends completely on its validation target, and that a meaningless target can be *systematically* misleading rather than merely uninformative.
 
-In-Run Data Shapley is a faithful accountant of one training run (exactly so, with exact or second-order local games). What that accounting means for decisions about data, like deletion, has to be tested separately, by actually retraining.
+In-Run Data Shapley is a faithful accountant of one training run (exactly so, with exact or second-order local games). What that accounting means for decisions about data, like
+deletion, has to be tested separately, by actually retraining.
 '''
 
 # ! CELL TYPE: markdown
@@ -3314,7 +3589,9 @@ r'''
 r'''
 ## In-Run Data Shapley under Adam
 
-Everything in this notebook used plain SGD, and that was not an accident: the derivation leaned on the update being a *sum* of per-example gradients, $\Delta\theta_t = -\frac{\eta}{B}\sum_{i \in \mathcal{B}_t} g_{t,i}$. That's what made the local game well-defined (switch off an example, drop its term), the first-order game additive, and the ghost dot product applicable. Almost every real model is trained with Adam or AdamW, which breaks all three:
+Everything in this notebook used plain SGD, and that was not an accident: the derivation leaned on the update being a *sum* of per-example gradients, $\Delta\theta_t =
+-\frac{\eta}{B}\sum_{i \in \mathcal{B}_t} g_{t,i}$. That's what made the local game well-defined (switch off an example, drop its term), the first-order game additive, and the
+ghost dot product applicable. Almost every real model is trained with Adam or AdamW, which breaks all three:
 
 - **The update is not a sum over examples.** Adam divides the (momentum-averaged) gradient elementwise by $\sqrt{\hat v_t} + \epsilon$, where $\hat v_t$ is a running average of *squared* gradients, which itself depends on the current minibatch. Removing an example changes both the numerator and the denominator, so $U_t(S)$ is no longer a Taylor expansion in a sum of per-example terms.
 - **Credit leaks across steps.** Through the momentum buffer $m_t = \beta_1 m_{t-1} + (1 - \beta_1)\bar g_t$, an example's gradient at step $s$ keeps contributing to the updates at steps $s+1, s+2, \dots$ with weight $\beta_1^{t-s}$. A per-step game that only includes the current minibatch misses this.

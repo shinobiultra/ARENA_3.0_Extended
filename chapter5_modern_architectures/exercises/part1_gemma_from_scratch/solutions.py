@@ -1,41 +1,78 @@
 # %%
-"""Reference solutions for [5.1] Gemma from Scratch."""
+
+
+MAIN = __name__ == "__main__"
+
+# %%
 
 import math
 import sys
-from dataclasses import dataclass
 from pathlib import Path
-from typing import Any
 
+import matplotlib.pyplot as plt
 import torch as t
 import torch.nn as nn
 import torch.nn.functional as F
 
 chapter = "chapter5_modern_architectures"
-root_dir = next(p for p in [Path.cwd(), *Path.cwd().parents] if (p / chapter).exists())
+section = "part1_gemma_from_scratch"
+root_dir = Path(__file__).resolve().parents[3]
+exercises_dir = root_dir / chapter / "exercises"
+section_dir = exercises_dir / section
+assets_dir = section_dir / "media"
 if str(root_dir) not in sys.path:
     sys.path.append(str(root_dir))
+if str(exercises_dir) not in sys.path:
+    sys.path.append(str(exercises_dir))
 
-from arena_ext import compare_logits, estimate_inference_memory
-from arena_ext.gemma import GemmaConfig, GemmaForCausalLM as ReferenceGemmaForCausalLM
+import part1_gemma_from_scratch.tests as tests
 
-MAIN = __name__ == "__main__"
+from chapter5_modern_architectures.exercises.part1_gemma_from_scratch.gemma_reference import (
+    GemmaCausalLMOutput,
+    GemmaConfig,
+    GemmaForCausalLM as ReferenceGemmaForCausalLM,
+)
 
-HF_GEMMA_REFERENCE_MAX_ABS_ERROR = 5e-4
-HF_GEMMA_REFERENCE_MSE_MAX = 1e-7
+DEVICE = t.device("cpu")
 PastKeyValue = tuple[t.Tensor, t.Tensor]
 
+# %%
 
-@dataclass(frozen=True)
-class GemmaCausalLMOutput:
-    logits: t.Tensor
-    past_key_values: tuple[PastKeyValue, ...] | None = None
-
+SIGNATURE_INPUT_IDS = t.tensor(
+    [
+        [1, 5, 8, 13, 2, 21, 3],
+        [3, 2, 1, 8, 5, 13, 21],
+        [21, 13, 8, 5, 3, 2, 1],
+        [2, 3, 5, 8, 13, 21, 1],
+    ],
+    dtype=t.long,
+    device=DEVICE,
+)
+if MAIN:
+    cold_config = GemmaConfig(
+        vocab_size=31,
+        hidden_size=16,
+        intermediate_size=32,
+        num_hidden_layers=2,
+        num_attention_heads=4,
+        num_key_value_heads=2,
+        max_position_embeddings=64,
+    )
+if MAIN:
+    t.manual_seed(5101)
+if MAIN:
+    cold_reference = ReferenceGemmaForCausalLM(cold_config).eval()
+if MAIN:
+    with t.inference_mode():
+        cold_logits = cold_reference(SIGNATURE_INPUT_IDS).logits
+if MAIN:
+    print("logits shape:", tuple(cold_logits.shape))
+if MAIN:
+    print("last-position argmax token ids:", cold_logits[:, -1].argmax(dim=-1).tolist())
 
 # %%
-class GemmaRMSNorm(nn.Module):
-    """Gemma-style RMSNorm with a learned offset from unit scale."""
 
+class GemmaRMSNorm(nn.Module):
     def __init__(self, hidden_size: int, eps: float = 1e-6):
         super().__init__()
         self.weight = nn.Parameter(t.zeros(hidden_size))
@@ -49,9 +86,12 @@ class GemmaRMSNorm(nn.Module):
         return (normalized * (1.0 + self.weight.float())).to(dtype)
 
 
-def rotate_half_interleaved(x: t.Tensor) -> t.Tensor:
-    """Rotate even/odd RoPE feature pairs: [x0, x1] -> [-x1, x0]."""
+if MAIN:
+    tests.test_gemma_rms_norm(GemmaRMSNorm)
 
+# %%
+
+def rotate_half_interleaved(x: t.Tensor) -> t.Tensor:
     x_even = x[..., 0::2]
     x_odd = x[..., 1::2]
     return t.stack((-x_odd, x_even), dim=-1).flatten(start_dim=-2)
@@ -65,8 +105,6 @@ def build_rope_cache(
     device: t.device,
     dtype: t.dtype,
 ) -> tuple[t.Tensor, t.Tensor]:
-    """Return interleaved cos/sin RoPE caches with shape (seq_len, head_dim)."""
-
     inv_freq = 1.0 / (base ** (t.arange(0, head_dim, 2, device=device).float() / head_dim))
     positions = t.arange(seq_len, device=device).float()
     freqs = t.outer(positions, inv_freq)
@@ -74,17 +112,27 @@ def build_rope_cache(
     return angles.cos().to(dtype), angles.sin().to(dtype)
 
 
-def apply_rope(x: t.Tensor, cos: t.Tensor, sin: t.Tensor, position_ids: t.Tensor) -> t.Tensor:
-    """Apply interleaved RoPE to (batch, heads, seq, head_dim) activations."""
+def apply_rope(
+    x: t.Tensor,
+    cos: t.Tensor,
+    sin: t.Tensor,
+    position_ids: t.Tensor,
+) -> t.Tensor:
+    cos_at_position = cos[position_ids].unsqueeze(1)
+    sin_at_position = sin[position_ids].unsqueeze(1)
+    return (x * cos_at_position) + (rotate_half_interleaved(x) * sin_at_position)
 
-    cos = cos[position_ids].unsqueeze(1)
-    sin = sin[position_ids].unsqueeze(1)
-    return (x * cos) + (rotate_half_interleaved(x) * sin)
 
+if MAIN:
+    tests.test_rotate_half_interleaved(rotate_half_interleaved)
+if MAIN:
+    tests.test_build_rope_cache(build_rope_cache)
+if MAIN:
+    tests.test_apply_rope(apply_rope, build_rope_cache)
+
+# %%
 
 def repeat_kv(hidden_states: t.Tensor, repeats: int) -> t.Tensor:
-    """Repeat grouped key/value heads contiguously for query-head attention."""
-
     if repeats == 1:
         return hidden_states
     batch, kv_heads, seq_len, head_dim = hidden_states.shape
@@ -102,8 +150,6 @@ def build_causal_attention_mask(
     sliding_window: int | None,
     device: t.device,
 ) -> t.Tensor:
-    """Boolean mask with True where a cached query is allowed to attend."""
-
     query_positions = t.arange(past_length, past_length + query_length, device=device)[:, None]
     key_positions = t.arange(key_length, device=device)[None, :]
     allowed = key_positions <= query_positions
@@ -112,9 +158,14 @@ def build_causal_attention_mask(
     return allowed[None, None, :, :]
 
 
-class GemmaMLP(nn.Module):
-    """SwiGLU MLP used by Gemma-style decoders."""
+if MAIN:
+    tests.test_repeat_kv(repeat_kv)
+if MAIN:
+    tests.test_sliding_window_mask(build_causal_attention_mask)
 
+# %%
+
+class GemmaMLP(nn.Module):
     def __init__(self, config: GemmaConfig):
         super().__init__()
         self.gate_proj = nn.Linear(config.hidden_size, config.intermediate_size, bias=False)
@@ -122,12 +173,16 @@ class GemmaMLP(nn.Module):
         self.down_proj = nn.Linear(config.intermediate_size, config.hidden_size, bias=False)
 
     def forward(self, x: t.Tensor) -> t.Tensor:
-        return self.down_proj(F.silu(self.gate_proj(x)) * self.up_proj(x))
+        gated = F.silu(self.gate_proj(x)) * self.up_proj(x)
+        return self.down_proj(gated)
 
+
+if MAIN:
+    tests.test_gemma_mlp_matches_swiglu_formula(GemmaMLP)
+
+# %%
 
 class GemmaAttention(nn.Module):
-    """Causal grouped-query attention with optional sliding-window locality."""
-
     def __init__(self, config: GemmaConfig, layer_idx: int):
         super().__init__()
         self.config = config
@@ -136,27 +191,10 @@ class GemmaAttention(nn.Module):
         self.num_key_value_heads = config.num_key_value_heads
         self.head_dim = config.head_dim
         self.num_key_value_groups = self.num_heads // self.num_key_value_heads
-
-        self.q_proj = nn.Linear(
-            config.hidden_size,
-            self.num_heads * self.head_dim,
-            bias=config.attention_bias,
-        )
-        self.k_proj = nn.Linear(
-            config.hidden_size,
-            self.num_key_value_heads * self.head_dim,
-            bias=config.attention_bias,
-        )
-        self.v_proj = nn.Linear(
-            config.hidden_size,
-            self.num_key_value_heads * self.head_dim,
-            bias=config.attention_bias,
-        )
-        self.o_proj = nn.Linear(
-            self.num_heads * self.head_dim,
-            config.hidden_size,
-            bias=config.attention_bias,
-        )
+        self.q_proj = nn.Linear(config.hidden_size, self.num_heads * self.head_dim, bias=config.attention_bias)
+        self.k_proj = nn.Linear(config.hidden_size, self.num_key_value_heads * self.head_dim, bias=config.attention_bias)
+        self.v_proj = nn.Linear(config.hidden_size, self.num_key_value_heads * self.head_dim, bias=config.attention_bias)
+        self.o_proj = nn.Linear(self.num_heads * self.head_dim, config.hidden_size, bias=config.attention_bias)
 
     def _shape(self, x: t.Tensor, heads: int) -> t.Tensor:
         batch, seq_len, _ = x.shape
@@ -177,7 +215,6 @@ class GemmaAttention(nn.Module):
         query_states = self._shape(self.q_proj(hidden_states), self.num_heads)
         key_states = self._shape(self.k_proj(hidden_states), self.num_key_value_heads)
         value_states = self._shape(self.v_proj(hidden_states), self.num_key_value_heads)
-
         query_states = apply_rope(query_states, cos, sin, position_ids)
         key_states = apply_rope(key_states, cos, sin, position_ids)
 
@@ -187,16 +224,13 @@ class GemmaAttention(nn.Module):
             past_length = past_key.shape[-2]
             key_states = t.cat([past_key, key_states], dim=-2)
             value_states = t.cat([past_value, value_states], dim=-2)
-
         present_key_value = (key_states, value_states) if use_cache else None
+
         key_length = key_states.shape[-2]
-
-        key_states_repeated = repeat_kv(key_states, self.num_key_value_groups)
-        value_states_repeated = repeat_kv(value_states, self.num_key_value_groups)
-
-        attn_scores = t.matmul(
-            query_states, key_states_repeated.transpose(-1, -2)
-        ) / math.sqrt(self.head_dim)
+        key_states = repeat_kv(key_states, self.num_key_value_groups)
+        value_states = repeat_kv(value_states, self.num_key_value_groups)
+        attn_scores = query_states @ key_states.transpose(-1, -2)
+        attn_scores = attn_scores / math.sqrt(self.head_dim)
         causal_mask = build_causal_attention_mask(
             query_length=query_length,
             key_length=key_length,
@@ -205,27 +239,25 @@ class GemmaAttention(nn.Module):
             device=hidden_states.device,
         )
         attn_scores = attn_scores.masked_fill(~causal_mask, t.finfo(attn_scores.dtype).min)
-
         if attention_mask is not None:
             if attention_mask.shape != (batch, key_length):
-                raise ValueError(
-                    "attention_mask must have shape (batch, key_length); "
-                    f"got {tuple(attention_mask.shape)}, expected {(batch, key_length)}."
-                )
+                raise ValueError(f"attention_mask has shape {tuple(attention_mask.shape)}, expected {(batch, key_length)}")
             attn_scores = attn_scores.masked_fill(
                 ~attention_mask[:, None, None, :].bool(),
                 t.finfo(attn_scores.dtype).min,
             )
-
         attn_probs = F.softmax(attn_scores.float(), dim=-1).to(query_states.dtype)
-        attn_output = t.matmul(attn_probs, value_states_repeated)
+        attn_output = attn_probs @ value_states
         attn_output = attn_output.transpose(1, 2).reshape(
-            batch,
-            query_length,
-            self.num_heads * self.head_dim,
+            batch, query_length, self.num_heads * self.head_dim
         )
         return self.o_proj(attn_output), present_key_value
 
+
+if MAIN:
+    tests.test_gemma_attention_shapes_and_cache(GemmaAttention)
+
+# %%
 
 class GemmaDecoderLayer(nn.Module):
     def __init__(self, config: GemmaConfig, layer_idx: int):
@@ -257,11 +289,15 @@ class GemmaDecoderLayer(nn.Module):
             use_cache=use_cache,
         )
         hidden_states = residual + attn_output
-
         residual = hidden_states
         hidden_states = residual + self.mlp(self.post_attention_layernorm(hidden_states))
         return hidden_states, present_key_value
 
+
+if MAIN:
+    tests.test_gemma_decoder_layer_shapes_and_cache(GemmaDecoderLayer)
+
+# %%
 
 class GemmaModel(nn.Module):
     def __init__(self, config: GemmaConfig):
@@ -283,33 +319,24 @@ class GemmaModel(nn.Module):
     ) -> tuple[t.Tensor, tuple[PastKeyValue, ...] | None]:
         batch, seq_len = input_ids.shape
         past_length = 0 if past_key_values is None else past_key_values[0][0].shape[-2]
-        position_ids = (
-            t.arange(past_length, past_length + seq_len, device=input_ids.device)
-            .unsqueeze(0)
-            .expand(batch, -1)
-        )
-        max_position = past_length + seq_len
+        position_ids = t.arange(
+            past_length, past_length + seq_len, device=input_ids.device
+        ).unsqueeze(0).expand(batch, -1)
         cos, sin = build_rope_cache(
-            max_position,
+            past_length + seq_len,
             self.config.head_dim,
             base=self.config.rope_theta,
             device=input_ids.device,
             dtype=self.embed_tokens.weight.dtype,
         )
-
         if attention_mask is not None and past_length > 0 and attention_mask.shape[-1] == seq_len:
-            prefix = t.ones(
-                batch,
-                past_length,
-                dtype=attention_mask.dtype,
-                device=attention_mask.device,
-            )
+            prefix = t.ones(batch, past_length, dtype=attention_mask.dtype, device=attention_mask.device)
             attention_mask = t.cat([prefix, attention_mask], dim=-1)
 
         hidden_states = self.embed_tokens(input_ids) * math.sqrt(self.config.hidden_size)
         next_cache = [] if use_cache else None
-        for idx, layer in enumerate(self.layers):
-            past_key_value = None if past_key_values is None else past_key_values[idx]
+        for layer_idx, layer in enumerate(self.layers):
+            past_key_value = None if past_key_values is None else past_key_values[layer_idx]
             hidden_states, present = layer(
                 hidden_states,
                 position_ids=position_ids,
@@ -348,57 +375,13 @@ class GemmaForCausalLM(nn.Module):
             past_key_values=past_key_values,
             use_cache=use_cache,
         )
-        logits = self.lm_head(hidden_states)
-        return GemmaCausalLMOutput(logits=logits, past_key_values=next_cache)
-
-    @t.no_grad()
-    def greedy_generate(self, input_ids: t.Tensor, max_new_tokens: int) -> t.Tensor:
-        generated = input_ids
-        cache = None
-        next_input = input_ids
-        for _ in range(max_new_tokens):
-            output = self(next_input, past_key_values=cache, use_cache=True)
-            cache = output.past_key_values
-            next_token = output.logits[:, -1].argmax(dim=-1, keepdim=True)
-            generated = t.cat([generated, next_token], dim=-1)
-            next_input = next_token
-        return generated
+        return GemmaCausalLMOutput(
+            logits=self.lm_head(hidden_states),
+            past_key_values=next_cache,
+        )
 
 
-def cache_parity_report(
-    model: GemmaForCausalLM,
-    input_ids: t.Tensor,
-    *,
-    atol: float = 1e-5,
-) -> dict[str, Any]:
-    """Compare full-context logits with one-token-at-a-time cached logits."""
-
-    model.eval()
-    with t.no_grad():
-        full_logits = model(input_ids, use_cache=False).logits
-        cache = None
-        cached_logits = []
-        for pos in range(input_ids.shape[1]):
-            output = model(
-                input_ids[:, pos : pos + 1],
-                past_key_values=cache,
-                use_cache=True,
-            )
-            cache = output.past_key_values
-            cached_logits.append(output.logits)
-        cached_logits_tensor = t.cat(cached_logits, dim=1)
-        max_abs_diff = (full_logits - cached_logits_tensor).abs().max().item()
-    return {
-        "max_abs_diff": max_abs_diff,
-        "passed": max_abs_diff <= atol,
-        "atol": atol,
-    }
-
-
-# %%
 def make_tiny_gemma_config(sliding_window: int | None = None) -> GemmaConfig:
-    """Tiny config used for CPU smoke tests and notebook exercises."""
-
     return GemmaConfig(
         vocab_size=31,
         hidden_size=16,
@@ -413,24 +396,20 @@ def make_tiny_gemma_config(sliding_window: int | None = None) -> GemmaConfig:
 
 def make_tiny_gemma(seed: int = 0, sliding_window: int | None = None) -> GemmaForCausalLM:
     t.manual_seed(seed)
-    return GemmaForCausalLM(make_tiny_gemma_config(sliding_window=sliding_window))
+    return GemmaForCausalLM(make_tiny_gemma_config(sliding_window=sliding_window)).to(DEVICE)
 
 
-SIGNATURE_INPUT_IDS = t.tensor(
-    [
-        [1, 5, 8, 13, 2, 21, 3],
-        [3, 2, 1, 8, 5, 13, 21],
-        [21, 13, 8, 5, 3, 2, 1],
-        [2, 3, 5, 8, 13, 21, 1],
-    ],
-    dtype=t.long,
-)
+if MAIN:
+    tests.test_tiny_gemma_forward_shape(make_tiny_gemma)
+if MAIN:
+    tests.test_tiny_gemma_cache_parity(make_tiny_gemma)
+if MAIN:
+    tests.test_tiny_gemma_matches_reference_decoder(GemmaForCausalLM)
 
+# %%
 
 @t.inference_mode()
 def capture_gemma_trace(model: nn.Module, input_ids: t.Tensor) -> dict[str, t.Tensor]:
-    """Capture the residual stream after each learner-visible model stage."""
-
     trace: dict[str, t.Tensor] = {}
     handles = []
 
@@ -438,11 +417,13 @@ def capture_gemma_trace(model: nn.Module, input_ids: t.Tensor) -> dict[str, t.Te
         def hook(_module, _inputs, output):
             value = output[0] if isinstance(output, tuple) else output
             trace[name] = (value * scale).detach().float().cpu()
-
         return hook
 
-    embed_scale = math.sqrt(model.config.hidden_size)
-    handles.append(model.model.embed_tokens.register_forward_hook(save("embedding", embed_scale)))
+    handles.append(
+        model.model.embed_tokens.register_forward_hook(
+            save("embedding", math.sqrt(model.config.hidden_size))
+        )
+    )
     for layer_idx, layer in enumerate(model.model.layers):
         handles.append(layer.register_forward_hook(save(f"layer_{layer_idx}")))
     handles.append(model.model.norm.register_forward_hook(save("final_norm")))
@@ -459,28 +440,26 @@ def compare_gemma_traces(
     actual: dict[str, t.Tensor],
     expected: dict[str, t.Tensor],
 ) -> dict[str, dict[str, float]]:
-    """Return interpretable error metrics for each shared activation stage."""
-
     assert actual.keys() == expected.keys()
     profile = {}
     for name in expected:
-        actual_stage = actual[name]
-        expected_stage = expected[name]
-        delta = actual_stage - expected_stage
+        delta = actual[name] - expected[name]
         rmse = delta.square().mean().sqrt()
-        reference_rms = expected_stage.square().mean().sqrt()
-        cosine = F.cosine_similarity(
-            actual_stage.reshape(1, -1),
-            expected_stage.reshape(1, -1),
-        ).item()
+        reference_rms = expected[name].square().mean().sqrt()
         profile[name] = {
             "max_abs": delta.abs().max().item(),
-            "rmse": rmse.item(),
             "relative_rmse": (rmse / reference_rms.clamp_min(1e-12)).item(),
-            "cosine": cosine,
+            "cosine": F.cosine_similarity(
+                actual[name].reshape(1, -1), expected[name].reshape(1, -1)
+            ).item(),
         }
     return profile
 
+
+if MAIN:
+    tests.test_capture_gemma_trace(capture_gemma_trace, make_tiny_gemma)
+
+# %%
 
 @t.inference_mode()
 def run_architecture_controls(
@@ -488,14 +467,11 @@ def run_architecture_controls(
     *,
     seed: int = 5101,
 ) -> dict[str, object]:
-    """Compare the exact decoder with three deliberate architecture mistakes."""
-
     config = make_tiny_gemma_config()
     t.manual_seed(seed)
     reference = ReferenceGemmaForCausalLM(config).eval()
     learner = GemmaForCausalLM(config).eval()
     learner.load_state_dict(reference.state_dict())
-
     reference_trace = capture_gemma_trace(reference, input_ids)
     variant_traces = {"exact": capture_gemma_trace(learner, input_ids)}
 
@@ -532,125 +508,201 @@ def run_architecture_controls(
     }
 
 
-def rms_norm_smoke_test() -> bool:
-    layer = GemmaRMSNorm(hidden_size=4, eps=1e-6)
-    x = t.tensor([[[1.0, 2.0, 3.0, 4.0]]])
-    expected = x * t.rsqrt(x.pow(2).mean(dim=-1, keepdim=True) + 1e-6)
-    return bool(t.allclose(layer(x), expected, atol=1e-6))
+if MAIN:
+    tests.test_architecture_controls(run_architecture_controls)
 
+# %%
 
-def rope_norm_smoke_test() -> bool:
-    t.manual_seed(0)
-    x = t.randn(2, 4, 5, 4)
-    position_ids = t.arange(5).unsqueeze(0).expand(2, -1)
-    cos, sin = build_rope_cache(5, 4, base=10000.0, device=x.device, dtype=x.dtype)
-    rotated = apply_rope(x, cos, sin, position_ids)
-    return bool(t.allclose(rotated.norm(dim=-1), x.norm(dim=-1), atol=1e-6))
-
-
-def cache_parity_smoke_test() -> dict:
-    model = make_tiny_gemma(seed=0)
-    input_ids = t.tensor([[1, 2, 3, 4, 5]])
-    return cache_parity_report(model, input_ids, atol=1e-5)
-
-
-def local_memory_budget() -> dict:
-    budget = estimate_inference_memory(
-        num_parameters=1_000_000_000,
-        dtype="bfloat16",
-        batch_size=1,
-        context_length=2048,
-        hidden_size=2048,
-        num_layers=18,
-        num_key_value_heads=8,
-        head_dim=256,
-        overhead_gb=1.5,
-    )
-    return budget.as_dict()
-
-
-def compare_tiny_model_to_clone() -> dict:
-    """Synthetic HF-parity pattern: compare a model against an exact clone."""
-
-    model = make_tiny_gemma(seed=1)
-    clone = make_tiny_gemma(seed=999)
-    clone.load_state_dict(model.state_dict())
-    input_ids = t.tensor([[1, 5, 8, 13]])
-    report = compare_logits(model(input_ids).logits, clone(input_ids).logits, k=5)
-    return report.__dict__
-
-
-def run_smoke_test(cpu: bool = True) -> dict:
-    _ = cpu
-    cache_report = cache_parity_smoke_test()
-    return {
-        "rms_norm_passed": rms_norm_smoke_test(),
-        "rope_norm_passed": rope_norm_smoke_test(),
-        "cache_parity": cache_report,
-        "clone_parity": compare_tiny_model_to_clone(),
-        "memory_budget": local_memory_budget(),
+if MAIN:
+    signature = run_architecture_controls()
+if MAIN:
+    profiles = signature["profiles"]
+if MAIN:
+    stages = list(profiles["exact"])
+if MAIN:
+    colors = {
+        "exact": "#111827",
+        "no embedding scale": "#c2410c",
+        "no RoPE": "#0f766e",
+        "wrong GQA order": "#b91c1c",
     }
 
+if MAIN:
+    fig, axes = plt.subplots(1, 2, figsize=(12, 4.3), constrained_layout=True)
+if MAIN:
+    for name, profile in profiles.items():
+        values = [max(profile[stage]["max_abs"], 1e-8) for stage in stages]
+        axes[0].plot(stages, values, marker="o", linewidth=2, label=name, color=colors[name])
+if MAIN:
+    axes[0].set_yscale("log")
+if MAIN:
+    axes[0].set_ylabel("maximum absolute error vs reference")
+if MAIN:
+    axes[0].set_title("Where does each implementation first diverge?")
+if MAIN:
+    axes[0].tick_params(axis="x", rotation=25)
+if MAIN:
+    axes[0].grid(axis="y", alpha=0.25)
+if MAIN:
+    axes[0].legend(frameon=False, fontsize=9)
 
-def run_gpu_test(max_vram_gb: float = 24.0) -> dict:
-    budget = estimate_inference_memory(
-        num_parameters=1_000_000_000,
-        dtype="bfloat16",
-        batch_size=1,
-        context_length=2048,
-        hidden_size=2048,
-        num_layers=18,
-        num_key_value_heads=8,
-        head_dim=256,
-        overhead_gb=1.5,
+if MAIN:
+    names = list(profiles)
+if MAIN:
+    final_errors = [profiles[name]["logits"]["max_abs"] for name in names]
+if MAIN:
+    bars = axes[1].bar(names, final_errors, color=[colors[name] for name in names])
+if MAIN:
+    axes[1].set_ylabel("maximum absolute logit error")
+if MAIN:
+    axes[1].set_title("Exact parity passes; architecture controls fail")
+if MAIN:
+    axes[1].tick_params(axis="x", rotation=25)
+if MAIN:
+    axes[1].grid(axis="y", alpha=0.25)
+if MAIN:
+    for bar, value in zip(bars, final_errors):
+        label = "0" if value == 0 else f"{value:.3f}"
+        axes[1].text(bar.get_x() + bar.get_width() / 2, value + 0.05, label, ha="center", fontsize=9)
+
+if MAIN:
+    figure_path = assets_dir / "gemma_parity_signature.png"
+if MAIN:
+    fig.savefig(figure_path, dpi=180, bbox_inches="tight")
+if MAIN:
+    plt.show()
+
+if MAIN:
+    print("stage              exact max abs error")
+if MAIN:
+    for stage in stages:
+        print(f"{stage:18s} {profiles['exact'][stage]['max_abs']:.3e}")
+if MAIN:
+    print("\ncontrol             final logit max abs error")
+if MAIN:
+    for name in names[1:]:
+        print(f"{name:20s} {profiles[name]['logits']['max_abs']:.6f}")
+
+# %%
+
+# Try It Yourself: change only these token IDs, keeping values in [0, 30].
+if MAIN:
+    play_input_ids = t.tensor([[1, 4, 9, 16, 25, 7, 2]], dtype=t.long, device=DEVICE)
+if MAIN:
+    play = run_architecture_controls(play_input_ids)
+
+if MAIN:
+    fig, ax = plt.subplots(figsize=(8, 3.6), constrained_layout=True)
+if MAIN:
+    play_names = list(play["profiles"])
+if MAIN:
+    play_errors = [play["profiles"][name]["logits"]["max_abs"] for name in play_names]
+if MAIN:
+    ax.bar(play_names, play_errors, color=[colors[name] for name in play_names])
+if MAIN:
+    ax.set_ylabel("maximum absolute logit error")
+if MAIN:
+    ax.set_title(f"Your input: {play_input_ids.squeeze(0).tolist()}")
+if MAIN:
+    ax.tick_params(axis="x", rotation=20)
+if MAIN:
+    ax.grid(axis="y", alpha=0.25)
+if MAIN:
+    plt.show()
+
+# %%
+
+def first_divergent_stage(
+    profile: dict[str, dict[str, float]],
+    *,
+    tolerance: float = 1e-6,
+) -> str | None:
+    return next(
+        (stage for stage, metrics in profile.items() if metrics["max_abs"] > tolerance),
+        None,
     )
-    if not t.cuda.is_available():
-        raise RuntimeError("5.1 GPU preflight requires CUDA; no CPU fallback is accepted.")
 
-    device = t.device("cuda")
-    t.cuda.reset_peak_memory_stats()
-    model = make_tiny_gemma(seed=0).to(device)
-    input_ids = t.tensor([[1, 2, 3, 4, 5]], device=device)
-    cache_report = cache_parity_report(model, input_ids, atol=1e-5)
-    x = t.randn(2, 4, 5, 4, device=device)
-    position_ids = t.arange(5, device=device).unsqueeze(0).expand(2, -1)
-    cos, sin = build_rope_cache(5, 4, base=10000.0, device=device, dtype=x.dtype)
-    rotated = apply_rope(x, cos, sin, position_ids)
-    rope_norm_error = float((rotated.norm(dim=-1) - x.norm(dim=-1)).abs().max().item())
 
-    reference = run_hf_tiny_gemma_reference_parity(device=device)
-    t.cuda.synchronize()
-    peak_vram_gb = t.cuda.max_memory_allocated() / 1024**3
-    preflight_passed = (
-        cache_report["passed"]
-        and rope_norm_error <= 1e-5
-        and reference["reference_parity_passed"]
-        and budget.fits(max_vram_gb)
-        and peak_vram_gb <= max_vram_gb
-    )
-    return {
-        "preflight_passed": preflight_passed,
-        "cuda_available": True,
-        "device": t.cuda.get_device_name(0),
-        "cache_max_abs_diff": cache_report["max_abs_diff"],
-        "cache_passed": cache_report["passed"],
-        "rope_norm_error": rope_norm_error,
-        **reference,
-        "estimated_total_gb": budget.total_gb,
-        "fits_budget": budget.fits(max_vram_gb),
-        "peak_vram_gb": peak_vram_gb,
-        "within_vram_budget": peak_vram_gb <= max_vram_gb,
-        "full_path": "Compare the local Gemma-from-scratch implementation against Hugging Face's Gemma reference architecture on CUDA with matched deterministic tiny weights.",
+if MAIN:
+    expected_first_divergence = {
+        "exact": None,
+        "no embedding scale": "embedding",
+        "no RoPE": "layer_0",
+        "wrong GQA order": "layer_0",
     }
+if MAIN:
+    observed_first_divergence = {
+        name: first_divergent_stage(profile)
+        for name, profile in signature["profiles"].items()
+    }
+if MAIN:
+    assert observed_first_divergence == expected_first_divergence
+if MAIN:
+    observed_first_divergence
 
+# %%
 
-def run_hf_tiny_gemma_reference_parity(device: t.device) -> dict:
-    """Compare local tiny Gemma logits against the real HF Gemma implementation."""
+if MAIN:
+    PLAY_PAST_LENGTH = 3
+if MAIN:
+    PLAY_QUERY_LENGTH = 2
+if MAIN:
+    PLAY_WINDOW = 3
 
+# Exact mask probe only: no model object, weights, optimizer or CUDA.
+if MAIN:
+    play_key_length = PLAY_PAST_LENGTH + PLAY_QUERY_LENGTH
+if MAIN:
+    play_mask = build_causal_attention_mask(
+        query_length=PLAY_QUERY_LENGTH, key_length=play_key_length,
+        past_length=PLAY_PAST_LENGTH, sliding_window=PLAY_WINDOW,
+        device=t.device("cpu"),
+    ).squeeze(0).squeeze(0)
+if MAIN:
+    play_global = build_causal_attention_mask(
+        query_length=PLAY_QUERY_LENGTH, key_length=play_key_length,
+        past_length=PLAY_PAST_LENGTH, sliding_window=None,
+        device=t.device("cpu"),
+    ).squeeze(0).squeeze(0)
+if MAIN:
+    play_wrong_origin = build_causal_attention_mask(
+        query_length=PLAY_QUERY_LENGTH, key_length=play_key_length,
+        past_length=0, sliding_window=PLAY_WINDOW,
+        device=t.device("cpu"),
+    ).squeeze(0).squeeze(0)
+if MAIN:
+    play_wrong_bits = int((play_mask != play_wrong_origin).sum())
+if MAIN:
+    play_counts = play_mask.sum(dim=-1).tolist()
+if MAIN:
+    fig, axes = plt.subplots(1, 3, figsize=(11, 3.2), constrained_layout=True)
+if MAIN:
+    for ax, values, title in zip(
+        axes, (play_mask, play_global, play_wrong_origin),
+        ("Correct cached local mask", "Global baseline", "Wrong zero-origin control"),
+    ):
+        ax.imshow(values.numpy(), vmin=0, vmax=1, cmap="Blues", aspect="auto")
+        ax.set(xticks=range(play_key_length), yticks=range(PLAY_QUERY_LENGTH),
+               xlabel="absolute key position", ylabel="query row", title=title)
+if MAIN:
+    print("allowed keys per query:", play_counts)
+if MAIN:
+    print("wrong-origin differing bits:", play_wrong_bits)
+if MAIN:
+    plt.show()
+
+# %%
+
+if MAIN:
+    import transformers
+if MAIN:
     from transformers import GemmaConfig as HFGemmaConfig
+if MAIN:
     from transformers import GemmaForCausalLM as HFGemmaForCausalLM
 
-    local_config = make_tiny_gemma_config(sliding_window=None)
+if MAIN:
+    local_config = make_tiny_gemma_config()
+if MAIN:
     hf_config = HFGemmaConfig(
         vocab_size=local_config.vocab_size,
         hidden_size=local_config.hidden_size,
@@ -668,66 +720,307 @@ def run_hf_tiny_gemma_reference_parity(device: t.device) -> dict:
         eos_token_id=2,
         tie_word_embeddings=local_config.tie_word_embeddings,
     )
-
+if MAIN:
     t.manual_seed(5101)
-    t.cuda.manual_seed_all(5101)
-    reference = HFGemmaForCausalLM(hf_config).to(device).eval()
-    local = GemmaForCausalLM(local_config).to(device).eval()
-    local.load_state_dict(reference.state_dict())
-    input_ids = t.tensor([[1, 5, 8, 13, 2]], device=device)
-    attention_mask = t.ones_like(input_ids)
+if MAIN:
+    hf_reference = HFGemmaForCausalLM(hf_config).to(DEVICE).eval()
+if MAIN:
+    hf_learner = GemmaForCausalLM(local_config).to(DEVICE).eval()
+if MAIN:
+    hf_learner.load_state_dict(hf_reference.state_dict())
+if MAIN:
+    hf_input_ids = t.tensor([[1, 5, 8, 13, 2]], device=DEVICE)
+if MAIN:
     with t.inference_mode():
-        local_logits = local(
-            input_ids,
-            attention_mask=attention_mask,
-            use_cache=False,
-        ).logits
-        reference_logits = reference(
-            input_ids=input_ids,
-            attention_mask=attention_mask,
-            use_cache=False,
-        ).logits
-    parity = compare_logits(local_logits, reference_logits, k=5)
-    cache_report = cache_parity_report(local, input_ids, atol=1e-5)
-    generation_prompt = t.tensor([[1, 5, 8, 13]], device=device)
-    local_generated = local.greedy_generate(generation_prompt, max_new_tokens=4)
-    reference_generated = generation_prompt.clone()
-    with t.inference_mode():
-        for _ in range(4):
-            reference_output = reference(input_ids=reference_generated, use_cache=False)
-            next_token = reference_output.logits[:, -1].argmax(dim=-1, keepdim=True)
-            reference_generated = t.cat([reference_generated, next_token], dim=-1)
-    generation_matches_reference = t.equal(local_generated, reference_generated)
-    return {
-        "reference_model_family": "transformers.GemmaForCausalLM",
-        "reference_transformers_tiny_config": True,
-        "reference_weight_key_count": len(reference.state_dict()),
-        "reference_loaded_key_count": len(local.state_dict()),
-        "reference_logits_max_abs_diff": parity.max_abs_diff,
-        "reference_logits_mse": parity.mse,
-        "reference_logits_kl_divergence": parity.kl_divergence,
-        "reference_logits_topk_agreement": parity.topk_agreement,
-        "reference_cache_max_abs_diff": cache_report["max_abs_diff"],
-        "reference_cache_passed": cache_report["passed"],
-        "generation_prompt": generation_prompt.squeeze(0).tolist(),
-        "local_greedy_tokens": local_generated.squeeze(0).tolist(),
-        "reference_greedy_tokens": reference_generated.squeeze(0).tolist(),
-        "generation_matches_reference": generation_matches_reference,
-        "reference_parity_passed": (
-            parity.max_abs_diff <= HF_GEMMA_REFERENCE_MAX_ABS_ERROR
-            and parity.mse <= HF_GEMMA_REFERENCE_MSE_MAX
-            and parity.topk_agreement == 1.0
-            and cache_report["passed"]
-            and generation_matches_reference
-        ),
-    }
+        hf_logits = hf_reference(input_ids=hf_input_ids, use_cache=False).logits
+        learner_logits = hf_learner(hf_input_ids, use_cache=False).logits
+if MAIN:
+    hf_delta = learner_logits - hf_logits
+if MAIN:
+    hf_max_abs = hf_delta.abs().max().item()
+if MAIN:
+    hf_mse = hf_delta.square().mean().item()
+if MAIN:
+    hf_top5_agreement = (
+        learner_logits.topk(5, dim=-1).indices == hf_logits.topk(5, dim=-1).indices
+    ).float().mean().item()
+if MAIN:
+    assert hf_max_abs <= 5e-4 and hf_mse <= 1e-7 and hf_top5_agreement == 1.0
+if MAIN:
+    print("transformers version:", transformers.__version__)
+if MAIN:
+    print("state-dict keys loaded:", len(hf_reference.state_dict()))
+if MAIN:
+    print(f"max abs logit error: {hf_max_abs:.8f}")
+if MAIN:
+    print(f"logit MSE: {hf_mse:.3e}")
+if MAIN:
+    print(f"ordered top-5 agreement: {hf_top5_agreement:.3f}")
 
+# %%
 
-def run_full_experiment(max_vram_gb: float = 24.0) -> dict:
-    """Run the validated experiment path used by the verification report."""
-
-    return run_gpu_test(max_vram_gb=max_vram_gb)
+def hf_split_to_interleaved_projection(weight: t.Tensor, num_heads: int) -> t.Tensor:
+    """Change each Q/K head's output-coordinate basis; preserve head identity."""
+    if weight.ndim != 2 or num_heads <= 0 or weight.shape[0] % num_heads:
+        raise ValueError("Expected a projection matrix with equal-sized heads")
+    head_dim = weight.shape[0] // num_heads
+    if head_dim == 0 or head_dim % 2:
+        raise ValueError("RoPE head dimension must be positive and even")
+    half = head_dim // 2
+    pair_order = t.stack((t.arange(half, device=weight.device),
+                          t.arange(half, device=weight.device) + half), dim=-1).flatten()
+    return weight.reshape(num_heads, head_dim, weight.shape[1]).index_select(1, pair_order).reshape_as(weight)
 
 
 if MAIN:
-    print(run_smoke_test())
+    for heads in (2, 4):
+        marked_rows = t.arange(heads * 8 * 3).reshape(heads * 8, 3)
+        converted_rows = hf_split_to_interleaved_projection(marked_rows, heads)
+        expected_order = t.tensor([0, 4, 1, 5, 2, 6, 3, 7])
+        for head in range(heads):
+            t.testing.assert_close(converted_rows[head*8:(head+1)*8],
+                                   marked_rows[head*8 + expected_order])
+if MAIN:
+    print("Projection checks passed: dimension-eight permutation and Q/K head identity.")
+
+# %%
+
+def gemma_tanh_gelu_gate(gate: t.Tensor, up: t.Tensor) -> t.Tensor:
+    """Match the frozen public Gemma config's GELU(tanh) gated activation."""
+    return F.gelu(gate, approximate="tanh") * up
+
+
+if MAIN:
+    gate_inputs = t.tensor([-2.0, -1.0, 0.0, 1.0, 2.0], dtype=t.float64)
+if MAIN:
+    expected_gelu = t.tensor([
+        0.5 * x * (1.0 + math.tanh(math.sqrt(2.0 / math.pi) * (x + 0.044715*x**3)))
+        for x in gate_inputs.tolist()
+    ], dtype=t.float64)
+if MAIN:
+    t.testing.assert_close(gemma_tanh_gelu_gate(gate_inputs, t.ones_like(gate_inputs)),
+                           expected_gelu, atol=1e-12, rtol=0)
+if MAIN:
+    activation_control_gap = float((expected_gelu - F.silu(gate_inputs)).abs().max())
+if MAIN:
+    assert abs(activation_control_gap - 0.19300353813201032) <= 1e-12
+if MAIN:
+    print("GELU formula check passed; SiLU control max difference:", activation_control_gap)
+
+
+class ConventionMatchedGemmaMLP(GemmaMLP):
+    def forward(self, x: t.Tensor) -> t.Tensor:
+        return self.down_proj(gemma_tanh_gelu_gate(self.gate_proj(x), self.up_proj(x)))
+
+# %%
+
+# Independent explicit rotations, using relative positions 2 and 1.
+if MAIN:
+    component_q = t.tensor([1.0, 2.0, 3.0, 4.0], dtype=t.float64)
+if MAIN:
+    component_k = t.tensor([2.0, -1.0, 0.5, 3.0], dtype=t.float64)
+if MAIN:
+    component_frequencies = t.tensor([1.0, 0.01], dtype=t.float64)
+
+
+def explicit_half_rotation(vector: t.Tensor, position: int) -> t.Tensor:
+    angles = component_frequencies * position
+    rotated = t.cat((-vector[2:], vector[:2]))
+    return vector * angles.cos().repeat(2) + rotated * angles.sin().repeat(2)
+
+
+def explicit_pair_rotation(vector: t.Tensor, position: int) -> t.Tensor:
+    angles = component_frequencies * position
+    pairs = vector.reshape(2, 2)
+    rotated = t.stack((-pairs[:, 1], pairs[:, 0]), dim=-1).flatten()
+    return vector * angles.cos().repeat_interleave(2) + rotated * angles.sin().repeat_interleave(2)
+
+
+if MAIN:
+    component_order = t.tensor([0, 2, 1, 3])
+if MAIN:
+    component_half_score = float(explicit_half_rotation(component_q, 2) @ explicit_half_rotation(component_k, 1))
+if MAIN:
+    component_correct_score = float(explicit_pair_rotation(component_q[component_order], 2)
+                                    @ explicit_pair_rotation(component_k[component_order], 1))
+if MAIN:
+    component_wrong_score = float(explicit_pair_rotation(component_q, 2) @ explicit_pair_rotation(component_k, 1))
+if MAIN:
+    assert abs(component_half_score - 7.362465991603378) <= 1e-12
+if MAIN:
+    assert abs(component_correct_score - component_half_score) <= 1e-12
+if MAIN:
+    assert abs(component_wrong_score - 9.361968914924665) <= 1e-12
+if MAIN:
+    assert abs(component_wrong_score - component_half_score) > 1.0
+if MAIN:
+    print("HF-coordinate score:", component_half_score)
+if MAIN:
+    print("Converted-coordinate score:", component_correct_score)
+if MAIN:
+    print("Wrong-coordinate score:", component_wrong_score)
+
+# %%
+
+import hashlib
+import json
+
+
+def run_convention_matched_hf_probe() -> dict:
+    """One fixed tiny CPU comparison; no pretrained weights, fitting or search."""
+    from transformers import GemmaConfig as HFGemmaConfig
+    from transformers import GemmaForCausalLM as HFGemmaForCausalLM
+
+    config = make_tiny_gemma_config()
+    hf_config = HFGemmaConfig(
+        vocab_size=31, hidden_size=16, intermediate_size=32,
+        num_hidden_layers=2, num_attention_heads=4, num_key_value_heads=2,
+        head_dim=4, max_position_embeddings=64, rms_norm_eps=1e-6,
+        rope_theta=10000.0, hidden_act="gelu_pytorch_tanh",
+        initializer_range=0.02, attention_bias=False, attention_dropout=0.0,
+        pad_token_id=0, bos_token_id=1, eos_token_id=2,
+        tie_word_embeddings=True,
+    )
+    hf_config._attn_implementation = "eager"
+    t.manual_seed(5101)
+    reference = HFGemmaForCausalLM(hf_config).to(device="cpu", dtype=t.float32).eval()
+    assert reference.config._attn_implementation == "eager"
+    inputs = SIGNATURE_INPUT_IDS.to(device="cpu")
+    assert inputs.tolist() == [[1, 5, 8, 13, 2, 21, 3], [3, 2, 1, 8, 5, 13, 21],
+                               [21, 13, 8, 5, 3, 2, 1], [2, 3, 5, 8, 13, 21, 1]]
+    assert config.rms_norm_eps == 1e-6 and config.rope_theta == 10000.0
+    state = reference.state_dict()
+    assert len(state) == 21
+    with t.inference_mode():
+        expected = reference(input_ids=inputs, use_cache=False).logits
+    assert expected.shape == (4, 7, 31) and expected.numel() == 868
+    rows = []
+    for label, match_activation, match_basis in (
+        ("unmatched conventions", False, False),
+        ("GELU only", True, False),
+        ("Q/K basis only", False, True),
+        ("both conventions matched", True, True),
+    ):
+        learner = GemmaForCausalLM(config).to(device="cpu", dtype=t.float32).eval()
+        if match_activation:
+            for layer in learner.model.layers:
+                layer.mlp = ConventionMatchedGemmaMLP(config).to(device="cpu", dtype=t.float32).eval()
+        matched_state = {name: value.clone() for name, value in state.items()}
+        if match_basis:
+            for index in range(config.num_hidden_layers):
+                for projection, heads in (("q_proj", config.num_attention_heads), ("k_proj", config.num_key_value_heads)):
+                    key = f"model.layers.{index}.self_attn.{projection}.weight"
+                    matched_state[key] = hf_split_to_interleaved_projection(matched_state[key], heads)
+        learner.load_state_dict(matched_state, strict=True)
+        with t.inference_mode():
+            observed = learner(inputs, use_cache=False).logits
+        delta = observed - expected
+        rows.append({"label": label, "activation_matched": match_activation,
+                     "basis_matched": match_basis, "max_abs": float(delta.abs().max()),
+                     "mse": float(delta.square().mean()),
+                     "ordered_top5_agreement": float((observed.topk(5, dim=-1).indices
+                                                       == expected.topk(5, dim=-1).indices).float().mean())})
+    state_hashes = {name: hashlib.sha256(value.detach().contiguous().numpy().tobytes()).hexdigest()
+                    for name, value in state.items()}
+    return {"rows": rows, "state_dict_keys": len(state), "state_dict_sha256": state_hashes,
+            "input_ids": inputs.tolist(),
+            "reference_config": hf_config.to_dict(), "seed": 5101,
+            "corrected_passed": rows[-1]["max_abs"] <= 5e-6 and rows[-1]["mse"] <= 1e-12}
+
+
+if MAIN:
+    convention_probe = run_convention_matched_hf_probe()
+if MAIN:
+    for row in convention_probe["rows"]:
+        print(f"{row['label']:26s} max_abs={row['max_abs']:.9g}  MSE={row['mse']:.9g}")
+if MAIN:
+    print("Corrected predeclared gate:", convention_probe["corrected_passed"])
+if MAIN:
+    print("ARENA_CONVENTION_PROBE=" + json.dumps(convention_probe, sort_keys=True))
+
+if MAIN:
+    fig, axes = plt.subplots(1, 3, figsize=(13, 3.7), constrained_layout=True)
+if MAIN:
+    axes[0].plot(gate_inputs, expected_gelu, "o-", label="GELU(tanh)")
+if MAIN:
+    axes[0].plot(gate_inputs, F.silu(gate_inputs), "s--", label="SiLU control")
+if MAIN:
+    axes[0].set(title="Activation conventions differ", xlabel="gate input", ylabel="gate output")
+if MAIN:
+    axes[0].legend(fontsize=8)
+if MAIN:
+    axes[1].bar(["HF basis", "converted", "wrong basis"],
+                [component_half_score, component_correct_score, component_wrong_score])
+if MAIN:
+    axes[1].set(title="Relative-position attention score", ylabel="q(position 2) dot k(position 1)")
+if MAIN:
+    axes[1].tick_params(axis="x", rotation=20)
+if MAIN:
+    axes[2].bar(["original", "GELU", "basis", "both"],
+                [max(row["max_abs"], 1e-12) for row in convention_probe["rows"]])
+if MAIN:
+    axes[2].axhline(5e-6, color="black", linestyle="--", label="fixed corrected tolerance")
+if MAIN:
+    axes[2].set(yscale="log", title="One fixed tiny random-weight probe", ylabel="maximum absolute logit error")
+if MAIN:
+    axes[2].legend(fontsize=7)
+if MAIN:
+    plt.show()
+if MAIN:
+    assert convention_probe["corrected_passed"], "Preserve failure: do not relax tolerance or choose a new seed"
+
+# %%
+
+import importlib
+
+
+def _release_solution_module():
+    return importlib.import_module("chapter5_modern_architectures.exercises.part1_gemma_from_scratch.legacy_solutions")
+
+
+def run_gpu_test(max_vram_gb: float = 24.0) -> dict:
+    """Run the section's pinned CUDA verification contract."""
+    return _release_solution_module().run_gpu_test(max_vram_gb=max_vram_gb)
+
+
+def run_full_experiment(max_vram_gb: float = 24.0) -> dict:
+    """Run the full experiment used for the checked-in release evidence."""
+    return _release_solution_module().run_full_experiment(
+        max_vram_gb=max_vram_gb
+    )
+
+# %%
+
+def cache_parity_report(*args, **kwargs):
+    """Preserved compatibility helper; original source remains in legacy_solutions.py."""
+    return _release_solution_module().cache_parity_report(*args, **kwargs)
+
+def cache_parity_smoke_test(*args, **kwargs):
+    """Preserved compatibility helper; original source remains in legacy_solutions.py."""
+    return _release_solution_module().cache_parity_smoke_test(*args, **kwargs)
+
+def compare_tiny_model_to_clone(*args, **kwargs):
+    """Preserved compatibility helper; original source remains in legacy_solutions.py."""
+    return _release_solution_module().compare_tiny_model_to_clone(*args, **kwargs)
+
+def local_memory_budget(*args, **kwargs):
+    """Preserved compatibility helper; original source remains in legacy_solutions.py."""
+    return _release_solution_module().local_memory_budget(*args, **kwargs)
+
+def rms_norm_smoke_test(*args, **kwargs):
+    """Preserved compatibility helper; original source remains in legacy_solutions.py."""
+    return _release_solution_module().rms_norm_smoke_test(*args, **kwargs)
+
+def rope_norm_smoke_test(*args, **kwargs):
+    """Preserved compatibility helper; original source remains in legacy_solutions.py."""
+    return _release_solution_module().rope_norm_smoke_test(*args, **kwargs)
+
+def run_hf_tiny_gemma_reference_parity(*args, **kwargs):
+    """Preserved compatibility helper; original source remains in legacy_solutions.py."""
+    return _release_solution_module().run_hf_tiny_gemma_reference_parity(*args, **kwargs)
+
+def run_smoke_test(*args, **kwargs):
+    """Preserved compatibility helper; original source remains in legacy_solutions.py."""
+    return _release_solution_module().run_smoke_test(*args, **kwargs)
+
+# %%

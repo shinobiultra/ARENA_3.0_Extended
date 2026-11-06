@@ -1,0 +1,2962 @@
+# ! CELL TYPE: markdown
+# ! FILTERS: []
+# ! TAGS: []
+
+r'''
+```python
+[
+    {
+        "title": "Build transparent primitives",
+        "icon": "1-circle-fill",
+        "subtitle": ""
+    },
+    {
+        "title": "Assemble and trace the decoder",
+        "icon": "2-circle-fill",
+        "subtitle": ""
+    },
+    {
+        "title": "Read controls and parity",
+        "icon": "3-circle-fill",
+        "subtitle": ""
+    },
+    {
+        "title": "Predict changed conditions",
+        "icon": "4-circle-fill",
+        "subtitle": ""
+    },
+    {
+        "title": "Bonus",
+        "icon": "star",
+        "subtitle": ""
+    }
+]
+```
+'''
+
+# ! CELL TYPE: markdown
+# ! FILTERS: []
+# ! TAGS: []
+
+r'''
+# [5.1] Gemma from Scratch
+'''
+
+# ! CELL TYPE: markdown
+# ! FILTERS: []
+# ! TAGS: []
+
+r'''
+# Introduction
+'''
+
+# ! CELL TYPE: markdown
+# ! FILTERS: []
+# ! TAGS: []
+
+r'''
+> **Evidence identity:** the original 16 executed solution cells and every saved output are retained as
+historical reference evidence. This master migration is not a fresh whole-notebook, CUDA or pretrained-model
+execution. A separate exact CPU mask probe has its own receipt.
+
+The historical prose calls the local comparison an independent reference. It is a separately stored regression
+reference whose core decoder code substantially duplicates the learner implementation. The historical Hugging
+Face cell leaves activation and RoPE convention differences unresolved; its preserved result is only a tiny
+random-weight tolerance diagnostic. A new separately recorded CPU extension below implements and tests both
+corrections. Pretrained Gemma 3 and SmolLM2 remain open.
+
+Commit each forecast before opening the expected output or saved plot. Record confidence, causal reasoning and
+prior exposure. The reference-rich notebook is guided practice and earns no unseen mastery credit. The added
+cache-mask probe runs on CPU without a model.
+'''
+
+# ! CELL TYPE: markdown
+# ! FILTERS: []
+# ! TAGS: []
+
+r'''
+## Core Question
+
+Can seven transparent Gemma primitives reproduce an independent reference decoder at every residual-stream
+stage, not merely return a tensor of the right shape?
+
+**Claim.** With identical deterministic weights, the completed model will match the independent reference
+exactly across embeddings, both decoder blocks, final normalization, and logits. Three deliberate architecture
+mistakes will diverge at the stage where their missing convention first matters.
+
+## Section Metadata
+
+| Release field | Value |
+| --- | --- |
+| Exercise | `EXERCISE_ID = "5_1_gemma_from_scratch"` |
+| Ground-truth tier | `GT_TIER = "GT-0"` |
+| Difficulty | `DIFFICULTY = 4` |
+| Importance | `IMPORTANCE = 5` |
+| Expected runtime | `EXPECTED_RUNTIME = "seconds on toy contract; minutes on local real-model path"` |
+| GPU Contract | `REQUIRES_GPU = True` for the optional release verification; the learner exercises and exact signature result run on CPU. |
+
+## What you will implement
+
+By the end of this notebook, you will be able to:
+
+- implement Gemma RMSNorm, interleaved RoPE, grouped-query attention, SwiGLU, and cache-aware masking;
+- assemble those primitives into a complete two-layer causal language model;
+- test full-context and cached decoding semantically;
+- trace activations and localize the first mismatch against a reference;
+- distinguish architecture parity with deterministic weights from pretrained language-model validation.
+
+<img src="media/gemma_decoder_block.svg" width="760">
+
+## Cold open: one exact target
+
+We use a two-layer, width-16 Gemma model organism with vocabulary size 31. The token IDs are generated test
+inputs, and the weights come from seed `5101`. This organism has no language ability; its role is exact ground
+truth. It is large enough for every architectural convention to affect real logits and small enough to run
+every cell on CPU.
+'''
+
+# ! CELL TYPE: markdown
+# ! FILTERS: []
+# ! TAGS: []
+
+r'''
+## Content & Learning Objectives
+
+### 1️⃣ Build transparent primitives
+
+> ##### Learning Objectives
+>
+> - Implement RMS normalization, rotations, masks and grouped-query attention with immediate semantic checks.
+
+### 2️⃣ Assemble and trace the decoder
+
+> ##### Learning Objectives
+>
+> - Assemble a complete cached decoder and inspect each residual-stream stage.
+
+### 3️⃣ Read controls and parity
+
+> ##### Learning Objectives
+>
+> - Compare three architecture mistakes and distinguish regression from independent implementation parity.
+
+### 4️⃣ Predict changed conditions
+
+> ##### Learning Objectives
+>
+> - Predict how absolute positions and window width change cached attention before seeing the mask.
+
+### ☆ Bonus
+
+Inspect preserved release entry points without executing them.
+'''
+
+# ! CELL TYPE: code
+# ! FILTERS: [python]
+# ! TAGS: []
+
+MAIN = __name__ == "__main__"
+
+# ! CELL TYPE: code
+# ! FILTERS: []
+# ! TAGS: []
+
+import math
+import sys
+from pathlib import Path
+
+import matplotlib.pyplot as plt
+import torch as t
+import torch.nn as nn
+import torch.nn.functional as F
+
+chapter = "chapter5_modern_architectures"
+section = "part1_gemma_from_scratch"
+# FILTERS: ~python
+root_dir = next(p for p in [Path.cwd(), *Path.cwd().parents] if (p / chapter).exists())
+# END FILTERS
+# FILTERS: python
+root_dir = Path(__file__).resolve().parents[3]
+# END FILTERS
+exercises_dir = root_dir / chapter / "exercises"
+section_dir = exercises_dir / section
+assets_dir = section_dir / "media"
+if str(root_dir) not in sys.path:
+    sys.path.append(str(root_dir))
+if str(exercises_dir) not in sys.path:
+    sys.path.append(str(exercises_dir))
+
+import part1_gemma_from_scratch.tests as tests
+
+from chapter5_modern_architectures.exercises.part1_gemma_from_scratch.gemma_reference import (
+    GemmaCausalLMOutput,
+    GemmaConfig,
+    GemmaForCausalLM as ReferenceGemmaForCausalLM,
+)
+
+DEVICE = t.device("cpu")
+PastKeyValue = tuple[t.Tensor, t.Tensor]
+
+# ! CELL TYPE: code
+# ! FILTERS: []
+# ! TAGS: []
+
+SIGNATURE_INPUT_IDS = t.tensor(
+    [
+        [1, 5, 8, 13, 2, 21, 3],
+        [3, 2, 1, 8, 5, 13, 21],
+        [21, 13, 8, 5, 3, 2, 1],
+        [2, 3, 5, 8, 13, 21, 1],
+    ],
+    dtype=t.long,
+    device=DEVICE,
+)
+if MAIN:
+    cold_config = GemmaConfig(
+        vocab_size=31,
+        hidden_size=16,
+        intermediate_size=32,
+        num_hidden_layers=2,
+        num_attention_heads=4,
+        num_key_value_heads=2,
+        max_position_embeddings=64,
+    )
+if MAIN:
+    t.manual_seed(5101)
+if MAIN:
+    cold_reference = ReferenceGemmaForCausalLM(cold_config).eval()
+if MAIN:
+    with t.inference_mode():
+        cold_logits = cold_reference(SIGNATURE_INPUT_IDS).logits
+if MAIN:
+    print("logits shape:", tuple(cold_logits.shape))
+if MAIN:
+    print("last-position argmax token ids:", cold_logits[:, -1].argmax(dim=-1).tolist())
+
+# ! CELL TYPE: markdown
+# ! FILTERS: []
+# ! TAGS: []
+
+r'''
+# 1️⃣ Build transparent primitives
+'''
+
+# ! CELL TYPE: markdown
+# ! FILTERS: []
+# ! TAGS: []
+
+r'''
+<details><summary>Expected output</summary>
+
+```text
+logits shape: (4, 7, 31)
+last-position argmax token ids: [3, 21, 1, 1]
+```
+
+</details>
+
+The output is intentionally concrete: by the end, your own model must reproduce all `4 x 7 x 31` logits, not
+just these four argmax IDs.
+
+## Build the primitives
+'''
+
+# ! CELL TYPE: markdown
+# ! FILTERS: []
+# ! TAGS: []
+
+r'''
+### Exercise - implement Gemma RMSNorm
+
+> ```yaml
+> Difficulty: 🔴🔴🔴⚪⚪
+> Importance: 🔵🔵🔵🔵⚪
+> 
+> You should spend 10-15 minutes on this exercise.
+> ```
+
+Normalize each residual vector by its root mean square, then apply Gemma's learned offset scale `1 + weight`.
+Keep the computation in float32 and cast back to the input dtype.
+
+<details><summary>Expected output</summary>
+
+```text
+All tests in `test_gemma_rms_norm` passed!
+```
+
+</details>
+
+<details><summary>Help - common bug: subtracting the mean</summary>
+
+Do not subtract the mean. Compute `mean(x**2)` only over the hidden dimension. A zero-initialized weight must
+leave the normalized vector at unit scale.
+
+</details>
+
+<details><summary>Interpretation</summary>
+
+A LayerNorm-shaped implementation can pass every shape check while rotating the residual direction. Reference
+parity catches that semantic error.
+
+</details>
+
+<details><summary>Historical worked formulation</summary>
+
+```python
+class GemmaRMSNorm(nn.Module):
+    def __init__(self, hidden_size: int, eps: float = 1e-6):
+        super().__init__()
+        self.weight = nn.Parameter(t.zeros(hidden_size))
+        self.eps = eps
+
+    def forward(self, x: t.Tensor) -> t.Tensor:
+        dtype = x.dtype
+        x_float = x.float()
+        rms = x_float.pow(2).mean(dim=-1, keepdim=True)
+        normalized = x_float * t.rsqrt(rms + self.eps)
+        return (normalized * (1.0 + self.weight.float())).to(dtype)
+```
+
+</details>
+'''
+
+# ! CELL TYPE: markdown
+# ! FILTERS: []
+# ! TAGS: []
+
+r'''
+### Forecast — RMS scale
+
+For [1,2,3,4] and zero offset weight, forecast the RMS-normalized vector and whether subtracting the mean is
+correct.
+
+Write confidence, causal reasoning and exposure before revealing results. This is guided practice, not an
+unseen score.
+'''
+
+# ! CELL TYPE: code
+# ! FILTERS: []
+# ! TAGS: []
+
+class GemmaRMSNorm(nn.Module):
+    def __init__(self, hidden_size: int, eps: float = 1e-6):
+        super().__init__()
+        self.weight = nn.Parameter(t.zeros(hidden_size))
+        self.eps = eps
+
+    def forward(self, x: t.Tensor) -> t.Tensor:
+        # EXERCISE
+        # raise NotImplementedError()
+        # END EXERCISE
+        # SOLUTION
+        dtype = x.dtype
+        x_float = x.float()
+        rms = x_float.pow(2).mean(dim=-1, keepdim=True)
+        normalized = x_float * t.rsqrt(rms + self.eps)
+        return (normalized * (1.0 + self.weight.float())).to(dtype)
+        # END SOLUTION
+
+
+if MAIN:
+    tests.test_gemma_rms_norm(GemmaRMSNorm)
+
+# ! CELL TYPE: markdown
+# ! FILTERS: []
+# ! TAGS: []
+
+r'''
+### Reflect — RMS scale
+
+Compare the exact oracle and learned-offset check. Explain the 1+weight convention; predict doubling the input
+and the effect of epsilon.
+
+Record the observed discrepancy and confidence. Make one changed-condition forecast before the next reveal;
+retain seen or unknown exposure.
+'''
+
+# ! CELL TYPE: markdown
+# ! FILTERS: []
+# ! TAGS: []
+
+r'''
+### Exercise - implement interleaved RoPE
+
+> ```yaml
+> Difficulty: 🔴🔴🔴🔴⚪
+> Importance: 🔵🔵🔵🔵⚪
+> 
+> You should spend 20-25 minutes on this exercise.
+> ```
+
+Implement the quarter-turn helper, build the cosine/sine cache, and apply position-indexed rotations to
+tensors shaped `[batch, heads, seq, head_dim]`.
+
+<details><summary>Expected output</summary>
+
+```text
+All tests in `test_rotate_half_interleaved` passed!
+All tests in `test_build_rope_cache` passed!
+All tests in `test_apply_rope` passed!
+```
+
+</details>
+
+<details><summary>Help - common bug: broadcasting the RoPE cache over the wrong axis</summary>
+
+After indexing the cache with `position_ids`, insert the head axis with `unsqueeze(1)`. Position zero must be
+the identity and every head-vector norm must be preserved.
+
+</details>
+
+<details><summary>Interpretation</summary>
+
+Norm preservation is necessary but insufficient: swapping the pair layout can preserve norms and still change
+every attention score. Later layer parity detects that error.
+
+</details>
+
+<details><summary>Historical worked formulation</summary>
+
+```python
+def rotate_half_interleaved(x: t.Tensor) -> t.Tensor:
+    x_even = x[..., 0::2]
+    x_odd = x[..., 1::2]
+    return t.stack((-x_odd, x_even), dim=-1).flatten(start_dim=-2)
+
+
+def build_rope_cache(
+    seq_len: int,
+    head_dim: int,
+    *,
+    base: float,
+    device: t.device,
+    dtype: t.dtype,
+) -> tuple[t.Tensor, t.Tensor]:
+    inv_freq = 1.0 / (base ** (t.arange(0, head_dim, 2, device=device).float() / head_dim))
+    positions = t.arange(seq_len, device=device).float()
+    freqs = t.outer(positions, inv_freq)
+    angles = t.repeat_interleave(freqs, repeats=2, dim=-1)
+    return angles.cos().to(dtype), angles.sin().to(dtype)
+
+
+def apply_rope(
+    x: t.Tensor,
+    cos: t.Tensor,
+    sin: t.Tensor,
+    position_ids: t.Tensor,
+) -> t.Tensor:
+    cos_at_position = cos[position_ids].unsqueeze(1)
+    sin_at_position = sin[position_ids].unsqueeze(1)
+    return (x * cos_at_position) + (rotate_half_interleaved(x) * sin_at_position)
+```
+
+</details>
+'''
+
+# ! CELL TYPE: markdown
+# ! FILTERS: []
+# ! TAGS: []
+
+r'''
+### Forecast — Rotations
+
+Predict rotate_half_interleaved([1,2,3,4]), the position-zero output, and whether a nonzero-position rotation
+changes vector norm.
+
+Write confidence, causal reasoning and exposure before revealing results. This is guided practice, not an
+unseen score.
+'''
+
+# ! CELL TYPE: code
+# ! FILTERS: []
+# ! TAGS: []
+
+def rotate_half_interleaved(x: t.Tensor) -> t.Tensor:
+    # EXERCISE
+    # raise NotImplementedError()
+    # END EXERCISE
+    # SOLUTION
+    x_even = x[..., 0::2]
+    x_odd = x[..., 1::2]
+    return t.stack((-x_odd, x_even), dim=-1).flatten(start_dim=-2)
+    # END SOLUTION
+
+
+def build_rope_cache(
+    seq_len: int,
+    head_dim: int,
+    *,
+    base: float,
+    device: t.device,
+    dtype: t.dtype,
+) -> tuple[t.Tensor, t.Tensor]:
+    # EXERCISE
+    # raise NotImplementedError()
+    # END EXERCISE
+    # SOLUTION
+    inv_freq = 1.0 / (base ** (t.arange(0, head_dim, 2, device=device).float() / head_dim))
+    positions = t.arange(seq_len, device=device).float()
+    freqs = t.outer(positions, inv_freq)
+    angles = t.repeat_interleave(freqs, repeats=2, dim=-1)
+    return angles.cos().to(dtype), angles.sin().to(dtype)
+    # END SOLUTION
+
+
+def apply_rope(
+    x: t.Tensor,
+    cos: t.Tensor,
+    sin: t.Tensor,
+    position_ids: t.Tensor,
+) -> t.Tensor:
+    # EXERCISE
+    # raise NotImplementedError()
+    # END EXERCISE
+    # SOLUTION
+    cos_at_position = cos[position_ids].unsqueeze(1)
+    sin_at_position = sin[position_ids].unsqueeze(1)
+    return (x * cos_at_position) + (rotate_half_interleaved(x) * sin_at_position)
+    # END SOLUTION
+
+
+if MAIN:
+    tests.test_rotate_half_interleaved(rotate_half_interleaved)
+if MAIN:
+    tests.test_build_rope_cache(build_rope_cache)
+if MAIN:
+    tests.test_apply_rope(apply_rope, build_rope_cache)
+
+# ! CELL TYPE: markdown
+# ! FILTERS: []
+# ! TAGS: []
+
+r'''
+### Reflect — Rotations
+
+Compare the pair signs and norm invariant. Explain why a reversed pair order can preserve norm but break
+reference parity; predict position one.
+
+Record the observed discrepancy and confidence. Make one changed-condition forecast before the next reveal;
+retain seen or unknown exposure.
+'''
+
+# ! CELL TYPE: markdown
+# ! FILTERS: []
+# ! TAGS: []
+
+r'''
+### Exercise - repeat KV heads and build a cache-aware mask
+
+> ```yaml
+> Difficulty: 🔴🔴🔴🔴⚪
+> Importance: 🔵🔵🔵🔵⚪
+> 
+> You should spend 20-25 minutes on this exercise.
+> ```
+
+Repeat each key/value head contiguously for its query-head group. Then construct a boolean causal mask from
+absolute query positions, including an optional sliding window.
+
+<details><summary>Expected output</summary>
+
+```text
+All tests in `test_repeat_kv` passed!
+All tests in `test_sliding_window_mask` passed!
+```
+
+</details>
+
+<details><summary>Help - common bug: restarting cached positions at zero</summary>
+
+For cached decoding, queries begin at `past_length`; they do not restart at zero. For two KV heads repeated
+twice, the head order is `[K0, K0, K1, K1]`.
+
+</details>
+
+<details><summary>Interpretation</summary>
+
+The mask test uses cached queries at absolute positions 3 and 4. It therefore catches implementations that
+only work for an uncached square attention matrix.
+
+</details>
+
+<details><summary>Historical worked formulation</summary>
+
+```python
+def repeat_kv(hidden_states: t.Tensor, repeats: int) -> t.Tensor:
+    if repeats == 1:
+        return hidden_states
+    batch, kv_heads, seq_len, head_dim = hidden_states.shape
+    hidden_states = hidden_states[:, :, None, :, :].expand(
+        batch, kv_heads, repeats, seq_len, head_dim
+    )
+    return hidden_states.reshape(batch, kv_heads * repeats, seq_len, head_dim)
+
+
+def build_causal_attention_mask(
+    *,
+    query_length: int,
+    key_length: int,
+    past_length: int,
+    sliding_window: int | None,
+    device: t.device,
+) -> t.Tensor:
+    query_positions = t.arange(past_length, past_length + query_length, device=device)[:, None]
+    key_positions = t.arange(key_length, device=device)[None, :]
+    allowed = key_positions <= query_positions
+    if sliding_window is not None:
+        allowed = allowed & (key_positions >= query_positions - sliding_window + 1)
+    return allowed[None, None, :, :]
+```
+
+</details>
+'''
+
+# ! CELL TYPE: markdown
+# ! FILTERS: []
+# ! TAGS: []
+
+r'''
+### Forecast — Cache positions
+
+With query_length=2, key_length=5, past_length=3 and window=3, write both allowed-key rows before opening the
+expected mask. Predict contiguous KV head replication versus alternating heads.
+
+Write confidence, causal reasoning and exposure before revealing results. This is guided practice, not an
+unseen score.
+'''
+
+# ! CELL TYPE: code
+# ! FILTERS: []
+# ! TAGS: []
+
+def repeat_kv(hidden_states: t.Tensor, repeats: int) -> t.Tensor:
+    # EXERCISE
+    # raise NotImplementedError()
+    # END EXERCISE
+    # SOLUTION
+    if repeats == 1:
+        return hidden_states
+    batch, kv_heads, seq_len, head_dim = hidden_states.shape
+    hidden_states = hidden_states[:, :, None, :, :].expand(
+        batch, kv_heads, repeats, seq_len, head_dim
+    )
+    return hidden_states.reshape(batch, kv_heads * repeats, seq_len, head_dim)
+    # END SOLUTION
+
+
+def build_causal_attention_mask(
+    *,
+    query_length: int,
+    key_length: int,
+    past_length: int,
+    sliding_window: int | None,
+    device: t.device,
+) -> t.Tensor:
+    # EXERCISE
+    # raise NotImplementedError()
+    # END EXERCISE
+    # SOLUTION
+    query_positions = t.arange(past_length, past_length + query_length, device=device)[:, None]
+    key_positions = t.arange(key_length, device=device)[None, :]
+    allowed = key_positions <= query_positions
+    if sliding_window is not None:
+        allowed = allowed & (key_positions >= query_positions - sliding_window + 1)
+    return allowed[None, None, :, :]
+    # END SOLUTION
+
+
+if MAIN:
+    tests.test_repeat_kv(repeat_kv)
+if MAIN:
+    tests.test_sliding_window_mask(build_causal_attention_mask)
+
+# ! CELL TYPE: markdown
+# ! FILTERS: []
+# ! TAGS: []
+
+r'''
+### Reflect — Cache positions
+
+Compare every mask bit and head identity, not just shape. Predict a window of one and explain why cached
+queries use absolute positions.
+
+Record the observed discrepancy and confidence. Make one changed-condition forecast before the next reveal;
+retain seen or unknown exposure.
+'''
+
+# ! CELL TYPE: markdown
+# ! FILTERS: []
+# ! TAGS: []
+
+r'''
+### Exercise - implement the SwiGLU MLP
+
+> ```yaml
+> Difficulty: 🔴⚪⚪⚪⚪
+> Importance: 🔵🔵🔵🔵⚪
+> 
+> You should spend 5-10 minutes on this exercise.
+> ```
+
+Pass one projection through SiLU, multiply it elementwise by the second projection, and project the gated
+activation back to the residual width.
+
+<details><summary>Expected output</summary>
+
+```text
+All tests in `test_gemma_mlp_matches_swiglu_formula` passed!
+```
+
+</details>
+
+<details><summary>Help - common bug: adding the SwiGLU branches</summary>
+
+The order is `down_proj(silu(gate_proj(x)) * up_proj(x))`. There is no additive merge between the two wide
+projections.
+
+</details>
+
+<details><summary>Interpretation</summary>
+
+The gate changes which intermediate features survive before the down projection. A plain SiLU MLP has the same
+output shape but represents a different architecture.
+
+</details>
+
+<details><summary>Historical worked formulation</summary>
+
+```python
+class GemmaMLP(nn.Module):
+    def __init__(self, config: GemmaConfig):
+        super().__init__()
+        self.gate_proj = nn.Linear(config.hidden_size, config.intermediate_size, bias=False)
+        self.up_proj = nn.Linear(config.hidden_size, config.intermediate_size, bias=False)
+        self.down_proj = nn.Linear(config.intermediate_size, config.hidden_size, bias=False)
+
+    def forward(self, x: t.Tensor) -> t.Tensor:
+        gated = F.silu(self.gate_proj(x)) * self.up_proj(x)
+        return self.down_proj(gated)
+```
+
+</details>
+'''
+
+# ! CELL TYPE: markdown
+# ! FILTERS: []
+# ! TAGS: []
+
+r'''
+### Forecast — SwiGLU
+
+Predict whether the gated output equals down_proj(up_proj(x)) when gate_proj(x)=0. Explain which nonlinearity
+the present historical subset implements.
+
+Write confidence, causal reasoning and exposure before revealing results. This is guided practice, not an
+unseen score.
+'''
+
+# ! CELL TYPE: code
+# ! FILTERS: []
+# ! TAGS: []
+
+class GemmaMLP(nn.Module):
+    def __init__(self, config: GemmaConfig):
+        super().__init__()
+        self.gate_proj = nn.Linear(config.hidden_size, config.intermediate_size, bias=False)
+        self.up_proj = nn.Linear(config.hidden_size, config.intermediate_size, bias=False)
+        self.down_proj = nn.Linear(config.intermediate_size, config.hidden_size, bias=False)
+
+    def forward(self, x: t.Tensor) -> t.Tensor:
+        # EXERCISE
+        # raise NotImplementedError()
+        # END EXERCISE
+        # SOLUTION
+        gated = F.silu(self.gate_proj(x)) * self.up_proj(x)
+        return self.down_proj(gated)
+        # END SOLUTION
+
+
+if MAIN:
+    tests.test_gemma_mlp_matches_swiglu_formula(GemmaMLP)
+
+# ! CELL TYPE: markdown
+# ! FILTERS: []
+# ! TAGS: []
+
+r'''
+### Reflect — SwiGLU
+
+Compare the explicit formula test. Explain why a correct shape cannot distinguish SwiGLU from a different
+Gemma generation's activation.
+
+Record the observed discrepancy and confidence. Make one changed-condition forecast before the next reveal;
+retain seen or unknown exposure.
+'''
+
+# ! CELL TYPE: markdown
+# ! FILTERS: []
+# ! TAGS: []
+
+r'''
+### Exercise - implement grouped-query attention with a KV cache
+
+> ```yaml
+> Difficulty: 🔴🔴🔴🔴⚪
+> Importance: 🔵🔵🔵🔵⚪
+> 
+> You should spend 35-45 minutes on this exercise.
+> ```
+
+Project and reshape Q/K/V, apply RoPE to queries and keys, append cached K/V states, repeat KV heads, mask
+attention scores, and merge query heads through the output projection.
+
+<details><summary>Expected output</summary>
+
+```text
+All tests in `test_gemma_attention_shapes_and_cache` passed!
+```
+
+</details>
+
+<details><summary>Help - common bug: caching repeated KV heads</summary>
+
+Keep the un-repeated key/value tensors in the cache. Repeat only after appending the cache. Softmax in
+float32, then cast probabilities back to the query dtype.
+
+</details>
+
+<details><summary>Interpretation</summary>
+
+A correct one-token cached step increases the cache length by one while returning one output position. This
+tests dataflow, not only tensor shape.
+
+</details>
+
+<details><summary>Historical worked formulation</summary>
+
+```python
+class GemmaAttention(nn.Module):
+    def __init__(self, config: GemmaConfig, layer_idx: int):
+        super().__init__()
+        self.config = config
+        self.layer_idx = layer_idx
+        self.num_heads = config.num_attention_heads
+        self.num_key_value_heads = config.num_key_value_heads
+        self.head_dim = config.head_dim
+        self.num_key_value_groups = self.num_heads // self.num_key_value_heads
+        self.q_proj = nn.Linear(config.hidden_size, self.num_heads * self.head_dim, bias=config.attention_bias)
+        self.k_proj = nn.Linear(config.hidden_size, self.num_key_value_heads * self.head_dim, bias=config.attention_bias)
+        self.v_proj = nn.Linear(config.hidden_size, self.num_key_value_heads * self.head_dim, bias=config.attention_bias)
+        self.o_proj = nn.Linear(self.num_heads * self.head_dim, config.hidden_size, bias=config.attention_bias)
+
+    def _shape(self, x: t.Tensor, heads: int) -> t.Tensor:
+        batch, seq_len, _ = x.shape
+        return x.view(batch, seq_len, heads, self.head_dim).transpose(1, 2).contiguous()
+
+    def forward(
+        self,
+        hidden_states: t.Tensor,
+        *,
+        position_ids: t.Tensor,
+        cos: t.Tensor,
+        sin: t.Tensor,
+        attention_mask: t.Tensor | None = None,
+        past_key_value: PastKeyValue | None = None,
+        use_cache: bool = False,
+    ) -> tuple[t.Tensor, PastKeyValue | None]:
+        batch, query_length, _ = hidden_states.shape
+        query_states = self._shape(self.q_proj(hidden_states), self.num_heads)
+        key_states = self._shape(self.k_proj(hidden_states), self.num_key_value_heads)
+        value_states = self._shape(self.v_proj(hidden_states), self.num_key_value_heads)
+        query_states = apply_rope(query_states, cos, sin, position_ids)
+        key_states = apply_rope(key_states, cos, sin, position_ids)
+
+        past_length = 0
+        if past_key_value is not None:
+            past_key, past_value = past_key_value
+            past_length = past_key.shape[-2]
+            key_states = t.cat([past_key, key_states], dim=-2)
+            value_states = t.cat([past_value, value_states], dim=-2)
+        present_key_value = (key_states, value_states) if use_cache else None
+
+        key_length = key_states.shape[-2]
+        key_states = repeat_kv(key_states, self.num_key_value_groups)
+        value_states = repeat_kv(value_states, self.num_key_value_groups)
+        attn_scores = query_states @ key_states.transpose(-1, -2)
+        attn_scores = attn_scores / math.sqrt(self.head_dim)
+        causal_mask = build_causal_attention_mask(
+            query_length=query_length,
+            key_length=key_length,
+            past_length=past_length,
+            sliding_window=self.config.sliding_window,
+            device=hidden_states.device,
+        )
+        attn_scores = attn_scores.masked_fill(~causal_mask, t.finfo(attn_scores.dtype).min)
+        if attention_mask is not None:
+            if attention_mask.shape != (batch, key_length):
+                raise ValueError(f"attention_mask has shape {tuple(attention_mask.shape)}, expected {(batch, key_length)}")
+            attn_scores = attn_scores.masked_fill(
+                ~attention_mask[:, None, None, :].bool(),
+                t.finfo(attn_scores.dtype).min,
+            )
+        attn_probs = F.softmax(attn_scores.float(), dim=-1).to(query_states.dtype)
+        attn_output = attn_probs @ value_states
+        attn_output = attn_output.transpose(1, 2).reshape(
+            batch, query_length, self.num_heads * self.head_dim
+        )
+        return self.o_proj(attn_output), present_key_value
+```
+
+</details>
+'''
+
+# ! CELL TYPE: markdown
+# ! FILTERS: []
+# ! TAGS: []
+
+r'''
+### Forecast — Attention and cache
+
+Predict key/value cache shapes after a three-token prompt and one additional token, then predict which keys
+the new query may read.
+
+Write confidence, causal reasoning and exposure before revealing results. This is guided practice, not an
+unseen score.
+'''
+
+# ! CELL TYPE: code
+# ! FILTERS: []
+# ! TAGS: []
+
+class GemmaAttention(nn.Module):
+    def __init__(self, config: GemmaConfig, layer_idx: int):
+        super().__init__()
+        self.config = config
+        self.layer_idx = layer_idx
+        self.num_heads = config.num_attention_heads
+        self.num_key_value_heads = config.num_key_value_heads
+        self.head_dim = config.head_dim
+        self.num_key_value_groups = self.num_heads // self.num_key_value_heads
+        self.q_proj = nn.Linear(config.hidden_size, self.num_heads * self.head_dim, bias=config.attention_bias)
+        self.k_proj = nn.Linear(config.hidden_size, self.num_key_value_heads * self.head_dim, bias=config.attention_bias)
+        self.v_proj = nn.Linear(config.hidden_size, self.num_key_value_heads * self.head_dim, bias=config.attention_bias)
+        self.o_proj = nn.Linear(self.num_heads * self.head_dim, config.hidden_size, bias=config.attention_bias)
+
+    def _shape(self, x: t.Tensor, heads: int) -> t.Tensor:
+        # EXERCISE
+        # raise NotImplementedError()
+        # END EXERCISE
+        # SOLUTION
+        batch, seq_len, _ = x.shape
+        return x.view(batch, seq_len, heads, self.head_dim).transpose(1, 2).contiguous()
+        # END SOLUTION
+
+    def forward(
+        self,
+        hidden_states: t.Tensor,
+        *,
+        position_ids: t.Tensor,
+        cos: t.Tensor,
+        sin: t.Tensor,
+        attention_mask: t.Tensor | None = None,
+        past_key_value: PastKeyValue | None = None,
+        use_cache: bool = False,
+    ) -> tuple[t.Tensor, PastKeyValue | None]:
+        # EXERCISE
+        # raise NotImplementedError()
+        # END EXERCISE
+        # SOLUTION
+        batch, query_length, _ = hidden_states.shape
+        query_states = self._shape(self.q_proj(hidden_states), self.num_heads)
+        key_states = self._shape(self.k_proj(hidden_states), self.num_key_value_heads)
+        value_states = self._shape(self.v_proj(hidden_states), self.num_key_value_heads)
+        query_states = apply_rope(query_states, cos, sin, position_ids)
+        key_states = apply_rope(key_states, cos, sin, position_ids)
+
+        past_length = 0
+        if past_key_value is not None:
+            past_key, past_value = past_key_value
+            past_length = past_key.shape[-2]
+            key_states = t.cat([past_key, key_states], dim=-2)
+            value_states = t.cat([past_value, value_states], dim=-2)
+        present_key_value = (key_states, value_states) if use_cache else None
+
+        key_length = key_states.shape[-2]
+        key_states = repeat_kv(key_states, self.num_key_value_groups)
+        value_states = repeat_kv(value_states, self.num_key_value_groups)
+        attn_scores = query_states @ key_states.transpose(-1, -2)
+        attn_scores = attn_scores / math.sqrt(self.head_dim)
+        causal_mask = build_causal_attention_mask(
+            query_length=query_length,
+            key_length=key_length,
+            past_length=past_length,
+            sliding_window=self.config.sliding_window,
+            device=hidden_states.device,
+        )
+        attn_scores = attn_scores.masked_fill(~causal_mask, t.finfo(attn_scores.dtype).min)
+        if attention_mask is not None:
+            if attention_mask.shape != (batch, key_length):
+                raise ValueError(f"attention_mask has shape {tuple(attention_mask.shape)}, expected {(batch, key_length)}")
+            attn_scores = attn_scores.masked_fill(
+                ~attention_mask[:, None, None, :].bool(),
+                t.finfo(attn_scores.dtype).min,
+            )
+        attn_probs = F.softmax(attn_scores.float(), dim=-1).to(query_states.dtype)
+        attn_output = attn_probs @ value_states
+        attn_output = attn_output.transpose(1, 2).reshape(
+            batch, query_length, self.num_heads * self.head_dim
+        )
+        return self.o_proj(attn_output), present_key_value
+        # END SOLUTION
+
+
+if MAIN:
+    tests.test_gemma_attention_shapes_and_cache(GemmaAttention)
+
+# ! CELL TYPE: markdown
+# ! FILTERS: []
+# ! TAGS: []
+
+r'''
+### Reflect — Attention and cache
+
+Compare cache lengths, mask semantics and output dimensions. Predict how a local window changes allowed keys
+without changing cache tensor shape.
+
+Record the observed discrepancy and confidence. Make one changed-condition forecast before the next reveal;
+retain seen or unknown exposure.
+'''
+
+# ! CELL TYPE: markdown
+# ! FILTERS: []
+# ! TAGS: []
+
+r'''
+# 2️⃣ Assemble and trace the decoder
+'''
+
+# ! CELL TYPE: markdown
+# ! FILTERS: []
+# ! TAGS: []
+
+r'''
+### Exercise - assemble one decoder layer
+
+> ```yaml
+> Difficulty: 🔴🔴🔴⚪⚪
+> Importance: 🔵🔵🔵🔵⚪
+> 
+> You should spend 15-20 minutes on this exercise.
+> ```
+
+Build a pre-norm attention residual update followed by a pre-norm SwiGLU residual update. Propagate the
+attention cache unchanged.
+
+<details><summary>Expected output</summary>
+
+```text
+All tests in `test_gemma_decoder_layer_shapes_and_cache` passed!
+```
+
+</details>
+
+<details><summary>Help - common bug: normalizing the residual branch</summary>
+
+Save the residual before each sublayer. Normalize only the branch input; add the branch output back to the
+unnormalized residual.
+
+</details>
+
+<details><summary>Interpretation</summary>
+
+The two normalization modules have separate learned scales. Reusing one module would tie parameters and break
+state-dict parity.
+
+</details>
+
+<details><summary>Historical worked formulation</summary>
+
+```python
+class GemmaDecoderLayer(nn.Module):
+    def __init__(self, config: GemmaConfig, layer_idx: int):
+        super().__init__()
+        self.self_attn = GemmaAttention(config, layer_idx=layer_idx)
+        self.mlp = GemmaMLP(config)
+        self.input_layernorm = GemmaRMSNorm(config.hidden_size, eps=config.rms_norm_eps)
+        self.post_attention_layernorm = GemmaRMSNorm(config.hidden_size, eps=config.rms_norm_eps)
+
+    def forward(
+        self,
+        hidden_states: t.Tensor,
+        *,
+        position_ids: t.Tensor,
+        cos: t.Tensor,
+        sin: t.Tensor,
+        attention_mask: t.Tensor | None = None,
+        past_key_value: PastKeyValue | None = None,
+        use_cache: bool = False,
+    ) -> tuple[t.Tensor, PastKeyValue | None]:
+        residual = hidden_states
+        attn_output, present_key_value = self.self_attn(
+            self.input_layernorm(hidden_states),
+            position_ids=position_ids,
+            cos=cos,
+            sin=sin,
+            attention_mask=attention_mask,
+            past_key_value=past_key_value,
+            use_cache=use_cache,
+        )
+        hidden_states = residual + attn_output
+        residual = hidden_states
+        hidden_states = residual + self.mlp(self.post_attention_layernorm(hidden_states))
+        return hidden_states, present_key_value
+```
+
+</details>
+'''
+
+# ! CELL TYPE: markdown
+# ! FILTERS: []
+# ! TAGS: []
+
+r'''
+### Forecast — Residual stages
+
+Predict where an incorrect pre-attention normalization first changes the decoder residual and whether a
+passing shape test is sufficient.
+
+Write confidence, causal reasoning and exposure before revealing results. This is guided practice, not an
+unseen score.
+'''
+
+# ! CELL TYPE: code
+# ! FILTERS: []
+# ! TAGS: []
+
+class GemmaDecoderLayer(nn.Module):
+    def __init__(self, config: GemmaConfig, layer_idx: int):
+        super().__init__()
+        self.self_attn = GemmaAttention(config, layer_idx=layer_idx)
+        self.mlp = GemmaMLP(config)
+        self.input_layernorm = GemmaRMSNorm(config.hidden_size, eps=config.rms_norm_eps)
+        self.post_attention_layernorm = GemmaRMSNorm(config.hidden_size, eps=config.rms_norm_eps)
+
+    def forward(
+        self,
+        hidden_states: t.Tensor,
+        *,
+        position_ids: t.Tensor,
+        cos: t.Tensor,
+        sin: t.Tensor,
+        attention_mask: t.Tensor | None = None,
+        past_key_value: PastKeyValue | None = None,
+        use_cache: bool = False,
+    ) -> tuple[t.Tensor, PastKeyValue | None]:
+        # EXERCISE
+        # raise NotImplementedError()
+        # END EXERCISE
+        # SOLUTION
+        residual = hidden_states
+        attn_output, present_key_value = self.self_attn(
+            self.input_layernorm(hidden_states),
+            position_ids=position_ids,
+            cos=cos,
+            sin=sin,
+            attention_mask=attention_mask,
+            past_key_value=past_key_value,
+            use_cache=use_cache,
+        )
+        hidden_states = residual + attn_output
+        residual = hidden_states
+        hidden_states = residual + self.mlp(self.post_attention_layernorm(hidden_states))
+        return hidden_states, present_key_value
+        # END SOLUTION
+
+
+if MAIN:
+    tests.test_gemma_decoder_layer_shapes_and_cache(GemmaDecoderLayer)
+
+# ! CELL TYPE: markdown
+# ! FILTERS: []
+# ! TAGS: []
+
+r'''
+### Reflect — Residual stages
+
+Explain residual additions and the second normalization. Predict which later trace stages must be rechecked
+after a local error.
+
+Record the observed discrepancy and confidence. Make one changed-condition forecast before the next reveal;
+retain seen or unknown exposure.
+'''
+
+# ! CELL TYPE: markdown
+# ! FILTERS: []
+# ! TAGS: []
+
+r'''
+### Exercise - build the complete causal LM
+
+> ```yaml
+> Difficulty: 🔴🔴🔴🔴⚪
+> Importance: 🔵🔵🔵🔵⚪
+> 
+> You should spend 35-45 minutes on this exercise.
+> ```
+
+Create absolute positions, build one RoPE cache per forward pass, scale token embeddings by
+`sqrt(hidden_size)`, run both blocks, apply the final norm, and tie the LM head to the embedding matrix.
+
+<details><summary>Expected output</summary>
+
+```text
+All tests in `test_tiny_gemma_forward_shape` passed!
+All tests in `test_tiny_gemma_cache_parity` passed!
+All tests in `test_tiny_gemma_matches_reference_decoder` passed!
+```
+
+</details>
+
+<details><summary>Help - common bug: copying tied weights</summary>
+
+When a cache is supplied, extend a one-token attention mask with an all-ones prefix for cached keys. The
+embedding scale occurs before the first block. Weight tying assigns the same `Parameter`, not a copied tensor.
+
+</details>
+
+<details><summary>Interpretation</summary>
+
+This is the first end-to-end semantic checkpoint. It simultaneously tests logits, tied weights, absolute
+positions, and cached decoding against an independent implementation.
+
+</details>
+
+<details><summary>Historical worked formulation</summary>
+
+```python
+class GemmaModel(nn.Module):
+    def __init__(self, config: GemmaConfig):
+        super().__init__()
+        self.config = config
+        self.embed_tokens = nn.Embedding(config.vocab_size, config.hidden_size)
+        self.layers = nn.ModuleList(
+            [GemmaDecoderLayer(config, layer_idx=i) for i in range(config.num_hidden_layers)]
+        )
+        self.norm = GemmaRMSNorm(config.hidden_size, eps=config.rms_norm_eps)
+
+    def forward(
+        self,
+        input_ids: t.Tensor,
+        *,
+        attention_mask: t.Tensor | None = None,
+        past_key_values: tuple[PastKeyValue, ...] | None = None,
+        use_cache: bool = False,
+    ) -> tuple[t.Tensor, tuple[PastKeyValue, ...] | None]:
+        batch, seq_len = input_ids.shape
+        past_length = 0 if past_key_values is None else past_key_values[0][0].shape[-2]
+        position_ids = t.arange(
+            past_length, past_length + seq_len, device=input_ids.device
+        ).unsqueeze(0).expand(batch, -1)
+        cos, sin = build_rope_cache(
+            past_length + seq_len,
+            self.config.head_dim,
+            base=self.config.rope_theta,
+            device=input_ids.device,
+            dtype=self.embed_tokens.weight.dtype,
+        )
+        if attention_mask is not None and past_length > 0 and attention_mask.shape[-1] == seq_len:
+            prefix = t.ones(batch, past_length, dtype=attention_mask.dtype, device=attention_mask.device)
+            attention_mask = t.cat([prefix, attention_mask], dim=-1)
+
+        hidden_states = self.embed_tokens(input_ids) * math.sqrt(self.config.hidden_size)
+        next_cache = [] if use_cache else None
+        for layer_idx, layer in enumerate(self.layers):
+            past_key_value = None if past_key_values is None else past_key_values[layer_idx]
+            hidden_states, present = layer(
+                hidden_states,
+                position_ids=position_ids,
+                cos=cos,
+                sin=sin,
+                attention_mask=attention_mask,
+                past_key_value=past_key_value,
+                use_cache=use_cache,
+            )
+            if use_cache:
+                assert next_cache is not None and present is not None
+                next_cache.append(present)
+        return self.norm(hidden_states), None if next_cache is None else tuple(next_cache)
+
+
+class GemmaForCausalLM(nn.Module):
+    def __init__(self, config: GemmaConfig):
+        super().__init__()
+        self.config = config
+        self.model = GemmaModel(config)
+        self.lm_head = nn.Linear(config.hidden_size, config.vocab_size, bias=False)
+        if config.tie_word_embeddings:
+            self.lm_head.weight = self.model.embed_tokens.weight
+
+    def forward(
+        self,
+        input_ids: t.Tensor,
+        *,
+        attention_mask: t.Tensor | None = None,
+        past_key_values: tuple[PastKeyValue, ...] | None = None,
+        use_cache: bool = False,
+    ) -> GemmaCausalLMOutput:
+        hidden_states, next_cache = self.model(
+            input_ids,
+            attention_mask=attention_mask,
+            past_key_values=past_key_values,
+            use_cache=use_cache,
+        )
+        return GemmaCausalLMOutput(
+            logits=self.lm_head(hidden_states),
+            past_key_values=next_cache,
+        )
+
+
+def make_tiny_gemma_config(sliding_window: int | None = None) -> GemmaConfig:
+    return GemmaConfig(
+        vocab_size=31,
+        hidden_size=16,
+        intermediate_size=32,
+        num_hidden_layers=2,
+        num_attention_heads=4,
+        num_key_value_heads=2,
+        max_position_embeddings=64,
+        sliding_window=sliding_window,
+    )
+
+
+def make_tiny_gemma(seed: int = 0, sliding_window: int | None = None) -> GemmaForCausalLM:
+    t.manual_seed(seed)
+    return GemmaForCausalLM(make_tiny_gemma_config(sliding_window=sliding_window)).to(DEVICE)
+```
+
+</details>
+'''
+
+# ! CELL TYPE: markdown
+# ! FILTERS: []
+# ! TAGS: []
+
+r'''
+### Forecast — Complete decoder
+
+Predict whether full-context and cached decoding agree for the same tokens. State what this random-weight test
+can and cannot establish about language ability.
+
+Write confidence, causal reasoning and exposure before revealing results. This is guided practice, not an
+unseen score.
+'''
+
+# ! CELL TYPE: code
+# ! FILTERS: []
+# ! TAGS: []
+
+class GemmaModel(nn.Module):
+    def __init__(self, config: GemmaConfig):
+        super().__init__()
+        self.config = config
+        self.embed_tokens = nn.Embedding(config.vocab_size, config.hidden_size)
+        self.layers = nn.ModuleList(
+            [GemmaDecoderLayer(config, layer_idx=i) for i in range(config.num_hidden_layers)]
+        )
+        self.norm = GemmaRMSNorm(config.hidden_size, eps=config.rms_norm_eps)
+
+    def forward(
+        self,
+        input_ids: t.Tensor,
+        *,
+        attention_mask: t.Tensor | None = None,
+        past_key_values: tuple[PastKeyValue, ...] | None = None,
+        use_cache: bool = False,
+    ) -> tuple[t.Tensor, tuple[PastKeyValue, ...] | None]:
+        # EXERCISE
+        # raise NotImplementedError()
+        # END EXERCISE
+        # SOLUTION
+        batch, seq_len = input_ids.shape
+        past_length = 0 if past_key_values is None else past_key_values[0][0].shape[-2]
+        position_ids = t.arange(
+            past_length, past_length + seq_len, device=input_ids.device
+        ).unsqueeze(0).expand(batch, -1)
+        cos, sin = build_rope_cache(
+            past_length + seq_len,
+            self.config.head_dim,
+            base=self.config.rope_theta,
+            device=input_ids.device,
+            dtype=self.embed_tokens.weight.dtype,
+        )
+        if attention_mask is not None and past_length > 0 and attention_mask.shape[-1] == seq_len:
+            prefix = t.ones(batch, past_length, dtype=attention_mask.dtype, device=attention_mask.device)
+            attention_mask = t.cat([prefix, attention_mask], dim=-1)
+
+        hidden_states = self.embed_tokens(input_ids) * math.sqrt(self.config.hidden_size)
+        next_cache = [] if use_cache else None
+        for layer_idx, layer in enumerate(self.layers):
+            past_key_value = None if past_key_values is None else past_key_values[layer_idx]
+            hidden_states, present = layer(
+                hidden_states,
+                position_ids=position_ids,
+                cos=cos,
+                sin=sin,
+                attention_mask=attention_mask,
+                past_key_value=past_key_value,
+                use_cache=use_cache,
+            )
+            if use_cache:
+                assert next_cache is not None and present is not None
+                next_cache.append(present)
+        return self.norm(hidden_states), None if next_cache is None else tuple(next_cache)
+        # END SOLUTION
+
+
+class GemmaForCausalLM(nn.Module):
+    def __init__(self, config: GemmaConfig):
+        super().__init__()
+        self.config = config
+        self.model = GemmaModel(config)
+        self.lm_head = nn.Linear(config.hidden_size, config.vocab_size, bias=False)
+        if config.tie_word_embeddings:
+            self.lm_head.weight = self.model.embed_tokens.weight
+
+    def forward(
+        self,
+        input_ids: t.Tensor,
+        *,
+        attention_mask: t.Tensor | None = None,
+        past_key_values: tuple[PastKeyValue, ...] | None = None,
+        use_cache: bool = False,
+    ) -> GemmaCausalLMOutput:
+        # EXERCISE
+        # raise NotImplementedError()
+        # END EXERCISE
+        # SOLUTION
+        hidden_states, next_cache = self.model(
+            input_ids,
+            attention_mask=attention_mask,
+            past_key_values=past_key_values,
+            use_cache=use_cache,
+        )
+        return GemmaCausalLMOutput(
+            logits=self.lm_head(hidden_states),
+            past_key_values=next_cache,
+        )
+        # END SOLUTION
+
+
+def make_tiny_gemma_config(sliding_window: int | None = None) -> GemmaConfig:
+    return GemmaConfig(
+        vocab_size=31,
+        hidden_size=16,
+        intermediate_size=32,
+        num_hidden_layers=2,
+        num_attention_heads=4,
+        num_key_value_heads=2,
+        max_position_embeddings=64,
+        sliding_window=sliding_window,
+    )
+
+
+def make_tiny_gemma(seed: int = 0, sliding_window: int | None = None) -> GemmaForCausalLM:
+    t.manual_seed(seed)
+    return GemmaForCausalLM(make_tiny_gemma_config(sliding_window=sliding_window)).to(DEVICE)
+
+
+if MAIN:
+    tests.test_tiny_gemma_forward_shape(make_tiny_gemma)
+if MAIN:
+    tests.test_tiny_gemma_cache_parity(make_tiny_gemma)
+if MAIN:
+    tests.test_tiny_gemma_matches_reference_decoder(GemmaForCausalLM)
+
+# ! CELL TYPE: markdown
+# ! FILTERS: []
+# ! TAGS: []
+
+r'''
+### Reflect — Complete decoder
+
+Compare cache and reference checks. Explain tied weights and embedding scaling; predict which first trace
+changes if the scale is omitted.
+
+Record the observed discrepancy and confidence. Make one changed-condition forecast before the next reveal;
+retain seen or unknown exposure.
+'''
+
+# ! CELL TYPE: markdown
+# ! FILTERS: []
+# ! TAGS: []
+
+r'''
+### Exercise - trace activations and compare stages
+
+> ```yaml
+> Difficulty: 🔴🔴🔴⚪⚪
+> Importance: 🔵🔵🔵🔵⚪
+> 
+> You should spend 20-25 minutes on this exercise.
+> ```
+
+Use forward hooks to capture the scaled embedding, every decoder-layer output, the final normalized residual,
+and logits. Then compute maximum absolute error, relative RMSE, and flattened cosine similarity stage by
+stage.
+
+<details><summary>Expected output</summary>
+
+```text
+All tests in `test_capture_gemma_trace` passed!
+```
+
+</details>
+
+<details><summary>Help - common bug: tracing the layer output tuple</summary>
+
+A decoder layer returns `(hidden_states, cache)`, so the hook must select element zero. Remove every hook in a
+`finally` block so repeated experiments do not accumulate callbacks.
+
+</details>
+
+<details><summary>Interpretation</summary>
+
+A single final-logit mismatch says only that something is wrong. The first divergent activation identifies
+which convention to inspect.
+
+</details>
+
+<details><summary>Historical worked formulation</summary>
+
+```python
+@t.inference_mode()
+def capture_gemma_trace(model: nn.Module, input_ids: t.Tensor) -> dict[str, t.Tensor]:
+    trace: dict[str, t.Tensor] = {}
+    handles = []
+
+    def save(name: str, scale: float = 1.0):
+        def hook(_module, _inputs, output):
+            value = output[0] if isinstance(output, tuple) else output
+            trace[name] = (value * scale).detach().float().cpu()
+        return hook
+
+    handles.append(
+        model.model.embed_tokens.register_forward_hook(
+            save("embedding", math.sqrt(model.config.hidden_size))
+        )
+    )
+    for layer_idx, layer in enumerate(model.model.layers):
+        handles.append(layer.register_forward_hook(save(f"layer_{layer_idx}")))
+    handles.append(model.model.norm.register_forward_hook(save("final_norm")))
+    try:
+        output = model(input_ids)
+    finally:
+        for handle in handles:
+            handle.remove()
+    trace["logits"] = output.logits.detach().float().cpu()
+    return trace
+
+
+def compare_gemma_traces(
+    actual: dict[str, t.Tensor],
+    expected: dict[str, t.Tensor],
+) -> dict[str, dict[str, float]]:
+    assert actual.keys() == expected.keys()
+    profile = {}
+    for name in expected:
+        delta = actual[name] - expected[name]
+        rmse = delta.square().mean().sqrt()
+        reference_rms = expected[name].square().mean().sqrt()
+        profile[name] = {
+            "max_abs": delta.abs().max().item(),
+            "relative_rmse": (rmse / reference_rms.clamp_min(1e-12)).item(),
+            "cosine": F.cosine_similarity(
+                actual[name].reshape(1, -1), expected[name].reshape(1, -1)
+            ).item(),
+        }
+    return profile
+```
+
+</details>
+'''
+
+# ! CELL TYPE: markdown
+# ! FILTERS: []
+# ! TAGS: []
+
+r'''
+### Forecast — Trace localization
+
+Before reading the control panel, predict the first changed trace stage for missing embedding scaling, missing
+RoPE and wrong GQA order.
+
+Write confidence, causal reasoning and exposure before revealing results. This is guided practice, not an
+unseen score.
+'''
+
+# ! CELL TYPE: code
+# ! FILTERS: []
+# ! TAGS: []
+
+@t.inference_mode()
+def capture_gemma_trace(model: nn.Module, input_ids: t.Tensor) -> dict[str, t.Tensor]:
+    # EXERCISE
+    # raise NotImplementedError()
+    # END EXERCISE
+    # SOLUTION
+    trace: dict[str, t.Tensor] = {}
+    handles = []
+
+    def save(name: str, scale: float = 1.0):
+        def hook(_module, _inputs, output):
+            value = output[0] if isinstance(output, tuple) else output
+            trace[name] = (value * scale).detach().float().cpu()
+        return hook
+
+    handles.append(
+        model.model.embed_tokens.register_forward_hook(
+            save("embedding", math.sqrt(model.config.hidden_size))
+        )
+    )
+    for layer_idx, layer in enumerate(model.model.layers):
+        handles.append(layer.register_forward_hook(save(f"layer_{layer_idx}")))
+    handles.append(model.model.norm.register_forward_hook(save("final_norm")))
+    try:
+        output = model(input_ids)
+    finally:
+        for handle in handles:
+            handle.remove()
+    trace["logits"] = output.logits.detach().float().cpu()
+    return trace
+    # END SOLUTION
+
+
+def compare_gemma_traces(
+    actual: dict[str, t.Tensor],
+    expected: dict[str, t.Tensor],
+) -> dict[str, dict[str, float]]:
+    # EXERCISE
+    # raise NotImplementedError()
+    # END EXERCISE
+    # SOLUTION
+    assert actual.keys() == expected.keys()
+    profile = {}
+    for name in expected:
+        delta = actual[name] - expected[name]
+        rmse = delta.square().mean().sqrt()
+        reference_rms = expected[name].square().mean().sqrt()
+        profile[name] = {
+            "max_abs": delta.abs().max().item(),
+            "relative_rmse": (rmse / reference_rms.clamp_min(1e-12)).item(),
+            "cosine": F.cosine_similarity(
+                actual[name].reshape(1, -1), expected[name].reshape(1, -1)
+            ).item(),
+        }
+    return profile
+    # END SOLUTION
+
+
+if MAIN:
+    tests.test_capture_gemma_trace(capture_gemma_trace, make_tiny_gemma)
+
+# ! CELL TYPE: markdown
+# ! FILTERS: []
+# ! TAGS: []
+
+r'''
+### Reflect — Trace localization
+
+Compare the captured keys and hook cleanup. Explain why the separate local reference is a regression oracle
+and reserve independent-implementation language for the HF check.
+
+Record the observed discrepancy and confidence. Make one changed-condition forecast before the next reveal;
+retain seen or unknown exposure.
+'''
+
+# ! CELL TYPE: markdown
+# ! FILTERS: []
+# ! TAGS: []
+
+r'''
+# 3️⃣ Read controls and parity
+'''
+
+# ! CELL TYPE: markdown
+# ! FILTERS: []
+# ! TAGS: []
+
+r'''
+## Controls and baselines
+
+The independent reference receives the same deterministic state dict and inputs as your model. The exact
+implementation is the positive baseline. Each negative control changes one architecture convention while
+leaving weights and inputs fixed:
+
+| Variant | Deliberate change | Predicted first divergence |
+| --- | --- | --- |
+| exact | none | never |
+| no embedding scale | divide embedding output by `sqrt(hidden_size)` | embedding |
+| no RoPE | return Q/K unchanged | first decoder layer |
+| wrong GQA order | repeat `[K0, K1]` as `[K0, K1, K0, K1]` | first decoder layer |
+
+This scaffold is provided because the scientific task is to diagnose your implementation, not to practice
+monkey-patching.
+'''
+
+# ! CELL TYPE: markdown
+# ! FILTERS: []
+# ! TAGS: []
+
+r'''
+### Forecast — Architecture controls
+
+Commit a first-divergence stage and qualitative final-logit error for each of the three controls. Record
+confidence before inspecting saved results.
+
+Write confidence, causal reasoning and exposure before revealing results. This is guided practice, not an
+unseen score.
+'''
+
+# ! CELL TYPE: code
+# ! FILTERS: []
+# ! TAGS: []
+
+@t.inference_mode()
+def run_architecture_controls(
+    input_ids: t.Tensor = SIGNATURE_INPUT_IDS,
+    *,
+    seed: int = 5101,
+) -> dict[str, object]:
+    config = make_tiny_gemma_config()
+    t.manual_seed(seed)
+    reference = ReferenceGemmaForCausalLM(config).eval()
+    learner = GemmaForCausalLM(config).eval()
+    learner.load_state_dict(reference.state_dict())
+    reference_trace = capture_gemma_trace(reference, input_ids)
+    variant_traces = {"exact": capture_gemma_trace(learner, input_ids)}
+
+    remove_scale = learner.model.embed_tokens.register_forward_hook(
+        lambda _module, _inputs, output: output / math.sqrt(config.hidden_size)
+    )
+    try:
+        variant_traces["no embedding scale"] = capture_gemma_trace(learner, input_ids)
+    finally:
+        remove_scale.remove()
+
+    original_apply_rope = globals()["apply_rope"]
+    globals()["apply_rope"] = lambda x, _cos, _sin, _position_ids: x
+    try:
+        variant_traces["no RoPE"] = capture_gemma_trace(learner, input_ids)
+    finally:
+        globals()["apply_rope"] = original_apply_rope
+
+    original_repeat_kv = globals()["repeat_kv"]
+    globals()["repeat_kv"] = lambda hidden, repeats: hidden.repeat(1, repeats, 1, 1)
+    try:
+        variant_traces["wrong GQA order"] = capture_gemma_trace(learner, input_ids)
+    finally:
+        globals()["repeat_kv"] = original_repeat_kv
+
+    return {
+        "input_ids": input_ids.detach().cpu(),
+        "reference_trace": reference_trace,
+        "variant_traces": variant_traces,
+        "profiles": {
+            name: compare_gemma_traces(trace, reference_trace)
+            for name, trace in variant_traces.items()
+        },
+    }
+
+
+if MAIN:
+    tests.test_architecture_controls(run_architecture_controls)
+
+# ! CELL TYPE: markdown
+# ! FILTERS: []
+# ! TAGS: []
+
+r'''
+### Reflect — Architecture controls
+
+Explain why every control can have valid shapes yet fail numerically. Predict whether changing only input
+token IDs can make all controls generally equivalent.
+
+Record the observed discrepancy and confidence. Make one changed-condition forecast before the next reveal;
+retain seen or unknown exposure.
+'''
+
+# ! CELL TYPE: markdown
+# ! FILTERS: []
+# ! TAGS: []
+
+r'''
+## Signature result: exact parity and visible control failure
+
+Run the next cell to generate the result from the implementation currently in memory. The left panel localizes
+errors across activations; the right panel compares final logits. The exact line is drawn at the display floor
+`1e-8` when its measured error is zero.
+'''
+
+# ! CELL TYPE: markdown
+# ! FILTERS: []
+# ! TAGS: []
+
+r'''
+### Forecast — Whole signature
+
+Forecast the exact line, each control's first divergence, and the ordering of final errors. Use ranges,
+confidence and causal reasons before viewing the historical plot.
+
+Write confidence, causal reasoning and exposure before revealing results. This is guided practice, not an
+unseen score.
+'''
+
+# ! CELL TYPE: code
+# ! FILTERS: []
+# ! TAGS: []
+
+if MAIN:
+    signature = run_architecture_controls()
+if MAIN:
+    profiles = signature["profiles"]
+if MAIN:
+    stages = list(profiles["exact"])
+if MAIN:
+    colors = {
+        "exact": "#111827",
+        "no embedding scale": "#c2410c",
+        "no RoPE": "#0f766e",
+        "wrong GQA order": "#b91c1c",
+    }
+
+if MAIN:
+    fig, axes = plt.subplots(1, 2, figsize=(12, 4.3), constrained_layout=True)
+if MAIN:
+    for name, profile in profiles.items():
+        values = [max(profile[stage]["max_abs"], 1e-8) for stage in stages]
+        axes[0].plot(stages, values, marker="o", linewidth=2, label=name, color=colors[name])
+if MAIN:
+    axes[0].set_yscale("log")
+if MAIN:
+    axes[0].set_ylabel("maximum absolute error vs reference")
+if MAIN:
+    axes[0].set_title("Where does each implementation first diverge?")
+if MAIN:
+    axes[0].tick_params(axis="x", rotation=25)
+if MAIN:
+    axes[0].grid(axis="y", alpha=0.25)
+if MAIN:
+    axes[0].legend(frameon=False, fontsize=9)
+
+if MAIN:
+    names = list(profiles)
+if MAIN:
+    final_errors = [profiles[name]["logits"]["max_abs"] for name in names]
+if MAIN:
+    bars = axes[1].bar(names, final_errors, color=[colors[name] for name in names])
+if MAIN:
+    axes[1].set_ylabel("maximum absolute logit error")
+if MAIN:
+    axes[1].set_title("Exact parity passes; architecture controls fail")
+if MAIN:
+    axes[1].tick_params(axis="x", rotation=25)
+if MAIN:
+    axes[1].grid(axis="y", alpha=0.25)
+if MAIN:
+    for bar, value in zip(bars, final_errors):
+        label = "0" if value == 0 else f"{value:.3f}"
+        axes[1].text(bar.get_x() + bar.get_width() / 2, value + 0.05, label, ha="center", fontsize=9)
+
+if MAIN:
+    figure_path = assets_dir / "gemma_parity_signature.png"
+if MAIN:
+    fig.savefig(figure_path, dpi=180, bbox_inches="tight")
+if MAIN:
+    plt.show()
+
+if MAIN:
+    print("stage              exact max abs error")
+if MAIN:
+    for stage in stages:
+        print(f"{stage:18s} {profiles['exact'][stage]['max_abs']:.3e}")
+if MAIN:
+    print("\ncontrol             final logit max abs error")
+if MAIN:
+    for name in names[1:]:
+        print(f"{name:20s} {profiles[name]['logits']['max_abs']:.6f}")
+
+# ! CELL TYPE: markdown
+# ! FILTERS: []
+# ! TAGS: [html]
+
+r'''
+<img src="media/gemma_historical_cell_23_output_0.png" width="1100">
+'''
+
+# ! CELL TYPE: markdown
+# ! FILTERS: []
+# ! TAGS: []
+
+r'''
+### Reflect — Whole signature
+
+Compare predictions with every panel, not only the final scalar. A mismatch is a debugging clue. Predict the
+consequences of a deliberately incorrect LM head after otherwise matching traces.
+
+Record the observed discrepancy and confidence. Make one changed-condition forecast before the next reveal;
+retain seen or unknown exposure.
+'''
+
+# ! CELL TYPE: markdown
+# ! FILTERS: []
+# ! TAGS: []
+
+r'''
+<details><summary>Expected output</summary>
+
+```text
+embedding          0.000e+00
+layer_0            0.000e+00
+layer_1            0.000e+00
+final_norm          0.000e+00
+logits              0.000e+00
+
+no embedding scale 3.975505
+no RoPE             0.331010
+wrong GQA order     1.587224
+```
+
+Small last-digit differences across PyTorch builds are acceptable. Exact-stage errors must stay below `5e-6`;
+every control must exceed `1e-2` at the logits.
+
+</details>
+
+<details><summary>Interpreting the result</summary>
+
+The exact trace is the signature result: matching only the logits could hide offsetting mistakes, while
+matching every residual-stream stage pins down the implementation. The controls explain the plot. Embedding
+scaling diverges immediately; RoPE and GQA first affect the residual stream inside block 0. All three remain
+visibly wrong at the final logits.
+
+</details>
+
+<details><summary>Help - common bug: debugging only the final logits</summary>
+
+If the exact line rises first at `embedding`, inspect the `sqrt(hidden_size)` scale. If it rises at `layer_0`,
+test RoPE pair order, contiguous KV repetition, masking, and residual updates in that order. If activations
+match through `final_norm` but logits differ, inspect weight tying and the LM head.
+
+</details>
+
+<details><summary>Historical worked formulation</summary>
+
+The completed solution notebook should report zero maximum absolute error at every exact stage. Use the first
+nonzero stage rather than changing tolerances: a tolerance increase cannot repair a wrong convention.
+
+</details>
+'''
+
+# ! CELL TYPE: markdown
+# ! FILTERS: []
+# ! TAGS: []
+
+r'''
+# 4️⃣ Predict changed conditions
+'''
+
+# ! CELL TYPE: markdown
+# ! FILTERS: []
+# ! TAGS: []
+
+r'''
+## Try It Yourself
+
+Change the seven token IDs in `play_input_ids`, rerun the cell, and look for an input where the no-RoPE and
+wrong-GQA controls swap order. Keep all IDs between 0 and 30. The exact implementation should remain at zero
+for every valid input.
+'''
+
+# ! CELL TYPE: markdown
+# ! FILTERS: []
+# ! TAGS: []
+
+r'''
+### Forecast — Changed inputs
+
+Choose new token IDs in [0,30], forecast the exact-line error and the three control errors, and record prior
+exposure to the historical reference.
+
+Write confidence, causal reasoning and exposure before revealing results. This is guided practice, not an
+unseen score.
+'''
+
+# ! CELL TYPE: code
+# ! FILTERS: []
+# ! TAGS: []
+
+# Try It Yourself: change only these token IDs, keeping values in [0, 30].
+if MAIN:
+    play_input_ids = t.tensor([[1, 4, 9, 16, 25, 7, 2]], dtype=t.long, device=DEVICE)
+if MAIN:
+    play = run_architecture_controls(play_input_ids)
+
+if MAIN:
+    fig, ax = plt.subplots(figsize=(8, 3.6), constrained_layout=True)
+if MAIN:
+    play_names = list(play["profiles"])
+if MAIN:
+    play_errors = [play["profiles"][name]["logits"]["max_abs"] for name in play_names]
+if MAIN:
+    ax.bar(play_names, play_errors, color=[colors[name] for name in play_names])
+if MAIN:
+    ax.set_ylabel("maximum absolute logit error")
+if MAIN:
+    ax.set_title(f"Your input: {play_input_ids.squeeze(0).tolist()}")
+if MAIN:
+    ax.tick_params(axis="x", rotation=20)
+if MAIN:
+    ax.grid(axis="y", alpha=0.25)
+if MAIN:
+    plt.show()
+
+# ! CELL TYPE: markdown
+# ! FILTERS: []
+# ! TAGS: [html]
+
+r'''
+<img src="media/gemma_historical_cell_26_output_0.png" width="1100">
+'''
+
+# ! CELL TYPE: markdown
+# ! FILTERS: []
+# ! TAGS: []
+
+r'''
+### Reflect — Changed inputs
+
+Distinguish reference parity from input-specific error magnitude. Predict a different sequence length before
+running another optional model-organism check.
+
+Record the observed discrepancy and confidence. Make one changed-condition forecast before the next reveal;
+retain seen or unknown exposure.
+'''
+
+# ! CELL TYPE: markdown
+# ! FILTERS: []
+# ! TAGS: []
+
+r'''
+### Exercise - bonus anomaly hunt: find the first divergent stage
+
+> ```yaml
+> Difficulty: 🔴⚪⚪⚪⚪
+> Importance: 🔵🔵🔵🔵⚪
+> 
+> You should spend 5-10 minutes on this exercise.
+> ```
+
+Write a small diagnostic that scans a parity profile in execution order and returns the first stage whose
+maximum absolute error exceeds a tolerance. Use it to verify the predicted control locations.
+
+<details><summary>Expected output</summary>
+
+```text
+{'exact': None, 'no embedding scale': 'embedding', 'no RoPE': 'layer_0', 'wrong GQA order': 'layer_0'}
+```
+
+</details>
+
+<details><summary>Help - common bug: returning a threshold crossing instead of its stage</summary>
+
+Python dictionaries preserve insertion order. Return `None` if no stage crosses the tolerance.
+
+</details>
+
+<details><summary>Interpretation</summary>
+
+The first divergent stage is more actionable than the largest final error. It points to the earliest violated
+contract, before later residual updates propagate the difference.
+
+</details>
+
+<details><summary>Historical worked formulation</summary>
+
+```python
+def first_divergent_stage(
+    profile: dict[str, dict[str, float]],
+    *,
+    tolerance: float = 1e-6,
+) -> str | None:
+    return next(
+        (stage for stage, metrics in profile.items() if metrics["max_abs"] > tolerance),
+        None,
+    )
+```
+
+</details>
+'''
+
+# ! CELL TYPE: markdown
+# ! FILTERS: []
+# ! TAGS: []
+
+r'''
+### Forecast — First divergent stage
+
+Predict the returned stage for a profile that is exact through layer_0 but first exceeds tolerance at layer_1.
+Explain strict greater-than behavior at the threshold.
+
+Write confidence, causal reasoning and exposure before revealing results. This is guided practice, not an
+unseen score.
+'''
+
+# ! CELL TYPE: code
+# ! FILTERS: []
+# ! TAGS: []
+
+def first_divergent_stage(
+    profile: dict[str, dict[str, float]],
+    *,
+    tolerance: float = 1e-6,
+) -> str | None:
+    # EXERCISE
+    # raise NotImplementedError()
+    # END EXERCISE
+    # SOLUTION
+    return next(
+        (stage for stage, metrics in profile.items() if metrics["max_abs"] > tolerance),
+        None,
+    )
+    # END SOLUTION
+
+
+if MAIN:
+    expected_first_divergence = {
+        "exact": None,
+        "no embedding scale": "embedding",
+        "no RoPE": "layer_0",
+        "wrong GQA order": "layer_0",
+    }
+if MAIN:
+    observed_first_divergence = {
+        name: first_divergent_stage(profile)
+        for name, profile in signature["profiles"].items()
+    }
+if MAIN:
+    assert observed_first_divergence == expected_first_divergence
+if MAIN:
+    observed_first_divergence
+
+# ! CELL TYPE: markdown
+# ! FILTERS: []
+# ! TAGS: []
+
+r'''
+### Reflect — First divergent stage
+
+Compare the bonus assertion and the earlier forecast. Predict a profile whose only mismatch is in logits; do
+not relax the tolerance to hide a wrong method.
+
+Record the observed discrepancy and confidence. Make one changed-condition forecast before the next reveal;
+retain seen or unknown exposure.
+'''
+
+# ! CELL TYPE: markdown
+# ! FILTERS: []
+# ! TAGS: []
+
+r'''
+### Try It Yourself — exact CPU cache-mask probe
+
+This additional exercise isolates the same taught mask function without constructing or running a model. Keep
+the full historical decoder signature above. Change only `PLAY_WINDOW` or `PLAY_PAST_LENGTH` for the next
+comparison.
+
+### Forecast — local keys at absolute positions
+
+For defaults past=3, queries=2 and window=3, write both correct allowed-key sets and predict how many bits
+differ from the wrong zero-origin mask. Predict the global baseline too. Record confidence and whether you
+have seen these values. Changed condition: window=1; forecast every row before running.
+'''
+
+# ! CELL TYPE: code
+# ! FILTERS: []
+# ! TAGS: []
+
+if MAIN:
+    PLAY_PAST_LENGTH = 3
+if MAIN:
+    PLAY_QUERY_LENGTH = 2
+if MAIN:
+    PLAY_WINDOW = 3
+
+# Exact mask probe only: no model object, weights, optimizer or CUDA.
+if MAIN:
+    play_key_length = PLAY_PAST_LENGTH + PLAY_QUERY_LENGTH
+if MAIN:
+    play_mask = build_causal_attention_mask(
+        query_length=PLAY_QUERY_LENGTH, key_length=play_key_length,
+        past_length=PLAY_PAST_LENGTH, sliding_window=PLAY_WINDOW,
+        device=t.device("cpu"),
+    ).squeeze(0).squeeze(0)
+if MAIN:
+    play_global = build_causal_attention_mask(
+        query_length=PLAY_QUERY_LENGTH, key_length=play_key_length,
+        past_length=PLAY_PAST_LENGTH, sliding_window=None,
+        device=t.device("cpu"),
+    ).squeeze(0).squeeze(0)
+if MAIN:
+    play_wrong_origin = build_causal_attention_mask(
+        query_length=PLAY_QUERY_LENGTH, key_length=play_key_length,
+        past_length=0, sliding_window=PLAY_WINDOW,
+        device=t.device("cpu"),
+    ).squeeze(0).squeeze(0)
+if MAIN:
+    play_wrong_bits = int((play_mask != play_wrong_origin).sum())
+if MAIN:
+    play_counts = play_mask.sum(dim=-1).tolist()
+if MAIN:
+    fig, axes = plt.subplots(1, 3, figsize=(11, 3.2), constrained_layout=True)
+if MAIN:
+    for ax, values, title in zip(
+        axes, (play_mask, play_global, play_wrong_origin),
+        ("Correct cached local mask", "Global baseline", "Wrong zero-origin control"),
+    ):
+        ax.imshow(values.numpy(), vmin=0, vmax=1, cmap="Blues", aspect="auto")
+        ax.set(xticks=range(play_key_length), yticks=range(PLAY_QUERY_LENGTH),
+               xlabel="absolute key position", ylabel="query row", title=title)
+if MAIN:
+    print("allowed keys per query:", play_counts)
+if MAIN:
+    print("wrong-origin differing bits:", play_wrong_bits)
+if MAIN:
+    plt.show()
+
+# ! CELL TYPE: markdown
+# ! FILTERS: []
+# ! TAGS: []
+
+r'''
+Fresh exact CPU subset figure, separately recorded; the historical notebook was not rerun:
+
+<img src="media/gemma_cpu_cache_mask.png" width="1100">
+
+### Reflect — cache origin is part of the method
+
+At defaults the correct allowed-key sets are {1,2,3} and {2,3,4}; both counts are 3. The global baseline
+counts are 4 and 5. The wrong origin gives {0} and {0,1}, with 9 differing bits. Explain why shape tests alone
+miss this error. With window=1, predict {3} and {4} and compare against the observation. Change the past
+length next and explain which absolute positions move. Record discrepancy, confidence and exposure; these
+published answers are guided practice.
+'''
+
+# ! CELL TYPE: markdown
+# ! FILTERS: []
+# ! TAGS: []
+
+r'''
+## Connection to the public Hugging Face implementation
+
+The repository pins `transformers` in `uv.lock`. The next CPU cell constructs the public
+`transformers.GemmaForCausalLM` class, copies all 21 deterministic tiny-model weights into your model, and
+compares logits. This is a real reference-implementation connection with a pinned software environment and
+exactly matched weights. It is not a pretrained checkpoint result.
+'''
+
+# ! CELL TYPE: markdown
+# ! FILTERS: []
+# ! TAGS: []
+
+r'''
+### Architecture-equivalence caveat
+
+A static audit of the installed official HF implementation finds `hidden_act=gelu_pytorch_tanh` and split-half
+rotary coordinates (`cat(freqs,freqs)` and `[-x_second_half,x_first_half]`). This preserved learner instead
+uses `F.silu` and interleaved even/odd rotations. The historical cell copies Q/K weights directly, without the
+coordinate permutation or activation alignment needed to reconcile those conventions. Its small error under
+one tiny random initialization is a tolerance diagnostic, not proof of equivalent architecture. The historical
+explanation attributing residual error only to kernels is therefore not established. Keep the original code
+and outputs as evidence of that limited diagnostic; do not promote them to pretrained or convention-correct
+parity.
+'''
+
+# ! CELL TYPE: markdown
+# ! FILTERS: []
+# ! TAGS: []
+
+r'''
+### Forecast — Independent implementation
+
+The HF code uses GELU and split-half RoPE, while this preserved learner uses SiLU and interleaved RoPE with
+directly copied weights. Predict whether a small numerical error at this one random initialization proves
+equivalent architecture. State the declared tolerance before inspecting the historical output.
+
+Write confidence, causal reasoning and exposure before revealing results. This is guided practice, not an
+unseen score.
+'''
+
+# ! CELL TYPE: code
+# ! FILTERS: []
+# ! TAGS: []
+
+if MAIN:
+    import transformers
+if MAIN:
+    from transformers import GemmaConfig as HFGemmaConfig
+if MAIN:
+    from transformers import GemmaForCausalLM as HFGemmaForCausalLM
+
+if MAIN:
+    local_config = make_tiny_gemma_config()
+if MAIN:
+    hf_config = HFGemmaConfig(
+        vocab_size=local_config.vocab_size,
+        hidden_size=local_config.hidden_size,
+        intermediate_size=local_config.intermediate_size,
+        num_hidden_layers=local_config.num_hidden_layers,
+        num_attention_heads=local_config.num_attention_heads,
+        num_key_value_heads=local_config.num_key_value_heads,
+        head_dim=local_config.head_dim,
+        max_position_embeddings=local_config.max_position_embeddings,
+        rope_theta=local_config.rope_theta,
+        rms_norm_eps=local_config.rms_norm_eps,
+        attention_bias=local_config.attention_bias,
+        pad_token_id=0,
+        bos_token_id=1,
+        eos_token_id=2,
+        tie_word_embeddings=local_config.tie_word_embeddings,
+    )
+if MAIN:
+    t.manual_seed(5101)
+if MAIN:
+    hf_reference = HFGemmaForCausalLM(hf_config).to(DEVICE).eval()
+if MAIN:
+    hf_learner = GemmaForCausalLM(local_config).to(DEVICE).eval()
+if MAIN:
+    hf_learner.load_state_dict(hf_reference.state_dict())
+if MAIN:
+    hf_input_ids = t.tensor([[1, 5, 8, 13, 2]], device=DEVICE)
+if MAIN:
+    with t.inference_mode():
+        hf_logits = hf_reference(input_ids=hf_input_ids, use_cache=False).logits
+        learner_logits = hf_learner(hf_input_ids, use_cache=False).logits
+if MAIN:
+    hf_delta = learner_logits - hf_logits
+if MAIN:
+    hf_max_abs = hf_delta.abs().max().item()
+if MAIN:
+    hf_mse = hf_delta.square().mean().item()
+if MAIN:
+    hf_top5_agreement = (
+        learner_logits.topk(5, dim=-1).indices == hf_logits.topk(5, dim=-1).indices
+    ).float().mean().item()
+if MAIN:
+    assert hf_max_abs <= 5e-4 and hf_mse <= 1e-7 and hf_top5_agreement == 1.0
+if MAIN:
+    print("transformers version:", transformers.__version__)
+if MAIN:
+    print("state-dict keys loaded:", len(hf_reference.state_dict()))
+if MAIN:
+    print(f"max abs logit error: {hf_max_abs:.8f}")
+if MAIN:
+    print(f"logit MSE: {hf_mse:.3e}")
+if MAIN:
+    print(f"ordered top-5 agreement: {hf_top5_agreement:.3f}")
+
+# ! CELL TYPE: markdown
+# ! FILTERS: []
+# ! TAGS: []
+
+r'''
+### Reflect — Independent implementation
+
+Read the saved HF result as a tiny random-weight tolerance diagnostic. Matching 21 state-dict keys does not
+resolve activation or Q/K coordinate conventions. Explain why those differences, not merely kernels, can
+contribute to the error. This historical cell has no convention-correct parity proof; the separately labeled
+additive extension below tests the correction.
+
+Record the observed discrepancy and confidence. Make one changed-condition forecast before the next reveal;
+retain seen or unknown exposure.
+'''
+
+# ! CELL TYPE: markdown
+# ! FILTERS: []
+# ! TAGS: []
+
+r'''
+<details><summary>Expected output</summary>
+
+```text
+state-dict keys loaded: 21
+max abs logit error: approximately 6.9e-05
+logit MSE: approximately 5.35e-10
+ordered top-5 agreement: 1.000
+```
+
+</details>
+
+<details><summary>Interpretation</summary>
+
+The independent local reference is bitwise equal because it uses the same explicit operations. Hugging Face
+may choose numerically different kernels, so its result is tolerance parity rather than bitwise identity.
+Agreement of all 21 weights and the ordered top five logits is strong evidence for this architecture subset.
+
+</details>
+
+## Limitations
+
+- The model organism has random deterministic weights and token IDs, so it tests architecture semantics rather
+than language ability.
+- This notebook covers the Gemma conventions represented by `GemmaConfig` here. Later Gemma generations add
+architecture details outside this section.
+- The Hugging Face comparison instantiates the real public class but does not download or claim a gated
+pretrained Gemma checkpoint.
+- CPU execution does not validate CUDA kernels or memory use; the parent verification pass handles serialized
+GPU checks.
+
+## Reading links
+
+- [Gemma: Open Models Based on Gemini Research and Technology](https://arxiv.org/abs/2403.08295)
+- [Hugging Face Gemma model documentation](https://huggingface.co/docs/transformers/model_doc/gemma)
+- [RoFormer: Enhanced Transformer with Rotary Position Embedding](https://arxiv.org/abs/2104.09864)
+- [GQA: Training Generalized Multi-Query Transformer Models from Multi-Head
+Checkpoints](https://arxiv.org/abs/2305.13245)
+
+The next useful experiment is the anomaly hunt above: alter one line of your own implementation, rerun the
+trace, and predict the first stage that will move before looking at the plot.
+'''
+
+# ! CELL TYPE: markdown
+# ! FILTERS: []
+# ! TAGS: []
+
+r'''
+### Scope still open
+
+Gemma3-270m and SmolLM2 pretrained weight loading, layer-wise local/global alternation, later-generation
+activation and logit-soft-capping variants, and BOS/sink or attention-distance analyses remain outside this
+preserved lesson. The broader syllabus describes intended coverage, not results established here. The
+historical parent GPU-pass wording above is not an execution promise or new acceptance.
+
+The figure's exact line is drawn at 1e-8 on a log axis although the reported historical error is zero; use the
+printed numeric errors for exact parity.
+'''
+
+# ! CELL TYPE: markdown
+# ! FILTERS: []
+# ! TAGS: []
+
+r'''
+## Additive extension — reconcile conventions before claiming parity
+
+Keep the historical diagnostic above unchanged. This new comparison explicitly matches the public HF default
+GELU(tanh) gate and converts each Q/K projection from split-half rotary coordinates into the learner's
+interleaved coordinates. It is a fixed tiny random-weight CPU probe, with no pretrained checkpoint, training
+or cache check. Gemma3 and SmolLM2 coverage remain open.
+
+The change of basis is per head: for head dimension 2h, reorder output rows as [0,h,1,h+1,...]. Apply the same
+orthogonal permutation to Q and K; their inner products remain equal when rotations use the corresponding
+basis. V and O are unchanged. The frozen fixture has no attention bias; a generalized biased projection would
+need its Q/K bias rows permuted too.
+'''
+
+# ! CELL TYPE: markdown
+# ! FILTERS: []
+# ! TAGS: []
+
+r'''
+### Exercise - projection coordinates
+
+> ```yaml
+> Difficulty: 🔴🔴🔴⚪⚪
+> Importance: 🔵🔵🔵🔵⚪
+> 
+> You should spend 10-15 minutes on this exercise.
+> ```
+
+### Forecast — Projection coordinates
+
+Implement `hf_split_to_interleaved_projection`. At head dimension eight, predict the row order and explain why
+Q heads and KV heads must keep their identities. The dimension-four permutation happens to be self-inverse; do
+not infer that property for dimension eight.
+
+Record confidence, causal reasoning and exposure before opening the solution.
+
+<details><summary>Help</summary>
+
+Reshape rows into heads, head dimensions and input dimensions. Interleave the two halves only within each
+head; reshape back without modifying the input matrix.
+
+</details>
+'''
+
+# ! CELL TYPE: code
+# ! FILTERS: []
+# ! TAGS: []
+
+def hf_split_to_interleaved_projection(weight: t.Tensor, num_heads: int) -> t.Tensor:
+    # EXERCISE
+    # raise NotImplementedError()
+    # END EXERCISE
+    # SOLUTION
+    """Change each Q/K head's output-coordinate basis; preserve head identity."""
+    if weight.ndim != 2 or num_heads <= 0 or weight.shape[0] % num_heads:
+        raise ValueError("Expected a projection matrix with equal-sized heads")
+    head_dim = weight.shape[0] // num_heads
+    if head_dim == 0 or head_dim % 2:
+        raise ValueError("RoPE head dimension must be positive and even")
+    half = head_dim // 2
+    pair_order = t.stack((t.arange(half, device=weight.device),
+                          t.arange(half, device=weight.device) + half), dim=-1).flatten()
+    return weight.reshape(num_heads, head_dim, weight.shape[1]).index_select(1, pair_order).reshape_as(weight)
+    # END SOLUTION
+
+
+if MAIN:
+    for heads in (2, 4):
+        marked_rows = t.arange(heads * 8 * 3).reshape(heads * 8, 3)
+        converted_rows = hf_split_to_interleaved_projection(marked_rows, heads)
+        expected_order = t.tensor([0, 4, 1, 5, 2, 6, 3, 7])
+        for head in range(heads):
+            t.testing.assert_close(converted_rows[head*8:(head+1)*8],
+                                   marked_rows[head*8 + expected_order])
+if MAIN:
+    print("Projection checks passed: dimension-eight permutation and Q/K head identity.")
+
+# ! CELL TYPE: markdown
+# ! FILTERS: []
+# ! TAGS: []
+
+r'''
+<details><summary>Expected output</summary>
+
+```text
+Projection checks passed: dimension-eight permutation and Q/K head identity.
+```
+
+The independent formula/row assertions must pass unchanged.
+
+</details>
+'''
+
+# ! CELL TYPE: markdown
+# ! FILTERS: []
+# ! TAGS: []
+
+r'''
+### Reflect — Projection coordinates
+
+Compare the dimension-eight row oracle for two and four heads. Explain P R_half = R_pair P and why permuting V
+would change the model rather than simply its Q/K basis.
+'''
+
+# ! CELL TYPE: markdown
+# ! FILTERS: []
+# ! TAGS: []
+
+r'''
+### Exercise - activation convention
+
+> ```yaml
+> Difficulty: 🔴🔴🔴⚪⚪
+> Importance: 🔵🔵🔵🔵⚪
+> 
+> You should spend 10-15 minutes on this exercise.
+> ```
+
+### Forecast — Activation convention
+
+Implement `gemma_tanh_gelu_gate` using the public Gemma configuration's tanh-approximate GELU. Predict where
+SiLU and GELU differ on [-2,-1,0,1,2], even though both preserve tensor shape.
+
+Record confidence, causal reasoning and exposure before opening the solution.
+
+<details><summary>Help</summary>
+
+Use the explicit tanh approximation in `F.gelu` before multiplying by the up branch. The scalar formula below
+is an independent immediate oracle.
+
+</details>
+'''
+
+# ! CELL TYPE: code
+# ! FILTERS: []
+# ! TAGS: []
+
+def gemma_tanh_gelu_gate(gate: t.Tensor, up: t.Tensor) -> t.Tensor:
+    # EXERCISE
+    # raise NotImplementedError()
+    # END EXERCISE
+    # SOLUTION
+    """Match the frozen public Gemma config's GELU(tanh) gated activation."""
+    return F.gelu(gate, approximate="tanh") * up
+    # END SOLUTION
+
+
+if MAIN:
+    gate_inputs = t.tensor([-2.0, -1.0, 0.0, 1.0, 2.0], dtype=t.float64)
+if MAIN:
+    expected_gelu = t.tensor([
+        0.5 * x * (1.0 + math.tanh(math.sqrt(2.0 / math.pi) * (x + 0.044715*x**3)))
+        for x in gate_inputs.tolist()
+    ], dtype=t.float64)
+if MAIN:
+    t.testing.assert_close(gemma_tanh_gelu_gate(gate_inputs, t.ones_like(gate_inputs)),
+                           expected_gelu, atol=1e-12, rtol=0)
+if MAIN:
+    activation_control_gap = float((expected_gelu - F.silu(gate_inputs)).abs().max())
+if MAIN:
+    assert abs(activation_control_gap - 0.19300353813201032) <= 1e-12
+if MAIN:
+    print("GELU formula check passed; SiLU control max difference:", activation_control_gap)
+
+
+class ConventionMatchedGemmaMLP(GemmaMLP):
+    def forward(self, x: t.Tensor) -> t.Tensor:
+        return self.down_proj(gemma_tanh_gelu_gate(self.gate_proj(x), self.up_proj(x)))
+
+# ! CELL TYPE: markdown
+# ! FILTERS: []
+# ! TAGS: []
+
+r'''
+<details><summary>Expected output</summary>
+
+```text
+GELU formula check passed; SiLU control max difference: approximately 0.19300353813201032
+```
+
+The independent formula/row assertions must pass unchanged.
+
+</details>
+'''
+
+# ! CELL TYPE: markdown
+# ! FILTERS: []
+# ! TAGS: []
+
+r'''
+### Reflect — Activation convention
+
+Compare the independent scalar GELU formula and SiLU control. Explain why copying identical projection weights
+cannot repair an activation mismatch.
+'''
+
+# ! CELL TYPE: markdown
+# ! FILTERS: []
+# ! TAGS: []
+
+r'''
+### Forecast — Relative-position oracle
+
+For q=[1,2,3,4], k=[2,-1,.5,3], query position 2 and key position 1, predict whether correctly converted
+rotary scores agree with the split-half score and whether the unconverted control agrees.
+
+Record confidence, causal reasoning and exposure before revealing the result.
+'''
+
+# ! CELL TYPE: code
+# ! FILTERS: []
+# ! TAGS: []
+
+# Independent explicit rotations, using relative positions 2 and 1.
+if MAIN:
+    component_q = t.tensor([1.0, 2.0, 3.0, 4.0], dtype=t.float64)
+if MAIN:
+    component_k = t.tensor([2.0, -1.0, 0.5, 3.0], dtype=t.float64)
+if MAIN:
+    component_frequencies = t.tensor([1.0, 0.01], dtype=t.float64)
+
+
+def explicit_half_rotation(vector: t.Tensor, position: int) -> t.Tensor:
+    angles = component_frequencies * position
+    rotated = t.cat((-vector[2:], vector[:2]))
+    return vector * angles.cos().repeat(2) + rotated * angles.sin().repeat(2)
+
+
+def explicit_pair_rotation(vector: t.Tensor, position: int) -> t.Tensor:
+    angles = component_frequencies * position
+    pairs = vector.reshape(2, 2)
+    rotated = t.stack((-pairs[:, 1], pairs[:, 0]), dim=-1).flatten()
+    return vector * angles.cos().repeat_interleave(2) + rotated * angles.sin().repeat_interleave(2)
+
+
+if MAIN:
+    component_order = t.tensor([0, 2, 1, 3])
+if MAIN:
+    component_half_score = float(explicit_half_rotation(component_q, 2) @ explicit_half_rotation(component_k, 1))
+if MAIN:
+    component_correct_score = float(explicit_pair_rotation(component_q[component_order], 2)
+                                    @ explicit_pair_rotation(component_k[component_order], 1))
+if MAIN:
+    component_wrong_score = float(explicit_pair_rotation(component_q, 2) @ explicit_pair_rotation(component_k, 1))
+if MAIN:
+    assert abs(component_half_score - 7.362465991603378) <= 1e-12
+if MAIN:
+    assert abs(component_correct_score - component_half_score) <= 1e-12
+if MAIN:
+    assert abs(component_wrong_score - 9.361968914924665) <= 1e-12
+if MAIN:
+    assert abs(component_wrong_score - component_half_score) > 1.0
+if MAIN:
+    print("HF-coordinate score:", component_half_score)
+if MAIN:
+    print("Converted-coordinate score:", component_correct_score)
+if MAIN:
+    print("Wrong-coordinate score:", component_wrong_score)
+
+# ! CELL TYPE: markdown
+# ! FILTERS: []
+# ! TAGS: []
+
+r'''
+### Reflect — Relative-position oracle
+
+The independently derived split-half score is 7.362465991603378; conversion preserves it within 1e-12, while
+the wrong-coordinate score is 9.361968914924665. Explain why using equal positions could conceal the
+convention error.
+'''
+
+# ! CELL TYPE: markdown
+# ! FILTERS: []
+# ! TAGS: []
+
+r'''
+### Forecast — Fixed independent parity
+
+Before viewing the new result, forecast the four maximum logit errors: unmatched conventions, GELU only, Q/K
+basis only, and both matched. Use exactly seed5101, the four original seven-token sequences, std.02 and eager
+float32 CPU. The both-correct gate is max_abs<=5e-6 and MSE<=1e-12 over 868 logits. Wrong full variants are
+reported without promising they cross the gate at this small initialization. The unmatched row uses the old
+SiLU/interleaved conventions on fresh current-library weights; it does not reproduce the saved
+Transformers5.12.1 output.
+
+Record confidence, causal reasoning and exposure before revealing the result.
+'''
+
+# ! CELL TYPE: code
+# ! FILTERS: []
+# ! TAGS: []
+
+import hashlib
+import json
+
+
+def run_convention_matched_hf_probe() -> dict:
+    """One fixed tiny CPU comparison; no pretrained weights, fitting or search."""
+    from transformers import GemmaConfig as HFGemmaConfig
+    from transformers import GemmaForCausalLM as HFGemmaForCausalLM
+
+    config = make_tiny_gemma_config()
+    hf_config = HFGemmaConfig(
+        vocab_size=31, hidden_size=16, intermediate_size=32,
+        num_hidden_layers=2, num_attention_heads=4, num_key_value_heads=2,
+        head_dim=4, max_position_embeddings=64, rms_norm_eps=1e-6,
+        rope_theta=10000.0, hidden_act="gelu_pytorch_tanh",
+        initializer_range=0.02, attention_bias=False, attention_dropout=0.0,
+        pad_token_id=0, bos_token_id=1, eos_token_id=2,
+        tie_word_embeddings=True,
+    )
+    hf_config._attn_implementation = "eager"
+    t.manual_seed(5101)
+    reference = HFGemmaForCausalLM(hf_config).to(device="cpu", dtype=t.float32).eval()
+    assert reference.config._attn_implementation == "eager"
+    inputs = SIGNATURE_INPUT_IDS.to(device="cpu")
+    assert inputs.tolist() == [[1, 5, 8, 13, 2, 21, 3], [3, 2, 1, 8, 5, 13, 21],
+                               [21, 13, 8, 5, 3, 2, 1], [2, 3, 5, 8, 13, 21, 1]]
+    assert config.rms_norm_eps == 1e-6 and config.rope_theta == 10000.0
+    state = reference.state_dict()
+    assert len(state) == 21
+    with t.inference_mode():
+        expected = reference(input_ids=inputs, use_cache=False).logits
+    assert expected.shape == (4, 7, 31) and expected.numel() == 868
+    rows = []
+    for label, match_activation, match_basis in (
+        ("unmatched conventions", False, False),
+        ("GELU only", True, False),
+        ("Q/K basis only", False, True),
+        ("both conventions matched", True, True),
+    ):
+        learner = GemmaForCausalLM(config).to(device="cpu", dtype=t.float32).eval()
+        if match_activation:
+            for layer in learner.model.layers:
+                layer.mlp = ConventionMatchedGemmaMLP(config).to(device="cpu", dtype=t.float32).eval()
+        matched_state = {name: value.clone() for name, value in state.items()}
+        if match_basis:
+            for index in range(config.num_hidden_layers):
+                for projection, heads in (("q_proj", config.num_attention_heads), ("k_proj", config.num_key_value_heads)):
+                    key = f"model.layers.{index}.self_attn.{projection}.weight"
+                    matched_state[key] = hf_split_to_interleaved_projection(matched_state[key], heads)
+        learner.load_state_dict(matched_state, strict=True)
+        with t.inference_mode():
+            observed = learner(inputs, use_cache=False).logits
+        delta = observed - expected
+        rows.append({"label": label, "activation_matched": match_activation,
+                     "basis_matched": match_basis, "max_abs": float(delta.abs().max()),
+                     "mse": float(delta.square().mean()),
+                     "ordered_top5_agreement": float((observed.topk(5, dim=-1).indices
+                                                       == expected.topk(5, dim=-1).indices).float().mean())})
+    state_hashes = {name: hashlib.sha256(value.detach().contiguous().numpy().tobytes()).hexdigest()
+                    for name, value in state.items()}
+    return {"rows": rows, "state_dict_keys": len(state), "state_dict_sha256": state_hashes,
+            "input_ids": inputs.tolist(),
+            "reference_config": hf_config.to_dict(), "seed": 5101,
+            "corrected_passed": rows[-1]["max_abs"] <= 5e-6 and rows[-1]["mse"] <= 1e-12}
+
+
+if MAIN:
+    convention_probe = run_convention_matched_hf_probe()
+if MAIN:
+    for row in convention_probe["rows"]:
+        print(f"{row['label']:26s} max_abs={row['max_abs']:.9g}  MSE={row['mse']:.9g}")
+if MAIN:
+    print("Corrected predeclared gate:", convention_probe["corrected_passed"])
+if MAIN:
+    print("ARENA_CONVENTION_PROBE=" + json.dumps(convention_probe, sort_keys=True))
+
+if MAIN:
+    fig, axes = plt.subplots(1, 3, figsize=(13, 3.7), constrained_layout=True)
+if MAIN:
+    axes[0].plot(gate_inputs, expected_gelu, "o-", label="GELU(tanh)")
+if MAIN:
+    axes[0].plot(gate_inputs, F.silu(gate_inputs), "s--", label="SiLU control")
+if MAIN:
+    axes[0].set(title="Activation conventions differ", xlabel="gate input", ylabel="gate output")
+if MAIN:
+    axes[0].legend(fontsize=8)
+if MAIN:
+    axes[1].bar(["HF basis", "converted", "wrong basis"],
+                [component_half_score, component_correct_score, component_wrong_score])
+if MAIN:
+    axes[1].set(title="Relative-position attention score", ylabel="q(position 2) dot k(position 1)")
+if MAIN:
+    axes[1].tick_params(axis="x", rotation=20)
+if MAIN:
+    axes[2].bar(["original", "GELU", "basis", "both"],
+                [max(row["max_abs"], 1e-12) for row in convention_probe["rows"]])
+if MAIN:
+    axes[2].axhline(5e-6, color="black", linestyle="--", label="fixed corrected tolerance")
+if MAIN:
+    axes[2].set(yscale="log", title="One fixed tiny random-weight probe", ylabel="maximum absolute logit error")
+if MAIN:
+    axes[2].legend(fontsize=7)
+if MAIN:
+    plt.show()
+if MAIN:
+    assert convention_probe["corrected_passed"], "Preserve failure: do not relax tolerance or choose a new seed"
+
+# ! CELL TYPE: markdown
+# ! FILTERS: []
+# ! TAGS: [html]
+
+r'''
+<img src="media/gemma_cpu_convention_comparison.png" width="1200">
+'''
+
+# ! CELL TYPE: markdown
+# ! FILTERS: []
+# ! TAGS: []
+
+r'''
+### Reflect — Fixed independent parity
+
+Compare all four rows and the two independent component controls. Keep failures if the corrected fixed gate
+fails; do not relax tolerances or choose a different seed. A passing corrected result establishes this
+architecture subset at one fixed random initialization, not pretrained language ability, cache behavior,
+Gemma3 or SmolLM2. Expected numbers and outputs make this guided practice; record exposure.
+'''
+
+# ! CELL TYPE: markdown
+# ! FILTERS: []
+# ! TAGS: []
+
+r'''
+The separately recorded fixed CPU result has maximum errors of approximately 9.00924e-5 (unmatched),
+8.44859e-5 (GELU only), 4.96022e-5 (basis only), and 1.86265e-9 (both matched). The corrected MSE is
+3.99706e-21. All four rows have ordered top-five agreement 1.0: that token-ranking check alone misses every
+convention error here. These are the observed numbers for this one fixed fixture, not expected guarantees for
+other weights or inputs. The three-panel figure and exact per-cell receipt retain their fresh origin; the
+earlier 16-cell reference remains historical.
+'''
+
+# ! CELL TYPE: markdown
+# ! FILTERS: []
+# ! TAGS: []
+
+r'''
+# ☆ Bonus
+'''
+
+# ! CELL TYPE: markdown
+# ! FILTERS: []
+# ! TAGS: []
+
+r'''
+## Release Verification Surface
+
+The exercises and signature result above are the CPU learner path. The two stable entry points below delegate
+to the section's pinned release harness; neither runs automatically. Call them only in the CUDA environment
+described by the section metadata, then compare the returned metrics with `verification_report.json`.
+
+`run_gpu_test(max_vram_gb=24.0)` runs the bounded GPU check. `run_full_experiment(max_vram_gb=24.0)` runs the
+same validated full path.
+'''
+
+# ! CELL TYPE: code
+# ! FILTERS: []
+# ! TAGS: []
+
+import importlib
+
+
+def _release_solution_module():
+    return importlib.import_module("chapter5_modern_architectures.exercises.part1_gemma_from_scratch.legacy_solutions")
+
+
+def run_gpu_test(max_vram_gb: float = 24.0) -> dict:
+    """Run the section's pinned CUDA verification contract."""
+    return _release_solution_module().run_gpu_test(max_vram_gb=max_vram_gb)
+
+
+def run_full_experiment(max_vram_gb: float = 24.0) -> dict:
+    """Run the full experiment used for the checked-in release evidence."""
+    return _release_solution_module().run_full_experiment(
+        max_vram_gb=max_vram_gb
+    )
+
+# ! CELL TYPE: code
+# ! FILTERS: [python]
+# ! TAGS: []
+
+def cache_parity_report(*args, **kwargs):
+    """Preserved compatibility helper; original source remains in legacy_solutions.py."""
+    return _release_solution_module().cache_parity_report(*args, **kwargs)
+
+def cache_parity_smoke_test(*args, **kwargs):
+    """Preserved compatibility helper; original source remains in legacy_solutions.py."""
+    return _release_solution_module().cache_parity_smoke_test(*args, **kwargs)
+
+def compare_tiny_model_to_clone(*args, **kwargs):
+    """Preserved compatibility helper; original source remains in legacy_solutions.py."""
+    return _release_solution_module().compare_tiny_model_to_clone(*args, **kwargs)
+
+def local_memory_budget(*args, **kwargs):
+    """Preserved compatibility helper; original source remains in legacy_solutions.py."""
+    return _release_solution_module().local_memory_budget(*args, **kwargs)
+
+def rms_norm_smoke_test(*args, **kwargs):
+    """Preserved compatibility helper; original source remains in legacy_solutions.py."""
+    return _release_solution_module().rms_norm_smoke_test(*args, **kwargs)
+
+def rope_norm_smoke_test(*args, **kwargs):
+    """Preserved compatibility helper; original source remains in legacy_solutions.py."""
+    return _release_solution_module().rope_norm_smoke_test(*args, **kwargs)
+
+def run_hf_tiny_gemma_reference_parity(*args, **kwargs):
+    """Preserved compatibility helper; original source remains in legacy_solutions.py."""
+    return _release_solution_module().run_hf_tiny_gemma_reference_parity(*args, **kwargs)
+
+def run_smoke_test(*args, **kwargs):
+    """Preserved compatibility helper; original source remains in legacy_solutions.py."""
+    return _release_solution_module().run_smoke_test(*args, **kwargs)
+

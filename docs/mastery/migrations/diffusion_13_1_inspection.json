@@ -1,0 +1,99 @@
+{
+  "exercises": {
+    "cells": 49,
+    "code": 20,
+    "output_bearing": 0,
+    "png": 0,
+    "ids": 49
+  },
+  "solutions": {
+    "cells": 49,
+    "code": 20,
+    "output_bearing": 16,
+    "png": 3,
+    "ids": 49
+  },
+  "canonical_constructor_status": "ROOT_ADOPTED reviewed minimal @dataclass repair; original missing-decorator source remains archived; no taught execution.",
+  "archived_original_blockers": [
+    "Notebook CrossAttentionCaptureStore has no @dataclass or constructor; for_groups calls cls(token_groups=..., maps=..., resolutions=...). Preserved exact AST; historical outputs are not current top-to-bottom execution evidence.",
+    "Original lesson shows same-seed prompt edits; it does not teach explicit scheduler update equations or denoising-step activation patching. 13.2 remains separate."
+  ],
+  "remaining_current_limitations": [
+    "No fresh taught-method, pretrained-model or top-to-bottom notebook execution.",
+    "Full DAAM replication, explicit scheduler updates and denoising-time activation patching are not provided.",
+    "Historical images do not establish solid-shape prompt fidelity or human acceptance."
+  ],
+  "proposed_guided_case": {
+    "section": "13.1",
+    "title": "Do two historical SD1.5 color edits beat the matched control and locality/quality gates?",
+    "master_path": "infrastructure/chapters/chapter13_image_generation_interpretability/master_13_1.py",
+    "question": "For the complete published two-case cohort, does the conjunction of target/control attention locality, matched color-area drops, image quality, white-noise rejection and CLIP retrieval hold?",
+    "prediction_type": "binary",
+    "forecast_items": [],
+    "config_fields": {
+      "source_identity": "Historical legacy solution chapter13_image_generation_interpretability/exercises/part1_diffusion_image_controls/13.1_Diffusion_and_Image_Generation_Controls_solutions.ipynb, SHA-256 54c64451aaa4f89b4b9ea526b9d6da452f7c28547452f6acedc50f22d1db7442. Cells21/29/31/33/35 define exact methods and thresholds; cell36 invokes the visible experiment; cells39/41 are signature grid and metric panel. No answer computation or new scientific run occurs in migration.",
+      "cohort": "Exactly red_square seed=4 and blue_circle seed=2, in that fixed order; all three prompt conditions for both cases retained. Six total 512x512 images, two original images for CLIP. This is a deliberately selected tiny historical cohort, with no TRAIN/DEV/TEST or unseen generalization claim.",
+      "configuration": "Pinned stable-diffusion-v1-5/stable-diffusion-v1-5 revision451f4fe16113bff5a5d2269ed5ad43b0592e9a14 fp16; 20 steps, guidance9, fixed historical negative prompt, same seed across original/target/control per case. CLIP openai/clip-vit-base-patch32 revision3d74acf9a28c67741b2f4f2ea7635f0aaf6f0268. VRAM cap24GiB. No seed, threshold or prompt reselection.",
+      "metric": "Attention maps are resized to64x64, averaged then divided by their nonnegative total mass; target/control mass sums use the independently detected original-image color region. Lift subtracts mask pixel fraction, denominator4096. Color-area fractions are means over512x512 RGB masks, denominator262144 per generated image. Target_drop=original_fraction-target_edit_fraction; control_drop=original_fraction-control_edit_fraction. Quality HF is mean absolute adjacent-pixel difference for each axis, summed then divided by2*255. CLIP accuracy averages two diagonal-pair hits; positive margin averages both directional diagonal-minus-best-off-diagonal margins over the fixed two cases.",
+      "predicate": "For EACH of the two cases: target_control_gap>=.005 AND target_mass-mask_fraction>=.01 AND captured_map_count>=32; target_drop>=.05 AND target_drop>=control_drop+.05; target_color_fraction>=.02 AND normalized rgb_std>=.05 (the reported rgb_std is rgb.std()/255) AND HF<=.12; noise_HF>.12 AND noise_HF>=real_HF+.12. Across both originals: both CLIP directional accuracies>=1 AND mean_positive_margin>=2; peak allocated VRAM<=24GiB. preflight_passed is the conjunction; all listed comparisons are inclusive except noise_HF>.12. Use preserved unrounded values/booleans, not rounded figure labels.",
+      "controls": "Original versus same-seed target-color deletion and control background-to-foreground edit; control attention terms=(geometric,), target terms=(red,square)/(blue,circle). The control is a fixed unrelated-token edit, not a random draw despite historical random_control field names. Noise uses independent CPU seed1000+case_seed. Shuffled-map/region and paired random direction/circuit fixtures remain separate toy controls, not extra real-model cases in this conjunction.",
+      "exposure": "Record numerical forecast, confidence, causal reason and prior exposure before saved outputs/dropdowns; leave observation and explanation blank until learner inspection."
+    },
+    "controls": [
+      "same-seed target and control prompt edits",
+      "target versus geometric-token attention",
+      "independent color-mask fractions",
+      "white-noise HF and quality rejection",
+      "two-way paired CLIP retrieval",
+      "separate toy shuffled-region, random-direction and circuit-specificity controls"
+    ],
+    "method_functions": [
+      "attention_region_report",
+      "denoising_circuit_report",
+      "latent_direction_effect_report",
+      "prompt_region_causal_report",
+      "color_region_mask",
+      "daam_region_report",
+      "token_ablation_region_report",
+      "image_quality_report",
+      "white_noise_image_control_report",
+      "sd15_strict_acceptance_report",
+      "shuffled_region_label_control",
+      "capture_token_group_attention",
+      "install_cross_attention_processors",
+      "register_cross_attention_capture",
+      "aggregate_attention_maps",
+      "build_same_seed_prompt_interventions",
+      "generate_same_seed_prompt_interventions",
+      "evaluate_sd15_case",
+      "run_visible_sd15_experiment"
+    ],
+    "exercise_path": "chapter13_image_generation_interpretability/exercises/part1_diffusion_cross_attention/13.1_Diffusion_Models_and_Cross-Attention_Attribution_exercises.ipynb",
+    "solutions_path": "chapter13_image_generation_interpretability/exercises/part1_diffusion_cross_attention/13.1_Diffusion_Models_and_Cross-Attention_Attribution_solutions.ipynb",
+    "evidence_class": "recorded_real_run",
+    "evidence_detail": "Preserved historical pinned SD1.5 attention/prompt-edit outputs, not a fresh run. Root adopted the independently reviewed missing @dataclass constructor repair; exact decorator-inverse source checks preserve all other calculations and historical outputs. No taught code or model ran.",
+    "data_role": "historical",
+    "status": "guided_practice",
+    "known_limitations": [
+      "Public answers are exposed guided practice, not unseen mastery.",
+      "The archived original missed @dataclass; the canonical constructor has a reviewed minimal repair, with no current top-to-bottom execution proof.",
+      "Two selected prompts with no held-out prompt population or human perceptual evaluation.",
+      "Red placard with a white hole and blue patterned disc do not fulfill clean solid shape prompts; color/attention metric pass does not establish prompt/shape fidelity.",
+      "Control edit changes background to foreground, so it is a fixed semantic intervention, not random-token resampling.",
+      "No explicit scheduler-step implementation, full DAAM replication or denoising-time activation patching; 13.2 is distinct."
+    ],
+    "experiment": "Record forecast/confidence/reason/exposure; inspect preserved cell36 output and complete cell39/41 grids. Compare each case and every control using the fixed predicates. Do not execute the model or any taught test to compute an answer for migration.",
+    "observation_prompt": "Provide your own observed boolean, per-case threshold comparison, metric/image discrepancy and causal explanation; cite permanent historical source path/hash and both case IDs.",
+    "transfer": "For the fixed historical red_square case only, change PLAY_MASK_SHIFT from(0,0) to(16,0), using the original t.roll cyclic row shift on the same64x64 independently detected mask. Keep PLAY_CASE=red_square, PLAY_COUNTERFACTUAL=target, PLAY_MIN_REGION_MASS=.20, both original target and geometric-control attention maps, all generated images, seed and model/config unchanged. Binary question: does target attention mass in that shifted mask remain>=.20 AND control attention mass in the identical shifted mask remain<.20? Each mass sums the already normalized nonnegative map over the shifted mask; its normalization denominator is that maps complete64x64 attention sum before normalization, not region pixel count. Threshold comparisons use unrounded values. Target-only selectivity is insufficient if the control also reaches.20. This changes one spatial condition and probes region-label specificity; it does not test a new image or causal denoising patch. Forecast before measurement. No answer is supplied or computed. If the raw maps are unavailable from the saved publication, leave the transfer unobserved until an explicitly authorized learner run supplies them; do not infer numeric masses from heatmap pixels.",
+    "transfer_prediction_type": "binary"
+  },
+  "actual_worksheet_schema_validation": {
+    "actual_helper_path": "/home/bitwise/Documents/ARENA_3.0_Extended/mastery_hub/units/extension_predictions/lesson.py",
+    "actual_helper_sha256": "d6ed28912de0fec64a45aa787f92be935761e975d7869df754d6624535390648",
+    "old_case_actual_validation": "FAILED: this worksheet uses binary transfer forecasts",
+    "revised_case_actual_validation": "PASS",
+    "transfer_prediction_type": "binary",
+    "answer_computed": false,
+    "scientific_execution": false
+  }
+}

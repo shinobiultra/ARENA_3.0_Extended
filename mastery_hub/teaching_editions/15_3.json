@@ -1,0 +1,32 @@
+{
+  "schema_version": 1,
+  "section": "15.3",
+  "sources": {
+    "page": {
+      "path": "chapter15_peft_misalignment/instructions/pages/03_[15.3]_QLoRA_from_Scratch.md",
+      "sha256": "55569a5bcc4cd50f7f5d2efe29c036f35945aedbc342e2edd90be39ffe1d3ef9"
+    },
+    "exercises": {
+      "path": "chapter15_peft_misalignment/exercises/part3_qlora_from_scratch/15.3_QLoRA_from_Scratch_exercises.ipynb",
+      "sha256": "e0e5a714d6c182bab652b2b6c6854071220741f4e0c85ac56764747706de1089"
+    },
+    "reference": {
+      "path": "chapter15_peft_misalignment/exercises/part3_qlora_from_scratch/15.3_QLoRA_from_Scratch_solutions.ipynb",
+      "sha256": "0664eda1ece8acce2b8ac60679753b1404d74ddf11ce5ba73290414aa975adbb"
+    }
+  },
+  "replacements": [
+    {
+      "old": "### Exercise: exact blockwise NF4\n\n> ```yaml\n> Difficulty: 🔴🔴🔴⚪⚪\n> Importance: 🔵🔵🔵🔵⚪\n> You should spend up to 20–30 minutes on this exercise.\n> ```\n\nImplement per-block absmax normalization, nearest-code assignment, and\ndequantization from stored codes. Also construct the signed dynamic codebook\nused by the nested scale state.\n\n<details><summary>Expected output</summary>\n\nThe manual 64-value reconstruction equals bitsandbytes exactly, including\nthe all-zero block. The NF4 table has 16 values; the nested dynamic table\nhas 256 finite values matching the expected backend-specific map.\n\n</details>\n\n<details><summary>Help</summary>\n\nPad only after flattening. Clamp zero scales before division. For the\ndynamic table, inspect the bitsandbytes constructor and the endpoints its\nblockwise runtime actually materializes.\n\n</details>",
+      "new": "### Exercise: exact blockwise NF4\n\n> ```yaml\n> Difficulty: 🔴🔴🔴⚪⚪\n> Importance: 🔵🔵🔵🔵⚪\n> You should spend up to 20–30 minutes on this exercise.\n> ```\n\nImplement per-block absmax normalization, nearest-code assignment, and\ndequantization from stored codes. Also construct the signed dynamic codebook\nused by the nested scale state.\n\n<details><summary>Expected output</summary>\n\nThe manual 64-value reconstruction equals bitsandbytes exactly, including\nthe all-zero block. The NF4 table has 16 values; the nested dynamic table\nhas 256 finite values matching the expected backend-specific map.\n\n</details>\n\n<details><summary>Help</summary>\n\nPad only after flattening. Clamp zero scales before division. For the\ndynamic table, inspect the bitsandbytes constructor and the endpoints its\nblockwise runtime actually materializes.\n\n</details>\n\n**Public data: exact backend lookup tables.** NF4 constants are scientific inputs, not quantities to guess from normal quantiles. Implement `nf4_codebook` by constructing a tensor with the requested device/dtype from this sorted table:\n\n```python\nNF4_VALUES = [-1.0, -0.6961928009986877, -0.5250730514526367, -0.39491748809814453, -0.28444138169288635, -0.18477343022823334, -0.09105003625154495, 0.0, 0.07958029955625534, 0.16093020141124725, 0.24611230194568634, 0.33791524171829224, 0.44070982933044434, 0.5626170039176941, 0.7229568362236023, 1.0]\n```\n\nFor `expected_dynamic_codebook`, the exact signed map recipe for the lesson's pinned bitsandbytes 0.50.2 is:\n\n```python\nfrom bitsandbytes import functional as bnb_functional\nsigned_map = bnb_functional.create_dynamic_map(signed=True)\n# Return signed_map.to(device=device, dtype=dtype).\n```\n\nThis public constructor is the reference definition for this backend; it gives all 256 entries and retains its negative endpoint `-0.992968738079071`. Do not replace endpoints using an older backend's convention. The installed constructor's docstring/source (`help(bnb_functional.create_dynamic_map)`) documents its exponent/fraction-bin construction. No new download is required. The method you implement and test is flatten/pad → per-block absmax → nearest lookup index → scale times decoded value, including zero blocks; using supplied lookup data does not implement that quantizer for you.",
+      "counts": {
+        "page": 1,
+        "exercises": 1,
+        "reference": 1
+      }
+    }
+  ],
+  "rationale": [
+    "Supply exact NF4 scientific data and a reproducible pinned dynamic-map API recipe before the quantizer tests."
+  ]
+}

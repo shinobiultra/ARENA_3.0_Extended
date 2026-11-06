@@ -1,13 +1,13 @@
-"""Synthetic published-tree tests; build source only, never execute a notebook."""
+"""Synthetic historical published trees; no retired builder or notebook execution."""
 
 import ast
 import base64
 from copy import deepcopy
 import gzip
+import html
 import io
 import json
 from pathlib import Path
-import shutil
 
 from PIL import Image
 import pytest
@@ -32,28 +32,111 @@ def _refresh_report(root, here):
     _write(path, report)
 
 
+def _synthetic_visible_pair(here, config):
+    """Create structural parser input, not a runnable or pedagogical notebook.
+
+    Identity functions deliberately have no SPEX meaning. Fixed historical
+    inventory counts exercise the parser's coverage checks, while each existing
+    mutation test changes one real source/receipt/namespace/figure boundary.
+    """
+    # Independent fixture anchors retain the retired notebooks' declared method
+    # and visible-result inventories. Changing production CONFIG alone must not
+    # silently shrink the synthetic baseline along with it.
+    inventories = {
+        "16.18": (31, 12, "boolean_character predict_spectrum normalized_fwht shifted_subsample_queries bin_index "
+                  "bch_generator_polynomial make_bch_code bch_encode make_query_design transform_query_values "
+                  "bch_syndromes berlekamp_massey chien_search decode_bch_parity chase_patterns soft_decode_parity "
+                  "signed_bin_check decode_bin recover_spectrum fourier_to_sii fourier_to_shapley masked_word_inputs"),
+        "16.19": (27, 13, "character_matrix predict_spectrum path_indicator_fourier tree_to_fourier fit_boosted_trees "
+                  "predict_boosted_trees ensemble_to_fourier select_energy_support grouped_mask_folds ridge_path "
+                  "refine_coefficients fit_proxy stage_errors"),
+    }
+    code_count, figure_count, method_names = inventories[config["section"]]
+    methods = sorted(method_names.split())
+    assert set(methods) == config["methods"]
+    assert (code_count, figure_count) == (config["cells"], config["figures"])
+    answers = "\n\n".join(f"def {name}(value):\n    return value" for name in methods)
+    stubs = "\n\n".join(f"def {name}(value):\n    raise NotImplementedError()" for name in methods)
+    checks = "\n".join(f"tests.test_synthetic_identity({name})" for name in methods)
+    # All taught names belong to one explicit synthetic source; extra core files
+    # remain distinct hash-bound plumbing, with no hidden method definitions.
+    for filename in config["core"]:
+        (here / filename).write_text(answers + "\n" if filename == config["core"][0]
+                                    else "# Synthetic data plumbing; never executed.\n")
+    bridge = (
+        "def run_native_bridge(native_evidence, *, proxy_namespace, prompt_index, seed, budget):\n"
+        "    return native_learner.replay_condition(native_evidence, method='proxyspex', "
+        "methods=proxy_namespace, prompt_index=prompt_index, seed=seed, budget=budget)\n"
+    )
+    (here / "lesson_cells.py").write_text(bridge if config["section"] == "16.19"
+                                          else "# Synthetic source marker.\n")
+    (here / "build_notebooks.py").write_text("# Synthetic builder marker; no executable builder.\n")
+    (here / "lesson.md").write_text("Synthetic historical parser fixture; no learner or scientific claim.\n")
+    for filename in config["test_modules"].values():
+        (here / (filename + ".py")).write_text("# Synthetic immediate-test module marker; never imported.\n")
+
+    def cell(source, *, kind="code", **info):
+        result = {"cell_type": kind, "source": source,
+                  "metadata": {"arena": info}, "id": f"synthetic-{len(student_cells)}"}
+        if kind == "code":
+            result.update(outputs=[], execution_count=None)
+        return result
+
+    student_cells, solved_cells = [], []
+
+    def append(source, *, solved_source=None, **info):
+        student_cells.append(cell(source, **info))
+        solved_cells.append(cell(source if solved_source is None else solved_source, **info))
+
+    imports = ["from types import SimpleNamespace",
+               f"from {contract.CHAPTER}.exercises.part18_spex import native_learner"]
+    imports += [f"from {contract.CHAPTER}.exercises.{here.name} import {module} as {alias}"
+                for alias, module in config["test_modules"].items()]
+    if config["section"] == "16.19":
+        imports.append(bridge)
+    append("\n".join(imports))
+    append(stubs + "\n" + checks, solved_source=answers + "\n" + checks,
+           exercise_functions=methods, exercise_key="synthetic-methods")
+    if config["section"] == "16.18":
+        dropdown = "<details><summary>Solution</summary><code>" + html.escape(answers) + "</code></details>"
+    else:
+        dropdown = "<details><summary>Solution</summary>\n\n```python\n" + answers + "\n```\n</details>"
+    student_cells.append(cell(dropdown, kind="markdown", solution_for="synthetic-methods"))
+    append("methods = SimpleNamespace(" + ", ".join(f"{name}={name}" for name in methods) + ")",
+           calling_cell="methods_namespace" if config["section"] == "16.18" else "student_namespace")
+    for index, calling in enumerate(("native_study", "native_play")):
+        replay = ("native_learner.replay_condition(native_evidence, method='spex', methods=methods, "
+                  if config["section"] == "16.18" else
+                  "run_native_bridge(native_evidence, proxy_namespace=methods, ")
+        append(f"replay_{index} = " + replay + f"prompt_index={index}, seed=0, budget=912)\n"
+               + f"show_figure(replay_{index}, 'synthetic_replay_{index}')", calling_cell=calling)
+    for index in range(figure_count - 2):
+        append(f"show_figure(None, 'synthetic_control_{index}')")
+    while len(solved_cells) < code_count:
+        append("# Synthetic inventory padding; no execution claimed.")
+    metadata = {"synthetic_test_only": True, "execution_claim": "none", "historical_section": config["section"]}
+    return ({"nbformat": 4, "nbformat_minor": 5, "metadata": metadata, "cells": student_cells},
+            {"nbformat": 4, "nbformat_minor": 5, "metadata": metadata, "cells": solved_cells})
+
+
 @pytest.fixture(params=["part18_spex", "part19_proxyspex"])
 def published(tmp_path, request):
-    # These builders only read source/lesson text. No execute_* function is called.
-    from chapter16_shapley_attribution_baselines.exercises.part18_spex import build_notebooks as spex_builder
-    from chapter16_shapley_attribution_baselines.exercises.part19_proxyspex import build_notebooks as proxy_builder
-
     name = request.param
     config = contract.CONFIG[name]
-    builder = spex_builder if name == "part18_spex" else proxy_builder
-    student, solved = builder.build_notebooks()
-    source_here = ROOT / contract.CHAPTER / "exercises" / name
     root = tmp_path / "portable_repository"
     here = root / contract.CHAPTER / "exercises" / name
     here.mkdir(parents=True)
     source_names = {*config["core"], "lesson_cells.py", "build_notebooks.py", "lesson.md",
                     *(name + ".py" for name in config["test_modules"].values())}
-    for filename in source_names:
-        shutil.copyfile(source_here / filename, here / filename)
+    student, solved = _synthetic_visible_pair(here, config)
     shared = root / contract.CHAPTER / "exercises/part18_spex"
     shared.mkdir(parents=True, exist_ok=True)
-    shutil.copyfile(ROOT / contract.CHAPTER / "exercises/part18_spex/native_freeze.json", shared / "native_freeze.json")
-    shutil.copyfile(ROOT / contract.CHAPTER / "exercises/part18_spex/native_learner.py", shared / "native_learner.py")
+    # These files are bound as bytes only. No source module is imported or run.
+    (shared / "native_learner.py").write_text(
+        "# Synthetic plumbing marker; never imported or executed.\n")
+    _write(shared / "native_freeze.json", {"synthetic_test_only": True,
+           "source_inputs": {(here / filename).relative_to(root).as_posix():
+                             contract._digest(here / filename) for filename in config["core"]}})
     code, figure_names, choices = contract._visible_contract(student, solved, here, config)
     image = io.BytesIO()
     Image.new("RGB", (3, 3), color="green").save(image, format="PNG")

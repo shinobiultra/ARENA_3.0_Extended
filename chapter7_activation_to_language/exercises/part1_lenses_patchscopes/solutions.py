@@ -327,6 +327,11 @@ def train_tuned_lens(
 # %%
 
 if MAIN:
+    tests.test_train_tuned_lens(train_tuned_lens)
+
+# %%
+
+if MAIN:
     t.manual_seed(0)
     tuned_lens = TunedLens(model.cfg.n_layers, model.cfg.d_model).to(device)
     losses = train_tuned_lens(tuned_lens, model, train_tokens, n_steps=300 if device.type != "cpu" else 100)
@@ -346,9 +351,11 @@ if MAIN:
 def evaluate_lenses(
     model: HookedTransformer, lens: TunedLens, tokens: Int[Tensor, "n_seq seq"], batch_size: int = 20
 ) -> dict[str, list[float]]:
+    if batch_size <= 0 or len(tokens) == 0 or tokens.shape[1] < 2:
+        raise ValueError("Need a positive batch size and nonempty sequences with non-BOS positions")
     n_layers = model.cfg.n_layers
-    metrics = {key: t.zeros(n_layers) for key in ["logit_kl", "tuned_kl", "logit_agree", "tuned_agree"]}
-    n_batches = 0
+    metrics = {key: t.zeros(n_layers, dtype=t.float64) for key in ["logit_kl", "tuned_kl", "logit_agree", "tuned_agree"]}
+    n_tokens = 0
     for start in range(0, len(tokens), batch_size):
         resid_stack, final_logprobs = get_resid_and_logprobs(model, tokens[start : start + batch_size])
         target = final_logprobs[:, 1:]
@@ -359,10 +366,15 @@ def evaluate_lenses(
                 ("logit", model.unembed(model.ln_final(resid)).log_softmax(dim=-1)),
                 ("tuned", lens.logits(model, resid, layer).log_softmax(dim=-1)),
             ]:
-                metrics[f"{name}_kl"][layer] += (target.exp() * (target - lp)).sum(dim=-1).mean().item()
-                metrics[f"{name}_agree"][layer] += (lp.argmax(dim=-1) == target_top).float().mean().item()
-        n_batches += 1
-    return {key: (value / n_batches).tolist() for key, value in metrics.items()}
+                metrics[f"{name}_kl"][layer] += (target.exp() * (target - lp)).sum(dim=-1).float().sum().item()
+                metrics[f"{name}_agree"][layer] += (lp.argmax(dim=-1) == target_top).sum().item()
+        n_tokens += target_top.numel()
+    return {key: (value / n_tokens).tolist() for key, value in metrics.items()}
+
+# %%
+
+if MAIN:
+    tests.test_evaluate_lenses(evaluate_lenses)
 
 # %%
 
@@ -383,18 +395,27 @@ if MAIN:
 def shifted_translator_agreement(
     model: HookedTransformer, lens: TunedLens, tokens: Int[Tensor, "n_seq seq"], shift: int, batch_size: int = 20
 ) -> dict[int, float]:
+    if batch_size <= 0 or len(tokens) == 0 or tokens.shape[1] < 2:
+        raise ValueError("Need a positive batch size and nonempty sequences with non-BOS positions")
     n_layers = model.cfg.n_layers
     layers = [layer for layer in range(n_layers) if 0 <= layer + shift < n_layers]
-    totals = {layer: 0.0 for layer in layers}
-    n_batches = 0
+    if not layers:
+        return {}
+    totals = {layer: 0 for layer in layers}
+    n_tokens = 0
     for start in range(0, len(tokens), batch_size):
         resid_stack, final_logprobs = get_resid_and_logprobs(model, tokens[start : start + batch_size])
         target_top = final_logprobs[:, 1:].argmax(dim=-1)
         for layer in layers:
             lp = lens.logits(model, resid_stack[layer, :, 1:], layer + shift)
-            totals[layer] += (lp.argmax(dim=-1) == target_top).float().mean().item()
-        n_batches += 1
-    return {layer: total / n_batches for layer, total in totals.items()}
+            totals[layer] += (lp.argmax(dim=-1) == target_top).sum().item()
+        n_tokens += target_top.numel()
+    return {layer: total / n_tokens for layer, total in totals.items()}
+
+# %%
+
+if MAIN:
+    tests.test_shifted_translator_agreement(shifted_translator_agreement)
 
 # %%
 
@@ -553,6 +574,11 @@ def patchscope_controls(
         ),
         "wrong position (BOS)": accuracy(run_patchscope(model, bos_vectors, target_tokens, target_pos, target_layer)),
     }
+
+# %%
+
+if MAIN:
+    tests.test_patchscope_controls(patchscope_controls)
 
 # %%
 

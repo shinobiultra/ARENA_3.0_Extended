@@ -1,0 +1,876 @@
+{
+  "request": "Remove saved data, blobs, and folders no longer necessary",
+  "scope": "this repository; preserve tracked work, original ARENA, source, evidence, notebooks, model weights, runtimes, and shared caches",
+  "utc_started": "2026-10-12T06:56:53.187714+00:00",
+  "utc_completed": "2026-10-12T06:57:49.588808+00:00",
+  "root": "/home/bitwise/Documents/ARENA_3.0_Extended",
+  "git_head": "dec028ec8ed8accb40bf0d0a7315bb72f0c1fcc6",
+  "before": {
+    "repository_allocated_bytes": 21652017152,
+    "filesystem_free_bytes": 209145049088
+  },
+  "after": {
+    "repository_allocated_bytes": 19260653568,
+    "filesystem_free_bytes": 211516628992
+  },
+  "removed": [
+    {
+      "path": "external/feature-circuits/downloads/dictionaries_pythia-70m-deduped_10.zip",
+      "files": 1,
+      "logical_bytes": 2369891306,
+      "allocated_bytes": 2369896448,
+      "sha256": "e8e320f0d068b2edf6b43ae2b641c96aaf0b3e5631cf173576325d4ad75c7979",
+      "reason": "download archive duplicates all 38 verified extracted files; pinned download remains reproducible"
+    },
+    {
+      "path": "chapter18_intrinsic_interpretability/instructions/__pycache__",
+      "files": 1,
+      "logical_bytes": 1312,
+      "allocated_bytes": 4096,
+      "reason": "regenerable Python or analysis-tool cache"
+    },
+    {
+      "path": "chapter5_modern_architectures/instructions/__pycache__",
+      "files": 1,
+      "logical_bytes": 2182,
+      "allocated_bytes": 4096,
+      "reason": "regenerable Python or analysis-tool cache"
+    },
+    {
+      "path": "chapter5_modern_architectures/exercises/part1_gemma_from_scratch/__pycache__",
+      "files": 6,
+      "logical_bytes": 218209,
+      "allocated_bytes": 229376,
+      "reason": "regenerable Python or analysis-tool cache"
+    },
+    {
+      "path": "chapter5_modern_architectures/exercises/part7_mamba2_ssd/__pycache__",
+      "files": 5,
+      "logical_bytes": 257639,
+      "allocated_bytes": 270336,
+      "reason": "regenerable Python or analysis-tool cache"
+    },
+    {
+      "path": "chapter5_modern_architectures/exercises/part5_diffusion_language_models/__pycache__",
+      "files": 23,
+      "logical_bytes": 579498,
+      "allocated_bytes": 626688,
+      "reason": "regenerable Python or analysis-tool cache"
+    },
+    {
+      "path": "chapter5_modern_architectures/exercises/part6_multimodal_embedding_function_models/__pycache__",
+      "files": 3,
+      "logical_bytes": 126694,
+      "allocated_bytes": 135168,
+      "reason": "regenerable Python or analysis-tool cache"
+    },
+    {
+      "path": "chapter5_modern_architectures/exercises/part3_mamba_from_scratch/__pycache__",
+      "files": 5,
+      "logical_bytes": 209914,
+      "allocated_bytes": 221184,
+      "reason": "regenerable Python or analysis-tool cache"
+    },
+    {
+      "path": "chapter5_modern_architectures/exercises/part2_gemma_scope_feature_steering/__pycache__",
+      "files": 5,
+      "logical_bytes": 165263,
+      "allocated_bytes": 172032,
+      "reason": "regenerable Python or analysis-tool cache"
+    },
+    {
+      "path": "chapter5_modern_architectures/exercises/part8_mixture_of_experts/__pycache__",
+      "files": 4,
+      "logical_bytes": 384400,
+      "allocated_bytes": 397312,
+      "reason": "regenerable Python or analysis-tool cache"
+    },
+    {
+      "path": "chapter5_modern_architectures/exercises/part4_mamba_state_tracking/__pycache__",
+      "files": 5,
+      "logical_bytes": 206440,
+      "allocated_bytes": 221184,
+      "reason": "regenerable Python or analysis-tool cache"
+    },
+    {
+      "path": "chapter12_vlm_interpretability/instructions/__pycache__",
+      "files": 1,
+      "logical_bytes": 1742,
+      "allocated_bytes": 4096,
+      "reason": "regenerable Python or analysis-tool cache"
+    },
+    {
+      "path": "chapter12_vlm_interpretability/exercises/part1_clip_siglip_vlm_controls/__pycache__",
+      "files": 9,
+      "logical_bytes": 511402,
+      "allocated_bytes": 532480,
+      "reason": "regenerable Python or analysis-tool cache"
+    },
+    {
+      "path": "chapter12_vlm_interpretability/exercises/part2_object_hallucination_arbitration/__pycache__",
+      "files": 4,
+      "logical_bytes": 303667,
+      "allocated_bytes": 315392,
+      "reason": "regenerable Python or analysis-tool cache"
+    },
+    {
+      "path": ".ruff_cache",
+      "files": 8,
+      "logical_bytes": 1424,
+      "allocated_bytes": 32768,
+      "reason": "regenerable Python or analysis-tool cache"
+    },
+    {
+      "path": "infrastructure/core/conversion/__pycache__",
+      "files": 7,
+      "logical_bytes": 100854,
+      "allocated_bytes": 114688,
+      "reason": "regenerable Python or analysis-tool cache"
+    },
+    {
+      "path": "infrastructure/extension/__pycache__",
+      "files": 2,
+      "logical_bytes": 23680,
+      "allocated_bytes": 24576,
+      "reason": "regenerable Python or analysis-tool cache"
+    },
+    {
+      "path": "chapter14_jepa_world_models/instructions/__pycache__",
+      "files": 1,
+      "logical_bytes": 1642,
+      "allocated_bytes": 4096,
+      "reason": "regenerable Python or analysis-tool cache"
+    },
+    {
+      "path": "chapter14_jepa_world_models/exercises/part3_vjepa_from_scratch/__pycache__",
+      "files": 5,
+      "logical_bytes": 428736,
+      "allocated_bytes": 438272,
+      "reason": "regenerable Python or analysis-tool cache"
+    },
+    {
+      "path": "chapter14_jepa_world_models/exercises/part2_ijepa_from_scratch/__pycache__",
+      "files": 4,
+      "logical_bytes": 347826,
+      "allocated_bytes": 356352,
+      "reason": "regenerable Python or analysis-tool cache"
+    },
+    {
+      "path": "chapter14_jepa_world_models/exercises/part4_maze_transformer_world_model/__pycache__",
+      "files": 3,
+      "logical_bytes": 231291,
+      "allocated_bytes": 237568,
+      "reason": "regenerable Python or analysis-tool cache"
+    },
+    {
+      "path": "chapter14_jepa_world_models/exercises/part1_jepa_world_model_controls/__pycache__",
+      "files": 4,
+      "logical_bytes": 181716,
+      "allocated_bytes": 188416,
+      "reason": "regenerable Python or analysis-tool cache"
+    },
+    {
+      "path": "chapter17_training_dynamics/instructions/__pycache__",
+      "files": 1,
+      "logical_bytes": 1415,
+      "allocated_bytes": 4096,
+      "reason": "regenerable Python or analysis-tool cache"
+    },
+    {
+      "path": "chapter17_training_dynamics/exercises/part1_checkpoint_archaeology/__pycache__",
+      "files": 4,
+      "logical_bytes": 126053,
+      "allocated_bytes": 131072,
+      "reason": "regenerable Python or analysis-tool cache"
+    },
+    {
+      "path": "tests/__pycache__",
+      "files": 72,
+      "logical_bytes": 1835916,
+      "allocated_bytes": 1990656,
+      "reason": "regenerable Python or analysis-tool cache"
+    },
+    {
+      "path": "chapter10_capstone_research_sprint/instructions/__pycache__",
+      "files": 1,
+      "logical_bytes": 1436,
+      "allocated_bytes": 4096,
+      "reason": "regenerable Python or analysis-tool cache"
+    },
+    {
+      "path": "__pycache__",
+      "files": 2,
+      "logical_bytes": 102953,
+      "allocated_bytes": 106496,
+      "reason": "regenerable Python or analysis-tool cache"
+    },
+    {
+      "path": "scripts/__pycache__",
+      "files": 21,
+      "logical_bytes": 837335,
+      "allocated_bytes": 880640,
+      "reason": "regenerable Python or analysis-tool cache"
+    },
+    {
+      "path": "chapter6_sparse_feature_methods/instructions/__pycache__",
+      "files": 1,
+      "logical_bytes": 1804,
+      "allocated_bytes": 4096,
+      "reason": "regenerable Python or analysis-tool cache"
+    },
+    {
+      "path": "chapter6_sparse_feature_methods/exercises/part1_sae_variants/__pycache__",
+      "files": 3,
+      "logical_bytes": 137696,
+      "allocated_bytes": 143360,
+      "reason": "regenerable Python or analysis-tool cache"
+    },
+    {
+      "path": "chapter6_sparse_feature_methods/exercises/part3_transcoders_attribution_graphs/__pycache__",
+      "files": 5,
+      "logical_bytes": 178106,
+      "allocated_bytes": 184320,
+      "reason": "regenerable Python or analysis-tool cache"
+    },
+    {
+      "path": "chapter6_sparse_feature_methods/exercises/part4_crosscoders_model_diffing/__pycache__",
+      "files": 4,
+      "logical_bytes": 128017,
+      "allocated_bytes": 139264,
+      "reason": "regenerable Python or analysis-tool cache"
+    },
+    {
+      "path": "chapter6_sparse_feature_methods/exercises/part2_gemma_scope_deep_dive/__pycache__",
+      "files": 5,
+      "logical_bytes": 154545,
+      "allocated_bytes": 159744,
+      "reason": "regenerable Python or analysis-tool cache"
+    },
+    {
+      "path": "chapter7_activation_to_language/__pycache__",
+      "files": 1,
+      "logical_bytes": 49560,
+      "allocated_bytes": 53248,
+      "reason": "regenerable Python or analysis-tool cache"
+    },
+    {
+      "path": "chapter7_activation_to_language/instructions/__pycache__",
+      "files": 1,
+      "logical_bytes": 1891,
+      "allocated_bytes": 4096,
+      "reason": "regenerable Python or analysis-tool cache"
+    },
+    {
+      "path": "chapter15_peft_misalignment/instructions/__pycache__",
+      "files": 1,
+      "logical_bytes": 1453,
+      "allocated_bytes": 4096,
+      "reason": "regenerable Python or analysis-tool cache"
+    },
+    {
+      "path": "chapter15_peft_misalignment/exercises/part3_qlora_from_scratch/__pycache__",
+      "files": 4,
+      "logical_bytes": 487607,
+      "allocated_bytes": 495616,
+      "reason": "regenerable Python or analysis-tool cache"
+    },
+    {
+      "path": "chapter15_peft_misalignment/exercises/part2_lora_vs_full_finetuning/__pycache__",
+      "files": 2,
+      "logical_bytes": 134614,
+      "allocated_bytes": 135168,
+      "reason": "regenerable Python or analysis-tool cache"
+    },
+    {
+      "path": "chapter15_peft_misalignment/exercises/part1_lora_dora_adapter_controls/__pycache__",
+      "files": 3,
+      "logical_bytes": 229163,
+      "allocated_bytes": 237568,
+      "reason": "regenerable Python or analysis-tool cache"
+    },
+    {
+      "path": ".pytest_cache",
+      "files": 5,
+      "logical_bytes": 419442,
+      "allocated_bytes": 438272,
+      "reason": "regenerable Python or analysis-tool cache"
+    },
+    {
+      "path": "chapter0_fundamentals/instructions/__pycache__",
+      "files": 1,
+      "logical_bytes": 3393,
+      "allocated_bytes": 4096,
+      "reason": "regenerable Python or analysis-tool cache"
+    },
+    {
+      "path": "chapter0_fundamentals/exercises/part6_fake_interpretability_results/__pycache__",
+      "files": 4,
+      "logical_bytes": 127753,
+      "allocated_bytes": 135168,
+      "reason": "regenerable Python or analysis-tool cache"
+    },
+    {
+      "path": "arena_ext/__pycache__",
+      "files": 44,
+      "logical_bytes": 988620,
+      "allocated_bytes": 1069056,
+      "reason": "regenerable Python or analysis-tool cache"
+    },
+    {
+      "path": "external/feature-circuits/feature-circuits/__pycache__",
+      "files": 6,
+      "logical_bytes": 75971,
+      "allocated_bytes": 90112,
+      "reason": "regenerable Python or analysis-tool cache"
+    },
+    {
+      "path": "chapter13_image_generation_interpretability/instructions/__pycache__",
+      "files": 1,
+      "logical_bytes": 1561,
+      "allocated_bytes": 4096,
+      "reason": "regenerable Python or analysis-tool cache"
+    },
+    {
+      "path": "chapter13_image_generation_interpretability/exercises/part2_denoising_time_causal_patching/__pycache__",
+      "files": 2,
+      "logical_bytes": 234239,
+      "allocated_bytes": 237568,
+      "reason": "regenerable Python or analysis-tool cache"
+    },
+    {
+      "path": "chapter13_image_generation_interpretability/exercises/part1_diffusion_image_controls/__pycache__",
+      "files": 4,
+      "logical_bytes": 237734,
+      "allocated_bytes": 245760,
+      "reason": "regenerable Python or analysis-tool cache"
+    },
+    {
+      "path": "chapter9_alignment_interpretability/instructions/__pycache__",
+      "files": 1,
+      "logical_bytes": 1788,
+      "allocated_bytes": 4096,
+      "reason": "regenerable Python or analysis-tool cache"
+    },
+    {
+      "path": "chapter9_alignment_interpretability/exercises/part3_emergent_misalignment_detection/__pycache__",
+      "files": 4,
+      "logical_bytes": 246327,
+      "allocated_bytes": 253952,
+      "reason": "regenerable Python or analysis-tool cache"
+    },
+    {
+      "path": "chapter9_alignment_interpretability/exercises/part2_cot_faithfulness/__pycache__",
+      "files": 6,
+      "logical_bytes": 180395,
+      "allocated_bytes": 192512,
+      "reason": "regenerable Python or analysis-tool cache"
+    },
+    {
+      "path": "chapter9_alignment_interpretability/exercises/part4_white_box_evals_monitors/__pycache__",
+      "files": 4,
+      "logical_bytes": 219337,
+      "allocated_bytes": 225280,
+      "reason": "regenerable Python or analysis-tool cache"
+    },
+    {
+      "path": "chapter9_alignment_interpretability/exercises/part5_rome_model_editing/__pycache__",
+      "files": 5,
+      "logical_bytes": 392376,
+      "allocated_bytes": 405504,
+      "reason": "regenerable Python or analysis-tool cache"
+    },
+    {
+      "path": "chapter9_alignment_interpretability/exercises/part1_refusal_directions_safe_steering/__pycache__",
+      "files": 18,
+      "logical_bytes": 332467,
+      "allocated_bytes": 376832,
+      "reason": "regenerable Python or analysis-tool cache"
+    },
+    {
+      "path": "chapter16_shapley_attribution_baselines/instructions/__pycache__",
+      "files": 1,
+      "logical_bytes": 1763,
+      "allocated_bytes": 4096,
+      "reason": "regenerable Python or analysis-tool cache"
+    },
+    {
+      "path": "chapter16_shapley_attribution_baselines/exercises/part11_dataset_cartography/__pycache__",
+      "files": 13,
+      "logical_bytes": 171901,
+      "allocated_bytes": 196608,
+      "reason": "regenerable Python or analysis-tool cache"
+    },
+    {
+      "path": "chapter16_shapley_attribution_baselines/exercises/part10_datamodels/__pycache__",
+      "files": 12,
+      "logical_bytes": 203480,
+      "allocated_bytes": 233472,
+      "reason": "regenerable Python or analysis-tool cache"
+    },
+    {
+      "path": "chapter16_shapley_attribution_baselines/exercises/part1_exact_shapley_ground_truth_games/__pycache__",
+      "files": 3,
+      "logical_bytes": 131650,
+      "allocated_bytes": 139264,
+      "reason": "regenerable Python or analysis-tool cache"
+    },
+    {
+      "path": "chapter16_shapley_attribution_baselines/exercises/part14_deepshap/__pycache__",
+      "files": 22,
+      "logical_bytes": 699585,
+      "allocated_bytes": 745472,
+      "reason": "regenerable Python or analysis-tool cache"
+    },
+    {
+      "path": "chapter16_shapley_attribution_baselines/exercises/part12_sage_global_importance/__pycache__",
+      "files": 13,
+      "logical_bytes": 159629,
+      "allocated_bytes": 192512,
+      "reason": "regenerable Python or analysis-tool cache"
+    },
+    {
+      "path": "chapter16_shapley_attribution_baselines/exercises/part16_shapley_taylor_faith_shap/__pycache__",
+      "files": 25,
+      "logical_bytes": 1215849,
+      "allocated_bytes": 1269760,
+      "reason": "regenerable Python or analysis-tool cache"
+    },
+    {
+      "path": "chapter16_shapley_attribution_baselines/exercises/part9_influence_and_tracin/__pycache__",
+      "files": 15,
+      "logical_bytes": 250789,
+      "allocated_bytes": 282624,
+      "reason": "regenerable Python or analysis-tool cache"
+    },
+    {
+      "path": "chapter16_shapley_attribution_baselines/exercises/part13_treeshap/__pycache__",
+      "files": 22,
+      "logical_bytes": 532763,
+      "allocated_bytes": 581632,
+      "reason": "regenerable Python or analysis-tool cache"
+    },
+    {
+      "path": "chapter16_shapley_attribution_baselines/exercises/part17_shapiq_estimators/__pycache__",
+      "files": 15,
+      "logical_bytes": 264706,
+      "allocated_bytes": 303104,
+      "reason": "regenerable Python or analysis-tool cache"
+    },
+    {
+      "path": "chapter16_shapley_attribution_baselines/exercises/part3_shapley_interactions_shapiq/__pycache__",
+      "files": 3,
+      "logical_bytes": 166809,
+      "allocated_bytes": 172032,
+      "reason": "regenerable Python or analysis-tool cache"
+    },
+    {
+      "path": "chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/__pycache__",
+      "files": 26,
+      "logical_bytes": 994989,
+      "allocated_bytes": 1056768,
+      "reason": "regenerable Python or analysis-tool cache"
+    },
+    {
+      "path": "chapter16_shapley_attribution_baselines/exercises/part2_kernelshap_partition_shap_controls/__pycache__",
+      "files": 4,
+      "logical_bytes": 205379,
+      "allocated_bytes": 217088,
+      "reason": "regenerable Python or analysis-tool cache"
+    },
+    {
+      "path": "chapter16_shapley_attribution_baselines/exercises/part8_shapley_mechinterp_agreement/__pycache__",
+      "files": 5,
+      "logical_bytes": 178187,
+      "allocated_bytes": 184320,
+      "reason": "regenerable Python or analysis-tool cache"
+    },
+    {
+      "path": "chapter16_shapley_attribution_baselines/exercises/part6_shap_vs_activation_patching/__pycache__",
+      "files": 5,
+      "logical_bytes": 247955,
+      "allocated_bytes": 253952,
+      "reason": "regenerable Python or analysis-tool cache"
+    },
+    {
+      "path": "chapter16_shapley_attribution_baselines/exercises/part4_tokenshap_token_shapley/__pycache__",
+      "files": 5,
+      "logical_bytes": 210293,
+      "allocated_bytes": 221184,
+      "reason": "regenerable Python or analysis-tool cache"
+    },
+    {
+      "path": "chapter16_shapley_attribution_baselines/exercises/part5_vlm_modality_region_shap/__pycache__",
+      "files": 4,
+      "logical_bytes": 177759,
+      "allocated_bytes": 184320,
+      "reason": "regenerable Python or analysis-tool cache"
+    },
+    {
+      "path": "chapter1_transformer_interp/instructions/__pycache__",
+      "files": 1,
+      "logical_bytes": 24686,
+      "allocated_bytes": 28672,
+      "reason": "regenerable Python or analysis-tool cache"
+    },
+    {
+      "path": "chapter1_transformer_interp/exercises/part53_othellogpt/__pycache__",
+      "files": 1,
+      "logical_bytes": 19951,
+      "allocated_bytes": 20480,
+      "reason": "regenerable Python or analysis-tool cache"
+    },
+    {
+      "path": "chapter1_transformer_interp/exercises/part6_frontier_ml_infrastructure/__pycache__",
+      "files": 4,
+      "logical_bytes": 72398,
+      "allocated_bytes": 81920,
+      "reason": "regenerable Python or analysis-tool cache"
+    },
+    {
+      "path": "chapter1_transformer_interp/exercises/part41_indirect_object_identification/__pycache__",
+      "files": 1,
+      "logical_bytes": 30404,
+      "allocated_bytes": 32768,
+      "reason": "regenerable Python or analysis-tool cache"
+    },
+    {
+      "path": "chapter11_representation_geometry/instructions/__pycache__",
+      "files": 1,
+      "logical_bytes": 1609,
+      "allocated_bytes": 4096,
+      "reason": "regenerable Python or analysis-tool cache"
+    },
+    {
+      "path": "chapter11_representation_geometry/exercises/part3_causal_abstraction_das/__pycache__",
+      "files": 19,
+      "logical_bytes": 231459,
+      "allocated_bytes": 274432,
+      "reason": "regenerable Python or analysis-tool cache"
+    },
+    {
+      "path": "chapter11_representation_geometry/exercises/part5_contrast_consistent_search/__pycache__",
+      "files": 15,
+      "logical_bytes": 209532,
+      "allocated_bytes": 245760,
+      "reason": "regenerable Python or analysis-tool cache"
+    },
+    {
+      "path": "chapter11_representation_geometry/exercises/part1_pca_svd_geometry_controls/__pycache__",
+      "files": 13,
+      "logical_bytes": 291634,
+      "allocated_bytes": 319488,
+      "reason": "regenerable Python or analysis-tool cache"
+    },
+    {
+      "path": "chapter11_representation_geometry/exercises/part2_cca_svcca_alignment/__pycache__",
+      "files": 12,
+      "logical_bytes": 119822,
+      "allocated_bytes": 139264,
+      "reason": "regenerable Python or analysis-tool cache"
+    },
+    {
+      "path": "chapter11_representation_geometry/exercises/part4_concept_erasure/__pycache__",
+      "files": 11,
+      "logical_bytes": 120378,
+      "allocated_bytes": 143360,
+      "reason": "regenerable Python or analysis-tool cache"
+    },
+    {
+      "path": "chapter3_llm_evals/instructions/__pycache__",
+      "files": 1,
+      "logical_bytes": 3979,
+      "allocated_bytes": 4096,
+      "reason": "regenerable Python or analysis-tool cache"
+    },
+    {
+      "path": "chapter2_rl/instructions/__pycache__",
+      "files": 1,
+      "logical_bytes": 3553,
+      "allocated_bytes": 4096,
+      "reason": "regenerable Python or analysis-tool cache"
+    },
+    {
+      "path": "chapter8_automated_circuits/instructions/__pycache__",
+      "files": 1,
+      "logical_bytes": 1810,
+      "allocated_bytes": 4096,
+      "reason": "regenerable Python or analysis-tool cache"
+    },
+    {
+      "path": "chapter8_automated_circuits/exercises/part4_circuit_tracing_attribution_graphs/__pycache__",
+      "files": 5,
+      "logical_bytes": 222484,
+      "allocated_bytes": 229376,
+      "reason": "regenerable Python or analysis-tool cache"
+    },
+    {
+      "path": "chapter8_automated_circuits/exercises/part5_sparse_feature_circuits/__pycache__",
+      "files": 5,
+      "logical_bytes": 404826,
+      "allocated_bytes": 417792,
+      "reason": "regenerable Python or analysis-tool cache"
+    },
+    {
+      "path": "chapter4_alignment_science/instructions/__pycache__",
+      "files": 1,
+      "logical_bytes": 3470,
+      "allocated_bytes": 4096,
+      "reason": "regenerable Python or analysis-tool cache"
+    },
+    {
+      "path": "alignment_outputs",
+      "files": 0,
+      "logical_bytes": 0,
+      "allocated_bytes": 4096,
+      "reason": "empty generated-output directory"
+    },
+    {
+      "path": "geometry_outputs",
+      "files": 0,
+      "logical_bytes": 0,
+      "allocated_bytes": 4096,
+      "reason": "empty generated-output directory"
+    }
+  ],
+  "archive_verification": {
+    "sha256": "e8e320f0d068b2edf6b43ae2b641c96aaf0b3e5631cf173576325d4ad75c7979",
+    "bytes": 2369891306,
+    "allocated_bytes": 2369896448,
+    "verified_files": 38,
+    "all_extracted_members_match": true,
+    "members": [
+      {
+        "path": "external/feature-circuits/dictionaries/pythia-70m-deduped/attn_out_layer0/10_32768/ae.pt",
+        "bytes": 134352680,
+        "sha256": "ba6cf42d1764a1b279ed7f35b782e88574cd666fe3f92c5f435e151151e03300"
+      },
+      {
+        "path": "external/feature-circuits/dictionaries/pythia-70m-deduped/attn_out_layer0/10_32768/config.json",
+        "bytes": 322,
+        "sha256": "140ed654271a9f24c55d559b5402bc5246addd8af6c1663436f893259b05bd3a"
+      },
+      {
+        "path": "external/feature-circuits/dictionaries/pythia-70m-deduped/mlp_out_layer0/10_32768/ae.pt",
+        "bytes": 134352680,
+        "sha256": "17b55aebfb89cb5e9a0c9ab208515d1aad5bdfddfc09c76b31d8033d39d687d6"
+      },
+      {
+        "path": "external/feature-circuits/dictionaries/pythia-70m-deduped/mlp_out_layer0/10_32768/config.json",
+        "bytes": 322,
+        "sha256": "140ed654271a9f24c55d559b5402bc5246addd8af6c1663436f893259b05bd3a"
+      },
+      {
+        "path": "external/feature-circuits/dictionaries/pythia-70m-deduped/resid_out_layer0/10_32768/ae.pt",
+        "bytes": 134352680,
+        "sha256": "c5778b108ca612e73fd9979bd0818303059277817cd14ed9c7eab17316865d4a"
+      },
+      {
+        "path": "external/feature-circuits/dictionaries/pythia-70m-deduped/resid_out_layer0/10_32768/config.json",
+        "bytes": 322,
+        "sha256": "140ed654271a9f24c55d559b5402bc5246addd8af6c1663436f893259b05bd3a"
+      },
+      {
+        "path": "external/feature-circuits/dictionaries/pythia-70m-deduped/attn_out_layer1/10_32768/ae.pt",
+        "bytes": 134352680,
+        "sha256": "8acd6efffe36c13fab8c0022b20af03b2d9a2c717c0b2058cd01dccd128f5711"
+      },
+      {
+        "path": "external/feature-circuits/dictionaries/pythia-70m-deduped/attn_out_layer1/10_32768/config.json",
+        "bytes": 322,
+        "sha256": "140ed654271a9f24c55d559b5402bc5246addd8af6c1663436f893259b05bd3a"
+      },
+      {
+        "path": "external/feature-circuits/dictionaries/pythia-70m-deduped/mlp_out_layer1/10_32768/ae.pt",
+        "bytes": 134352680,
+        "sha256": "c599936e5f48cf3b93659c1109924d9999c25adc9367e022b7488f0d90da07ce"
+      },
+      {
+        "path": "external/feature-circuits/dictionaries/pythia-70m-deduped/mlp_out_layer1/10_32768/config.json",
+        "bytes": 322,
+        "sha256": "140ed654271a9f24c55d559b5402bc5246addd8af6c1663436f893259b05bd3a"
+      },
+      {
+        "path": "external/feature-circuits/dictionaries/pythia-70m-deduped/resid_out_layer1/10_32768/ae.pt",
+        "bytes": 134352680,
+        "sha256": "11220afb2caca4ec8be0a9047031f3cd07a5d3d10b88154f6926d3a655d615f1"
+      },
+      {
+        "path": "external/feature-circuits/dictionaries/pythia-70m-deduped/resid_out_layer1/10_32768/config.json",
+        "bytes": 322,
+        "sha256": "140ed654271a9f24c55d559b5402bc5246addd8af6c1663436f893259b05bd3a"
+      },
+      {
+        "path": "external/feature-circuits/dictionaries/pythia-70m-deduped/attn_out_layer2/10_32768/ae.pt",
+        "bytes": 134352680,
+        "sha256": "6a77698ab6ddb3509ab08b3468599b0e6d7b5465bc611954755023f8ce9c6940"
+      },
+      {
+        "path": "external/feature-circuits/dictionaries/pythia-70m-deduped/attn_out_layer2/10_32768/config.json",
+        "bytes": 322,
+        "sha256": "140ed654271a9f24c55d559b5402bc5246addd8af6c1663436f893259b05bd3a"
+      },
+      {
+        "path": "external/feature-circuits/dictionaries/pythia-70m-deduped/mlp_out_layer2/10_32768/ae.pt",
+        "bytes": 134352680,
+        "sha256": "1bce79240c512e407f70072ff77e6e0aed29045f6b2a55c5254aa2df78199114"
+      },
+      {
+        "path": "external/feature-circuits/dictionaries/pythia-70m-deduped/mlp_out_layer2/10_32768/config.json",
+        "bytes": 322,
+        "sha256": "140ed654271a9f24c55d559b5402bc5246addd8af6c1663436f893259b05bd3a"
+      },
+      {
+        "path": "external/feature-circuits/dictionaries/pythia-70m-deduped/resid_out_layer2/10_32768/ae.pt",
+        "bytes": 134352680,
+        "sha256": "5cc20e87a3f16f7fce3443f8bce29cd6b9b4679422fdb0cc9691f966a6ca3525"
+      },
+      {
+        "path": "external/feature-circuits/dictionaries/pythia-70m-deduped/resid_out_layer2/10_32768/config.json",
+        "bytes": 322,
+        "sha256": "140ed654271a9f24c55d559b5402bc5246addd8af6c1663436f893259b05bd3a"
+      },
+      {
+        "path": "external/feature-circuits/dictionaries/pythia-70m-deduped/attn_out_layer3/10_32768/ae.pt",
+        "bytes": 134352680,
+        "sha256": "595e81c0d50d5bea5e07f06e33f9fbe61260e75dd4bfa522eed39780bcdaa082"
+      },
+      {
+        "path": "external/feature-circuits/dictionaries/pythia-70m-deduped/attn_out_layer3/10_32768/config.json",
+        "bytes": 322,
+        "sha256": "140ed654271a9f24c55d559b5402bc5246addd8af6c1663436f893259b05bd3a"
+      },
+      {
+        "path": "external/feature-circuits/dictionaries/pythia-70m-deduped/mlp_out_layer3/10_32768/ae.pt",
+        "bytes": 134352680,
+        "sha256": "a912120259d0f5961e248db32294e01f2ddb7cb1396ce3ef28fc2b16ea84dd6f"
+      },
+      {
+        "path": "external/feature-circuits/dictionaries/pythia-70m-deduped/mlp_out_layer3/10_32768/config.json",
+        "bytes": 322,
+        "sha256": "140ed654271a9f24c55d559b5402bc5246addd8af6c1663436f893259b05bd3a"
+      },
+      {
+        "path": "external/feature-circuits/dictionaries/pythia-70m-deduped/resid_out_layer3/10_32768/ae.pt",
+        "bytes": 134352680,
+        "sha256": "e68260af587f9dc177b171747022c4c032ba44946fe51333e46558ed9690d2a7"
+      },
+      {
+        "path": "external/feature-circuits/dictionaries/pythia-70m-deduped/resid_out_layer3/10_32768/config.json",
+        "bytes": 322,
+        "sha256": "140ed654271a9f24c55d559b5402bc5246addd8af6c1663436f893259b05bd3a"
+      },
+      {
+        "path": "external/feature-circuits/dictionaries/pythia-70m-deduped/attn_out_layer4/10_32768/ae.pt",
+        "bytes": 134352680,
+        "sha256": "383d130eeab522b47042444ddf22f9628be2138c92e1a6a0cdfb02f20105e5cc"
+      },
+      {
+        "path": "external/feature-circuits/dictionaries/pythia-70m-deduped/attn_out_layer4/10_32768/config.json",
+        "bytes": 322,
+        "sha256": "140ed654271a9f24c55d559b5402bc5246addd8af6c1663436f893259b05bd3a"
+      },
+      {
+        "path": "external/feature-circuits/dictionaries/pythia-70m-deduped/mlp_out_layer4/10_32768/ae.pt",
+        "bytes": 134352680,
+        "sha256": "19a7e817cc801a980078b0598e39cc86a3ab057ca3b4e2059608465ca95230de"
+      },
+      {
+        "path": "external/feature-circuits/dictionaries/pythia-70m-deduped/mlp_out_layer4/10_32768/config.json",
+        "bytes": 322,
+        "sha256": "140ed654271a9f24c55d559b5402bc5246addd8af6c1663436f893259b05bd3a"
+      },
+      {
+        "path": "external/feature-circuits/dictionaries/pythia-70m-deduped/resid_out_layer4/10_32768/ae.pt",
+        "bytes": 134352680,
+        "sha256": "0c78a5ec305f1654406372fcc6172c6f033001e031270eb8d3c75e6aec09c9dd"
+      },
+      {
+        "path": "external/feature-circuits/dictionaries/pythia-70m-deduped/resid_out_layer4/10_32768/config.json",
+        "bytes": 322,
+        "sha256": "140ed654271a9f24c55d559b5402bc5246addd8af6c1663436f893259b05bd3a"
+      },
+      {
+        "path": "external/feature-circuits/dictionaries/pythia-70m-deduped/attn_out_layer5/10_32768/ae.pt",
+        "bytes": 134352680,
+        "sha256": "2507a802ef9e166c05d77323eabd4147880f8d81f0d35ed9a142c751ae09d2ed"
+      },
+      {
+        "path": "external/feature-circuits/dictionaries/pythia-70m-deduped/attn_out_layer5/10_32768/config.json",
+        "bytes": 322,
+        "sha256": "140ed654271a9f24c55d559b5402bc5246addd8af6c1663436f893259b05bd3a"
+      },
+      {
+        "path": "external/feature-circuits/dictionaries/pythia-70m-deduped/mlp_out_layer5/10_32768/ae.pt",
+        "bytes": 134352680,
+        "sha256": "2d702085c01dc40c583b05cc46bd2964af6b36c054020f65b1afb1f2780dc773"
+      },
+      {
+        "path": "external/feature-circuits/dictionaries/pythia-70m-deduped/mlp_out_layer5/10_32768/config.json",
+        "bytes": 322,
+        "sha256": "140ed654271a9f24c55d559b5402bc5246addd8af6c1663436f893259b05bd3a"
+      },
+      {
+        "path": "external/feature-circuits/dictionaries/pythia-70m-deduped/resid_out_layer5/10_32768/ae.pt",
+        "bytes": 134352680,
+        "sha256": "ffb563fd95485a1cbb31a0b152827c1da9944bb0618ecab20cf91373f509ea9f"
+      },
+      {
+        "path": "external/feature-circuits/dictionaries/pythia-70m-deduped/resid_out_layer5/10_32768/config.json",
+        "bytes": 322,
+        "sha256": "140ed654271a9f24c55d559b5402bc5246addd8af6c1663436f893259b05bd3a"
+      },
+      {
+        "path": "external/feature-circuits/dictionaries/pythia-70m-deduped/embed/10_32768/ae.pt",
+        "bytes": 134352680,
+        "sha256": "ad00467ab48f3a1da2c350583688bc06759ebbb9ad77cd3e4dc210c2b5df835f"
+      },
+      {
+        "path": "external/feature-circuits/dictionaries/pythia-70m-deduped/embed/10_32768/config.json",
+        "bytes": 322,
+        "sha256": "140ed654271a9f24c55d559b5402bc5246addd8af6c1663436f893259b05bd3a"
+      }
+    ]
+  },
+  "preservation": {
+    "tracked_entries_checked": 3392,
+    "tracked_content_unchanged": true,
+    "tracked_snapshot_sha256": "4d4193de4203c8b4b5b8f9fed480268d87cfc8071e387342f3a39054700c57c4",
+    "external_files_checked": 77,
+    "external_content_unchanged": true,
+    "external_snapshot_sha256": "fb652bded0239ee37f1e31325b5e49180e068ed950ec91305deaaea0309fc5fb",
+    "git_status_unchanged_before_receipt": true,
+    "original_arena_source_unchanged": true,
+    "both_python_environments_retained": true,
+    "dictionary_link_resolves": true,
+    "notebook_checkpoints_retained": true,
+    "git_history_untouched": true
+  },
+  "notes": [
+    "artifact_readiness_report.json is a preserved historical snapshot; its download ZIP is removed but all extracted dictionary files remain.",
+    "Cleared only project bytecode and tool caches outside the retained environments.",
+    "Shared uv cache and non-project storage were not changed."
+  ],
+  "reclaimed_repository_allocated_bytes": 2391363584,
+  "validation": {
+    "archive_sha256_matches_pin": true,
+    "all_38_extracted_members_match_archive": true,
+    "tracked_and_external_file_hash_checks": "passed",
+    "removed_paths_absent": "88 paths checked",
+    "git_status_delta": "only this new cleanup receipt",
+    "environment_import_checks": [
+      {
+        "environment": ".venv",
+        "python": "3.14.2",
+        "torch": "2.12.1+cu132",
+        "exit_code": 0
+      },
+      {
+        "environment": "external/feature-circuits/.venv-official",
+        "python": "3.12.12",
+        "torch": "2.12.1+cu132",
+        "exit_code": 0
+      }
+    ],
+    "lesson_executions": "not rerun; no teaching code, notebooks, figures, controls, or play cells changed"
+  }
+}

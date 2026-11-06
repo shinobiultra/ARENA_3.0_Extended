@@ -1,0 +1,949 @@
+{
+  "status": "draft source-reviewed triage; proposals only",
+  "review_date": "2026-11-03",
+  "scope": "INB001–INB033 of 97-record Research Workspace/00 Inbox snapshot v10797; no library mutations",
+  "schema_version": 1,
+  "reading_policy": "Metadata+abstract for breadth; selected full-text sections for specified priority items. No exhaustive reading or replication claimed.",
+  "preservation": "No syllabus, requirement registry, original ARENA, notebook, model or data changes. Existing 86 routes and all 205 requirements retained. Requested foundation/PRH chapter work is planning only.",
+  "rows": [
+    {
+      "id": "INB001",
+      "title": "Mechanism-Level Evaluation for Vision-Language Models: Controlled Activation-Replacement Diagnosis of Gender Bias",
+      "primary_urls": [
+        "https://arxiv.org/abs/2609.16651"
+      ],
+      "identity_status": "verified primary title/identity",
+      "reading_level": "primary metadata + abstract",
+      "disposition": "existing lesson addition",
+      "target_existing_lesson": "12.5 Object Hallucination and Modality Arbitration; 8.1 Activation Patching",
+      "priority": "P1",
+      "source_facts": "The authors replace layer activations to diagnose gender-cue sensitivity; their abstract explicitly separates that diagnosis from successful mitigation.",
+      "reason": "Useful counterexample to selecting intervention sites solely by mediation scores.",
+      "integration_roles": [
+        "method",
+        "visualization",
+        "intuition",
+        "results-prediction",
+        "replication"
+      ],
+      "proposed_student_method": "Compute controlled direct/indirect effects and rank sites on DEV before testing held-out mitigation.",
+      "signature_figure": "Layerwise direct/indirect effects beside held-out bias-change ranks.",
+      "prediction_prompt": "Will the largest indirect effect produce the best mitigation?",
+      "controls": "Gender-swapped paired prompts; no-replacement; random layer; task accuracy and off-target effects.",
+      "replication_tier": "bounded real study",
+      "compute_access": "UNKNOWN; bound model, samples and interventions before any run",
+      "code_data_availability": "Code/data availability UNKNOWN; abstract-level review only",
+      "evidence_boundary": "Source facts are author claims unless explicitly bibliographic; every integration method, figure, prompt, control and tier is a reviewer proposal, unexecuted and unaccepted."
+    },
+    {
+      "id": "INB002",
+      "title": "What Do Visual-Head Discovery Scores Actually Find? Attention Source, Necessity, and Random-Control Pitfalls in Vision-Language Models",
+      "primary_urls": [
+        "https://arxiv.org/abs/2610.13111"
+      ],
+      "identity_status": "verified primary title/identity",
+      "reading_level": "primary metadata + abstract",
+      "disposition": "existing lesson addition",
+      "target_existing_lesson": "12.4 Visual Token Flow; 12.5 Object Hallucination; 0.6 Fake Results",
+      "priority": "P1",
+      "source_facts": "The paper compares visual-head ranking choices and layer-matched random sets, finding steering and necessity need not agree.",
+      "reason": "Provides a precise random-control failure for the VLM pilot rather than another unvalidated attention picture.",
+      "integration_roles": [
+        "method",
+        "visualization",
+        "intuition",
+        "results-prediction",
+        "replication"
+      ],
+      "proposed_student_method": "Implement ranking with query-span versus last-token attention; compare necessity separately from steering.",
+      "signature_figure": "Head overlap matrix and intervention scores against layer-matched random-set distributions.",
+      "prediction_prompt": "Can discovered heads steer well while failing to exceed random heads?",
+      "controls": "Match head count, layer distribution, intervention norm and sample count; held-out images; multiplicity correction.",
+      "replication_tier": "bounded real study",
+      "compute_access": "UNKNOWN; bound model, samples and interventions before any run",
+      "code_data_availability": "Code/data availability UNKNOWN; abstract-level review only",
+      "evidence_boundary": "Source facts are author claims unless explicitly bibliographic; every integration method, figure, prompt, control and tier is a reviewer proposal, unexecuted and unaccepted."
+    },
+    {
+      "id": "INB003",
+      "title": "A Dataless Approach to Latent Evolutionary Images",
+      "primary_urls": [
+        "https://sbia.org.br/eventos/cbic_2025/cbic2025-1191894/",
+        "https://sbia.org.br/wp-content/uploads/2025/12/pdf/CBIC_2025_paper1191894.pdf"
+      ],
+      "identity_status": "resolved CBIC 2025 conference paper, DOI 10.21528/CBIC2025-1191894; stored journalArticle is incorrect",
+      "reading_level": "primary metadata + abstract",
+      "disposition": "optional replication",
+      "target_existing_lesson": "12.2 CLIP Features and Attacks; 13.3 Concept Directions",
+      "priority": "P2",
+      "source_facts": "LEI uses a genetic search over a pretrained VAE latent with black-box classifier confidence as fitness.",
+      "reason": "Illustrates query-based auditing, but synthetic high confidence is not a validated causal explanation or unbiased data recovery.",
+      "integration_roles": [
+        "method",
+        "visualization",
+        "intuition",
+        "results-prediction",
+        "replication"
+      ],
+      "proposed_student_method": "Write mutation, selection and classifier-query accounting; compare random latent search.",
+      "signature_figure": "Image generations across query budget with confidence and diversity curves.",
+      "prediction_prompt": "Will higher target confidence retain image diversity and human-recognizable class evidence?",
+      "controls": "Equal query budget; random search; multiple seeds; independent classifier; diversity/realism checks.",
+      "replication_tier": "bounded real study",
+      "compute_access": "UNKNOWN; VAE and classifier inference plus many query evaluations",
+      "code_data_availability": "Author PDF links https://github.com/caio-santt/LEI-Latent-Images-Evolution; repository execution, data and license unverified",
+      "evidence_boundary": "Source facts are author claims unless explicitly bibliographic; every integration method, figure, prompt, control and tier is a reviewer proposal, unexecuted and unaccepted."
+    },
+    {
+      "id": "INB004",
+      "title": "Emu3.5: Native Multimodal Models are World Learners",
+      "primary_urls": [
+        "https://arxiv.org/abs/2510.26583"
+      ],
+      "identity_status": "verified primary title/identity",
+      "reading_level": "primary metadata + abstract",
+      "disposition": "background",
+      "target_existing_lesson": "13.6 Autoregressive Image Tokens; 14.2 Video World Models",
+      "priority": "P3",
+      "source_facts": "Emu3.5 reports a unified vision-language next-token model and a discrete diffusion adaptation for faster image decoding.",
+      "reason": "Architectural comparison fits existing topics; its scale cannot be represented as a local faithful replication.",
+      "integration_roles": [
+        "intuition",
+        "results-prediction"
+      ],
+      "proposed_student_method": "Derive token-by-token versus parallel-decoding work and compare the paper protocols.",
+      "signature_figure": "Paper-reading table of objectives, sequence layouts and decoding paths.",
+      "prediction_prompt": "Does faster decoding establish more accurate world dynamics?",
+      "controls": "Equal output quality/length; separate generation, consistency and planning measurements.",
+      "replication_tier": "CPU illustration",
+      "compute_access": "Paper study only; source describes >10T multimodal tokens; native reproduction budget UNKNOWN",
+      "code_data_availability": "Author abstract links official Emu3.5 repository; exact checkpoint/data access UNKNOWN",
+      "evidence_boundary": "Source facts are author claims unless explicitly bibliographic; every integration method, figure, prompt, control and tier is a reviewer proposal, unexecuted and unaccepted."
+    },
+    {
+      "id": "INB005",
+      "title": "Research Lessons I Learned at MATS & Redwood",
+      "primary_urls": [
+        "https://www.lesswrong.com/posts/Q4rcvgjbgjTwmn8Xa/research-lessons-i-learned-at-mats-and-redwood"
+      ],
+      "identity_status": "verified author forum post, 2026-10-12",
+      "reading_level": "full-text sections on predictive models and iteration",
+      "disposition": "background",
+      "target_existing_lesson": "10.1 Capstone Research Sprint",
+      "priority": "P2",
+      "source_facts": "Jo Jiao presents research-process reflections from MATS and Redwood, emphasizing predictive models and uncertainty-reducing experiments.",
+      "reason": "Good research habits reading, not evidence that any particular ML method works.",
+      "integration_roles": [
+        "intuition",
+        "results-prediction"
+      ],
+      "proposed_student_method": "Write competing hypotheses and choose a discriminating experiment before viewing its outcome.",
+      "signature_figure": "Decision tree linking hypotheses, predictions and possible updates.",
+      "prediction_prompt": "Which result would change your preferred explanation rather than merely improve a score?",
+      "controls": "Record prior predictions; retain nulls; distinguish anecdote from experimental evidence.",
+      "replication_tier": "CPU illustration",
+      "compute_access": "No compute required",
+      "code_data_availability": "Public author forum post; no benchmark/code/data required",
+      "evidence_boundary": "Source facts are author claims unless explicitly bibliographic; every integration method, figure, prompt, control and tier is a reviewer proposal, unexecuted and unaccepted."
+    },
+    {
+      "id": "INB006",
+      "title": "Lattice Deduction Transformers",
+      "primary_urls": [
+        "https://arxiv.org/abs/2605.08605"
+      ],
+      "identity_status": "verified primary title/identity",
+      "reading_level": "full-text selected §§3–4, Algorithm 1 and lattice encoding",
+      "disposition": "optional replication",
+      "target_existing_lesson": "14.6 Sudoku and Constraint World Models; 14.5 Maze Transformers",
+      "priority": "P1",
+      "source_facts": "LDT projects recurrent latent states through a candidate lattice; its reported empirical soundness is an evaluation observation, not a universal formal guarantee.",
+      "reason": "Natural stretch exercise for existing candidate-set lessons, after learners distinguish correctness, abstention and soundness.",
+      "integration_roles": [
+        "method",
+        "visualization",
+        "intuition",
+        "results-prediction",
+        "replication"
+      ],
+      "proposed_student_method": "Implement powerset-lattice meet, candidate elimination, conflict detection and branching on a finite Sudoku.",
+      "signature_figure": "Candidate grid per deduction step plus accuracy/abstention/search-work curves.",
+      "prediction_prompt": "Can pruning improve solve rate while silently deleting the only valid solution?",
+      "controls": "Exact solver verifies solution survival; random candidate pruning; ordinary propagation; matched search budget.",
+      "replication_tier": "CPU illustration",
+      "compute_access": "Tiny lattice exercise CPU; training/faithful benchmark compute UNKNOWN",
+      "code_data_availability": "Source methods inspected; released code/data status UNKNOWN",
+      "evidence_boundary": "Source facts are author claims unless explicitly bibliographic; every integration method, figure, prompt, control and tier is a reviewer proposal, unexecuted and unaccepted."
+    },
+    {
+      "id": "INB007",
+      "title": "Shared Geometry As A Rosetta Stone: Cross-Modal Alignment Without Paired Data",
+      "primary_urls": [
+        "https://arxiv.org/abs/2610.09411"
+      ],
+      "identity_status": "verified primary title/identity",
+      "reading_level": "full-text Algorithm 1–2 and §3",
+      "disposition": "existing lesson addition",
+      "target_existing_lesson": "11.2 Representation Alignment; proposed PRH chapter (planning only)",
+      "priority": "P1",
+      "source_facts": "The authors align disjoint modality embedding sets using coarse geometric initialization, transport matching and orthogonal Procrustes updates.",
+      "reason": "Strong positive test of shared geometry, balanced against identifiability and calibration rather than treated as proof of universal convergence.",
+      "integration_roles": [
+        "method",
+        "visualization",
+        "intuition",
+        "results-prediction",
+        "replication"
+      ],
+      "proposed_student_method": "Implement the SVD polar update for a known transport, then alternate matching and alignment on a finite planted cloud.",
+      "signature_figure": "True versus recovered cross-modal retrieval matrices; paired/unpaired accuracy versus number of anchors.",
+      "prediction_prompt": "Can equal distance matrices still leave semantic correspondence ambiguous?",
+      "controls": "Shuffled correspondences; random orthogonal baseline; symmetric clouds; unequal class frequencies; DEV-selected initialization.",
+      "replication_tier": "CPU illustration",
+      "compute_access": "Finite clouds CPU; real independent-encoder study budget UNKNOWN",
+      "code_data_availability": "Primary abstract links project and code; repository/data/license not audited",
+      "evidence_boundary": "Source facts are author claims unless explicitly bibliographic; every integration method, figure, prompt, control and tier is a reviewer proposal, unexecuted and unaccepted."
+    },
+    {
+      "id": "INB008",
+      "title": "Language Model \"Shape\"",
+      "primary_urls": [
+        "https://alexzhang13.github.io/blog/2026/shape/"
+      ],
+      "identity_status": "corrected title: Language Model \"Shape\"; author Alex Zhang, 2026-09-26",
+      "reading_level": "full text",
+      "disposition": "background",
+      "target_existing_lesson": "5.6 Linear Attention; 5.7 Hybrid Models; 10.1 Capstone",
+      "priority": "P3",
+      "source_facts": "Alex Zhang asks whether model input/output structure should be designed around an agent harness rather than preserving a decoder-only interface.",
+      "reason": "Useful architecture-design intuition, explicitly speculative rather than an empirical benchmark.",
+      "integration_roles": [
+        "intuition",
+        "results-prediction"
+      ],
+      "proposed_student_method": "Trace information flow and latency under two model/harness contracts on the same task.",
+      "signature_figure": "Parallel versus serial state/IO timeline.",
+      "prediction_prompt": "Which dependency actually forces sequential computation?",
+      "controls": "Same task and observable information; count latency, state and total compute, not parameter count alone.",
+      "replication_tier": "CPU illustration",
+      "compute_access": "No model execution needed",
+      "code_data_availability": "Public author essay; code/data not required",
+      "evidence_boundary": "Source facts are author claims unless explicitly bibliographic; every integration method, figure, prompt, control and tier is a reviewer proposal, unexecuted and unaccepted."
+    },
+    {
+      "id": "INB009",
+      "title": "Transfusion: Predict the Next Token and Diffuse Images with One Multi-Modal Model",
+      "primary_urls": [
+        "https://arxiv.org/abs/2408.11039",
+        "https://openreview.net/pdf?id=SI2hI0frk6"
+      ],
+      "identity_status": "resolved arXiv 2408.11039 (2024) and ICLR 2025 paper; stored journalArticle lacks URL/date/DOI",
+      "reading_level": "primary metadata + abstract",
+      "disposition": "existing lesson addition",
+      "target_existing_lesson": "13.6 Autoregressive Image Tokens; 13.1 Diffusion",
+      "priority": "P2",
+      "source_facts": "Transfusion combines text next-token loss and image diffusion inside one transformer and compares against discrete image tokens.",
+      "reason": "Teaches why mixed objectives and attention masks matter without adding a new full training family.",
+      "integration_roles": [
+        "method",
+        "visualization",
+        "intuition",
+        "results-prediction",
+        "replication"
+      ],
+      "proposed_student_method": "Write the mixed text/image attention mask and separate CE/noise-loss masks; prove future-text isolation.",
+      "signature_figure": "Token-by-token attention mask with image denoising timeline.",
+      "prediction_prompt": "What information leaks if image bidirectionality is accidentally extended to future text?",
+      "controls": "Causal-only image comparator; corrupted loss mask; matched image representation and objective budgets.",
+      "replication_tier": "CPU illustration",
+      "compute_access": "Mask/objective exercise CPU; faithful training source reaches 7B parameters and 2T multimodal tokens",
+      "code_data_availability": "Official arXiv/OpenReview paper verified; code/data/checkpoint access UNKNOWN",
+      "evidence_boundary": "Source facts are author claims unless explicitly bibliographic; every integration method, figure, prompt, control and tier is a reviewer proposal, unexecuted and unaccepted."
+    },
+    {
+      "id": "INB010",
+      "title": "3D FaceShell: Attribute Transfer in 3D Face Avatars as a VLM Defense Mechanism",
+      "primary_urls": [
+        "https://arxiv.org/abs/2607.16280"
+      ],
+      "identity_status": "resolved arXiv 2607.16280 / ECCV 2026; stored book is incorrect",
+      "reading_level": "primary metadata + abstract",
+      "disposition": "defer out of scope",
+      "target_existing_lesson": "12.2 CLIP Features and Attacks (optional reading only)",
+      "priority": "P3",
+      "source_facts": "3D FaceShell optimizes an added Gaussian shell for multi-view VLM attribute manipulation while preserving face appearance.",
+      "reason": "A full 3D reconstruction/face-privacy pipeline would expand prerequisites substantially; retain only a threat-model comparison.",
+      "integration_roles": [
+        "intuition",
+        "results-prediction"
+      ],
+      "proposed_student_method": "Propose a transfer matrix across views/models; no face data acquisition or optimization.",
+      "signature_figure": "Paper-result schematic of viewpoint transfer versus identity/perceptual distortion.",
+      "prediction_prompt": "Does success on one rendered view transfer to unseen views or black-box models?",
+      "controls": "Held-out viewpoints/models; clean avatar; matched distortion; human-recognizability versus attribute inference separated.",
+      "replication_tier": "faithful paper replication",
+      "compute_access": "UNKNOWN; 3D assets, rendering, optimization and multiple VLMs required",
+      "code_data_availability": "Paper verified ECCV 2026; code, dataset permissions and access UNKNOWN",
+      "evidence_boundary": "Source facts are author claims unless explicitly bibliographic; every integration method, figure, prompt, control and tier is a reviewer proposal, unexecuted and unaccepted."
+    },
+    {
+      "id": "INB011",
+      "title": "WorkspaceBench: Evaluating Interpretability Methods for the Global Workspace",
+      "primary_urls": [
+        "https://www.lesswrong.com/posts/Zeg2JztbdhguL48uH/workspacebench-evaluating-interpretability-methods-for-the"
+      ],
+      "identity_status": "verified author forum post; displayed byline additionally includes camilablank, absent from supplied creator list",
+      "reading_level": "full-text benchmark definition and limitations",
+      "disposition": "existing lesson addition",
+      "target_existing_lesson": "7.1 Lenses; 7.3 Activation Oracles; 7.6 Interpretability Agents",
+      "priority": "P1",
+      "source_facts": "WorkspaceBench evaluates activation-to-text tools on intermediate variables and hallucination-oriented tasks; authors acknowledge prompt-inversion shortcuts are not fully excluded.",
+      "reason": "Can improve evaluation of existing lenses without treating plausible verbalizations as faithful explanations.",
+      "integration_roles": [
+        "method",
+        "visualization",
+        "intuition",
+        "results-prediction",
+        "replication"
+      ],
+      "proposed_student_method": "Implement task scoring and compare true activation, shuffled activation and prompt-only decoders.",
+      "signature_figure": "Task-family score matrix with hallucination and activation-dependence panels.",
+      "prediction_prompt": "Can a decoder pass by reconstructing the prompt rather than reading an intermediate variable?",
+      "controls": "Prompt-only; shuffled activations; wrong layers; capability filter; held-out task templates.",
+      "replication_tier": "bounded real study",
+      "compute_access": "Source targets Qwen-3.6-27B; smaller-model task adaptation must be validated, budget UNKNOWN",
+      "code_data_availability": "Author post links public benchmark repository; no execution or dataset download",
+      "evidence_boundary": "Source facts are author claims unless explicitly bibliographic; every integration method, figure, prompt, control and tier is a reviewer proposal, unexecuted and unaccepted."
+    },
+    {
+      "id": "INB012",
+      "title": "The Greatest Blog Post on the Internet",
+      "primary_urls": [
+        "https://www.marcg.me/blog/greatest-blog-posts/"
+      ],
+      "identity_status": "verified webpage, author Marc Gadsdon, 2026-06-28",
+      "reading_level": "full webpage list inspected",
+      "disposition": "defer out of scope",
+      "target_existing_lesson": "10.1 optional reading list only",
+      "priority": "P3",
+      "source_facts": "Marc Gadsdon curates links to recommended essays; this is an index of writing rather than a technical research contribution.",
+      "reason": "Individual linked claims require their own primary-source review; no syllabus slot is warranted.",
+      "integration_roles": [
+        "intuition",
+        "results-prediction"
+      ],
+      "proposed_student_method": "If used, audit one essay claim and identify the original evidence.",
+      "signature_figure": "No signature scientific figure proposed.",
+      "prediction_prompt": "Is popularity of an essay evidence for its scientific claims?",
+      "controls": "Independent primary verification; do not inherit linked claims from the curator.",
+      "replication_tier": "CPU illustration",
+      "compute_access": "No compute required",
+      "code_data_availability": "Public curated webpage",
+      "evidence_boundary": "Source facts are author claims unless explicitly bibliographic; every integration method, figure, prompt, control and tier is a reviewer proposal, unexecuted and unaccepted."
+    },
+    {
+      "id": "INB013",
+      "title": "A Mechanistic View of Authority Hierarchy in LLM Sycophancy",
+      "primary_urls": [
+        "https://arxiv.org/abs/2607.00415"
+      ],
+      "identity_status": "resolved arXiv 2607.00415 preprint; stored book is incorrect; expand P. Mammen to Priyanka Mary Mammen only for this verified paper",
+      "reading_level": "primary metadata + abstract",
+      "disposition": "existing lesson addition",
+      "target_existing_lesson": "7.1 Logit Lens; 9.3 CoT Faithfulness; 9.2 Truthfulness",
+      "priority": "P2",
+      "source_facts": "The paper reports authority-related answer shifts and late-layer probe/logit-lens changes in three LLM families.",
+      "reason": "Useful case where answer/logit trajectories invite an overly strong erasure interpretation; require intervention and matched prompts.",
+      "integration_roles": [
+        "method",
+        "visualization",
+        "intuition",
+        "results-prediction",
+        "replication"
+      ],
+      "proposed_student_method": "Plot correct-versus-hinted logit trajectories while varying persona authority and hint correctness.",
+      "signature_figure": "Layer × persona correct/hinted margin heatmap.",
+      "prediction_prompt": "Does a late logit crossover show knowledge is destroyed, or that the readout changed?",
+      "controls": "True/false/no hint; matched wording and length; shuffled authority; causal recovery rather than probe accuracy alone.",
+      "replication_tier": "bounded real study",
+      "compute_access": "Author abstract studies 8B/9B models; bounded small-model relevance and cost UNKNOWN",
+      "code_data_availability": "Code/data availability UNKNOWN; abstract-level review only",
+      "evidence_boundary": "Source facts are author claims unless explicitly bibliographic; every integration method, figure, prompt, control and tier is a reviewer proposal, unexecuted and unaccepted."
+    },
+    {
+      "id": "INB014",
+      "title": "Non-Gaussianity Reveals Interpretable Directions in Language Models",
+      "primary_urls": [
+        "https://arxiv.org/abs/2606.11722"
+      ],
+      "identity_status": "verified primary title/identity",
+      "reading_level": "primary metadata + abstract",
+      "disposition": "optional replication",
+      "target_existing_lesson": "6.1 SAE Variants; 11.1 PCA/SVD Geometry",
+      "priority": "P2",
+      "source_facts": "ICA Lens searches directly for non-Gaussian activation projections and compares with SAE directions.",
+      "reason": "A useful contrast between variance, independence and sparse reconstruction; avoid equating non-Gaussian tails with human meaning.",
+      "integration_roles": [
+        "method",
+        "visualization",
+        "intuition",
+        "results-prediction",
+        "replication"
+      ],
+      "proposed_student_method": "Whiten a planted mixture, optimize a non-Gaussian contrast, and compare PCA/ICA recovered directions.",
+      "signature_figure": "Projection histograms and recovery/held-out concept scores for PCA, ICA, SAE and random directions.",
+      "prediction_prompt": "Will the highest-variance direction be the most non-Gaussian or most interpretable?",
+      "controls": "Gaussian null; random directions; outlier contamination; held-out labels; matched feature count.",
+      "replication_tier": "CPU illustration",
+      "compute_access": "Planted mixture CPU; native residual-stream/cache compute UNKNOWN",
+      "code_data_availability": "Latest arXiv v2 abstract verified; code/data/license UNKNOWN",
+      "evidence_boundary": "Source facts are author claims unless explicitly bibliographic; every integration method, figure, prompt, control and tier is a reviewer proposal, unexecuted and unaccepted."
+    },
+    {
+      "id": "INB015",
+      "title": "Rapid alternation of conscious and suppressed stimulus representations in the primate brain",
+      "primary_urls": [
+        "https://www.biorxiv.org/content/10.64898/2026.10.15.759299v1",
+        "https://doi.org/10.64898/2026.10.15.759299"
+      ],
+      "identity_status": "resolved Hesse et al., bioRxiv DOI 10.64898/2026.10.15.759299, posted 2026-10-16; journal publication unverified",
+      "reading_level": "primary indexed metadata + abstract; direct full-text access failed",
+      "disposition": "defer out of scope",
+      "target_existing_lesson": "10.1 critical reading; optional link from proposed PRH chapter",
+      "priority": "P3",
+      "source_facts": "A bioRxiv neuroscience preprint studies alternating conscious/suppressed stimulus representations in primate recordings.",
+      "reason": "Biological perceptual decoding does not establish consciousness in LLMs or shared cross-modal model geometry.",
+      "integration_roles": [
+        "intuition",
+        "results-prediction"
+      ],
+      "proposed_student_method": "Compare trial-averaged and time-resolved evidence, labeling an analogy separately from a test.",
+      "signature_figure": "Schematic time-resolved decoding versus trial average, without invented data.",
+      "prediction_prompt": "Could averaging erase alternating representations while either state remains decodable?",
+      "controls": "Stimulus/percept separation; temporal-shuffle null; within-subject dependence; no cross-species causal claim.",
+      "replication_tier": "faithful paper replication",
+      "compute_access": "UNKNOWN; biological recordings and specialist analysis required",
+      "code_data_availability": "bioRxiv primary indexed abstract verified; full text blocked by 403; recording/code availability UNKNOWN",
+      "evidence_boundary": "Source facts are author claims unless explicitly bibliographic; every integration method, figure, prompt, control and tier is a reviewer proposal, unexecuted and unaccepted."
+    },
+    {
+      "id": "INB016",
+      "title": "The Hydra Effect: Emergent Self-repair in Language Model Computations",
+      "primary_urls": [
+        "https://arxiv.org/abs/2307.15771"
+      ],
+      "identity_status": "verified primary title/identity",
+      "reading_level": "full-text selected §2.3–3 and Figure 2",
+      "disposition": "core integration",
+      "target_existing_lesson": "8.1 Activation Patching; 8.4 ACDC and Circuit Metrics",
+      "priority": "P0",
+      "source_facts": "Hydra documents downstream compensation after attention-layer ablation and compares direct unembedding effects with total ablation effects.",
+      "reason": "Essential qualification of what a small ablation effect does and does not mean about circuit importance.",
+      "integration_roles": [
+        "method",
+        "visualization",
+        "intuition",
+        "results-prediction",
+        "replication"
+      ],
+      "proposed_student_method": "Compute frozen-normalization direct effects, recomputed ablation effects and downstream repair contributions.",
+      "signature_figure": "Direct-versus-total-effect scatter and layerwise repair waterfall.",
+      "prediction_prompt": "Can deleting a strongly predictive component barely change the answer?",
+      "controls": "Freeze downstream components; resample versus mean/zero ablation; random component; preserve promptwise distributions.",
+      "replication_tier": "bounded real study",
+      "compute_access": "CPU illustration possible; native bounded small-model study pending resource estimate",
+      "code_data_availability": "Primary full-text methods inspected; original Chinchilla native access unavailable to this review, released-code status UNKNOWN",
+      "evidence_boundary": "Source facts are author claims unless explicitly bibliographic; every integration method, figure, prompt, control and tier is a reviewer proposal, unexecuted and unaccepted."
+    },
+    {
+      "id": "INB017",
+      "title": "How to avoid machine learning pitfalls: a guide for academic researchers",
+      "primary_urls": [
+        "https://arxiv.org/abs/2108.02497"
+      ],
+      "identity_status": "verified journal DOI 10.1016/j.patter.2024.101046 linked by arXiv v5; retain preprint/journal distinction",
+      "reading_level": "full-text §4 and model-comparison sections",
+      "disposition": "core integration",
+      "target_existing_lesson": "0.6 Fake Results; 10.1 Capstone; requested foundations prerequisite",
+      "priority": "P0",
+      "source_facts": "Lones covers leakage, model selection, robust evaluation, fair comparisons and reporting; §4 distinguishes validation-based selection from repeated test reuse.",
+      "reason": "Makes the user-requested metrics/losses/Bonferroni foundations actionable before interpreting model plots.",
+      "integration_roles": [
+        "method",
+        "visualization",
+        "intuition",
+        "results-prediction",
+        "replication"
+      ],
+      "proposed_student_method": "Implement grouped TRAIN/DEV/TEST splitting and a simulated many-comparisons audit, correcting all searched layers/configurations.",
+      "signature_figure": "Optimistic selected score versus untouched holdout as search count grows.",
+      "prediction_prompt": "If every candidate is noise, how often does the best uncorrected result look significant?",
+      "controls": "Grouped split; shuffled labels; train-only scaling/PCA; fixed search family; Bonferroni/Holm comparison.",
+      "replication_tier": "CPU illustration",
+      "compute_access": "Tiny synthetic audit CPU; no real data or training authorized",
+      "code_data_availability": "Public primary full text; no code/data needed for proposed illustration",
+      "evidence_boundary": "Source facts are author claims unless explicitly bibliographic; every integration method, figure, prompt, control and tier is a reviewer proposal, unexecuted and unaccepted."
+    },
+    {
+      "id": "INB018",
+      "title": "Lumina-mGPT 2.0: Stand-Alone AutoRegressive Image Modeling",
+      "primary_urls": [
+        "https://arxiv.org/abs/2507.17801"
+      ],
+      "identity_status": "verified primary title/identity",
+      "reading_level": "primary metadata + abstract",
+      "disposition": "background",
+      "target_existing_lesson": "13.6 Autoregressive Image Tokens",
+      "priority": "P3",
+      "source_facts": "Lumina-mGPT 2.0 reports a stand-alone decoder-only autoregressive image model and accelerated decoding strategies.",
+      "reason": "Comparison reading for an existing lesson; reproducing its training would not repair an immediate learner gap.",
+      "integration_roles": [
+        "intuition",
+        "results-prediction"
+      ],
+      "proposed_student_method": "Compare tokenization/decoding dependency diagrams with diffusion and Transfusion.",
+      "signature_figure": "Image-token dependency grid and quality versus number of decoding steps.",
+      "prediction_prompt": "Can fewer decoding iterations preserve quality without changing the trained objective?",
+      "controls": "Matched image resolution, evaluation set, sampling and total compute.",
+      "replication_tier": "CPU illustration",
+      "compute_access": "Paper-study only; native training/inference budget UNKNOWN",
+      "code_data_availability": "Primary paper verified; exact release/code/data/checkpoint availability UNKNOWN",
+      "evidence_boundary": "Source facts are author claims unless explicitly bibliographic; every integration method, figure, prompt, control and tier is a reviewer proposal, unexecuted and unaccepted."
+    },
+    {
+      "id": "INB019",
+      "title": "Language Modeling Is Compression",
+      "primary_urls": [
+        "https://arxiv.org/abs/2309.10668"
+      ],
+      "identity_status": "resolved arXiv 2309.10668v2; stored journalArticle lacks primary locator; venue must be separately verified",
+      "reading_level": "primary metadata + abstract",
+      "disposition": "core integration",
+      "target_existing_lesson": "requested foundations losses/KL; 5.8 Diffusion LMs; 13.6 Image Tokens",
+      "priority": "P1",
+      "source_facts": "Delétang et al. link predictive probabilities to lossless coding and evaluate language models as compressors.",
+      "reason": "A concrete interpretation for cross-entropy units before students compare incompatible losses or tokenizations.",
+      "integration_roles": [
+        "method",
+        "visualization",
+        "intuition",
+        "results-prediction",
+        "replication"
+      ],
+      "proposed_student_method": "Derive bits = -sum log2 p and implement a finite-symbol code-length accounting exercise.",
+      "signature_figure": "Code length versus cross-entropy for calibrated and mismatched predictors.",
+      "prediction_prompt": "Why can two tokenizers have incomparable per-token losses while encoding the same bytes?",
+      "controls": "Uniform predictor; shuffled text; bits per byte versus token; model/coder overhead shown.",
+      "replication_tier": "CPU illustration",
+      "compute_access": "Finite probability tables CPU; faithful 70B compression study not proposed",
+      "code_data_availability": "Primary arXiv verified; original codec/code/data status UNKNOWN",
+      "evidence_boundary": "Source facts are author claims unless explicitly bibliographic; every integration method, figure, prompt, control and tier is a reviewer proposal, unexecuted and unaccepted."
+    },
+    {
+      "id": "INB020",
+      "title": "Abstract Activation Spaces for Content-Invariant Reasoning in Large Language Models",
+      "primary_urls": [
+        "https://arxiv.org/abs/2602.02462"
+      ],
+      "identity_status": "verified arXiv 2602.02462 preprint; supplied journalArticle type has no verified journal counterpart",
+      "reading_level": "primary metadata + abstract",
+      "disposition": "optional replication",
+      "target_existing_lesson": "9.1 Representation Engineering; 11.3 Causal Abstraction",
+      "priority": "P2",
+      "source_facts": "Abstractors map content-conditioned activations toward states obtained from abstract syllogisms, then intervene at multiple layers.",
+      "reason": "Connects representation alignment to a formal validity/content confound; cross-lingual transfer is a real changed-condition test.",
+      "integration_roles": [
+        "method",
+        "visualization",
+        "intuition",
+        "results-prediction",
+        "replication"
+      ],
+      "proposed_student_method": "Generate validity × plausibility syllogisms and learn a DEV-only activation mapping.",
+      "signature_figure": "Validity accuracy heatmap across plausibility, language and intervention.",
+      "prediction_prompt": "Will steering improve logical validity or just agreement with abstract-looking text?",
+      "controls": "Label-shuffled abstractors; matched-norm random edits; lexical/template splits; no-intervention; plausibility balance.",
+      "replication_tier": "bounded real study",
+      "compute_access": "UNKNOWN; bound model, samples and interventions before any run",
+      "code_data_availability": "Code/data availability UNKNOWN; abstract-level review only",
+      "evidence_boundary": "Source facts are author claims unless explicitly bibliographic; every integration method, figure, prompt, control and tier is a reviewer proposal, unexecuted and unaccepted."
+    },
+    {
+      "id": "INB021",
+      "title": "SHARP: Steering Hallucination in LVLMs via Representation Engineering",
+      "primary_urls": [
+        "https://aclanthology.org/2025.emnlp-main.725/"
+      ],
+      "identity_status": "verified primary title/identity",
+      "reading_level": "primary metadata + abstract",
+      "disposition": "existing lesson addition",
+      "target_existing_lesson": "12.5 Object Hallucination; 9.1 Representation Engineering",
+      "priority": "P1",
+      "source_facts": "SHARP proposes latent hallucination steering and is an EMNLP 2025 paper with ACL DOI 10.18653/v1/2025.emnlp-main.725.",
+      "reason": "Pairs naturally with hallucination controls and INB029, but headline gains require preserving accuracy/grounding tradeoffs.",
+      "integration_roles": [
+        "method",
+        "visualization",
+        "intuition",
+        "results-prediction",
+        "replication"
+      ],
+      "proposed_student_method": "Compute an intervention direction on DEV and sweep its signed scale on fixed visual questions.",
+      "signature_figure": "Hallucination rate versus accuracy/grounding across steering scales.",
+      "prediction_prompt": "Can apparent hallucination reduction come from becoming uninformative or refusing more?",
+      "controls": "Random directions; image-only/text-only; no edit; answer length/refusal rate; object-presence balance.",
+      "replication_tier": "bounded real study",
+      "compute_access": "UNKNOWN; bound model, samples and interventions before any run",
+      "code_data_availability": "ACL paper metadata/abstract verified; code/data/license and exact compute UNKNOWN",
+      "evidence_boundary": "Source facts are author claims unless explicitly bibliographic; every integration method, figure, prompt, control and tier is a reviewer proposal, unexecuted and unaccepted."
+    },
+    {
+      "id": "INB022",
+      "title": "Where Do LLMs Retrieve Network Information? Identifying the Responsible Heads and Neurons",
+      "primary_urls": [
+        "https://arxiv.org/abs/2610.08200v3"
+      ],
+      "identity_status": "verified same arXiv identity; current v3 title differs from stored earlier title",
+      "reading_level": "primary metadata + abstract",
+      "disposition": "optional replication",
+      "target_existing_lesson": "9.5 White-Box Monitors; 8.1 Activation Patching",
+      "priority": "P2",
+      "source_facts": "The latest paper identifies network-entity retrieval heads and tests detectors on a separate reverse-DNS source; single-neuron transfer is model dependent.",
+      "reason": "Strong case for separating head causality, neuron localization and detector generalization.",
+      "integration_roles": [
+        "method",
+        "visualization",
+        "intuition",
+        "results-prediction",
+        "replication"
+      ],
+      "proposed_student_method": "Ablate heads on DEV; independently compare causal neuron ranking to correlational ranking before freezing a detector.",
+      "signature_figure": "Head/neuron causal-effect ranks and source-shift AUROC matrix.",
+      "prediction_prompt": "Must a perfect head-level detector imply a perfect single-neuron detector?",
+      "controls": "Matched negative/context-free inputs; random heads; independent source; fixed thresholds; class balance.",
+      "replication_tier": "bounded real study",
+      "compute_access": "UNKNOWN; bound model, samples and interventions before any run",
+      "code_data_availability": "Code/data availability UNKNOWN; abstract-level review only",
+      "evidence_boundary": "Source facts are author claims unless explicitly bibliographic; every integration method, figure, prompt, control and tier is a reviewer proposal, unexecuted and unaccepted.",
+      "stored_title": "Finding the Heads and the Neurons Responsible for Network Information Retrieval in Language Models"
+    },
+    {
+      "id": "INB023",
+      "title": "Hybrid Latent Attention for Looped Language Models",
+      "primary_urls": [
+        "https://arxiv.org/abs/2610.07940"
+      ],
+      "identity_status": "verified primary title/identity",
+      "reading_level": "primary metadata + abstract",
+      "disposition": "background",
+      "target_existing_lesson": "1.6 Infrastructure; 5.6 Linear Attention",
+      "priority": "P2",
+      "source_facts": "HLA retains exact recent-token KV and compact older-token latents for looped models, trading added training for reduced cache/decoding cost.",
+      "reason": "Useful cache-memory derivation; not a warranted new architecture lesson or immediate throughput promise.",
+      "integration_roles": [
+        "intuition",
+        "results-prediction"
+      ],
+      "proposed_student_method": "Derive bytes per token as a function of loops, window, dtype and latent size.",
+      "signature_figure": "Cache bytes versus context length with exact-window and latent segments.",
+      "prediction_prompt": "When can a compressed cache improve concurrency but not single-sequence latency?",
+      "controls": "Include warmup, batch size and kernel/runtime effects; exact-attention quality baseline.",
+      "replication_tier": "CPU illustration",
+      "compute_access": "Analytic memory exercise CPU; author models 1.4B/2.6B uptraining; actual cost UNKNOWN",
+      "code_data_availability": "Code/data/checkpoint availability UNKNOWN",
+      "evidence_boundary": "Source facts are author claims unless explicitly bibliographic; every integration method, figure, prompt, control and tier is a reviewer proposal, unexecuted and unaccepted."
+    },
+    {
+      "id": "INB024",
+      "title": "Explorations of Self-Repair in Language Models",
+      "primary_urls": [
+        "https://arxiv.org/abs/2402.15390"
+      ],
+      "identity_status": "verified arXiv v2 and ICML 2024 PMLR 235:42836–42855; supplied extra version 1 is stale",
+      "reading_level": "full-text selected §3, Eq.1–2 and Appendix B",
+      "disposition": "core integration",
+      "target_existing_lesson": "8.1 Activation Patching; 8.4 Circuit Metrics; 7.1 Logit Lens",
+      "priority": "P0",
+      "source_facts": "Self-repair is prompt dependent and can include final LayerNorm scaling as well as downstream attention/MLP changes.",
+      "reason": "Pairs with Hydra to turn an abstract caveat into an algebraic, falsifiable measurement exercise.",
+      "integration_roles": [
+        "method",
+        "visualization",
+        "intuition",
+        "results-prediction",
+        "replication"
+      ],
+      "proposed_student_method": "Derive logit change from clean/ablated normalization scales, then separate scale-only and downstream repair.",
+      "signature_figure": "Repair-component waterfall with raw per-token repair distribution.",
+      "prediction_prompt": "Could an ablation improve the target logit through normalization alone?",
+      "controls": "Freeze final normalization; final-layer head; resample/mean/zero; no clipping before reporting raw repair.",
+      "replication_tier": "CPU illustration",
+      "compute_access": "Residual-vector derivation CPU; authentic model verification needs later bounded authorization",
+      "code_data_availability": "Full-text selected §3 and Appendix B; public code/data status UNKNOWN",
+      "evidence_boundary": "Source facts are author claims unless explicitly bibliographic; every integration method, figure, prompt, control and tier is a reviewer proposal, unexecuted and unaccepted."
+    },
+    {
+      "id": "INB025",
+      "title": "Dynamical regimes of diffusion models",
+      "primary_urls": [
+        "https://www.nature.com/articles/s41467-024-54281-3",
+        "https://arxiv.org/abs/2402.18491"
+      ],
+      "identity_status": "resolved URL-titled webpage to Dynamical regimes of diffusion models, Nature Communications 15:9957 (2024), DOI 10.1038/s41467-024-54281-3",
+      "reading_level": "publisher indexed methods/results; full paper not exhaustively read",
+      "disposition": "existing lesson addition",
+      "target_existing_lesson": "13.1 Diffusion; 13.2 Denoising-Time Patching; 11.1 PCA",
+      "priority": "P1",
+      "source_facts": "Biroli et al. characterize speciation and memorization collapse regimes under exact empirical score assumptions; the high-dimensional theoretical regime has limits.",
+      "reason": "A visible trajectory gives denoising-time intervention a substantive prediction instead of an arbitrary step sweep.",
+      "integration_roles": [
+        "method",
+        "visualization",
+        "intuition",
+        "results-prediction",
+        "replication"
+      ],
+      "proposed_student_method": "Implement an analytic Gaussian-mixture score and nearest-training-point diagnostics.",
+      "signature_figure": "Reverse trajectories colored by final class with class-commitment and nearest-point distance over time.",
+      "prediction_prompt": "Does early class commitment imply the sample already matches a specific training example?",
+      "controls": "Exact versus smoothed/regularized score; single Gaussian; varying sample count/dimension; independent evaluation points.",
+      "replication_tier": "CPU illustration",
+      "compute_access": "2D analytic mixture CPU; learned image-model replication budget UNKNOWN",
+      "code_data_availability": "Official code repository found: https://github.com/tbonnair/Dynamical-Regimes-of-Diffusion-Models; not cloned or executed",
+      "evidence_boundary": "Source facts are author claims unless explicitly bibliographic; every integration method, figure, prompt, control and tier is a reviewer proposal, unexecuted and unaccepted."
+    },
+    {
+      "id": "INB026",
+      "title": "Mind the Gap: Understanding the Modality Gap in Multi-modal Contrastive Representation Learning",
+      "primary_urls": [
+        "https://arxiv.org/abs/2203.02053"
+      ],
+      "identity_status": "verified primary title/identity",
+      "reading_level": "full-text selected §§2–4, cone-effect figure and initialization experiments",
+      "disposition": "core integration",
+      "target_existing_lesson": "12.1 CLIP/SigLIP; 11.1 Geometry; proposed PRH chapter",
+      "priority": "P0",
+      "source_facts": "The modality-gap paper attributes separated modality clouds to initialization plus contrastive optimization and studies temperature and downstream effects.",
+      "reason": "Directly improves the CLIP pilot and challenges the inference that a shared objective makes modalities identical.",
+      "integration_roles": [
+        "method",
+        "visualization",
+        "intuition",
+        "results-prediction",
+        "replication"
+      ],
+      "proposed_student_method": "Compute within/across-modality cosine distributions and gap vector; implement a normalized gap-shift/temperature sweep.",
+      "signature_figure": "Original-space similarity distributions plus retrieval matrix and PCA view; UMAP only with explicit distortion warnings.",
+      "prediction_prompt": "Can the clouds move closer while paired retrieval or fairness becomes worse?",
+      "controls": "Same data/two random encoders; random-input and linear-network controls; shuffled pairings; unshifted baseline.",
+      "replication_tier": "CPU illustration",
+      "compute_access": "Analytic/random-network CPU; genuine frozen-CLIP activation study requires later model/data authority",
+      "code_data_availability": "Primary paper links code/data at https://modalitygap.readthedocs.io/; release contents/license unverified",
+      "evidence_boundary": "Source facts are author claims unless explicitly bibliographic; every integration method, figure, prompt, control and tier is a reviewer proposal, unexecuted and unaccepted."
+    },
+    {
+      "id": "INB027",
+      "title": "Sparks of Weight-Space Programming: LLMs can natively read & write neural network weights",
+      "primary_urls": [
+        "https://rikiyat.github.io/blog/weight-space-programming/"
+      ],
+      "identity_status": "verified author blog, 2026-11-02; journalArticle type unsupported",
+      "reading_level": "primary post metadata + introduction; full study covered by named report",
+      "disposition": "existing lesson addition",
+      "target_existing_lesson": "17.3 Fine-Tuning Diffs; 15.4 LoRA Phase Transitions; see weights_latentlens.md",
+      "priority": "P1",
+      "source_facts": "Authors demonstrate weight reading/writing under differing feedback conditions; detailed evidence and failed follow-up are reviewed in weights_latentlens.md.",
+      "reason": "Use the named investigation instead of duplicating a full study; no claim of arbitrary weight-only understanding.",
+      "integration_roles": [
+        "method",
+        "visualization",
+        "intuition",
+        "results-prediction",
+        "replication"
+      ],
+      "proposed_student_method": "See weights_latentlens.md: compare targeted weight edits, equivalent parameterizations and no-feedback versus execution-assisted conditions.",
+      "signature_figure": "Weight-edit support/spectrum beside paired behavioral accuracy, truncation and preservation curves.",
+      "prediction_prompt": "Can a math-score improvement arise from finishing answers rather than acquiring a new procedure?",
+      "controls": "Same-norm random edit; no edit; decoding-only comparator; untouched holdout; exact tool/feedback budget.",
+      "replication_tier": "CPU illustration",
+      "compute_access": "Tiny constructed matrix exercise CPU; paid editor/model evaluation not authorized",
+      "code_data_availability": "Author blog verified here; detailed release/model-card audit delegated to linked named report",
+      "evidence_boundary": "Source facts are author claims unless explicitly bibliographic; every integration method, figure, prompt, control and tier is a reviewer proposal, unexecuted and unaccepted."
+    },
+    {
+      "id": "INB028",
+      "title": "Evolution Strategies at the Hyperscale",
+      "primary_urls": [
+        "https://arxiv.org/abs/2511.16652"
+      ],
+      "identity_status": "verified primary title/identity",
+      "reading_level": "primary metadata + abstract",
+      "disposition": "optional replication",
+      "target_existing_lesson": "15.1 LoRA/SVD; 17.4 Cross-Architecture Dynamics; 10.1 Capstone",
+      "priority": "P2",
+      "source_facts": "EGGROLL uses structured low-rank perturbations to increase arithmetic intensity for population-based evolution strategies.",
+      "reason": "An instructive connection between rank and optimization cost, but trillion-scale rhetoric is not a local speed claim.",
+      "integration_roles": [
+        "method",
+        "visualization",
+        "intuition",
+        "results-prediction",
+        "replication"
+      ],
+      "proposed_student_method": "Derive antithetic ES gradient estimates and implement low-rank versus dense perturbations on a known quadratic.",
+      "signature_figure": "Objective/gradient error versus objective queries and perturbation rank.",
+      "prediction_prompt": "At equal query count, when does low rank change estimator bias or variance?",
+      "controls": "Analytic true gradient; dense ES; same random seeds/query budgets; walltime includes construction and evaluation.",
+      "replication_tier": "CPU illustration",
+      "compute_access": "Tiny quadratic CPU; faithful billion-parameter population experiments far outside present authorization",
+      "code_data_availability": "Primary arXiv v2 verified; code/data/runtime/license UNKNOWN",
+      "evidence_boundary": "Source facts are author claims unless explicitly bibliographic; every integration method, figure, prompt, control and tier is a reviewer proposal, unexecuted and unaccepted."
+    },
+    {
+      "id": "INB029",
+      "title": "Dual-Pathway Circuits of Object Hallucination in Vision-Language Models",
+      "primary_urls": [
+        "https://arxiv.org/abs/2605.13156"
+      ],
+      "identity_status": "verified primary title/identity",
+      "reading_level": "primary metadata + abstract",
+      "disposition": "existing lesson addition",
+      "target_existing_lesson": "12.5 Object Hallucination; 8.4 Circuit Metrics",
+      "priority": "P1",
+      "source_facts": "Dual-Pathway Circuit Analysis uses activation patching and conditional pathway interventions to separate grounding and hallucination-related pathways.",
+      "reason": "Useful contrast to single-direction steering; teaches redundancy and non-additive circuit effects.",
+      "integration_roles": [
+        "method",
+        "visualization",
+        "intuition",
+        "results-prediction",
+        "replication"
+      ],
+      "proposed_student_method": "Compute single and joint pathway effects on the same clean/corrupt image-question pairs.",
+      "signature_figure": "Grounding/hallucination pathway heatmap with joint-effect interaction panel.",
+      "prediction_prompt": "Can a component appear helpful alone yet redundant once another pathway is present?",
+      "controls": "Layer/count/norm-matched random components; text-only; image swaps; object/attribute/relation transfer separated.",
+      "replication_tier": "bounded real study",
+      "compute_access": "UNKNOWN; bound model, samples and interventions before any run",
+      "code_data_availability": "Author abstract links https://github.com/jiaxin26/DualPath-VLM; code/data/license not audited",
+      "evidence_boundary": "Source facts are author claims unless explicitly bibliographic; every integration method, figure, prompt, control and tier is a reviewer proposal, unexecuted and unaccepted."
+    },
+    {
+      "id": "INB030",
+      "title": "Linear Mechanisms for Spatiotemporal Reasoning in Vision Language Models",
+      "primary_urls": [
+        "https://arxiv.org/abs/2601.12626"
+      ],
+      "identity_status": "verified primary title/identity",
+      "reading_level": "primary metadata + abstract",
+      "disposition": "optional replication",
+      "target_existing_lesson": "11.6 Feature Manifolds; 12.4 Visual Token Flow",
+      "priority": "P2",
+      "source_facts": "The paper proposes linearly bound spatial/temporal IDs and uses interventions to study VLM reasoning.",
+      "reason": "Adds a concrete spatial-variable causal test rather than relying on probes or a pretty projection.",
+      "integration_roles": [
+        "method",
+        "visualization",
+        "intuition",
+        "results-prediction",
+        "replication"
+      ],
+      "proposed_student_method": "Fit spatial-ID readouts on DEV, then swap inferred location components and measure relational answers.",
+      "signature_figure": "Object-location grid before/after swaps with answer-change matrix.",
+      "prediction_prompt": "Does a direction decoding left/right also causally transport that relation to new objects?",
+      "controls": "Object identity/position balanced; random direction/norm control; held-out layouts and objects; off-manifold checks.",
+      "replication_tier": "bounded real study",
+      "compute_access": "UNKNOWN; bound model, samples and interventions before any run",
+      "code_data_availability": "Author abstract links https://github.com/Raphoo/linear-mech-vlms; exact code/data/license/runtime UNKNOWN",
+      "evidence_boundary": "Source facts are author claims unless explicitly bibliographic; every integration method, figure, prompt, control and tier is a reviewer proposal, unexecuted and unaccepted."
+    },
+    {
+      "id": "INB031",
+      "title": "A Fix for Softmax and Cross-Entropy",
+      "primary_urls": [
+        "https://arxiv.org/abs/2610.31642"
+      ],
+      "identity_status": "verified arXiv 2610.31642v3 (2026-10-29); stored date reflects v1",
+      "reading_level": "full-text selected §2–3 and Eq.3–4",
+      "disposition": "core integration",
+      "target_existing_lesson": "requested foundations softmax/CE/KL; 17.1 Grokking",
+      "priority": "P0",
+      "source_facts": "Barron et al. identify finite-precision target-gradient collapse and near-equal student/teacher cancellation; v3 proposes reformulated computations.",
+      "reason": "A high-value numerical foundations exercise before treating grokking or distillation trajectories as mechanistic evidence.",
+      "integration_roles": [
+        "method",
+        "visualization",
+        "intuition",
+        "results-prediction",
+        "replication"
+      ],
+      "proposed_student_method": "Derive CE gradient sum=0, implement margin/softplus hard-target form, and compare probability subtraction with logit-difference distillation.",
+      "signature_figure": "Target gradient and gradient-sum error versus logit margin/dtype; equal-teacher drift panel.",
+      "prediction_prompt": "Can a stable forward softmax still return an inconsistent gradient?",
+      "controls": "High-precision reference; analytical derivative; multiple dtypes; equal logits; shift invariance; version-pinned implementation.",
+      "replication_tier": "CPU illustration",
+      "compute_access": "Small arrays CPU; grokking training is a separate unlaunched study",
+      "code_data_availability": "Primary v3 equations inspected; no installed-library bug/version assertion or replacement adopted",
+      "evidence_boundary": "Source facts are author claims unless explicitly bibliographic; every integration method, figure, prompt, control and tier is a reviewer proposal, unexecuted and unaccepted."
+    },
+    {
+      "id": "INB032",
+      "title": "A Human-Centered Framework for Exploring and Steering LLM Internals: A Case Study of Bias in Essay Scoring",
+      "primary_urls": [
+        "https://programs.sigchi.org/chi/2026/my-schedule/content/230207",
+        "https://doi.org/10.1145/3772363.3798720"
+      ],
+      "identity_status": "verified official CHI26 Poster/Extended Abstract identity; stored book wrong; supplied DOI 10.1145/3772363.3798720 not independently publisher-verified; official Ki-Young Shin versus supplied Kihun Shin remains unresolved",
+      "reading_level": "primary metadata + abstract",
+      "disposition": "existing lesson addition",
+      "target_existing_lesson": "10.1 Capstone; 9.1 Representation Engineering; 0.6 Fake Results",
+      "priority": "P2",
+      "source_facts": "A CHI 2026 poster extended abstract organizes probing, patching and steering as stages in human inquiry, illustrated by essay-scoring bias.",
+      "reason": "Good capstone framing if normative fairness judgments remain distinct from representation and accuracy measurements.",
+      "integration_roles": [
+        "method",
+        "visualization",
+        "intuition",
+        "results-prediction",
+        "replication"
+      ],
+      "proposed_student_method": "Specify the fairness estimand and implement paired gap/accuracy reporting before any steering selection.",
+      "signature_figure": "Group score-gap versus predictive-error Pareto curve, with per-group calibration.",
+      "prediction_prompt": "Could reducing a mean group gap worsen calibration or essay validity?",
+      "controls": "Group-balanced evaluation; demographic swaps; no-edit/random edit; annotate normative choices; independent human review.",
+      "replication_tier": "bounded real study",
+      "compute_access": "Source uses Llama-3.1-8B-Instruct and PERSUADE 2.0; permissions and native compute UNKNOWN",
+      "code_data_availability": "Official SIGCHI program abstract verified; publisher DOI target inaccessible; code/data permissions UNKNOWN",
+      "evidence_boundary": "Source facts are author claims unless explicitly bibliographic; every integration method, figure, prompt, control and tier is a reviewer proposal, unexecuted and unaccepted."
+    },
+    {
+      "id": "INB033",
+      "title": "Understanding Cross-Model Perceptual Invariances Through Ensemble Metamers",
+      "primary_urls": [
+        "https://arxiv.org/abs/2504.01739"
+      ],
+      "identity_status": "verified primary title/identity",
+      "reading_level": "primary metadata + abstract",
+      "disposition": "optional replication",
+      "target_existing_lesson": "12.7 Dense Vision; 11.2 Alignment; proposed PRH chapter",
+      "priority": "P2",
+      "source_facts": "Ensemble metamers optimize different images to match representations across multiple networks and investigate perceptual invariance/transfer.",
+      "reason": "Tests shared invariances operationally; similarity of representations need not establish human-equivalent perception.",
+      "integration_roles": [
+        "method",
+        "visualization",
+        "intuition",
+        "results-prediction",
+        "replication"
+      ],
+      "proposed_student_method": "Write ensemble feature-matching loss and a held-out-model transfer evaluator.",
+      "signature_figure": "Metamer image grid beside source-model and held-out-model feature-distance matrices.",
+      "prediction_prompt": "Will adding source models improve held-out transfer and human recognizability together?",
+      "controls": "Single-network and random-network objectives; matched optimization budget; held-out architecture; image-quality metrics distinct from human judgments.",
+      "replication_tier": "bounded real study",
+      "compute_access": "UNKNOWN; repeated differentiable vision-model passes; freeze budget before any run",
+      "code_data_availability": "Primary arXiv v2 verified; release code/data/license/access UNKNOWN",
+      "evidence_boundary": "Source facts are author claims unless explicitly bibliographic; every integration method, figure, prompt, control and tier is a reviewer proposal, unexecuted and unaccepted."
+    }
+  ]
+}

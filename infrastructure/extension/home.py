@@ -29,11 +29,19 @@ def render_chapter_home(home_file: str, intro_markdown: str) -> None:
     )
 
     st.markdown("## Sections in this chapter")
-    pages = sorted((chapter_dir / "instructions" / "pages").glob("*.md"))
+    section_pages = {
+        section.get("number"): section.get("page_file") for section in chapter.get("sections", [])
+    }
     for section in sections:
-        page = next((p for p in pages if f"[{section.number}]" in p.name), None)
-        link = f"[{section.name}](pages/{page.stem})" if page else section.name
-        st.markdown(f"- **{link}** - {section.description}")
+        page_file = section_pages.get(section.number)
+        page = chapter_dir / "instructions" / "pages" / page_file if page_file else None
+        script = page.with_suffix(".py") if page is not None else None
+        if page is not None and page.is_file() and script.is_file():
+            # Streamlit owns the registered route; a filesystem path is not its URL.
+            st.page_link(script, label=section.name)
+            st.markdown(section.description)
+        else:
+            st.markdown(f"- **{section.name} (page unavailable)** - {section.description}")
 
     st.markdown(
         """

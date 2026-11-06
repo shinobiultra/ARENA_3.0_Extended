@@ -11,7 +11,14 @@ import streamlit_antd_components as sac
 #     {"title": "Bonus", "icon": "star", "subtitle": "(1%)"},
 #     ...
 # ]
-metadata = [{'title': 'Data Shapley by Retraining', 'icon': '1-circle-fill', 'subtitle': '(15%)'}, {'title': 'Monte Carlo Data Shapley', 'icon': '2-circle-fill', 'subtitle': '(15%)'}, {'title': 'Per-Example Gradients and Ghost Dot Products', 'icon': '3-circle-fill', 'subtitle': '(20%)'}, {'title': 'In-Run Data Shapley', 'icon': '4-circle-fill', 'subtitle': '(25%)'}, {'title': 'Does the Credit Mean Anything?', 'icon': '5-circle-fill', 'subtitle': '(20%)'}, {'title': 'Bonus', 'icon': 'star', 'subtitle': '(5%)'}]
+metadata = [
+    {'title': 'Data Shapley by Retraining', 'icon': '1-circle-fill', 'subtitle': '(15%)'},
+    {'title': 'Monte Carlo Data Shapley', 'icon': '2-circle-fill', 'subtitle': '(15%)'},
+    {'title': 'Per-Example Gradients and Ghost Dot Products', 'icon': '3-circle-fill', 'subtitle': '(20%)'},
+    {'title': 'In-Run Data Shapley', 'icon': '4-circle-fill', 'subtitle': '(25%)'},
+    {'title': 'Does the Credit Mean Anything?', 'icon': '5-circle-fill', 'subtitle': '(20%)'},
+    {'title': 'Bonus', 'icon': 'star', 'subtitle': '(5%)'},
+]
 chapter_name = 'chapter16_shapley_attribution_baselines'
 chapter_name_long = 'Chapter 16 - Shapley Attribution Baselines'
 section_title = '[16.9] Data Shapley in One Training Run'
@@ -25,13 +32,14 @@ if str(arena_root_dir) not in sys.path:
 
 from st_chat import display_chat_interface, display_content_with_exercise_chats, initialize_chat
 from st_dependencies import generate_toc, styling
+from infrastructure.extension.render_media import inline_page_media
 
 markdown_content_file = Path(__file__).with_suffix(".md")
 
 # TODO - uncomment the line below, so page is cached (while developing it's easier to comment this out)
 # if st.session_state.get("content_filename", None) != str(markdown_content_file):
 st.session_state["content_filename"] = str(markdown_content_file)
-st.session_state["content"] = markdown_content_file.read_text(encoding="utf-8").split(
+st.session_state["content"] = inline_page_media(markdown_content_file.read_text(encoding="utf-8"), markdown_content_file).split(
     "=== NEW CHAPTER ==="
 )
 

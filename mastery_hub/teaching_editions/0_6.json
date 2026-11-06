@@ -1,0 +1,32 @@
+{
+  "schema_version": 1,
+  "section": "0.6",
+  "sources": {
+    "page": {
+      "path": "chapter0_fundamentals/instructions/pages/06_[0.6]_How_to_Know_When_an_Interpretability_Result_Is_Fake_Practice.md",
+      "sha256": "32c991558d1785bc0e1107db2e309cfa1db67a738042a391015591ed5470fcbc"
+    },
+    "exercises": {
+      "path": "chapter0_fundamentals/exercises/part6_fake_interpretability_results_practice/0.6_How_to_Know_When_an_Interpretability_Result_Is_Fake_Practice_exercises.ipynb",
+      "sha256": "e13c2a0ecb12df834e7193b4759187cd34c855228e7fd37582e2a5e585f2b415"
+    },
+    "reference": {
+      "path": "chapter0_fundamentals/exercises/part6_fake_interpretability_results_practice/0.6_How_to_Know_When_an_Interpretability_Result_Is_Fake_Practice_solutions.ipynb",
+      "sha256": "ca963567ff2f6859909766733a6eae19a27a21197e96afcf8ae11be7de89bc33"
+    }
+  },
+  "replacements": [
+    {
+      "old": "### Exercise - Label leakage\n\n> ```yaml\n> Difficulty: 🔴🔴⚪⚪⚪\n> Importance: 🔵🔵🔵🔵⚪\n> \n> You should spend up to 10-20 minutes on this exercise.\n> ```\n\nThreshold signed scores at zero. Compute both supplied feature-column accuracies before comparing their gap. The default control is anti-correlated, not a shuffled-label independence test.\n\n<details>\n<summary>Help - implementation and interpretation</summary>\n\nThreshold signed scores at zero. Compute both supplied feature-column accuracies before comparing their gap. The default control is anti-correlated, not a shuffled-label independence test.\n\n</details>",
+      "new": "### Exercise - Label leakage\n\n> ```yaml\n> Difficulty: 🔴🔴⚪⚪⚪\n> Importance: 🔵🔵🔵🔵⚪\n> \n> You should spend up to 10-20 minutes on this exercise.\n> ```\n\nThreshold signed scores at zero. Compute both supplied feature-column accuracies before comparing their gap. The default control is anti-correlated, not a shuffled-label independence test.\n\n<details>\n<summary>Help - implementation and interpretation</summary>\n\nThreshold signed scores at zero. Compute both supplied feature-column accuracies before comparing their gap. The default control is anti-correlated, not a shuffled-label independence test.\n\n</details>\n\n**After the immediate check, explain the false negative.** With identical label-carrying columns both fixed readouts have accuracy 1, their gap is 0, and `detects_leakage=False`. That output is **not evidence that labels cannot be decoded**. The default inverted second column also contains the full labels: after `features, labels = default_label_leakage_fixture()`, check `binary_accuracy(-features[:, 1], labels) == 1`. This detector is a fixed-readout gap heuristic; its historic `shifted_no_leak_accuracy` field name does not certify independence. Compare your identical-column forecast against this calculation before moving on. Confidence for a categorical forecast means your subjective probability of that stated event, not a confidence interval for measured accuracy.",
+      "counts": {
+        "page": 1,
+        "exercises": 1,
+        "reference": 1
+      }
+    }
+  ],
+  "rationale": [
+    "Interpret the existing leakage heuristic false negative without changing preserved fields or introducing a new probe study."
+  ]
+}

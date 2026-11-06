@@ -1,0 +1,114 @@
+{
+  "schema": "arena-graph-prediction-v2-static-repair-receipt",
+  "schema_version": 1,
+  "timestamp_utc": "2026-10-20T09:40:01.032815+00:00",
+  "status": "fixed_scratch_v2_ready_for_independent_rereview_only",
+  "source_bindings": {
+    "mastery_hub/units/graph_prediction/lesson.py": "4b8d8e46b594e20933c7d235177e39a5bd25219081df436fa716475316addc85",
+    "mastery_hub/units/graph_prediction/exercises.ipynb": "f09096b0e5b65de173f04f3083000a86481cfe2461253864c5eacdc1e8b95f9f",
+    "scripts/build_graph_prediction_notebook.py": "82e8087e71e349b506d2338291d6971340954432a2bf7a2bc1a287d5be221cc1",
+    "tests/mastery/test_graph_prediction.py": "d1c8446a50f1aa8d7d2cd2938da536f254e8f805b6c2b2faa04e4402af37f099",
+    "docs/mastery/graph_prediction_protocol.json": "c0300f608e926abeb03c17573105ac94aa7cb0684c9bdeb401b3146f7a1994cd"
+  },
+  "initial_v1_manifest_sha256": "a0d3d316d181f189f57978f5eabb6ddd11f63cd9283d8b1f6294f5763b1d0c4a",
+  "complete_v1_backup": "/tmp/arena-graph-blind-build-20261020-v1-preserved",
+  "v1_original_and_backup_payloads_reverified": true,
+  "v1_review_verdict": "changes required; not adopted",
+  "repairs": {
+    "R1": "independent signed three-edge cubic midpoint oracle at requested 2/4 steps; half-exact and one-midpoint mutants rejected",
+    "R2": "actual distinct nonzero-corrupt parallel-route fixture with unequal drops; separate three ratios, valid rejection, negative denominator, zero denominator; omit-corrupt/max/abs mutants rejected",
+    "R3": "exact untrusted assembly keys before binding; immutable copies; recorder-owned envelope last; pure distinct negative fake-assembly checks"
+  },
+  "red_to_green": "Four added mutant-rejection regressions failed on v1 oracle (preserved); same four plus all reference stages passed after repair; final 66-test suite includes fifth abs-denominator and premerge collision regressions. V1 57-pass result and full reviewer failing proof remain immutable.",
+  "final_test_result": "66 passed in 1.86s",
+  "final_checks": {
+    "checks": [
+      {
+        "name": "generation",
+        "argv": [
+          "/home/bitwise/Documents/ARENA_3.0_Extended/.venv/bin/python",
+          "scripts/build_graph_prediction_notebook.py"
+        ],
+        "exit_code": 0,
+        "cpu_seconds": 0.609771,
+        "log": "docs/mastery/graph_prediction_v2_final_generation.txt",
+        "log_sha256": "34057c5ac120d82929e35e9cf4eaf13b5acc4d14b73389469fefd481d0936a6d"
+      },
+      {
+        "name": "pytest",
+        "argv": [
+          "/home/bitwise/Documents/ARENA_3.0_Extended/.venv/bin/python",
+          "-m",
+          "pytest",
+          "-c",
+          "/dev/null",
+          "--rootdir",
+          "/tmp/arena-graph-blind-build-20261020-v2",
+          "--noconftest",
+          "-p",
+          "no:cacheprovider",
+          "tests/mastery/test_graph_prediction.py",
+          "-q"
+        ],
+        "exit_code": 0,
+        "cpu_seconds": 2.825075,
+        "log": "docs/mastery/graph_prediction_v2_final_pytest.txt",
+        "log_sha256": "81b35be90a6d71bf6bfe8fe5835e4c0ff8faac6960c5decd9292235a15645536"
+      },
+      {
+        "name": "generator_check",
+        "argv": [
+          "/home/bitwise/Documents/ARENA_3.0_Extended/.venv/bin/python",
+          "scripts/build_graph_prediction_notebook.py",
+          "--check"
+        ],
+        "exit_code": 0,
+        "cpu_seconds": 0.6347229999999997,
+        "log": "docs/mastery/graph_prediction_v2_final_generator_check.txt",
+        "log_sha256": "34057c5ac120d82929e35e9cf4eaf13b5acc4d14b73389469fefd481d0936a6d"
+      }
+    ],
+    "total_child_cpu_seconds": 4.0695689999999995,
+    "target_CASE_unchanged": true,
+    "taught_REFERENCE_METHODS_unchanged": true,
+    "target_attempts": 0,
+    "source_compilation": "passed; all lesson/generator/test source and blank code cells",
+    "all_output_execution_fields_empty": true,
+    "final_seal": false
+  },
+  "notebook": {
+    "cells": 24,
+    "code_cells": 12,
+    "output_cells": 0,
+    "executed_cells": 0,
+    "learner_fields": "prediction/confidence/reasoning/observation/reflection/transfer remain blank"
+  },
+  "target_CASE_unchanged": true,
+  "taught_REFERENCE_METHODS_unchanged": true,
+  "reference_methods_sha256": "9bb422cdf59c5ad21360ac209f6277fe2400b017aabe10c25e5eb1e24bcefff8",
+  "scientific_protocol_bytes_unchanged": true,
+  "distinct_DEV_arithmetic_executed": true,
+  "DEV_scope": "anonymous four-node fixtures only; assembly-only placeholder maps never sealed as empirical target receipts",
+  "hard_CPU_limit_seconds_per_check": 10,
+  "target_attempts": 0,
+  "target_constructor_or_method_evaluations": 0,
+  "target_forecasts_entered": 0,
+  "target_scientific_execution": false,
+  "empirical_blind_run_exists": false,
+  "repository_writes": 0,
+  "network_model_training_gpu_cluster_calls": 0,
+  "accepted": false,
+  "limitations": [
+    "finite DEV oracle coverage does not prove arbitrary learner implementations correct",
+    "no target run/result",
+    "no human learner walkthrough",
+    "process-local repeat guard/cooperative timeout are not cross-process authority enforcement",
+    "independent rereview, integration and scientific acceptance remain deferred"
+  ],
+  "failed_attempts": [
+    "v1 uv default-cache lock startup failure retained in v1 static receipt",
+    "v2 initial command did not start because working directory did not exist; retained in red receipt",
+    "four deliberately failing red mutant regressions retained",
+    "initial metadata red-proof assertion failed because BOTH metadata fields are overwritten; corrected interpretation and failure retained in red assembly receipt"
+  ]
+}

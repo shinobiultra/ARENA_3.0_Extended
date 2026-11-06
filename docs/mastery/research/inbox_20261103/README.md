@@ -1,0 +1,28 @@
+# Curriculum source review and proposed research specification
+
+Published and read back on GitHub: [decision Map](https://github.com/shinobiultra/ARENA_3.0_Extended/issues/4), [full Spec](https://github.com/shinobiultra/ARENA_3.0_Extended/issues/39), and [source research/catalogue](https://github.com/shinobiultra/ARENA_3.0_Extended/issues/233). The catalogue has three public parts; every local matrix record maps to its public citation and comment in the structured index. Five narrower decisions remain open as native Map children: [foundations #234](https://github.com/shinobiultra/ARENA_3.0_Extended/issues/234), [PRH #235](https://github.com/shinobiultra/ARENA_3.0_Extended/issues/235), [JEPA contracts #236](https://github.com/shinobiultra/ARENA_3.0_Extended/issues/236), [case-study evidence tiers #237](https://github.com/shinobiultra/ARENA_3.0_Extended/issues/237), and [prediction/transfer rubric #238](https://github.com/shinobiultra/ARENA_3.0_Extended/issues/238). Existing decision ticket contents are preserved. Publication is planning progress, not lesson implementation, scientific replication or human acceptance.
+
+**Planning-only review, 2026-11-03.** Every one of the 97 top-level records in the coordinating read-only inventory is represented exactly once in the [matrix](curriculum_matrix.tsv) and [structured index](curriculum_index.json). They form 95 unique review groups: INB061 duplicates INB056 by public URL; INB095 duplicates INB002 by arXiv/DOI identity. Records were preserved rather than merged. No private keys, annotations or library identifiers are exported here.
+
+The [curriculum research specification](ARENA_RESEARCH_SPEC.md) synthesizes the full planning amendment: foundational intuition and remediation, a substantial PRH research chapter with the exact-title JEPA follow-up, source-specific JEPA-family teaching, contextual visual-token retrieval, weight-space case studies and prediction exercises throughout. Their inclusion is user-required and binding planning scope. Exact placement, organisms, native fidelity, rubrics and budgets remain design proposals; implementation, scientific support and learner acceptance remain unestablished. Source facts are bibliographic observations or author-reported findings; each row separates them from our proposed method/figure/forecast/control/tier. Reading depth is explicit, and metadata/abstract screening is not full-paper review.
+
+| Artifact | Purpose |
+|---|---|
+| [triage 1](triage_1.md), [JSON](triage_1.json) | INB001–INB033: identity, claim, home and proposed learner treatment. |
+| [triage 2](triage_2.md), [JSON](triage_2.json) | INB034–INB066: explicit selected-method reading and dispositions. |
+| [triage 3](triage_3.md), [JSON](triage_3.json) | INB067–INB097: metadata proposals, duplicate receipt and method/control contracts. |
+| [foundations](foundations.md) | Quantities/probability, CE/KL/MSE/cosine, PCA/SVD, t-SNE/UMAP, metrics and Bonferroni with exact examples. |
+| [PRH and JEPAs](prh_jepa.md) | Original hypothesis, exact follow-up, critiques, assumptions and six proposed research labs. |
+| [every JEPA branch](jepa_family_sources.md) | Latest source identity/release audit, mechanisms, paired information, visible exercises and unresolved parity gaps. |
+| [Sparks and LatentLens](weights_latentlens.md) | Primary-source reading, precise access/version limits and concrete student scaffolds. |
+| [matrix](curriculum_matrix.tsv) | One normalized row per inventory record, suitable for filtering/audit. |
+| [index](curriculum_index.json) | Structured duplicate groups, review provenance hashes, source facts and separate design proposals. |
+| [research Spec](ARENA_RESEARCH_SPEC.md) | Self-contained teaching, prediction, scientific-evidence and TS01 public-testing contracts. |
+
+The supplementary PRH foundation, LatentLens and JEPA-family sources are explicitly external readings, not extra rows or inferred library matches. The newer family audit resolves several older PRH-note questions: named long-tail identities and V-JEPA 2.1 public release are now source-verified, while code parity, teacher/target details, original time-series alias intent and native qualification remain pending. Exact review versions/depths remain in the dedicated ledgers rather than being silently harmonized.
+
+Disposition counts: **39 existing-lesson additions, 20 optional replications, 21 background readings, 6 deferred/out-of-scope records, 9 core integrations and 2 duplicate records**. “Core integration” is a proposed design priority, never a claim that the method is currently taught. Deferred proceedings/essays/large-model/native topics remain visible instead of being dropped. Optional sources do not each create a chapter.
+
+The existing 86 configured sections and 205 requirement rows remain in scope and unchanged. November 3 source-present coverage does not change readiness. New proposal IDs FND01–FND06, PRH01–PRH06, JFA01–JFA03, LL01–LL02, WSP01–WSP02 and PRED01–PRED03 are separate traceability names, not additions to or substitutions for the accepted requirement registry. The user-authorized planning addition does not authorize course execution. Existing pilots, TS01, Q001 human acceptance, Q002 protocol/budget/data gates and M2–M4 dependencies persist.
+
+Validation of this document batch checks inventory coverage/uniqueness, duplicate mapping, required design fields, local links and public-payload sanitization. It does not execute scientific/student/model/native tests. No canonical originals, curriculum registries, notebooks, models, data, targets or Zotero records were changed. Actual runtime, memory, exact immutable native artifacts/rights and learner acceptance remain unknown.

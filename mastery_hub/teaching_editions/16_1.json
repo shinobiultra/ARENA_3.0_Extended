@@ -1,0 +1,32 @@
+{
+  "schema_version": 1,
+  "section": "16.1",
+  "sources": {
+    "page": {
+      "path": "chapter16_shapley_attribution_baselines/instructions/pages/01_[16.1]_Exact_Shapley_on_Ground-Truth_Games.md",
+      "sha256": "4c37a194721bfe09370e761185d7a29fb4e04635c0f223fa36dcf291759a35a7"
+    },
+    "exercises": {
+      "path": "chapter16_shapley_attribution_baselines/exercises/part1_exact_shapley/16.1_Exact_Shapley_on_Ground-Truth_Games_exercises.ipynb",
+      "sha256": "800bf0768852af0e28af55cf2512f1f0a6073dd3454a46ea7f5c844acb262756"
+    },
+    "reference": {
+      "path": "chapter16_shapley_attribution_baselines/exercises/part1_exact_shapley/16.1_Exact_Shapley_on_Ground-Truth_Games_solutions.ipynb",
+      "sha256": "4f0187be9370a85e95eb8c1c9193930cdfec53dd2d2415e23e5e154e4f7b10e8"
+    }
+  },
+  "replacements": [
+    {
+      "old": "$$w(S)=\nrac{{|S|!(n-|S|-1)!}}{{n!}}.$$",
+      "new": "$$w(S)=\\frac{|S|!(n-|S|-1)!}{n!}.$$",
+      "counts": {
+        "page": 1,
+        "exercises": 1,
+        "reference": 1
+      }
+    }
+  ],
+  "rationale": [
+    "Restore the malformed central Shapley predecessor-weight fraction."
+  ]
+}

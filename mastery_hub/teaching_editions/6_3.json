@@ -1,0 +1,104 @@
+{
+  "schema_version": 1,
+  "section": "6.3",
+  "sources": {
+    "page": {
+      "path": "chapter6_sparse_feature_methods/instructions/pages/03_[6.3]_Feature_Splitting_Absorption_and_Dashboards.md",
+      "sha256": "3e49fb366b4e2412e2c55938372bd43e1981b60840708ee5d4414b3b067e0295"
+    },
+    "exercises": {
+      "path": "chapter6_sparse_feature_methods/exercises/part3_sae_pathologies_dashboards/6.3_Feature_Splitting_Absorption_and_Dashboards_exercises.ipynb",
+      "sha256": "aec8399c8a199e77a74475a9f64a570a305ea7fdf1d4d7a04512ddf1ea558141"
+    },
+    "reference": {
+      "path": "chapter6_sparse_feature_methods/exercises/part3_sae_pathologies_dashboards/6.3_Feature_Splitting_Absorption_and_Dashboards_solutions.ipynb",
+      "sha256": "b88e3acb7e00f2c418972738402c0e41d4e374db6d7fa8d98a0a6c6d2914cd0b"
+    }
+  },
+  "replacements": [
+    {
+      "old": "## Content & Learning Objectives\n\n### 1️⃣ When a good reconstruction hides a concept\n\nBuild the operations below, check them on independent fixtures, and interpret the adjacent control.\n\n> ##### Learning Objectives\n>\n> - Implement the stated mechanism and explain its shape conventions.\n> - Compare an actual task measurement with its control.\n\n### 2️⃣ Measure coverage, not just top examples\n\nBuild the operations below, check them on independent fixtures, and interpret the adjacent control.\n\n> ##### Learning Objectives\n>\n> - Implement the stated mechanism and explain its shape conventions.\n> - Compare an actual task measurement with its control.\n\n### 3️⃣ Attribute and ablate attention-output features\n\nBuild the operations below, check them on independent fixtures, and interpret the adjacent control.\n\n> ##### Learning Objectives\n>\n> - Implement the stated mechanism and explain its shape conventions.\n> - Compare an actual task measurement with its control.\n\n### 4️⃣ Build a dashboard that can be wrong\n\nBuild the operations below, check them on independent fixtures, and interpret the adjacent control.\n\n> ##### Learning Objectives\n>\n> - Implement the stated mechanism and explain its shape conventions.\n> - Compare an actual task measurement with its control.\n\n",
+      "new": "## Content & Learning Objectives\n\n### 1️⃣ When a good reconstruction hides a concept\n\n> ##### Learning Objectives\n>\n> - Implement the exact word-property encoder/decoder and show how apple reconstructs despite missing the general-A feature.\n\n### 2️⃣ Measure coverage, not just top examples\n\n> ##### Learning Objectives\n>\n> - Measure precision, recall, overlap and absorption candidates; use the missing apple positive to falsify the dashboard label.\n\n### 3️⃣ Attribute and ablate attention-output features\n\n> ##### Learning Objectives\n>\n> - Separate signed per-head cancellation from direct logit effects; compare error-preserving feature/group ablation margin drops with unrelated-B controls.\n\n### 4️⃣ Build a dashboard that can be wrong\n\n> ##### Learning Objectives\n>\n> - Validate the offline interchange panel and reject invalid values; change a word or coefficient and inspect how the visible coverage claim changes.\n\n",
+      "counts": {
+        "page": 1,
+        "exercises": 1,
+        "reference": 1
+      }
+    },
+    {
+      "old": "# 1️⃣ When a good reconstruction hides a concept\n\n\n\n> ##### Learning Objectives\n>\n> - Implement the stated mechanism and explain its shape conventions.\n> - Compare an actual task measurement with its control.",
+      "new": "# 1️⃣ When a good reconstruction hides a concept\n\n> ##### Learning Objectives\n>\n> - Implement the exact word-property encoder/decoder and explain why apple can reconstruct without firing the general-A feature.",
+      "counts": {
+        "page": 1,
+        "exercises": 0,
+        "reference": 0
+      }
+    },
+    {
+      "old": "# 1️⃣ When a good reconstruction hides a concept\n\n> ##### Learning Objectives\n>\n> - Implement the stated mechanism and explain its shape conventions.\n> - Compare an actual task measurement with its control.",
+      "new": "# 1️⃣ When a good reconstruction hides a concept\n\n> ##### Learning Objectives\n>\n> - Implement the exact word-property encoder/decoder and explain why apple can reconstruct without firing the general-A feature.",
+      "counts": {
+        "page": 0,
+        "exercises": 1,
+        "reference": 1
+      }
+    },
+    {
+      "old": "# 2️⃣ Measure coverage, not just top examples\n\n\n\n> ##### Learning Objectives\n>\n> - Implement the stated mechanism and explain its shape conventions.\n> - Compare an actual task measurement with its control.",
+      "new": "# 2️⃣ Measure coverage, not just top examples\n\n> ##### Learning Objectives\n>\n> - Measure missed-positive coverage with precision, recall, overlap and absorption candidates, using apple as the named counterexample.",
+      "counts": {
+        "page": 1,
+        "exercises": 0,
+        "reference": 0
+      }
+    },
+    {
+      "old": "# 2️⃣ Measure coverage, not just top examples\n\n> ##### Learning Objectives\n>\n> - Implement the stated mechanism and explain its shape conventions.\n> - Compare an actual task measurement with its control.",
+      "new": "# 2️⃣ Measure coverage, not just top examples\n\n> ##### Learning Objectives\n>\n> - Measure missed-positive coverage with precision, recall, overlap and absorption candidates, using apple as the named counterexample.",
+      "counts": {
+        "page": 0,
+        "exercises": 1,
+        "reference": 1
+      }
+    },
+    {
+      "old": "# 3️⃣ Attribute and ablate attention-output features\n\n\n\n> ##### Learning Objectives\n>\n> - Implement the stated mechanism and explain its shape conventions.\n> - Compare an actual task measurement with its control.",
+      "new": "# 3️⃣ Attribute and ablate attention-output features\n\n> ##### Learning Objectives\n>\n> - Separate signed head cancellation from direct logit effects, then compare error-preserving group ablation with the unrelated-B control.",
+      "counts": {
+        "page": 1,
+        "exercises": 0,
+        "reference": 0
+      }
+    },
+    {
+      "old": "# 3️⃣ Attribute and ablate attention-output features\n\n> ##### Learning Objectives\n>\n> - Implement the stated mechanism and explain its shape conventions.\n> - Compare an actual task measurement with its control.",
+      "new": "# 3️⃣ Attribute and ablate attention-output features\n\n> ##### Learning Objectives\n>\n> - Separate signed head cancellation from direct logit effects, then compare error-preserving group ablation with the unrelated-B control.",
+      "counts": {
+        "page": 0,
+        "exercises": 1,
+        "reference": 1
+      }
+    },
+    {
+      "old": "# 4️⃣ Build a dashboard that can be wrong\n\n\n\n> ##### Learning Objectives\n>\n> - Implement the stated mechanism and explain its shape conventions.\n> - Compare an actual task measurement with its control.",
+      "new": "# 4️⃣ Build a dashboard that can be wrong\n\n> ##### Learning Objectives\n>\n> - Validate the offline panel and interchange values, and use changed words/coefficients to challenge its visible feature label.",
+      "counts": {
+        "page": 1,
+        "exercises": 0,
+        "reference": 0
+      }
+    },
+    {
+      "old": "# 4️⃣ Build a dashboard that can be wrong\n\n> ##### Learning Objectives\n>\n> - Implement the stated mechanism and explain its shape conventions.\n> - Compare an actual task measurement with its control.",
+      "new": "# 4️⃣ Build a dashboard that can be wrong\n\n> ##### Learning Objectives\n>\n> - Validate the offline panel and interchange values, and use changed words/coefficients to challenge its visible feature label.",
+      "counts": {
+        "page": 0,
+        "exercises": 1,
+        "reference": 1
+      }
+    }
+  ],
+  "rationale": [
+    "AS-6.3-1: part-specific goals and visible counterexamples replace duplicate boilerplate."
+  ]
+}

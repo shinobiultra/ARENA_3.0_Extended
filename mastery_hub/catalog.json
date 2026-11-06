@@ -1,0 +1,104 @@
+{
+  "schema_version": 1,
+  "units": [
+    {
+      "id": "u01_basics",
+      "title": "Basics: hyperparameter tuning and scaling",
+      "source_url": "https://deep-learning-alchemy.github.io/",
+      "checked_on": "2026-11-02",
+      "source_status": "published",
+      "companion_status": "planned",
+      "prerequisites": [],
+      "original_paths": [
+        "README.md",
+        "chapter0_fundamentals"
+      ],
+      "entrypoint": null
+    },
+    {
+      "id": "u02_optimization",
+      "title": "Optimization 1: hyperparameter invariants",
+      "source_url": "https://deep-learning-alchemy.github.io/",
+      "checked_on": "2026-11-02",
+      "source_status": "published",
+      "companion_status": "validated",
+      "prerequisites": [
+        "u01_basics"
+      ],
+      "original_paths": [
+        "chapter0_fundamentals/exercises/part3_optimization"
+      ],
+      "entrypoint": "mastery_hub/app.py"
+    },
+    {
+      "id": "u03_landscapes",
+      "title": "Optimization 2: loss landscapes",
+      "source_url": "https://deep-learning-alchemy.github.io/",
+      "checked_on": "2026-11-02",
+      "source_status": "published",
+      "companion_status": "planned",
+      "prerequisites": [],
+      "original_paths": [
+        "README.md",
+        "chapter0_fundamentals"
+      ],
+      "entrypoint": null
+    },
+    {
+      "id": "u04_stability",
+      "title": "Architecture 1: stability across depth/time",
+      "source_url": "https://deep-learning-alchemy.github.io/",
+      "checked_on": "2026-11-02",
+      "source_status": "published",
+      "companion_status": "planned",
+      "prerequisites": [],
+      "original_paths": [
+        "README.md",
+        "chapter0_fundamentals"
+      ],
+      "entrypoint": null
+    },
+    {
+      "id": "u05_capacity",
+      "title": "Architecture 2: extending model capacity",
+      "source_url": "https://deep-learning-alchemy.github.io/",
+      "checked_on": "2026-11-02",
+      "source_status": "published",
+      "companion_status": "planned",
+      "prerequisites": [],
+      "original_paths": [
+        "README.md",
+        "chapter0_fundamentals"
+      ],
+      "entrypoint": null
+    },
+    {
+      "id": "u06_generalization",
+      "title": "Generalization: data-efficient algorithms",
+      "source_url": "https://deep-learning-alchemy.github.io/",
+      "checked_on": "2026-11-02",
+      "source_status": "pending_upstream",
+      "companion_status": "planned",
+      "prerequisites": [],
+      "original_paths": [
+        "README.md",
+        "chapter0_fundamentals"
+      ],
+      "entrypoint": null
+    },
+    {
+      "id": "u07_exotic",
+      "title": "Exotic: unspecified",
+      "source_url": "https://deep-learning-alchemy.github.io/",
+      "checked_on": "2026-11-02",
+      "source_status": "pending_upstream",
+      "companion_status": "planned",
+      "prerequisites": [],
+      "original_paths": [
+        "README.md",
+        "chapter0_fundamentals"
+      ],
+      "entrypoint": null
+    }
+  ]
+}

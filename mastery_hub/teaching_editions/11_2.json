@@ -1,0 +1,59 @@
+{
+  "schema_version": 1,
+  "section": "11.2",
+  "sources": {
+    "page": {
+      "path": "chapter11_representation_geometry/instructions/pages/02_[11.2]_CCA_SVCCA_and_Representation_Alignment.md",
+      "sha256": "62e5ab6e3ac7d22d1d6213badfb62d7d9650f8e93d9df84d3e6e673122e80f94"
+    },
+    "exercises": {
+      "path": "chapter11_representation_geometry/exercises/part2_cca_svcca_alignment/11.2_CCA_SVCCA_and_Representation_Alignment_exercises.ipynb",
+      "sha256": "23e3fba05cb854dcc9dd01a08ab74168f0c64a6c6c06b3979fc7196a34eb4b4c"
+    },
+    "reference": {
+      "path": "chapter11_representation_geometry/exercises/part2_cca_svcca_alignment/11.2_CCA_SVCCA_and_Representation_Alignment_solutions.ipynb",
+      "sha256": "e2e1a8c8fd330b6dd12f68454220a8cd3cb10511b5dc0eb1937cc7d6a934b58f"
+    }
+  },
+  "replacements": [
+    {
+      "old": "Return the training mean `[d]`, retained PCA basis `[d, r]`, whitening map\n`[d, r]`, full nonzero variance fractions, and retained/numerical ranks in the\ndictionary shown by the solution interface. Use a scale-aware singular-value\nthreshold `max(x.shape) * eps * largest_singular_value`. Apply the optional rank\ncap after the variance cutoff.",
+      "new": "Return the training mean `[d]`, retained PCA basis `[d, r]`, whitening map\n`[d, r]`, full nonzero variance fractions, and retained/numerical ranks in the\ndictionary shown by the solution interface. Use a scale-aware singular-value\nthreshold `max(x.shape) * eps * largest_singular_value`. Apply the optional rank\ncap after the variance cutoff.\n\n**Public return contract — `svd_whitener`.** For input `[n, d]`, let `q` be numerical rank and `r` retained rank. Return a dictionary with these exact keys:\n\n| Key | Shape / type | Meaning |\n| --- | --- | --- |\n| `mean` | `[d]` tensor | Training mean |\n| `basis` | `[d, r]` tensor | Retained PCA directions as columns |\n| `whitening` | `[d, r]` tensor | Training-fitted whitening map |\n| `variance_fractions` | `[q]` tensor | Fractions for all nonzero directions, before truncation |\n| `retained_rank` | Python `int` | `r` |\n| `numerical_rank` | Python `int` | `q` |\n\nUse the input dtype/device for tensors. This schema specifies the interface; implement the linear algebra yourself.",
+      "counts": {
+        "page": 1,
+        "exercises": 1,
+        "reference": 1
+      }
+    },
+    {
+      "old": "Implement CCA and its held-out evaluation. Use your whitening function for\nboth views. `variance_fraction=1` uses all numerical-rank directions; a smaller\nfraction gives the SVCCA preprocessing step. `max_rank` is an optional training-only\ncap. Return maps `[d_x, k]` and `[d_y, k]`, correlations `[k]`, and target loadings\n`Z_y.T @ Y_centered / (n - 1)` with shape `[k, d_y]` for the later transport.\nConstant evaluation columns should return NaN, not a misleading success score.",
+      "new": "Implement CCA and its held-out evaluation. Use your whitening function for\nboth views. `variance_fraction=1` uses all numerical-rank directions; a smaller\nfraction gives the SVCCA preprocessing step. `max_rank` is an optional training-only\ncap. Return maps `[d_x, k]` and `[d_y, k]`, correlations `[k]`, and target loadings\n`Z_y.T @ Y_centered / (n - 1)` with shape `[k, d_y]` for the later transport.\nConstant evaluation columns should return NaN, not a misleading success score.\n\n**Public return contract — `fit_cca`.** With paired inputs `[n, d_x]`, `[n, d_y]` and `k` canonical components:\n\n| Key | Shape / type | Meaning |\n| --- | --- | --- |\n| `left`, `right` | dictionaries | `svd_whitener` results for the training views |\n| `x_map`, `y_map` | `[d_x, k]`, `[d_y, k]` | Maps into paired canonical coordinates |\n| `correlations` | `[k]` | Training canonical correlations |\n| `y_loading` | `[k, d_y]` | Target loading back into centered Y |\n| `train_rows` | Python `int` | Number of paired training rows |\n\n`paired_column_correlations` returns `[k]` signed correlations; `heldout_correlations` returns that same shape using the fitted maps and means.",
+      "counts": {
+        "page": 1,
+        "exercises": 1,
+        "reference": 1
+      }
+    },
+    {
+      "old": "Return both training means and `Q`. The feature widths must match.\nReflections are allowed; axis-dependent scaling is not. A later PCA preprocessing\nstep can give two different-width layers equal retained widths.",
+      "new": "Return both training means and `Q`. The feature widths must match.\nReflections are allowed; axis-dependent scaling is not. A later PCA preprocessing\nstep can give two different-width layers equal retained widths.\n\n**Public return contract — `fit_procrustes`.** For width `d`, return `{\"mean_x\": [d], \"mean_y\": [d], \"rotation\": [d, d]}` as tensor values. `rotation` is the row-vector map `Q`; preserve dtype/device.",
+      "counts": {
+        "page": 1,
+        "exercises": 1,
+        "reference": 1
+      }
+    },
+    {
+      "old": "Implement the canonical difference map above, allowing rank zero as an exact\nno-op. Also implement ridge prediction as a baseline. Keep its intercept\nunpenalized; the dual solve avoids a large `[features, features]` matrix when\ntraining examples are scarce. Both fits use training rows only.",
+      "new": "Implement the canonical difference map above, allowing rank zero as an exact\nno-op. Also implement ridge prediction as a baseline. Keep its intercept\nunpenalized; the dual solve avoids a large `[features, features]` matrix when\ntraining examples are scarce. Both fits use training rows only.\n\n**Public transport contracts.** `cca_difference_transport(delta_x, fit, components)` consumes the `fit_cca` dictionary above and returns `[batch, d_y]` for `[batch, d_x]` differences; rank zero returns zeros. `fit_ridge_transport` returns tensor keys `mean_x: [d_x]`, `mean_y: [d_y]`, and `weights: [d_x, d_y]`. The difference prediction is `delta_x @ weights`; means are retained for predictions of absolute activations.",
+      "counts": {
+        "page": 1,
+        "exercises": 1,
+        "reference": 1
+      }
+    }
+  ],
+  "rationale": [
+    "GV-01: publish key and shape interfaces before Solution; retain methods, tests and results."
+  ]
+}

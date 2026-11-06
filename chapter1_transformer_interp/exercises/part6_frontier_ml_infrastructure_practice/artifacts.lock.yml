@@ -1,0 +1,89 @@
+notebook_id: 1_6_local_frontier_ml_infrastructure
+section: '1.6'
+title: Local Frontier ML Infrastructure
+exercise_metadata:
+  EXERCISE_ID: 1_6_local_frontier_ml_infrastructure
+  GT_TIER: GT-1
+  DIFFICULTY: 3
+  IMPORTANCE: 5
+  EXPECTED_RUNTIME: seconds on toy contract; minutes on local real-model path
+  REQUIRES_GPU: true
+gt_tier: GT-1
+evidence_level: local_cuda132_pytorch_runtime_and_bf16_tensor_preflight
+claim_scope: 'GT-1 local infrastructure gate: the uv environment must expose Python
+  3.14, PyTorch 2.12.1+cu132, torchvision 0.27.1+cu132, CUDA 13.2, a 24GB-class BF16-capable
+  NVIDIA GPU, clean package constraints, and a real deterministic BF16 CUDA matmul.
+  The Gemma-sized memory estimate is reported separately and is not treated as measured
+  peak VRAM.'
+required_gpu_gb: 1
+max_allowed_gpu_gb: 24
+models:
+- id: toy_or_generated_inputs
+  source: generated
+  revision: seed_0
+  precision: float32
+  gated: false
+- id: local_pytorch_cuda132_runtime
+  source: uv_environment
+  revision: python_3.14.6_torch_2.12.1+cu132_torchvision_0.27.1+cu132
+  precision: bfloat16
+  gated: false
+  claim_scope: runtime_cuda_bf16_tensor_preflight
+  gpu_target: NVIDIA GeForce RTX 5090 Laptop GPU
+datasets:
+- id: 1_6_local_frontier_ml_infrastructure_toy_inputs
+  source: generated
+  seed: 0
+- id: deterministic_cuda_bf16_matmul_seed1234
+  source: torch.randn
+  seed: 1234
+  shape:
+  - 1024
+  - 1024
+  dtype: bfloat16
+expected_metrics:
+  tests_passed: true
+  accepted: true
+  max_allowed_gpu_gb: 24
+  cuda_available: true
+  python_major_minor: '3.14'
+  torch_version: 2.12.1+cu132
+  torchvision_version: 0.27.1+cu132
+  cuda_version: '13.2'
+  bf16_supported: true
+  gpu_total_memory_gb_min: 20.0
+  estimated_total_gb_max: 4.0
+  fits_budget: true
+  gpu_tensor_test_passed: true
+  gpu_matmul_shape:
+  - 1024
+  - 1024
+  gpu_matmul_dtype: torch.bfloat16
+  gpu_matmul_finite: true
+  gpu_matmul_mean_abs_min: 1.0
+  gpu_matmul_diag_mean_min: 100.0
+  uv_pip_check_passed: true
+  uv_pip_check_returncode: 0
+  peak_vram_gb_max: 1.0
+  activation_store_num_records: 2
+  activation_store_names:
+  - resid_pre
+  - mlp_out
+  warnings: []
+controls:
+- baseline_or_reference_check
+- negative_control_where_applicable
+- shape_dtype_or_exact_value_check
+- environment_version_report
+- gemma_1b_budget_estimate_separate_from_measured_peak
+- deterministic_cuda_bf16_matmul
+- finite_tensor_output_check
+- uv_pip_check_clean_required
+- no_cpu_fallback_as_acceptance_path
+- activation_store_roundtrip_with_metadata
+- logit_drift_negative_control
+- oversized_model_budget_negative_control
+safety_notes:
+- No unsafe prompts, unsafe adapters, raw gated weights, or large data artifacts.
+- The runtime preflight allocates only deterministic synthetic tensors. No model weights,
+  unsafe prompts, or user data are used in this check.

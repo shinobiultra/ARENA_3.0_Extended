@@ -384,6 +384,8 @@ def ghost_dot_products(
     factors_1: list[tuple[Tensor, Tensor]], factors_2: list[tuple[Tensor, Tensor]]
 ) -> Float[Tensor, "batch_1 batch_2"]:
     """Returns the matrix of dot products g_i . g_j between per-example gradients, without materialising them."""
+    if len(factors_1) != len(factors_2):
+        raise ValueError("Gradient factors must describe the same number of layers.")
     total = 0.0
     for (a_1, d_1), (a_2, d_2) in zip(factors_1, factors_2):
         total = total + (a_1 @ a_2.T + 1) * (d_1 @ d_2.T)
@@ -525,6 +527,9 @@ if MAIN:
 
 def exact_local_shapley(values: Float[Tensor, " two_to_the_B"]) -> Float[Tensor, " B"]:
     """Exact Shapley values of a bitmask-indexed game, using exact_data_shapley from section 1."""
+    n_coalitions = values.numel()
+    if values.ndim != 1 or n_coalitions < 2 or n_coalitions & (n_coalitions - 1):
+        raise ValueError("Expected a one-dimensional complete power-of-two coalition table.")
     batch_size = values.numel().bit_length() - 1
     shapley, _ = exact_data_shapley(lambda S: values[sum(1 << i for i in S)].item(), batch_size)
     return shapley

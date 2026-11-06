@@ -1,0 +1,32 @@
+{
+  "schema_version": 1,
+  "section": "18.2",
+  "sources": {
+    "page": {
+      "path": "chapter18_intrinsic_interpretability/instructions/pages/02_[18.2]_Sparse_and_Modular_Training_KANs_and_Sparse_Trees.md",
+      "sha256": "cf1685fa3f74866642d42507f91211202664aac32bdc263cab008f708c81f43c"
+    },
+    "exercises": {
+      "path": "chapter18_intrinsic_interpretability/exercises/part2_sparse_modular_kans/18.2_Sparse_and_Modular_Training_KANs_and_Sparse_Trees_exercises.ipynb",
+      "sha256": "6ea4abb01e5f47e246798a5474fcd0914799fcfeb9cfcd829d324e3fa875ec3f"
+    },
+    "reference": {
+      "path": "chapter18_intrinsic_interpretability/exercises/part2_sparse_modular_kans/18.2_Sparse_and_Modular_Training_KANs_and_Sparse_Trees_solutions.ipynb",
+      "sha256": "bbedee3b3c58bca33094e14ecd9cf6278cb6b79ffef24184f12ae357924855c2"
+    }
+  },
+  "replacements": [
+    {
+      "old": "### Exercise - implement `proximal_fit`\n\n> ```yaml\n> Difficulty: 🔴🔴⚪⚪⚪\n> Importance: 🔵🔵🔵🔵⚪\n> You should spend up to 10–15 minutes on this exercise.\n> ```\n\nFit a zero-intercept multi-output matrix using a gradient step for the squared loss followed by weighted soft thresholding. Initialize zeros; keep the input arrays unchanged. This fixture uses a whitened design with spectral norm of `X.T@X/n` equal to one, so step size 0.5 is safely convergent.",
+      "new": "### Exercise - implement `proximal_fit`\n\n> ```yaml\n> Difficulty: 🔴🔴⚪⚪⚪\n> Importance: 🔵🔵🔵🔵⚪\n> You should spend up to 10–15 minutes on this exercise.\n> ```\n\nFit a zero-intercept multi-output matrix using a gradient step for the squared loss followed by weighted soft thresholding. Initialize zeros; keep the input arrays unchanged. This fixture uses a whitened design with spectral norm of `X.T@X/n` equal to one, so step size 0.5 is safely convergent.\n\nUse the explicit finite-step rule\n\n$$W_0=0,\\qquad W_{s+1}=S_{\\eta\\lambda D}\\left(W_s-\\eta X^\\top(XW_s-Y)/n\\right).$$\n\nHere `S` is signed elementwise soft thresholding, `D=costs`, `η=learning_rate` and `λ=strength`. The fitting objective is `||XW-Y||F²/(2n) + λ sum(D*abs(W))`: divide the gradient by **examples n**, not by examples times outputs. The separately reported elementwise MSE has a different denominator. `steps=0` and `learning_rate=0` return the all-zero initialization.\n\nBefore looping, hand-compute one scalar update: `X=[[2]]`, `Y=[[3]]`, `D=[[2]]`, `λ=.1`, `η=.1`. The initial gradient is −6, the proposal is .6 and threshold .02, so `W1=.58`. For multiple outputs compute each gradient column with the same n. The strengthened immediate check includes correlated features and finite 0/1/2-step trajectories; a whitened-design closed form is not a fitting loop.",
+      "counts": {
+        "page": 1,
+        "exercises": 1,
+        "reference": 1
+      }
+    }
+  ],
+  "rationale": [
+    "Expose the loss-gradient-proximal-update sequence and its multi-output denominator before interpreting the sparse optimum."
+  ]
+}

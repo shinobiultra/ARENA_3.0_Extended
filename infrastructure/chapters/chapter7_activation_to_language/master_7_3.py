@@ -49,7 +49,8 @@ Run GPT-2 Small on the sentence
 In Athens, my chicken despised the beach.
 ```
 
-and take the residual stream at the final `"."` after six blocks. That's 768 numbers. By the end of this section you'll have a *second* copy of GPT-2 Small that can take those 768 numbers, with no access to the sentence itself, and answer questions about them in English (this is real output from the oracle you'll train):
+and take the residual stream at the final `"."` after six blocks. That's 768 numbers. By the end of this section you'll have a *second* copy of GPT-2 Small that can take those 768
+numbers, with no access to the sentence itself, and answer questions about them in English (this is real output from the oracle you'll train):
 
 ```
 Q: Which animal is this about?            A: chicken
@@ -58,11 +59,18 @@ Q: Is the feeling positive or negative?   A: negative
 Q: Is the subject singular or plural?     A: singular
 ```
 
-This is an **activation oracle**: a language model trained to answer natural-language questions about another model's activations. The idea was introduced as LatentQA by Pan et al. (2024) and scaled up into generalist *Activation Oracles* by Karvonen et al. (2025), who showed that an oracle trained on a broad mix of tasks can pull out secrets that a model has been fine-tuned never to say.
+This is an **activation oracle**: a language model trained to answer natural-language questions about another model's activations. The idea was introduced as LatentQA by Pan et al.
+(2024) and scaled up into generalist *Activation Oracles* by Karvonen et al. (2025), who showed that an oracle trained on a broad mix of tasks can pull out secrets that a model has
+been fine-tuned never to say.
 
-If you've done [1.3.4] Activation Oracles, you've already *used* such an oracle: a LoRA adapter for Qwen3-8B, trained by someone else on about a million examples, which you queried and whose inference pipeline you rebuilt. That section left one thing as reading material: **training one**. This section is the other half. You'll train a small oracle yourself, in a few minutes, in a toy world where every answer is known exactly. That buys us something you can't get at full scale: we can check every claim the oracle makes, and we can measure exactly where it works, where it breaks, and why.
+If you've done [1.3.4] Activation Oracles, you've already *used* such an oracle: a LoRA adapter for Qwen3-8B, trained by someone else on about a million examples, which you queried
+and whose inference pipeline you rebuilt. That section left one thing as reading material: **training one**. This section is the other half. You'll train a small oracle yourself,
+in a few minutes, in a toy world where every answer is known exactly. That buys us something you can't get at full scale: we can check every claim the oracle makes, and we can
+measure exactly where it works, where it breaks, and why.
 
-That matters, because a language model that has been fine-tuned to output answers is *very* good at producing plausible answers. An oracle that says "chicken" might be reading the activation, or it might be guessing from the question, or it might have learned something about the training distribution that happens to work. So most of this section is about **evaluation**, and every headline number comes with controls that should fail:
+That matters, because a language model that has been fine-tuned to output answers is *very* good at producing plausible answers. An oracle that says "chicken" might be reading the
+activation, or it might be guessing from the question, or it might have learned something about the training distribution that happens to work. So most of this section is about
+**evaluation**, and every headline number comes with controls that should fail:
 
 - a **text-only** oracle that gets the question but no activation;
 - **shuffled** activations (a real activation, from the wrong sentence) and **random** vectors;
@@ -71,11 +79,17 @@ That matters, because a language model that has been fine-tuned to output answer
 - **held-out** questions, sentence templates, entities, layers and token positions;
 - and **causal interventions** on the target model, to check that the oracle's answers move when (and only when) the underlying representation moves.
 
-By the end you'll have built the whole pipeline (dataset, injection hook, training loop, evaluation suite) and produced a set of pictures: the oracle against its controls; a map of how its accuracy depends on the layer and the token position it reads from; a steering curve showing its sentiment answer flipping as you push the activation along a sentiment direction; and an activation-patching curve, read out by the oracle, showing at which layers GPT-2 moves a city's identity to the end of the sentence.
+By the end you'll have built the whole pipeline (dataset, injection hook, training loop, evaluation suite) and produced a set of pictures: the oracle against its controls; a map of
+how its accuracy depends on the layer and the token position it reads from; a steering curve showing its sentiment answer flipping as you push the activation along a sentiment
+direction; and an activation-patching curve, read out by the oracle, showing at which layers GPT-2 moves a city's identity to the end of the sentence.
 
-Along the way you'll find that a linear probe on the same 768 numbers beats the oracle on the oracle's own training questions, that the oracle confidently answers questions it doesn't understand, and that its blind spots are set by its training data. Those findings are the point of the exercise: they're what you need to know before trusting a full-scale oracle.
+Along the way you'll find that a linear probe on the same 768 numbers beats the oracle on the oracle's own training questions, that the oracle confidently answers questions it
+doesn't understand, and that its blind spots are set by its training data. Those findings are the point of the exercise: they're what you need to know before trusting a full-scale
+oracle.
 
-**Prerequisites.** You should be comfortable with TransformerLens hooks and the residual stream ([1.2] Intro to Mech Interp), and with a basic PyTorch training loop ([0.3]). Section [7.1] (logit lens, tuned lens and Patchscopes) is useful background: an activation oracle is a Patchscope whose inspection model has been *trained* to answer. [1.3.4] is a good companion but not required.
+**Prerequisites.** You should be comfortable with TransformerLens hooks and the residual stream ([1.2] Intro to Mech Interp), and with a basic PyTorch training loop ([0.3]).
+Section [7.1] (logit lens, tuned lens and Patchscopes) is useful background: an activation oracle is a Patchscope whose inspection model has been *trained* to answer. [1.3.4] is a
+good companion but not required.
 '''
 
 # ! CELL TYPE: markdown
@@ -87,7 +101,9 @@ r'''
 
 ### 1️⃣ A World with Ground Truth
 
-You'll build a synthetic dataset of sentences with four known attributes (an animal, a city, a sentiment, and whether the subject is plural), work out at which token each attribute becomes available to a causal model, and extract GPT-2's residual stream. Linear probes then tell you how much of each attribute is present at each layer, which is the reference against which we'll judge the oracle.
+You'll build a synthetic dataset of sentences with four known attributes (an animal, a city, a sentiment, and whether the subject is plural), work out at which token each attribute
+becomes available to a causal model, and extract GPT-2's residual stream. Linear probes then tell you how much of each attribute is present at each layer, which is the reference
+against which we'll judge the oracle.
 
 > ##### Learning Objectives
 >
@@ -98,7 +114,9 @@ You'll build a synthetic dataset of sentences with four known attributes (an ani
 
 ### 2️⃣ Building and Training an Oracle
 
-You'll implement the oracle: a prompt with a placeholder token, a hook that injects the target's activation into the oracle's residual stream with norm-matched addition, a batch sampler for (activation, question, answer) triples, and the fine-tuning loop. Before training, you'll check that an untrained GPT-2 can't do the task, and compute the best loss achievable *without* looking at the activation.
+You'll implement the oracle: a prompt with a placeholder token, a hook that injects the target's activation into the oracle's residual stream with norm-matched addition, a batch
+sampler for (activation, question, answer) triples, and the fine-tuning loop. Before training, you'll check that an untrained GPT-2 can't do the task, and compute the best loss
+achievable *without* looking at the activation.
 
 > ##### Learning Objectives
 >
@@ -109,7 +127,9 @@ You'll implement the oracle: a prompt with a placeholder token, a hook that inje
 
 ### 3️⃣ Evaluating the Oracle Honestly
 
-You'll build an evaluation suite and use it to compare the oracle against text-only, shuffled, random-vector and untrained baselines and against a probe bank, on in-distribution and held-out data. Then you'll map the oracle's accuracy across source layers and token positions, discover that its coverage is limited by its training distribution, fix that with the positional randomisation used by Karvonen et al., and look at what the oracle does when the true answer is outside its vocabulary.
+You'll build an evaluation suite and use it to compare the oracle against text-only, shuffled, random-vector and untrained baselines and against a probe bank, on in-distribution
+and held-out data. Then you'll map the oracle's accuracy across source layers and token positions, discover that its coverage is limited by its training distribution, fix that with
+the positional randomisation used by Karvonen et al., and look at what the oracle does when the true answer is outside its vocabulary.
 
 > ##### Learning Objectives
 >
@@ -120,7 +140,8 @@ You'll build an evaluation suite and use it to compare the oracle against text-o
 
 ### 4️⃣ Causal Checks
 
-You'll intervene on the activations the oracle reads, first by adding a sentiment direction and then by activation patching inside the target model, and check that the oracle's answers change exactly as they should, with random-direction and other-question controls. You'll finish with a discussion of what changes when oracles are trained at full scale.
+You'll intervene on the activations the oracle reads, first by adding a sentiment direction and then by activation patching inside the target model, and check that the oracle's
+answers change exactly as they should, with random-direction and other-question controls. You'll finish with a discussion of what changes when oracles are trained at full scale.
 
 > ##### Learning Objectives
 >
@@ -225,7 +246,9 @@ r'''
 r'''
 ## Why a toy world?
 
-At full scale, activation oracles are trained on a mixture of tasks such as "what does the system prompt say?" or "is this movie review positive?", and evaluated on tasks like "what secret word has this model been trained not to say?". Those are interesting questions, but they make it hard to answer the most basic one: *when the oracle says something, is it true, and did it get that from the activation?*
+At full scale, activation oracles are trained on a mixture of tasks such as "what does the system prompt say?" or "is this movie review positive?", and evaluated on tasks like
+"what secret word has this model been trained not to say?". Those are interesting questions, but they make it hard to answer the most basic one: *when the oracle says something, is
+it true, and did it get that from the activation?*
 
 So we'll work in a world where we know everything. Every source text is a sentence generated from a template, like
 
@@ -243,7 +266,8 @@ and each one has four attributes that we can ask about:
 | `sentiment` | `positive` or `negative` (from the verb: *loved* vs *dreaded*) | 50% |
 | `number` | `singular` or `plural` (*dog* vs *dogs*) | 50% |
 
-Every answer is a single GPT-2 token, so "is the oracle right?" is a single comparison of token ids, and every attribute is sampled independently and uniformly, so nothing about the question tells you the answer.
+Every answer is a single GPT-2 token, so "is the oracle right?" is a single comparison of token ids, and every attribute is sampled independently and uniformly, so nothing about
+the question tells you the answer.
 
 We'll also hold things out on purpose, so we can test different kinds of generalisation later:
 
@@ -309,7 +333,8 @@ CHANCE = {"animal": 1 / len(TRAIN_ANIMALS), "city": 1 / len(TRAIN_CITIES), "sent
 # ! TAGS: []
 
 r'''
-And here's the sampler, which picks every attribute independently and fills in a template. We store the attributes in a small dataclass. The last two fields, `tokens` and `available`, are left empty for now: filling them in is your first exercise.
+And here's the sampler, which picks every attribute independently and fills in a template. We store the attributes in a small dataclass. The last two fields, `tokens` and
+`available`, are left empty for now: filling them in is your first exercise.
 '''
 
 # ! CELL TYPE: code
@@ -381,7 +406,8 @@ Everyone in Munich knew that our rabbits disliked the music. animal=rabbit, city
 # ! TAGS: []
 
 r'''
-Let's load the **target model**: the model whose activations we want to read. We'll use GPT-2 Small, frozen throughout. (Later, the oracle will be a *separate* copy of GPT-2 Small that we fine-tune.)
+Let's load the **target model**: the model whose activations we want to read. We'll use GPT-2 Small, frozen throughout. (Later, the oracle will be a *separate* copy of GPT-2 Small
+that we fine-tune.)
 '''
 
 # ! CELL TYPE: code
@@ -400,13 +426,16 @@ print(f"{target.cfg.n_layers} layers, d_model={target.cfg.d_model}")
 r'''
 ## Where can each answer live? Causal masking
 
-GPT-2 is a causal model: the residual stream at position $p$ is a function of tokens $0, \dots, p$ only. That gives us a hard constraint that's easy to forget when you start asking a model's activations questions:
+GPT-2 is a causal model: the residual stream at position $p$ is a function of tokens $0, \dots, p$ only. That gives us a hard constraint that's easy to forget when you start asking
+a model's activations questions:
 
 > In `"The dogs in Paris loved the rain."`, the activation at `" in"` *cannot* contain any information about which city it is, because `" Paris"` hasn't happened yet.
 
-So for every attribute there's a first position from which it is determined by the prefix: the animal word for `animal`, the city token for `city`, the verb for `sentiment`. For `number` we'll use the animal word too (`" dog"` vs `" dogs"`), though as you'll see later, some determiners (`"two"`, `"a"`) give the game away a token earlier.
+So for every attribute there's a first position from which it is determined by the prefix: the animal word for `animal`, the city token for `city`, the verb for `sentiment`. For
+`number` we'll use the animal word too (`" dog"` vs `" dogs"`), though as you'll see later, some determiners (`"two"`, `"a"`) give the game away a token earlier.
 
-This constraint will give us one of our cleanest controls later: if an oracle can name the city from a position *before* the city token, it isn't reading the activation, it's guessing. (Or something is wrong with your code.)
+This constraint will give us one of our cleanest controls later: if an oracle can name the city from a position *before* the city token, it isn't reading the activation, it's
+guessing. (Or something is wrong with your code.)
 '''
 
 # ! CELL TYPE: markdown
@@ -423,7 +452,8 @@ r'''
 > You should spend up to 5-10 minutes on this exercise.
 > ```
 
-Implement `annotate_example`, which tokenizes `example.text` **with** a BOS token in front (so position 0 is `<|endoftext|>`), stores the token ids as a list in `example.tokens`, and fills `example.available` with the position of:
+Implement `annotate_example`, which tokenizes `example.text` **with** a BOS token in front (so position 0 is `<|endoftext|>`), stores the token ids as a list in `example.tokens`,
+and fills `example.available` with the position of:
 
 - `"animal"` and `"number"`: the animal word (e.g. `" dogs"`),
 - `"city"`: the city token,
@@ -540,7 +570,9 @@ sweep              600 sentences, e.g. 'The turtle in Sydney despised the beach.
 r'''
 ## Extracting activations
 
-Our sentences have different lengths, so we have to pad them to run them in a batch. With a causal model there's a simple trick: pad on the **right**. The padding tokens come *after* every real token, so no real token can attend to them, and the activations at real positions are exactly what they would be without padding. (With left-padding you'd need an attention mask, and you'd shift every absolute position embedding, which changes GPT-2's activations.)
+Our sentences have different lengths, so we have to pad them to run them in a batch. With a causal model there's a simple trick: pad on the **right**. The padding tokens come
+*after* every real token, so no real token can attend to them, and the activations at real positions are exactly what they would be without padding. (With left-padding you'd need
+an attention mask, and you'd shift every absolute position embedding, which changes GPT-2's activations.)
 '''
 
 # ! CELL TYPE: markdown
@@ -559,9 +591,12 @@ r'''
 
 Implement `get_resid`, which returns the residual stream at layer `layer` for every position of every example, as a list of tensors of shape `(len(example.tokens), d_model)`.
 
-We number layers by **how many blocks have run**: layer $\ell$ is `blocks.{ℓ}.hook_resid_pre` for $\ell < n_{layers}$, and layer $n_{layers}$ (= 12) is the final residual stream, `blocks.{n_layers - 1}.hook_resid_post`. The helper `resid_hook_name` below gives you the right hook name.
+We number layers by **how many blocks have run**: layer $\ell$ is `blocks.{ℓ}.hook_resid_pre` for $\ell < n_{layers}$, and layer $n_{layers}$ (= 12) is the final residual stream,
+`blocks.{n_layers - 1}.hook_resid_post`. The helper `resid_hook_name` below gives you the right hook name.
 
-Process the examples in batches of `batch_size`: right-pad each batch's `tokens` (any token id will do for padding), run the model with `run_with_cache` and a `names_filter` so that only this one activation is stored, and then strip the padding back off. Decorate it with `@t.no_grad()` rather than `@t.inference_mode()`, since we'll later feed these tensors into a training graph.
+Process the examples in batches of `batch_size`: right-pad each batch's `tokens` (any token id will do for padding), run the model with `run_with_cache` and a `names_filter` so
+that only this one activation is stored, and then strip the padding back off. Decorate it with `@t.no_grad()` rather than `@t.inference_mode()`, since we'll later feed these
+tensors into a training graph.
 '''
 
 # ! CELL TYPE: code
@@ -611,7 +646,8 @@ r'''
 <details>
 <summary>Hint</summary>
 
-Build a `(batch, max_len)` tensor of zeros, copy each example's tokens into the start of its row, and remember each length. After `run_with_cache(tokens, names_filter=hook_name)`, slice `cache[hook_name][i, :length]` for each row.
+Build a `(batch, max_len)` tensor of zeros, copy each example's tokens into the start of its row, and remember each length. After `run_with_cache(tokens, names_filter=hook_name)`,
+slice `cache[hook_name][i, :length]` for each row.
 </details>
 
 The test compares your output against running each example on its own with no padding at all.
@@ -622,7 +658,9 @@ The test compares your output against running each example on its own with no pa
 # ! TAGS: []
 
 r'''
-For most of this section we'll read activations from the **final token** (the `"."`), at **layer 6**, the middle of the network. That's the position that has seen the whole sentence, so it's the one place where all four attributes *could* be present. We'll also want the final-token activation at every layer for the probes below, so here's a helper that grabs them all in one forward pass:
+For most of this section we'll read activations from the **final token** (the `"."`), at **layer 6**, the middle of the network. That's the position that has seen the whole
+sentence, so it's the one place where all four attributes *could* be present. We'll also want the final-token activation at every layer for the probes below, so here's a helper
+that grabs them all in one forward pass:
 '''
 
 # ! CELL TYPE: code
@@ -685,14 +723,17 @@ Mean norm of layer-6 final-token vectors: 72.3</pre>
 r'''
 ## What's in the vector? A probe bank
 
-Before we train an oracle to *say* what's in these vectors, we should know what's actually *in* them. The standard tool is a **linear probe**: a logistic regression from the activation to the label. If a linear probe can predict the city from the layer-6 final-token vector with 95% accuracy, then that information is present (and linearly decodable) in the vector. If no probe can do better than chance, an oracle that reports the city from that vector is very likely making things up.
+Before we train an oracle to *say* what's in these vectors, we should know what's actually *in* them. The standard tool is a **linear probe**: a logistic regression from the
+activation to the label. If a linear probe can predict the city from the layer-6 final-token vector with 95% accuracy, then that information is present (and linearly decodable) in
+the vector. If no probe can do better than chance, an oracle that reports the city from that vector is very likely making things up.
 
 We'll train one probe per question family, per layer. Two details:
 
 - We **standardise** each input dimension using the training set's mean and standard deviation. GPT-2's residual stream has a few dimensions with enormous magnitudes, which otherwise dominate the optimisation.
 - We need a **control**. A probe with 768 inputs and 6,000 training points has a lot of capacity, so we also train each probe on **shuffled labels** (Hewitt & Liang's "control task" idea, in its simplest form) and evaluate it against the true test labels. That accuracy should be at chance; if it isn't, the probe is finding structure that has nothing to do with the attribute.
 
-Here's the probe module. Each family has a fixed list of classes; examples whose answer isn't in the list (for instance held-out animals) get the label `-1`, which no probe can ever output, so they always count as wrong.
+Here's the probe module. Each family has a fixed list of classes; examples whose answer isn't in the list (for instance held-out animals) get the label `-1`, which no probe can
+ever output, so they always count as wrong.
 '''
 
 # ! CELL TYPE: code
@@ -795,10 +836,12 @@ r'''
 <details>
 <summary>Hint</summary>
 
-`x.mean(0)` and `x.std(0)` give you per-dimension statistics. The training loop is the usual `loss = F.cross_entropy(probe(x), labels)`, `optimizer.zero_grad()`, `loss.backward()`, `optimizer.step()`.
+`x.mean(0)` and `x.std(0)` give you per-dimension statistics. The training loop is the usual `loss = F.cross_entropy(probe(x), labels)`, `optimizer.zero_grad()`, `loss.backward()`,
+`optimizer.step()`.
 </details>
 
-The test checks that your probe separates two well-separated Gaussian blobs (even when one irrelevant dimension has a huge scale), and that a probe trained on random labels doesn't generalise.
+The test checks that your probe separates two well-separated Gaussian blobs (even when one irrelevant dimension has a huge scale), and that a probe trained on random labels doesn't
+generalise.
 '''
 
 # ! CELL TYPE: markdown
@@ -806,7 +849,8 @@ The test checks that your probe separates two well-separated Gaussian blobs (eve
 # ! TAGS: []
 
 r'''
-Now let's train a probe for every family at every layer, with and without shuffled labels. This takes well under a minute on a GPU. We keep the layer-6 probes, since they'll be our main baseline against the oracle.
+Now let's train a probe for every family at every layer, with and without shuffled labels. This takes well under a minute on a GPU. We keep the layer-6 probes, since they'll be our
+main baseline against the oracle.
 '''
 
 # ! CELL TYPE: code
@@ -850,13 +894,19 @@ r'''
 <details>
 <summary>Help - how should I interpret this plot?</summary>
 
-**Layer 0: nothing.** Every probe is at chance at layer 0. That's guaranteed: before any block has run, the final-token residual stream is just the embedding of `"."` plus a position embedding, which is the same for every sentence of a given length. Nothing about the animal, city or sentiment can be there yet. (This is a free sanity check on the probe pipeline.)
+**Layer 0: nothing.** Every probe is at chance at layer 0. That's guaranteed: before any block has run, the final-token residual stream is just the embedding of `"."` plus a
+position embedding, which is the same for every sentence of a given length. Nothing about the animal, city or sentiment can be there yet. (This is a free sanity check on the probe
+pipeline.)
 
-**Layer 1 onwards: everything.** After a *single* block, all four attributes are linearly decodable from the final token with essentially perfect held-out accuracy, and they stay that way through layer 12. One layer of attention is enough to copy the content of a short sentence into its last position.
+**Layer 1 onwards: everything.** After a *single* block, all four attributes are linearly decodable from the final token with essentially perfect held-out accuracy, and they stay
+that way through layer 12. One layer of attention is enough to copy the content of a short sentence into its last position.
 
-**Shuffled labels: chance everywhere.** The control probes are at chance at every layer (around 4% for animal and city, within a few points of 50% for sentiment and number). So the real probes aren't succeeding just because a 768-dimensional linear classifier can fit anything.
+**Shuffled labels: chance everywhere.** The control probes are at chance at every layer (around 4% for animal and city, within a few points of 50% for sentiment and number). So the
+real probes aren't succeeding just because a 768-dimensional linear classifier can fit anything.
 
-The upshot for the rest of the section: at layer 6, the final-token vector *contains* all four answers, in a linearly readable form. If the oracle gets something wrong there, the information wasn't missing; the oracle failed to read it. Keep in mind what probes don't tell you, though: that the target model *uses* this information, or that it's stored in the same form an oracle would find natural.
+The upshot for the rest of the section: at layer 6, the final-token vector *contains* all four answers, in a linearly readable form. If the oracle gets something wrong there, the
+information wasn't missing; the oracle failed to read it. Keep in mind what probes don't tell you, though: that the target model *uses* this information, or that it's stored in the
+same form an oracle would find natural.
 </details>
 '''
 
@@ -889,7 +939,8 @@ r'''
 r'''
 ## How an oracle reads an activation
 
-A probe is a fresh classifier bolted onto the activation. An oracle is different: it's a whole language model, and the activation is fed in as if it were part of the oracle's *input*. The recipe, which is the same in LatentQA and in Activation Oracles, has three pieces.
+A probe is a fresh classifier bolted onto the activation. An oracle is different: it's a whole language model, and the activation is fed in as if it were part of the oracle's
+*input*. The recipe, which is the same in LatentQA and in Activation Oracles, has three pieces.
 
 **1. A prompt with a placeholder.** The oracle's input is ordinary text containing a placeholder token that stands for "the activation goes here", followed by a question. We'll use
 
@@ -901,19 +952,26 @@ Answer:
 
 where `" ?"` is the placeholder (it's a single token in GPT-2), and the oracle is trained to put the answer token (`" Tokyo"`) right after `"Answer:"`.
 
-**2. Injection.** During the oracle's forward pass, at an early layer $k$, we overwrite the residual stream at the placeholder position so that it carries the target's activation $v$. Karvonen et al. inject at layer 1 of the oracle using **norm-matched addition**:
+**2. Injection.** During the oracle's forward pass, at an early layer $k$, we overwrite the residual stream at the placeholder position so that it carries the target's activation
+$v$. Karvonen et al. inject at layer 1 of the oracle using **norm-matched addition**:
 
 $$
 h'_{\text{ph}} = h_{\text{ph}} + c \, \|h_{\text{ph}}\| \, \frac{v}{\|v\|}
 $$
 
-where $h_{\text{ph}}$ is the oracle's own residual stream at the placeholder and $c$ is a coefficient (we use $c = 1$). Two things are going on here. First, $v$ is rescaled to the norm that the oracle's own residual stream already has at that position. Residual stream norms grow steadily through a transformer, so a vector taken from one layer and pasted into another can be far too large (swamping everything downstream) or too small (ignored); norm-matching makes the injection insensitive to which layer $v$ came from. Second, it's *added* rather than substituted. The paper reports that plain replacement made activation norms blow up during training (by orders of magnitude). Addition keeps the placeholder token's own information (its token identity and position) alongside the injected vector.
+where $h_{\text{ph}}$ is the oracle's own residual stream at the placeholder and $c$ is a coefficient (we use $c = 1$). Two things are going on here. First, $v$ is rescaled to the
+norm that the oracle's own residual stream already has at that position. Residual stream norms grow steadily through a transformer, so a vector taken from one layer and pasted into
+another can be far too large (swamping everything downstream) or too small (ignored); norm-matching makes the injection insensitive to which layer $v$ came from. Second, it's
+*added* rather than substituted. The paper reports that plain replacement made activation norms blow up during training (by orders of magnitude). Addition keeps the placeholder
+token's own information (its token identity and position) alongside the injected vector.
 
 Notice that norm-matching throws away $\|v\|$: the oracle only ever sees the **direction** of $v$. Keep that in mind when we design the random-vector control.
 
-**3. Fine-tuning.** The oracle starts as an ordinary copy of the language model, and is trained with the usual next-token cross-entropy loss on the answer token(s), over a dataset of (activation, question, answer) triples.
+**3. Fine-tuning.** The oracle starts as an ordinary copy of the language model, and is trained with the usual next-token cross-entropy loss on the answer token(s), over a dataset
+of (activation, question, answer) triples.
 
-At full scale, the oracle is usually the *same* model as the target with a LoRA adapter switched on, so that the oracle "speaks the language" of the target's residual stream from the start. GPT-2 Small is so small that we can simply fine-tune a whole separate copy, which is simpler and works well here. (Trying LoRA instead is a bonus exercise.)
+At full scale, the oracle is usually the *same* model as the target with a LoRA adapter switched on, so that the oracle "speaks the language" of the target's residual stream from
+the start. GPT-2 Small is so small that we can simply fine-tune a whole separate copy, which is simpler and works well here. (Trying LoRA instead is a bonus exercise.)
 '''
 
 # ! CELL TYPE: markdown
@@ -923,9 +981,13 @@ At full scale, the oracle is usually the *same* model as the target with a LoRA 
 r'''
 ## One tweak: centre the vectors first
 
-Our injected vectors all come from the same kind of position (a `"."` at the end of a short sentence, after six blocks). Vectors like that have a large component in common: the parts that encode "this is a full stop" and "this is roughly position 10", plus a few directions in which GPT-2's residual stream is large for almost every token. Since the oracle only sees the *direction* of $v$, a big shared component means that every injected direction looks almost the same, and the part that differs between sentences (the part that carries the animal and the city) is squeezed into a small angle.
+Our injected vectors all come from the same kind of position (a `"."` at the end of a short sentence, after six blocks). Vectors like that have a large component in common: the
+parts that encode "this is a full stop" and "this is roughly position 10", plus a few directions in which GPT-2's residual stream is large for almost every token. Since the oracle
+only sees the *direction* of $v$, a big shared component means that every injected direction looks almost the same, and the part that differs between sentences (the part that
+carries the animal and the city) is squeezed into a small angle.
 
-Let's measure it. The cell below computes the average cosine similarity between the layer-6 final-token vectors of different training sentences, and compares the size of the mean vector $\mu$ with the size of what's left once you subtract it:
+Let's measure it. The cell below computes the average cosine similarity between the layer-6 final-token vectors of different training sentences, and compares the size of the mean
+vector $\mu$ with the size of what's left once you subtract it:
 '''
 
 # ! CELL TYPE: code
@@ -960,7 +1022,9 @@ Mean norm of the part v - mu:     15.9</pre>
 
 </details>
 
-The final-token vectors of two completely unrelated sentences have a cosine similarity of 0.95 on average. The mean vector $\mu$ is almost as long as the vectors themselves (70.5 vs 72.3), and the sentence-specific part $v - \mu$ has a norm of only about 16, so it makes up roughly $(16/72)^2 \approx 5\%$ of each vector's squared norm. After norm-matching, the part of the injected direction that distinguishes one sentence from another would be a small wobble around an almost fixed direction.
+The final-token vectors of two completely unrelated sentences have a cosine similarity of 0.95 on average. The mean vector $\mu$ is almost as long as the vectors themselves (70.5
+vs 72.3), and the sentence-specific part $v - \mu$ has a norm of only about 16, so it makes up roughly $(16/72)^2 \approx 5\%$ of each vector's squared norm. After norm-matching,
+the part of the injected direction that distinguishes one sentence from another would be a small wobble around an almost fixed direction.
 
 So we'll inject $v - \mu$ instead of $v$, where $\mu$ is the mean of the vectors in the oracle's training set:
 
@@ -968,7 +1032,10 @@ $$
 h'_{\text{ph}} = h_{\text{ph}} + c \, \|h_{\text{ph}}\| \, \frac{v - \mu}{\|v - \mu\|}
 $$
 
-This is not part of the published Activation Oracle recipe, which injects $v$ itself. It's a choice we made for this miniature setting, where the oracle sees about 50,000 training examples built from 6,000 sentences: when we tried training without centring, the animal and city questions were learned much more slowly. (Full-scale oracles see far more varied inputs, from many positions and layers, and about a million examples; whether centring would help them too is an open question.) $\mu$ is part of the oracle: it's computed once from the training set, and the same $\mu$ is used at test time. Checking what happens without it is one of the bonus exercises.
+This is not part of the published Activation Oracle recipe, which injects $v$ itself. It's a choice we made for this miniature setting, where the oracle sees about 50,000 training
+examples built from 6,000 sentences: when we tried training without centring, the animal and city questions were learned much more slowly. (Full-scale oracles see far more varied
+inputs, from many positions and layers, and about a million examples; whether centring would help them too is an open question.) $\mu$ is part of the oracle: it's computed once
+from the training set, and the same $\mu$ is used at test time. Checking what happens without it is one of the bonus exercises.
 '''
 
 # ! CELL TYPE: markdown
@@ -1033,7 +1100,9 @@ Implement `tokenize_oracle_prompts`, which takes a list of questions and returns
 - `placeholder_pos`: a `(batch,)` tensor with the position of the placeholder token `" ?"` in each prompt;
 - `answer_pos`: a `(batch,)` tensor with the position of the **last real token** of each prompt (the `":"` of `"Answer:"`), which is where the oracle's logits predict the answer.
 
-One trap: in GPT-2 the padding token, the BOS token and the end-of-text token are all the same id (50256), so you can't recover the lengths by looking for padding afterwards. Record each prompt's length when you tokenize it. Another: questions end in `"?"`, but that's a different token from the placeholder `" ?"` (no leading space), so searching for the placeholder's id is safe. All tensors should be on the model's device.
+One trap: in GPT-2 the padding token, the BOS token and the end-of-text token are all the same id (50256), so you can't recover the lengths by looking for padding afterwards.
+Record each prompt's length when you tokenize it. Another: questions end in `"?"`, but that's a different token from the placeholder `" ?"` (no leading space), so searching for the
+placeholder's id is safe. All tensors should be on the model's device.
 '''
 
 # ! CELL TYPE: code
@@ -1073,7 +1142,8 @@ r'''
 <details>
 <summary>Hint</summary>
 
-Tokenize each prompt separately with `model.to_tokens(oracle_prompt(q))[0]`, record its length, and copy it into the start of a row of a zeros tensor. Use `model.to_single_token(PLACEHOLDER)` to get the placeholder's id, then `row.tolist().index(placeholder_id)`.
+Tokenize each prompt separately with `model.to_tokens(oracle_prompt(q))[0]`, record its length, and copy it into the start of a row of a zeros tensor. Use
+`model.to_single_token(PLACEHOLDER)` to get the placeholder's id, then `row.tolist().index(placeholder_id)`.
 </details>
 '''
 
@@ -1097,9 +1167,12 @@ $$
 c \, \|h_b\| \, \frac{v_b - \mu}{\|v_b - \mu\|}
 $$
 
-to the residual stream at position `placeholder_pos[b]`, where $h_b$ is `resid[b, placeholder_pos[b]]` and $v_b$ is `vectors[b]`. If `center` is `None`, use $\mu = 0$. If `vectors` is `None`, the hook should return `resid` unchanged: that's our text-only control, where the oracle gets the question but no activation.
+to the residual stream at position `placeholder_pos[b]`, where $h_b$ is `resid[b, placeholder_pos[b]]` and $v_b$ is `vectors[b]`. If `center` is `None`, use $\mu = 0$. If `vectors`
+is `None`, the hook should return `resid` unchanged: that's our text-only control, where the oracle gets the question but no activation.
 
-**Don't modify `resid` in place.** During training, PyTorch needs the original `resid` to compute gradients (for instance, through $\|h_b\|$), and an in-place write gives you a `RuntimeError: one of the variables needed for gradient computation has been modified by an inplace operation`. Build a tensor `delta` of zeros with the same shape, fill in the placeholder rows, and return `resid + delta`.
+**Don't modify `resid` in place.** During training, PyTorch needs the original `resid` to compute gradients (for instance, through $\|h_b\|$), and an in-place write gives you a
+`RuntimeError: one of the variables needed for gradient computation has been modified by an inplace operation`. Build a tensor `delta` of zeros with the same shape, fill in the
+placeholder rows, and return `resid + delta`.
 '''
 
 # ! CELL TYPE: code
@@ -1146,13 +1219,15 @@ r'''
 <details>
 <summary>Hint</summary>
 
-`rows = t.arange(batch)` and `resid[rows, placeholder_pos]` picks out one `(d_model,)` vector per batch element, giving a `(batch, d_model)` tensor. You can assign into `delta[rows, placeholder_pos]` the same way. `F.normalize(x, dim=-1)` divides each row by its norm.
+`rows = t.arange(batch)` and `resid[rows, placeholder_pos]` picks out one `(d_model,)` vector per batch element, giving a `(batch, d_model)` tensor. You can assign into
+`delta[rows, placeholder_pos]` the same way. `F.normalize(x, dim=-1)` divides each row by its norm.
 </details>
 
 <details>
 <summary>Help - I get "one of the variables needed for gradient computation has been modified by an inplace operation".</summary>
 
-You're writing into `resid` directly (e.g. `resid[rows, pos] = ...`) and then returning it. That's fine at inference time (and it's what we did with Patchscopes in [7.1]), but here the oracle is being trained, so autograd still needs the original values. Write into a fresh `delta = t.zeros_like(resid)` instead and return `resid + delta`.
+You're writing into `resid` directly (e.g. `resid[rows, pos] = ...`) and then returning it. That's fine at inference time (and it's what we did with Patchscopes in [7.1]), but here
+the oracle is being trained, so autograd still needs the original values. Write into a fresh `delta = t.zeros_like(resid)` instead and return `resid + delta`.
 </details>
 '''
 
@@ -1170,9 +1245,13 @@ r'''
 > You should spend up to 10 minutes on this exercise.
 > ```
 
-Implement `oracle_logits`: tokenize the questions, run `oracle` with your injection hook attached at `blocks.{inject_layer}.hook_resid_pre`, and return the logits at each prompt's `answer_pos`, as a `(batch, d_vocab)` tensor. Use `run_with_hooks`, so that the hook is removed afterwards.
+Implement `oracle_logits`: tokenize the questions, run `oracle` with your injection hook attached at `blocks.{inject_layer}.hook_resid_pre`, and return the logits at each prompt's
+`answer_pos`, as a `(batch, d_vocab)` tensor. Use `run_with_hooks`, so that the hook is removed afterwards.
 
-We only need the logits at one position per prompt, and computing them everywhere is wasteful: a batch of 256 prompts of ~20 tokens has about 260 million logits (over a gigabyte), and the unembedding is the single most expensive matrix multiply in GPT-2 Small. So pass `stop_at_layer=oracle.cfg.n_layers` to get the final residual stream instead of the logits, pick out each prompt's `answer_pos`, and apply `oracle.ln_final` and `oracle.unembed` to just those vectors. (Both expect a `pos` dimension, so index with `[:, None]` and remove it again afterwards.)
+We only need the logits at one position per prompt, and computing them everywhere is wasteful: a batch of 256 prompts of ~20 tokens has about 260 million logits (over a gigabyte),
+and the unembedding is the single most expensive matrix multiply in GPT-2 Small. So pass `stop_at_layer=oracle.cfg.n_layers` to get the final residual stream instead of the logits,
+pick out each prompt's `answer_pos`, and apply `oracle.ln_final` and `oracle.unembed` to just those vectors. (Both expect a `pos` dimension, so index with `[:, None]` and remove it
+again afterwards.)
 
 Don't decorate this function with `no_grad` or `inference_mode`: we'll call it inside the training loop.
 '''
@@ -1233,7 +1312,8 @@ The test compares your function with a full forward pass (logits at every positi
 r'''
 ## Can GPT-2 already do this?
 
-Before training anything, let's ask: can plain GPT-2, with an activation injected in exactly this way, already answer? This is a Patchscope with a question-shaped inspection prompt (compare [7.1]), so it isn't a silly question. We'll use the target model itself as an "untrained oracle", injecting final-token vectors from four test sentences.
+Before training anything, let's ask: can plain GPT-2, with an activation injected in exactly this way, already answer? This is a Patchscope with a question-shaped inspection prompt
+(compare [7.1]), so it isn't a silly question. We'll use the target model itself as an "untrained oracle", injecting final-token vectors from four test sentences.
 '''
 
 # ! CELL TYPE: code
@@ -1276,7 +1356,10 @@ Our turtle admired the storm in London.                          ' The'  ' The' 
 
 </details>
 
-Plain GPT-2 answers `' The'` to almost everything (and once a newline). It isn't decoding the vector at all; it's continuing the text after `"Answer:"` the way it would continue any text. Unlike the Patchscopes in [7.1], our prompt gives GPT-2 no few-shot pattern to copy, and the injected vector comes from a different layer and a different position than the one it's placed in. So training is necessary, and this "untrained oracle" will be one of our controls: if the trained oracle succeeds, it's not because the injection mechanism alone already works.
+Plain GPT-2 answers `' The'` to almost everything (and once a newline). It isn't decoding the vector at all; it's continuing the text after `"Answer:"` the way it would continue
+any text. Unlike the Patchscopes in [7.1], our prompt gives GPT-2 no few-shot pattern to copy, and the injected vector comes from a different layer and a different position than
+the one it's placed in. So training is necessary, and this "untrained oracle" will be one of our controls: if the trained oracle succeeds, it's not because the injection mechanism
+alone already works.
 '''
 
 # ! CELL TYPE: markdown
@@ -1286,14 +1369,17 @@ Plain GPT-2 answers `' The'` to almost everything (and once a newline). It isn't
 r'''
 ## The training distribution
 
-The oracle will learn whatever its training distribution teaches it, so it's worth being deliberate about it. Each training example is a triple (activation, question, answer), built like this:
+The oracle will learn whatever its training distribution teaches it, so it's worth being deliberate about it. Each training example is a triple (activation, question, answer),
+built like this:
 
 1. pick a training sentence uniformly at random;
 2. pick a question family uniformly at random, and one of that family's **training** paraphrases;
 3. pick a **source position** in the sentence, and take the target's activation there;
 4. the answer is the sentence's value for that family.
 
-Step 3 is where the most interesting design choice lives. The simplest option is to always use the final token, which is what we'll do first. Karvonen et al. instead pick positions at random, because they found that always reading from the same position gives an oracle that generalises badly to other positions. We'll support both, and you'll see the difference for yourself in section 3️⃣. When choosing randomly, we must respect causal masking: for the city question, only positions at or after the city token are valid.
+Step 3 is where the most interesting design choice lives. The simplest option is to always use the final token, which is what we'll do first. Karvonen et al. instead pick positions
+at random, because they found that always reading from the same position gives an oracle that generalises badly to other positions. We'll support both, and you'll see the
+difference for yourself in section 3️⃣. When choosing randomly, we must respect causal masking: for the city question, only positions at or after the city token are valid.
 '''
 
 # ! CELL TYPE: markdown
@@ -1317,7 +1403,8 @@ Implement `sample_oracle_batch`. It should build `batch_size` triples as describ
 - `answers`: a list of answer strings (e.g. `"dog"`, `"Tokyo"`, `"negative"`);
 - `families`: a list of family names.
 
-If `position == "last"`, use the final position. If `position == "random"`, choose uniformly between `example.available[family]` and the final position, inclusive (`rng.randint(a, b)` includes both ends).
+If `position == "last"`, use the final position. If `position == "random"`, choose uniformly between `example.available[family]` and the final position, inclusive (`rng.randint(a,
+b)` includes both ends).
 '''
 
 # ! CELL TYPE: code
@@ -1384,13 +1471,16 @@ r'''
 > You should spend up to 5-10 minutes on this exercise.
 > ```
 
-Before we train, here's a question worth answering: *how low could the loss go without ever looking at the activation?* An oracle that ignores the activation can still learn from the question which family is being asked about, and then predict that family's answer distribution. The best it can do is to output the empirical answer distribution for that family, which gives a cross-entropy equal to that distribution's **entropy**. Since families are sampled uniformly, the best text-only loss is
+Before we train, here's a question worth answering: *how low could the loss go without ever looking at the activation?* An oracle that ignores the activation can still learn from
+the question which family is being asked about, and then predict that family's answer distribution. The best it can do is to output the empirical answer distribution for that
+family, which gives a cross-entropy equal to that distribution's **entropy**. Since families are sampled uniformly, the best text-only loss is
 
 $$
 \mathcal{L}_{\text{text-only}} = \frac{1}{|\text{families}|} \sum_{f} H(\text{answers}_f), \qquad H(p) = -\sum_a p(a) \log p(a).
 $$
 
-Implement `text_only_loss_floor`, which computes this from a list of examples (in nats). Once the oracle's training loss drops below this line, it *must* be getting information from the activation.
+Implement `text_only_loss_floor`, which computes this from a list of examples (in nats). Once the oracle's training loss drops below this line, it *must* be getting information
+from the activation.
 '''
 
 # ! CELL TYPE: code
@@ -1452,9 +1542,11 @@ r'''
 > You should spend up to 10-15 minutes on this exercise.
 > ```
 
-Write the training loop. For each step: sample a batch with `sample_oracle_batch` (using a `random.Random(seed)` created once at the start), compute `oracle_logits`, compute the cross-entropy against `answer_token_ids`, and take an AdamW step (`lr`, no weight decay). Return the list of losses.
+Write the training loop. For each step: sample a batch with `sample_oracle_batch` (using a `random.Random(seed)` created once at the start), compute `oracle_logits`, compute the
+cross-entropy against `answer_token_ids`, and take an AdamW step (`lr`, no weight decay). Return the list of losses.
 
-The defaults (800 steps of batch size 64, about 51,000 examples) take a couple of minutes on a GPU (longer if it's shared with other jobs). On a CPU, use 200 steps: the oracle will be noticeably worse at the animal and city questions, but everything below still runs.
+The defaults (800 steps of batch size 64, about 51,000 examples) take a couple of minutes on a GPU (longer if it's shared with other jobs). On a CPU, use 200 steps: the oracle will
+be noticeably worse at the animal and city questions, but everything below still runs.
 '''
 
 # ! CELL TYPE: code
@@ -1528,7 +1620,10 @@ r'''
 <details>
 <summary>Help - how should I interpret this plot?</summary>
 
-The loss starts above 2 nats and crosses the text-only floor within the first few dozen steps. Getting *to* the floor is the easy part: the oracle only has to learn the answer format and which answers go with which family. Everything *below* the dashed line is information the oracle can only have got from the injected activation. The loss keeps falling steadily, to about 0.1 nats by step 800 (the mean over the last 50 steps is 0.093). It's still going down at the end, so a longer run would probably do a little better on the hardest questions; we stop here to keep the notebook fast.
+The loss starts above 2 nats and crosses the text-only floor within the first few dozen steps. Getting *to* the floor is the easy part: the oracle only has to learn the answer
+format and which answers go with which family. Everything *below* the dashed line is information the oracle can only have got from the injected activation. The loss keeps falling
+steadily, to about 0.1 nats by step 800 (the mean over the last 50 steps is 0.093). It's still going down at the end, so a longer run would probably do a little better on the
+hardest questions; we stop here to keep the notebook fast.
 </details>
 '''
 
@@ -1565,7 +1660,8 @@ Our turtle admired the storm in London.                       ' turtle'  ' Londo
 
 </details>
 
-All sixteen answers are right, including `"two horses"` → `horse`, `plural`. But four sentences is a demo. The next section checks properly, and finds the places where this oracle breaks.
+All sixteen answers are right, including `"two horses"` → `horse`, `plural`. But four sentences is a demo. The next section checks properly, and finds the places where this oracle
+breaks.
 '''
 
 # ! CELL TYPE: markdown
@@ -1602,7 +1698,9 @@ A table of four correct answers is a demo, not a result. In this section we'll b
 3. Where can it read from: which layers, which token positions?
 4. Does it know when it doesn't know?
 
-Every accuracy below is **top-1 over the full vocabulary**: the oracle's single most likely next token must be exactly the answer token. That's stricter than restricting the oracle to the valid answers for each question (and stricter than what the probe has to do, since the probe only chooses between valid classes), but it's also more honest: an oracle that says `" the"` is wrong, not "abstaining".
+Every accuracy below is **top-1 over the full vocabulary**: the oracle's single most likely next token must be exactly the answer token. That's stricter than restricting the oracle
+to the valid answers for each question (and stricter than what the probe has to do, since the probe only chooses between valid classes), but it's also more honest: an oracle that
+says `" the"` is wrong, not "abstaining".
 '''
 
 # ! CELL TYPE: markdown
@@ -1619,7 +1717,9 @@ r'''
 > You should spend up to 10 minutes on this exercise.
 > ```
 
-Implement `evaluate_oracle`. For each family in `questions` (a dict like `TRAIN_QUESTIONS`, possibly with fewer families or paraphrases), ask **every** paraphrase about **every** example, and return the fraction of correct top-1 answers per family. Example `i` gets vector `vectors[i]` (or no vector at all, if `vectors` is `None`). Work in batches of `batch_size` examples.
+Implement `evaluate_oracle`. For each family in `questions` (a dict like `TRAIN_QUESTIONS`, possibly with fewer families or paraphrases), ask **every** paraphrase about **every**
+example, and return the fraction of correct top-1 answers per family. Example `i` gets vector `vectors[i]` (or no vector at all, if `vectors` is `None`). Work in batches of
+`batch_size` examples.
 '''
 
 # ! CELL TYPE: code
@@ -1752,7 +1852,8 @@ For the derangement: if `perm = t.randperm(n)`, then `out[perm.roll(-1)] = vecto
 # ! TAGS: []
 
 r'''
-Now let's run everything on the 600 test sentences (with all four training paraphrases per family), and put the linear probe from section 1️⃣ on the same axes. This is the most important plot in the section.
+Now let's run everything on the 600 test sentences (with all four training paraphrases per family), and put the linear probe from section 1️⃣ on the same axes. This is the most
+important plot in the section.
 '''
 
 # ! CELL TYPE: code
@@ -1791,9 +1892,14 @@ r'''
 
 **The oracle works.** It answers the animal question 82% of the time (chance is 4.5%), the city question 85% (chance 3.8%), and sentiment and number 100%.
 
-**Every control fails, as it should.** Text-only, shuffled and random inputs all land on chance for every family (4-5% for animal and city, 47-53% for sentiment and number). The shuffled control is the most informative. Those vectors are perfectly realistic layer-6 activations, just from the wrong sentence, and the oracle's accuracy drops to exactly what you'd get by guessing. So its answers follow the *content* of the vector, not the question, the base rates, or the fact that "some realistic vector" was injected. The untrained oracle scores 0% everywhere, below chance, because it never outputs an answer-shaped token at all.
+**Every control fails, as it should.** Text-only, shuffled and random inputs all land on chance for every family (4-5% for animal and city, 47-53% for sentiment and number). The
+shuffled control is the most informative. Those vectors are perfectly realistic layer-6 activations, just from the wrong sentence, and the oracle's accuracy drops to exactly what
+you'd get by guessing. So its answers follow the *content* of the vector, not the question, the base rates, or the fact that "some realistic vector" was injected. The untrained
+oracle scores 0% everywhere, below chance, because it never outputs an answer-shaped token at all.
 
-**The probe is better.** A linear probe on the *same* vectors gets 99.8% on animal and city, so the oracle is 15-18 points behind: for those answers, the information is linearly readable from the vector, but our oracle can't say it. An activation oracle is not a better probe. If you have one fixed question and labelled data, train a probe. The case for an oracle has to rest on something else, which is what we test next.
+**The probe is better.** A linear probe on the *same* vectors gets 99.8% on animal and city, so the oracle is 15-18 points behind: for those answers, the information is linearly
+readable from the vector, but our oracle can't say it. An activation oracle is not a better probe. If you have one fixed question and labelled data, train a probe. The case for an
+oracle has to rest on something else, which is what we test next.
 </details>
 '''
 
@@ -1804,7 +1910,9 @@ r'''
 r'''
 ## What does each reader generalise to?
 
-The probe matched or beat the oracle on the test set. So what is the oracle *for*? The case for activation oracles is not that they're better classifiers, it's that they're more **general**: one model, many questions, in natural language, potentially including questions and answers that weren't in the training set. Let's test that claim on our held-out splits:
+The probe matched or beat the oracle on the test set. So what is the oracle *for*? The case for activation oracles is not that they're better classifiers, it's that they're more
+**general**: one model, many questions, in natural language, potentially including questions and answers that weren't in the training set. Let's test that claim on our held-out
+splits:
 
 - **held-out paraphrases**: the same test sentences, asked with the two question phrasings never used in training. (A probe has no notion of a question, so this row is "n/a" for it: you'd have to know which probe to use, which is exactly the problem an oracle is supposed to solve.)
 - **held-out templates**: training animals and cities in sentence structures never seen in training.
@@ -1849,11 +1957,17 @@ r'''
 <details>
 <summary>Help - how should I interpret these heatmaps?</summary>
 
-**Held-out paraphrases: little or no drop.** The oracle answers questions phrased in ways it has never seen (`"Which creature does the text describe?"`) about as well as the training phrasings: 82% on animal (the same as before), 80% on city (down from 85%), and 100% on sentiment and number. That's the oracle's real advantage over a probe bank: you can ask it in your own words, and you don't need to know in advance which probe to use.
+**Held-out paraphrases: little or no drop.** The oracle answers questions phrased in ways it has never seen (`"Which creature does the text describe?"`) about as well as the
+training phrasings: 82% on animal (the same as before), 80% on city (down from 85%), and 100% on sentiment and number. That's the oracle's real advantage over a probe bank: you can
+ask it in your own words, and you don't need to know in advance which probe to use.
 
-**Held-out templates: both readers drop, the oracle more.** On new sentence structures, the oracle falls to 55% (animal) and 56% (city), and number to 96%, while sentiment stays at 100%. But the probe falls too, to 71% and 67%. The final-token vectors of unfamiliar sentence structures are simply distributed differently, and *any* reader fit on the training templates suffers. The oracle loses 16 (animal) and 11 (city) points more than the probe.
+**Held-out templates: both readers drop, the oracle more.** On new sentence structures, the oracle falls to 55% (animal) and 56% (city), and number to 96%, while sentiment stays at
+100%. But the probe falls too, to 71% and 67%. The final-token vectors of unfamiliar sentence structures are simply distributed differently, and *any* reader fit on the training
+templates suffers. The oracle loses 16 (animal) and 11 (city) points more than the probe.
 
-**Held-out entities: (almost) zero for both.** Neither reader names animals or cities that weren't in training. For the probe this is true by construction. For the oracle it's an empirical finding, and a sobering one: from the final-token vector it never named an unseen animal, and named an unseen city in only 0.5% of cases. Its sentiment and number answers on the same sentences are still 100%, so it isn't confused by new entities in general. It just can't say their names.
+**Held-out entities: (almost) zero for both.** Neither reader names animals or cities that weren't in training. For the probe this is true by construction. For the oracle it's an
+empirical finding, and a sobering one: from the final-token vector it never named an unseen animal, and named an unseen city in only 0.5% of cases. Its sentiment and number answers
+on the same sentences are still 100%, so it isn't confused by new entities in general. It just can't say their names.
 
 So at the final token, our oracle generalises over *questions* but not over *answers*. We'll come back to the answers in a moment, from a different position.
 </details>
@@ -1866,7 +1980,8 @@ So at the final token, our oracle generalises over *questions* but not over *ans
 r'''
 ### What does it say when the right answer isn't in its vocabulary?
 
-On the held-out entities, the oracle can't name the animal from the final-token vector. But it doesn't say "I don't know" either: it was never trained to. Let's see *what* it says. For each held-out animal and city, here are the oracle's three most common answers:
+On the held-out entities, the oracle can't name the animal from the final-token vector. But it doesn't say "I don't know" either: it was never trained to. Let's see *what* it says.
+For each held-out animal and city, here are the oracle's three most common answers:
 '''
 
 # ! CELL TYPE: code
@@ -1925,9 +2040,14 @@ Q: Which city is mentioned?
 
 </details>
 
-The wrong answers aren't random. Each held-out entity is mostly mapped to similar training entities: `cat` → `dog` (45%), `tiger` → `lion` (56%), `bull` → `lion` and `pig`, and `snake` and `spider` → small creatures (`crab`, `frog`, `turtle`). The American cities Miami, Dallas and Seattle become `Denver`, `Boston` or `Chicago`, which are the American cities in the training set; Dublin becomes `Glasgow`, `Sydney` or `London`; Moscow becomes `Berlin`, `Cairo` or `Beijing`. (Some cases are less tidy: Istanbul is spread over `Oslo`, `Madrid` and `Cairo`.)
+The wrong answers aren't random. Each held-out entity is mostly mapped to similar training entities: `cat` → `dog` (45%), `tiger` → `lion` (56%), `bull` → `lion` and `pig`, and
+`snake` and `spider` → small creatures (`crab`, `frog`, `turtle`). The American cities Miami, Dallas and Seattle become `Denver`, `Boston` or `Chicago`, which are the American
+cities in the training set; Dublin becomes `Glasgow`, `Sydney` or `London`; Moscow becomes `Berlin`, `Cairo` or `Beijing`. (Some cases are less tidy: Istanbul is spread over
+`Oslo`, `Madrid` and `Cairo`.)
 
-This is informative: the final-token vector evidently carries *semantic* features of the entity (a kind of animal, a region of the world), and the oracle maps them to the nearest answer it knows. But it's also the failure mode that makes oracles risky to use: a plausible, specific, wrong answer, with nothing in the answer to signal that the truth was outside the oracle's vocabulary. (A full-scale oracle generating free text has a much bigger vocabulary, but the same incentive: it was trained to always produce an answer.)
+This is informative: the final-token vector evidently carries *semantic* features of the entity (a kind of animal, a region of the world), and the oracle maps them to the nearest
+answer it knows. But it's also the failure mode that makes oracles risky to use: a plausible, specific, wrong answer, with nothing in the answer to signal that the truth was
+outside the oracle's vocabulary. (A full-scale oracle generating free text has a much bigger vocabulary, but the same incentive: it was trained to always produce an answer.)
 '''
 
 # ! CELL TYPE: markdown
@@ -1937,9 +2057,11 @@ This is informative: the final-token vector evidently carries *semantic* feature
 r'''
 ## Across layers
 
-Our oracle was trained only on layer-6 activations. What happens if we inject activations from other layers? At full scale this is a practical question: Karvonen et al. train on several layers at once (and tell the oracle which layer it's reading), because an oracle trained on one layer is only expected to work there.
+Our oracle was trained only on layer-6 activations. What happens if we inject activations from other layers? At full scale this is a practical question: Karvonen et al. train on
+several layers at once (and tell the oracle which layer it's reading), because an oracle trained on one layer is only expected to work there.
 
-For each layer we centre with *that layer's* mean training vector, and we use the first training paraphrase of each question to save time. We compare with the probes from section 1️⃣, each of which was trained at its own layer, so they show how much information is present at each layer.
+For each layer we centre with *that layer's* mean training vector, and we use the first training paraphrase of each question to save time. We compare with the probes from section
+1️⃣, each of which was trained at its own layer, so they show how much information is present at each layer.
 '''
 
 # ! CELL TYPE: code
@@ -1981,7 +2103,8 @@ At layer 6, where it was trained, the oracle gets 82% (animal) and 85% (city) wi
 - **Transfer to other layers is partial.** Sentiment and number stay at about 90% or more from layer 4 to layer 11. Animal and city degrade as you move away from layer 6, but stay well above chance everywhere from layer 1, even though the oracle never saw any other layer.
 - **The animal and city curves aren't monotonic.** They dip at layers 8-9 (animal 28% at layer 9, city about 52% at layers 8-9), and recover at layers 10-12; the city answer is actually *better* at layers 11 and 12 (88% and 89%) than at layer 6 (85%). The probes are at about 100% at every layer from 1 onwards, so the information is always present. What changes is how similar each layer's representation looks *to this oracle*. We don't have an explanation for the dip and recovery; it's on the anomaly list in the bonus section.
 
-Centring each layer with its own mean is doing some of the work here (try centring every layer with the layer-6 $\mu$ instead). The practical lesson: an oracle trained on one layer gives degraded and somewhat unpredictable answers on others, which is why full-scale oracles are trained on several layers and told which layer they're reading.
+Centring each layer with its own mean is doing some of the work here (try centring every layer with the layer-6 $\mu$ instead). The practical lesson: an oracle trained on one layer
+gives degraded and somewhat unpredictable answers on others, which is why full-scale oracles are trained on several layers and told which layer they're reading.
 </details>
 '''
 
@@ -1992,9 +2115,11 @@ Centring each layer with its own mean is doing some of the work here (try centri
 r'''
 ## Across token positions
 
-So far the oracle has only ever read the final `"."`. What if we hand it the activation at another token? Our `sweep` sentences all use the template `"{D} {A} in {C} {V} the {O}."`, so position 2 is always the animal, position 4 the city, and so on, and we can average over sentences position by position.
+So far the oracle has only ever read the final `"."`. What if we hand it the activation at another token? Our `sweep` sentences all use the template `"{D} {A} in {C} {V} the
+{O}."`, so position 2 is always the animal, position 4 the city, and so on, and we can average over sentences position by position.
 
-This experiment has a built-in control. At positions *before* an attribute's token, causal masking guarantees the information isn't there, so every reader must be at chance. Any reader that does better than chance there is not reading what we think it's reading.
+This experiment has a built-in control. At positions *before* an attribute's token, causal masking guarantees the information isn't there, so every reader must be at chance. Any
+reader that does better than chance there is not reading what we think it's reading.
 
 We'll compare the oracle with a probe trained **separately at each position** (on training sentences with the same template), which shows what's linearly present at each position.
 '''
@@ -2013,7 +2138,8 @@ r'''
 > You should spend up to 10 minutes on this exercise.
 > ```
 
-Implement `accuracy_by_position`. All `examples` have the same number of tokens. For each position `p`, stack the vectors `acts[i][p]` and evaluate the oracle with `evaluate_oracle`. Return a dict mapping each family in `questions` to a list with one accuracy per position.
+Implement `accuracy_by_position`. All `examples` have the same number of tokens. For each position `p`, stack the vectors `acts[i][p]` and evaluate the oracle with
+`evaluate_oracle`. Return a dict mapping each family in `questions` to a list with one accuracy per position.
 '''
 
 # ! CELL TYPE: code
@@ -2049,7 +2175,8 @@ def accuracy_by_position(
 # ! TAGS: []
 
 r'''
-Here's the per-position probe baseline, and then the sweep. (The probe for `animal` at position 0 has nothing to go on, since every sentence starts with the same BOS token, so it has to be at chance; that's a good sanity check for the probe itself.)
+Here's the per-position probe baseline, and then the sweep. (The probe for `animal` at position 0 has nothing to go on, since every sentence starts with the same BOS token, so it
+has to be at chance; that's a good sanity check for the probe itself.)
 '''
 
 # ! CELL TYPE: code
@@ -2101,13 +2228,22 @@ r'''
 <details>
 <summary>Help - how should I interpret this plot?</summary>
 
-**The causal-masking control passes.** In the grey regions, before an attribute's token, every reader is at chance for animal, city and sentiment. With one interesting exception: for `number`, both the probe (70%) and the oracle (60%) beat chance at the determiner. That's not a bug. `"Two"` and `"Some"` only occur with plurals, and `"A"`/`"An"` and `"Her"` only with singulars, so the determiner really does carry partial information about number. A control that "fails to fail" pointed straight at a leak in the data design, which is what controls are for.
+**The causal-masking control passes.** In the grey regions, before an attribute's token, every reader is at chance for animal, city and sentiment. With one interesting exception:
+for `number`, both the probe (70%) and the oracle (60%) beat chance at the determiner. That's not a bug. `"Two"` and `"Some"` only occur with plurals, and `"A"`/`"An"` and `"Her"`
+only with singulars, so the determiner really does carry partial information about number. A control that "fails to fail" pointed straight at a leak in the data design, which is
+what controls are for.
 
-**The probe: once present, always present.** From each attribute's token onwards, a probe trained at that position reads it at 93-100%, except for a dip to about 80% for animal and city at the object token.
+**The probe: once present, always present.** From each attribute's token onwards, a probe trained at that position reads it at 93-100%, except for a dip to about 80% for animal and
+city at the object token.
 
-**The oracle: blind spots.** Trained only on the final `"."`, the oracle reads well there (79% animal, 86% city on these sentences). It also reads well at each attribute's *own* token (97% animal, 100% city, 100% sentiment), even though it never saw those positions in training. But in between, it's close to chance for animal (5-16%) and city (4-8%), at positions where the probe shows the information is present, and sentiment drops to 59% at the object token while the probe is at 100%. The number answers jump around between chance and perfect (50% at `" the"`, 100% at `" in"`).
+**The oracle: blind spots.** Trained only on the final `"."`, the oracle reads well there (79% animal, 86% city on these sentences). It also reads well at each attribute's *own*
+token (97% animal, 100% city, 100% sentiment), even though it never saw those positions in training. But in between, it's close to chance for animal (5-16%) and city (4-8%), at
+positions where the probe shows the information is present, and sentiment drops to 59% at the object token while the probe is at 100%. The number answers jump around between chance
+and perfect (50% at `" the"`, 100% at `" in"`).
 
-This is the most important lesson of the section: **an oracle's failure to report something is not evidence that it isn't there.** The oracle's coverage is set by its training distribution. Its success at the attribute's own token is plausibly because a token's identity dominates its own residual stream, a format that's easy to read wherever it appears, whereas the in-between positions hold the same information in other, position-specific formats that the oracle never learned.
+This is the most important lesson of the section: **an oracle's failure to report something is not evidence that it isn't there.** The oracle's coverage is set by its training
+distribution. Its success at the attribute's own token is plausibly because a token's identity dominates its own residual stream, a format that's easy to read wherever it appears,
+whereas the in-between positions hold the same information in other, position-specific formats that the oracle never learned.
 </details>
 '''
 
@@ -2118,11 +2254,15 @@ This is the most important lesson of the section: **an oracle's failure to repor
 r'''
 ## Fixing coverage with positional randomness
 
-The oracle's blind spots are a property of its training distribution, so let's change the distribution. This is exactly the fix Karvonen et al. describe: during training, pick the source position at random rather than always using the same one. You already implemented this as `position="random"` in `sample_oracle_batch`, which only picks positions where the answer is determined.
+The oracle's blind spots are a property of its training distribution, so let's change the distribution. This is exactly the fix Karvonen et al. describe: during training, pick the
+source position at random rather than always using the same one. You already implemented this as `position="random"` in `sample_oracle_batch`, which only picks positions where the
+answer is determined.
 
-One adjustment: our centring vector $\mu$ should be the mean of the vectors the oracle is trained on, which are now drawn from every position, so we recompute it over all non-BOS positions of the training sentences.
+One adjustment: our centring vector $\mu$ should be the mean of the vectors the oracle is trained on, which are now drawn from every position, so we recompute it over all non-BOS
+positions of the training sentences.
 
-The cell below trains a second oracle with the same budget (800 steps) and redraws the position sweep. Before you run it, make a prediction: what will happen to accuracy at the final `"."`?
+The cell below trains a second oracle with the same budget (800 steps) and redraws the position sweep. Before you run it, make a prediction: what will happen to accuracy at the
+final `"."`?
 '''
 
 # ! CELL TYPE: code
@@ -2165,11 +2305,16 @@ r'''
 <details>
 <summary>Help - how should I interpret this plot?</summary>
 
-**Coverage improves.** With random positions, sentiment is now perfect at the object token (100%, up from 59%), number is near-perfect from the noun through `" the"` (99-100%), and the animal is readable at `" in"` (100%, up from 16%). The causal-masking control still passes: everything is at chance before each attribute's token.
+**Coverage improves.** With random positions, sentiment is now perfect at the object token (100%, up from 59%), number is near-perfect from the noun through `" the"` (99-100%), and
+the animal is readable at `" in"` (100%, up from 16%). The causal-masking control still passes: everything is at chance before each attribute's token.
 
-**But the final token gets much worse.** At the `"."`, animal accuracy falls from 79% to 20% and city from 86% to 48%. And at the positions in between, animal and city are still far below the probe (e.g. animal 18% at the city token, city 32-36% after it).
+**But the final token gets much worse.** At the `"."`, animal accuracy falls from 79% to 20% and city from 86% to 48%. And at the positions in between, animal and city are still
+far below the probe (e.g. animal 18% at the city token, city 32-36% after it).
 
-The reason is the fixed budget. Both oracles saw the same 800 × 64 examples, but the second one spends only a fraction of its animal and city questions on the final token, which is the hardest position to read them from (the information has to be pulled out of a summary, rather than read off a token's identity). So positional randomness bought coverage at the cost of accuracy where it matters most. At full scale this trade-off is softened by sheer quantity: Karvonen et al. train on about a million examples. Here it's a choice you have to make, and you should know which one your oracle made before trusting its silence anywhere.
+The reason is the fixed budget. Both oracles saw the same 800 × 64 examples, but the second one spends only a fraction of its animal and city questions on the final token, which is
+the hardest position to read them from (the information has to be pulled out of a summary, rather than read off a token's identity). So positional randomness bought coverage at the
+cost of accuracy where it matters most. At full scale this trade-off is softened by sheer quantity: Karvonen et al. train on about a million examples. Here it's a choice you have
+to make, and you should know which one your oracle made before trusting its silence anywhere.
 </details>
 '''
 
@@ -2178,7 +2323,8 @@ The reason is the fixed budget. Both oracles saw the same 800 × 64 examples, bu
 # ! TAGS: []
 
 r'''
-Now for the payoff of reading token positions. When an entity is held out, the final-token oracle can't name it from the final `"."`. But at the entity's *own* position, the residual stream still contains a lot of the token's identity. Can either oracle name an animal or city it has never been trained on, if we give it the activation at that token?
+Now for the payoff of reading token positions. When an entity is held out, the final-token oracle can't name it from the final `"."`. But at the entity's *own* position, the
+residual stream still contains a lot of the token's identity. Can either oracle name an animal or city it has never been trained on, if we give it the activation at that token?
 '''
 
 # ! CELL TYPE: code
@@ -2217,11 +2363,16 @@ oracle (random positions)                   0.982               0.000  </pre>
 
 </details>
 
-At the entity's own token, **both oracles name held-out cities almost perfectly** (100% and 98%), and they name held-out animals 61% (final-token oracle) and 87% (random-position oracle) of the time. These are names neither oracle has ever been trained to output. At the final `"."`, both are still at 0-0.5%.
+At the entity's own token, **both oracles name held-out cities almost perfectly** (100% and 98%), and they name held-out animals 61% (final-token oracle) and 87% (random-position
+oracle) of the time. These are names neither oracle has ever been trained to output. At the final `"."`, both are still at 0-0.5%.
 
-This is open-vocabulary generalisation, which a probe bank can't do at all. It's plausible that it works because the entity's own residual stream still contains its token identity, and an oracle that has learned "say the token whose identity is in this vector" for 26 cities has learned something that isn't specific to those 26 (GPT-2's embedding and unembedding matrices are tied, which makes "copy this token" a natural operation). The final-token oracle does this zero-shot, having never seen a non-final position; the random-position oracle, which has, is much better at it for animals (87% vs 61%).
+This is open-vocabulary generalisation, which a probe bank can't do at all. It's plausible that it works because the entity's own residual stream still contains its token identity,
+and an oracle that has learned "say the token whose identity is in this vector" for 26 cities has learned something that isn't specific to those 26 (GPT-2's embedding and
+unembedding matrices are tied, which makes "copy this token" a natural operation). The final-token oracle does this zero-shot, having never seen a non-final position; the
+random-position oracle, which has, is much better at it for animals (87% vs 61%).
 
-So whether an oracle can produce *new answers* depends on where the information is and in what form, not just on the oracle. The same oracle that confabulates `dog` for a cat at the final token can name a never-seen city perfectly when it reads the city's own token.
+So whether an oracle can produce *new answers* depends on where the information is and in what form, not just on the oracle. The same oracle that confabulates `dog` for a cat at
+the final token can name a never-seen city perfectly when it reads the city's own token.
 '''
 
 # ! CELL TYPE: markdown
@@ -2231,7 +2382,8 @@ So whether an oracle can produce *new answers* depends on where the information 
 r'''
 ## Does the oracle know when it doesn't know?
 
-The controls above showed that the oracle's *accuracy* drops to chance on shuffled and random inputs. But in practice you don't know the answer, so what you'd see is the oracle's *answer*, and perhaps its confidence. Does the oracle at least sound less sure when it's fed garbage?
+The controls above showed that the oracle's *accuracy* drops to chance on shuffled and random inputs. But in practice you don't know the answer, so what you'd see is the oracle's
+*answer*, and perhaps its confidence. Does the oracle at least sound less sure when it's fed garbage?
 
 Here's the distribution of the oracle's top-1 probability on the animal question, for real vectors and for each control:
 '''
@@ -2267,13 +2419,17 @@ r'''
 <details>
 <summary>Help - how should I interpret this plot?</summary>
 
-**Real and shuffled are indistinguishable** (mean top-1 probability 0.87 for both; the two histograms lie on top of each other). That's correct behaviour, not a bug: a shuffled vector is a perfectly good activation from another sentence, and the oracle reads it, confidently and (for that other sentence) correctly. No confidence measure could detect that the vector belongs to the wrong input.
+**Real and shuffled are indistinguishable** (mean top-1 probability 0.87 for both; the two histograms lie on top of each other). That's correct behaviour, not a bug: a shuffled
+vector is a perfectly good activation from another sentence, and the oracle reads it, confidently and (for that other sentence) correctly. No confidence measure could detect that
+the vector belongs to the wrong input.
 
-**Random vectors get lower confidence on average (0.63), but the distribution is wide**, and a fair number of random vectors get answered with probability above 0.9. There's no threshold that separates garbage from real inputs cleanly.
+**Random vectors get lower confidence on average (0.63), but the distribution is wide**, and a fair number of random vectors get answered with probability above 0.9. There's no
+threshold that separates garbage from real inputs cleanly.
 
 **Text-only** gives the same answer distribution for every example (a single bar at 0.40), since every input is identical.
 
-So the oracle doesn't abstain, and its confidence is only a weak signal of whether it's reading something meaningful. It was trained exclusively on answerable questions, so it always answers. (Teaching it to abstain is a bonus exercise.)
+So the oracle doesn't abstain, and its confidence is only a weak signal of whether it's reading something meaningful. It was trained exclusively on answerable questions, so it
+always answers. (Teaching it to abstain is a bonus exercise.)
 </details>
 '''
 
@@ -2305,7 +2461,9 @@ r'''
 # ! TAGS: []
 
 r'''
-Everything in section 3️⃣ was correlational: the oracle's answers *agree* with the truth. The shuffled and random controls rule out a lot of boring explanations, but they don't show that the oracle reads the same features that the target model uses. In this section we'll **intervene** on the activations and check that the oracle's answers move the way they should, and only the way they should:
+Everything in section 3️⃣ was correlational: the oracle's answers *agree* with the truth. The shuffled and random controls rule out a lot of boring explanations, but they don't
+show that the oracle reads the same features that the target model uses. In this section we'll **intervene** on the activations and check that the oracle's answers move the way
+they should, and only the way they should:
 
 1. **Steering.** Add a "sentiment direction" to a negative sentence's activation. The oracle should start saying "positive", while its answers about the city and number stay the same. Adding a random direction of the same norm should do nothing.
 2. **Activation patching.** Inside the target model, patch the city token's residual stream with the one from a sentence about a different city, then let the target run on to layer 6 and hand the final-token vector to the oracle. Depending on the layer at which we patch, the oracle should (or shouldn't) report the new city, and this tells us something about GPT-2 itself.
@@ -2324,7 +2482,9 @@ $$
 d_{\text{sentiment}} = \mathbb{E}[v \mid \text{positive}] - \mathbb{E}[v \mid \text{negative}].
 $$
 
-If we take a negative sentence's vector $v$ and look at $v + \alpha\, d_{\text{sentiment}}$, then at $\alpha = 1$ we've moved it by exactly the average gap between the two classes (in the mean, it becomes a typical positive vector), and at $\alpha = 0.5$ it's halfway. If the oracle reads sentiment along something like this direction, its answer should flip somewhere around $\alpha \approx 0.5$.
+If we take a negative sentence's vector $v$ and look at $v + \alpha\, d_{\text{sentiment}}$, then at $\alpha = 1$ we've moved it by exactly the average gap between the two classes
+(in the mean, it becomes a typical positive vector), and at $\alpha = 0.5$ it's halfway. If the oracle reads sentiment along something like this direction, its answer should flip
+somewhere around $\alpha \approx 0.5$.
 '''
 
 # ! CELL TYPE: markdown
@@ -2397,7 +2557,9 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-Now the experiment. We take the negative test sentences, compute the sentiment direction from the *training* set, and sweep $\alpha$. The control is a random direction with the same norm as $d_{\text{sentiment}}$. We also track the oracle's accuracy on the *other* questions (city and number) for the steered vectors, to check that the intervention is specific.
+Now the experiment. We take the negative test sentences, compute the sentiment direction from the *training* set, and sweep $\alpha$. The control is a random direction with the
+same norm as $d_{\text{sentiment}}$. We also track the oracle's accuracy on the *other* questions (city and number) for the steered vectors, to check that the intervention is
+specific.
 '''
 
 # ! CELL TYPE: code
@@ -2450,11 +2612,18 @@ r'''
 <details>
 <summary>Help - how should I interpret this plot?</summary>
 
-**The oracle follows the sentiment direction.** At $\alpha = 0$, none of the 285 negative sentences are called positive. At $\alpha = 0.25$, 2% are; at $\alpha = 0.5$, 53%; at $\alpha = 0.75$, 97%; from $\alpha = 1$ on, all of them. The crossover is right where it should be for a reader that uses roughly this direction: halfway between the two class means.
+**The oracle follows the sentiment direction.** At $\alpha = 0$, none of the 285 negative sentences are called positive. At $\alpha = 0.25$, 2% are; at $\alpha = 0.5$, 53%; at
+$\alpha = 0.75$, 97%; from $\alpha = 1$ on, all of them. The crossover is right where it should be for a reader that uses roughly this direction: halfway between the two class
+means.
 
-**A random direction of the same norm does nothing** up to $\alpha = 1.5$ (0% positive). Beyond that it starts to produce some "positive" answers (4% at $\alpha = 2$, 28% at $\alpha = 3$). That's not the oracle reading sentiment from noise: at $\alpha = 3$ the random component has norm about 27, much larger than the whole sentence-specific part of the vector ($\|v - \mu\| \approx 16$), so the injected direction is now mostly noise and the oracle's answers become close to arbitrary.
+**A random direction of the same norm does nothing** up to $\alpha = 1.5$ (0% positive). Beyond that it starts to produce some "positive" answers (4% at $\alpha = 2$, 28% at
+$\alpha = 3$). That's not the oracle reading sentiment from noise: at $\alpha = 3$ the random component has norm about 27, much larger than the whole sentence-specific part of the
+vector ($\|v - \mu\| \approx 16$), so the injected direction is now mostly noise and the oracle's answers become close to arbitrary.
 
-**The intervention is specific, up to a point.** The number answers stay at 99-100% throughout, for both directions. The city answers stay at 85-87% up to $\alpha = 1$ under the sentiment direction, then decline (49% at $\alpha = 3$): since the oracle only sees the *direction* of $v - \mu$, adding a large vector of any kind dilutes everything else. The random direction dilutes the city answer much faster (62% at $\alpha = 1$, 13% at $\alpha = 3$). A plausible reason is that the sentiment direction is one the oracle saw vary constantly in training, whereas a random direction pushes the input somewhere it has never been.
+**The intervention is specific, up to a point.** The number answers stay at 99-100% throughout, for both directions. The city answers stay at 85-87% up to $\alpha = 1$ under the
+sentiment direction, then decline (49% at $\alpha = 3$): since the oracle only sees the *direction* of $v - \mu$, adding a large vector of any kind dilutes everything else. The
+random direction dilutes the city answer much faster (62% at $\alpha = 1$, 13% at $\alpha = 3$). A plausible reason is that the sentiment direction is one the oracle saw vary
+constantly in training, whereas a random direction pushes the input somewhere it has never been.
 </details>
 '''
 
@@ -2465,16 +2634,21 @@ r'''
 r'''
 ## Activation patching, read out by the oracle
 
-The steering experiment edited the vector the oracle reads directly. A stronger test is to edit the *target model's computation upstream*, and check that the oracle notices the consequences downstream.
+The steering experiment edited the vector the oracle reads directly. A stronger test is to edit the *target model's computation upstream*, and check that the oracle notices the
+consequences downstream.
 
-Take a sweep sentence like `"My elephant in Tokyo dreaded the garden."` and a **counterfactual** that differs only in the city: `"My elephant in Oslo dreaded the garden."`. Both have the same tokens except at position 4. Now:
+Take a sweep sentence like `"My elephant in Tokyo dreaded the garden."` and a **counterfactual** that differs only in the city: `"My elephant in Oslo dreaded the garden."`. Both
+have the same tokens except at position 4. Now:
 
 1. run the counterfactual and cache its residual stream at layer $L$;
 2. run the original, but at layer $L$ overwrite position 4 (the city token) with the counterfactual's value;
 3. let the model continue to layer 6, and take the final-token vector;
 4. ask the oracle "Which city is mentioned?".
 
-If $L = 0$, we've effectively changed the input token, so the final-token vector should encode Oslo. But the final token learns about the city through attention, in some range of layers. Once those layers have already read the city token, patching it at a later layer comes too late: the final token has already copied "Tokyo". So the fraction of oracle answers that say "Oslo", as a function of $L$, tells us **at which layers GPT-2 moves the city's identity to the end of the sentence**. We'll validate the oracle's readout by also applying the layer-6 city probe from section 1️⃣ to the same patched vectors.
+If $L = 0$, we've effectively changed the input token, so the final-token vector should encode Oslo. But the final token learns about the city through attention, in some range of
+layers. Once those layers have already read the city token, patching it at a later layer comes too late: the final token has already copied "Tokyo". So the fraction of oracle
+answers that say "Oslo", as a function of $L$, tells us **at which layers GPT-2 moves the city's identity to the end of the sentence**. We'll validate the oracle's readout by also
+applying the layer-6 city probe from section 1️⃣ to the same patched vectors.
 '''
 
 # ! CELL TYPE: markdown
@@ -2491,7 +2665,10 @@ r'''
 > You should spend up to 15-20 minutes on this exercise.
 > ```
 
-Implement `patched_final_vectors`. Given `clean_tokens` and `corrupt_tokens` of the same shape (with BOS), it should return the residual stream after `read_layer` blocks at the **final** position of the clean run, when position `patch_pos` after `patch_layer` blocks has been overwritten with the corrupted run's value at the same layer and position. Use `resid_hook_name` for both hook points. You can assume `patch_layer <= read_layer`. (When they're equal, add the patching hook first: hooks on the same hook point run in the order they're given.)
+Implement `patched_final_vectors`. Given `clean_tokens` and `corrupt_tokens` of the same shape (with BOS), it should return the residual stream after `read_layer` blocks at the
+**final** position of the clean run, when position `patch_pos` after `patch_layer` blocks has been overwritten with the corrupted run's value at the same layer and position. Use
+`resid_hook_name` for both hook points. You can assume `patch_layer <= read_layer`. (When they're equal, add the patching hook first: hooks on the same hook point run in the order
+they're given.)
 '''
 
 # ! CELL TYPE: code
@@ -2541,7 +2718,8 @@ r'''
 <details>
 <summary>Hint</summary>
 
-Cache the corrupted run with `names_filter=patch_name`. Then run the clean tokens with two hooks: one at `patch_name` that writes `corrupt_cache[patch_name][:, patch_pos]` into `resid[:, patch_pos]`, and one at `read_name` that stores `resid[:, -1]`. Since we're not training anything here, modifying `resid` in place is fine.
+Cache the corrupted run with `names_filter=patch_name`. Then run the clean tokens with two hooks: one at `patch_name` that writes `corrupt_cache[patch_name][:, patch_pos]` into
+`resid[:, patch_pos]`, and one at `read_name` that stores `resid[:, -1]`. Since we're not training anything here, modifying `resid` in place is fine.
 </details>
 '''
 
@@ -2550,7 +2728,8 @@ Cache the corrupted run with `names_filter=patch_name`. Then run the clean token
 # ! TAGS: []
 
 r'''
-Let's build 300 clean/counterfactual pairs from the sweep sentences, each with a different (training) city, and run the experiment for every patch layer from 0 to 6. As a specificity control we also ask the oracle about the **animal**: patching the city token shouldn't change that answer.
+Let's build 300 clean/counterfactual pairs from the sweep sentences, each with a different (training) city, and run the experiment for every patch layer from 0 to 6. As a
+specificity control we also ask the oracle about the **animal**: patching the city token shouldn't change that answer.
 '''
 
 # ! CELL TYPE: code
@@ -2606,15 +2785,22 @@ r'''
 <details>
 <summary>Help - how should I interpret this plot?</summary>
 
-**At layer 0, patching is the same as changing the input word**, and the oracle names the new city 84% of the time (its normal accuracy at the final token of these sentences is 86%), the probe 99%.
+**At layer 0, patching is the same as changing the input word**, and the oracle names the new city 84% of the time (its normal accuracy at the final token of these sentences is
+86%), the probe 99%.
 
-**As the patch layer increases, the new city fades out, and both readers agree on where.** The oracle names the new city 62% of the time when patching at layer 1, 42% at layer 2, 3% at layer 3, and 1% after that. The probe: 92%, 80%, 7%, then about 0. Meanwhile the oracle's "original city" answers climb from 0% to 71% at layer 3, and to 87% by layer 6. So GPT-2 copies the city's identity out of the city token during **blocks 0-2**: by the time block 3 runs, the information has already been moved to later positions, and changing it at the source is too late.
+**As the patch layer increases, the new city fades out, and both readers agree on where.** The oracle names the new city 62% of the time when patching at layer 1, 42% at layer 2,
+3% at layer 3, and 1% after that. The probe: 92%, 80%, 7%, then about 0. Meanwhile the oracle's "original city" answers climb from 0% to 71% at layer 3, and to 87% by layer 6. So
+GPT-2 copies the city's identity out of the city token during **blocks 0-2**: by the time block 3 runs, the information has already been moved to later positions, and changing it
+at the source is too late.
 
-**The oracle's transition is more gradual than the probe's** at layers 1-2. At those layers the patched vector contains a mixture of information about both cities, and the oracle names *neither* city for about a third (layer 1) to two fifths (layer 2) of the sentences, while the probe still commits to the new one. Mixed inputs are off-distribution for both readers, and they fail differently.
+**The oracle's transition is more gradual than the probe's** at layers 1-2. At those layers the patched vector contains a mixture of information about both cities, and the oracle
+names *neither* city for about a third (layer 1) to two fifths (layer 2) of the sentences, while the probe still commits to the new one. Mixed inputs are off-distribution for both
+readers, and they fail differently.
 
 **The animal answers stay at 75-78% throughout**, so the patch affects the city and only the city.
 
-This is an activation-patching result about GPT-2 itself (which layers move a city to the end of a sentence), obtained by asking a question in English, and validated with an independent probe.
+This is an activation-patching result about GPT-2 itself (which layers move a city to the end of a sentence), obtained by asking a question in English, and validated with an
+independent probe.
 </details>
 '''
 
@@ -2625,7 +2811,8 @@ This is an activation-patching result about GPT-2 itself (which layers move a ci
 r'''
 ## Try it yourself - interrogate your oracle
 
-Your oracle was trained on a very narrow distribution. Let's see how it behaves outside it. The function below runs any sentence through the target, takes the layer-6 activation at any position, and shows the oracle's top answers to any question.
+Your oracle was trained on a very narrow distribution. Let's see how it behaves outside it. The function below runs any sentence through the target, takes the layer-6 activation at
+any position, and shows the oracle's top answers to any question.
 
 Some things to try:
 
@@ -2724,7 +2911,8 @@ Reading the answers from top to bottom:
 r'''
 ## What changes at full scale
 
-We've trained a toy, so it's worth being explicit about which lessons should transfer to real activation oracles and which shouldn't. Here's how our setup compares with the Activation Oracles of Karvonen et al. (2025), which you used in [1.3.4].
+We've trained a toy, so it's worth being explicit about which lessons should transfer to real activation oracles and which shouldn't. Here's how our setup compares with the
+Activation Oracles of Karvonen et al. (2025), which you used in [1.3.4].
 
 | | this section | full-scale Activation Oracles |
 |---|---|---|
@@ -2735,7 +2923,12 @@ We've trained a toy, so it's worth being explicit about which lessons should tra
 | compute | a few minutes on one GPU | ~10 H100-hours for an 8B model, ~90 H200-hours for 70B |
 | ground truth | known exactly for every example | known for training tasks and for "model organisms" built for evaluation, unknown in real use |
 
-**What gets better with scale.** The biggest difference is *generality*. Our oracle can answer four kinds of question. A full-scale oracle, trained on a diverse mixture, answers questions it was never trained on, and the paper's ablations find that both the diversity and the quantity of training tasks matter. Its evaluation tasks (extracting a secret word from a model fine-tuned never to say it, or a hidden goal from a model's activations) are deliberately different from anything in training. Our held-out paraphrases and the oracle naming unseen entities from their own token positions are tiny versions of the same phenomenon, and our very poor held-out-entity performance at the final token is the same failure that diverse data is meant to fix. A follow-up, *Building Better Activation Oracles* (2026), reports further gains from on-policy training data, better conversational data and reading more layers.
+**What gets better with scale.** The biggest difference is *generality*. Our oracle can answer four kinds of question. A full-scale oracle, trained on a diverse mixture, answers
+questions it was never trained on, and the paper's ablations find that both the diversity and the quantity of training tasks matter. Its evaluation tasks (extracting a secret word
+from a model fine-tuned never to say it, or a hidden goal from a model's activations) are deliberately different from anything in training. Our held-out paraphrases and the oracle
+naming unseen entities from their own token positions are tiny versions of the same phenomenon, and our very poor held-out-entity performance at the final token is the same failure
+that diverse data is meant to fix. A follow-up, *Building Better Activation Oracles* (2026), reports further gains from on-policy training data, better conversational data and
+reading more layers.
 
 **What doesn't go away.** Every failure mode we found has a full-scale analogue, and some get *harder* to detect:
 
@@ -2744,7 +2937,8 @@ We've trained a toy, so it's worth being explicit about which lessons should tra
 - **The oracle's own knowledge.** In our world every answer is an arbitrary fact about one sentence, so the oracle's prior knowledge can't help (the text-only control proves it). In real use the oracle is a capable language model. As you saw in [1.3.4], an oracle asked "what will the model answer?" about a prompt mentioning France might be reading Paris from the activation, or recognising the question and answering it itself. Text-only, shuffled and causal controls are *more* important at scale, and harder to design, because the "right answer" is often something the oracle could have guessed.
 - **Readable is not the same as used.** The probe and the oracle both read information that's *present*; neither shows the target model *uses* it. Our steering and patching experiments went one step further, but only for interventions we chose. Karvonen et al. evaluate on model organisms where the hidden information is known to drive behaviour, which is the full-scale version of this check.
 
-**What we gave up.** We didn't use LoRA, multiple layers, multi-token inputs or free-text answers, and our "world" has four latent variables, all of them shallow, lexical facts. Several of these are bonus exercises below.
+**What we gave up.** We didn't use LoRA, multiple layers, multi-token inputs or free-text answers, and our "world" has four latent variables, all of them shallow, lexical facts.
+Several of these are bonus exercises below.
 '''
 
 # ! CELL TYPE: markdown
@@ -2775,7 +2969,8 @@ r'''
 r'''
 ## Teach the oracle to abstain
 
-Our oracle never says "I don't know". Add a fifth answer, `" unknown"`, and add training examples where it's the correct answer: questions asked at positions *before* the relevant token (where causal masking guarantees the answer isn't there), and perhaps some random vectors. Then measure:
+Our oracle never says "I don't know". Add a fifth answer, `" unknown"`, and add training examples where it's the correct answer: questions asked at positions *before* the relevant
+token (where causal masking guarantees the answer isn't there), and perhaps some random vectors. Then measure:
 
 - how often it abstains on random vectors and shuffled vectors (a shuffled vector is a real sentence, so "unknown" would be *wrong* there: the oracle can't tell it's the wrong sentence);
 - how often it abstains on held-out entities at the final token, where it used to confabulate;
@@ -2785,11 +2980,13 @@ Does abstention learned on "positions before the token" generalise to "entities 
 
 ## A multi-layer oracle
 
-Train on activations from layers 3, 6 and 9, telling the oracle which layer it's reading by writing it in the prompt (e.g. `"Layer 6: ?"`, as in [1.3.4]). Redo the layer-transfer plot. Does the oracle interpolate to layers 4, 5, 7 and 8? Does it help to *not* tell it the layer?
+Train on activations from layers 3, 6 and 9, telling the oracle which layer it's reading by writing it in the prompt (e.g. `"Layer 6: ?"`, as in [1.3.4]). Redo the layer-transfer
+plot. Does the oracle interpolate to layers 4, 5, 7 and 8? Does it help to *not* tell it the layer?
 
 ## Ablating the injection
 
-Our injection has three design choices: norm-matched *addition* rather than replacement, *centring* by $\mu$, and the injection layer (1). Retrain with each one changed, keeping the step budget fixed:
+Our injection has three design choices: norm-matched *addition* rather than replacement, *centring* by $\mu$, and the injection layer (1). Retrain with each one changed, keeping
+the step budget fixed:
 
 - **Without centring.** How much worse is accuracy at the final token after 800 steps? How many steps does it take to catch up? (Compare with the cosine-similarity numbers from section 2️⃣.)
 - **Replacement** ($h' = v$, or $h' = \|h\|\,\hat v$). Track the residual stream norm at the placeholder through the oracle's layers during training. Do you see the norm growth that Karvonen et al. report?
@@ -2797,19 +2994,26 @@ Our injection has three design choices: norm-matched *addition* rather than repl
 
 ## LoRA instead of full fine-tuning
 
-Replace full fine-tuning with LoRA adapters on the attention and MLP weights. (In TransformerLens, `torch.nn.utils.parametrize.register_parametrization` lets you add a low-rank update $W + AB$ to a weight like `blocks[i].attn.W_Q` without changing any model code.) A LoRA oracle can share one set of base weights with the target, which is how full-scale oracles are deployed. Compare accuracy, the held-out splits, and whether the oracle can still complete ordinary text. Which generalises better to held-out paraphrases?
+Replace full fine-tuning with LoRA adapters on the attention and MLP weights. (In TransformerLens, `torch.nn.utils.parametrize.register_parametrization` lets you add a low-rank
+update $W + AB$ to a weight like `blocks[i].attn.W_Q` without changing any model code.) A LoRA oracle can share one set of base weights with the target, which is how full-scale
+oracles are deployed. Compare accuracy, the held-out splits, and whether the oracle can still complete ordinary text. Which generalises better to held-out paraphrases?
 
 ## Multi-token inputs
 
-Inject *every* position of the source sentence, with one placeholder per token (`" ? ? ? ? ? ? ? ? ?"`). This is the "full sequence" mode from [1.3.4]. The oracle should now be able to read the city from the city token, the sentiment from the verb, and so on. How do accuracy and held-out entity performance compare with the single-vector oracles? Is there anything a single final-token vector can tell you that the full sequence can't?
+Inject *every* position of the source sentence, with one placeholder per token (`" ? ? ? ? ? ? ? ? ?"`). This is the "full sequence" mode from [1.3.4]. The oracle should now be
+able to read the city from the city token, the sentiment from the verb, and so on. How do accuracy and held-out entity performance compare with the single-vector oracles? Is there
+anything a single final-token vector can tell you that the full sequence can't?
 
 ## Compositional and novel questions
 
-Add yes/no questions that mention a value, such as `"Is this about a dog?"` or `"Did it happen in Paris?"`, with half of the asked values true. These are question-conditioned in a way a probe bank can't easily be: there are as many possible questions as entities. Hold out some (value, family) combinations from training. Can the oracle answer `"Is this about a frog?"` if it has only ever been asked about frogs in the "which animal?" form?
+Add yes/no questions that mention a value, such as `"Is this about a dog?"` or `"Did it happen in Paris?"`, with half of the asked values true. These are question-conditioned in a
+way a probe bank can't easily be: there are as many possible questions as entities. Hold out some (value, family) combinations from training. Can the oracle answer `"Is this about
+a frog?"` if it has only ever been asked about frogs in the "which animal?" form?
 
 ## Data diversity vs quantity
 
-Held-out templates were one of the weakest splits. Train oracles on 1, 2, 4 and 6 templates with the same number of steps, and plot held-out-template accuracy against the number of training templates. Karvonen et al. find that diversity of training tasks helps even at a fixed number of examples. Do you see the same thing for diversity of *inputs*?
+Held-out templates were one of the weakest splits. Train oracles on 1, 2, 4 and 6 templates with the same number of steps, and plot held-out-template accuracy against the number of
+training templates. Karvonen et al. find that diversity of training tasks helps even at a fixed number of examples. Do you see the same thing for diversity of *inputs*?
 
 ## Anomaly hunt
 

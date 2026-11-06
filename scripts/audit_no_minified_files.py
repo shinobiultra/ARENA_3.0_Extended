@@ -8,9 +8,14 @@ ARENA files can keep their historical formatting.
 from __future__ import annotations
 
 import sys
+import base64
+import binascii
 import hashlib
+from html.parser import HTMLParser
+import io
 import json
 from pathlib import Path
+import re
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -23,6 +28,163 @@ from scripts.audit_extension_artifact_hygiene import iter_extension_files
 PY_MAX_LINE_LENGTH = 240
 MD_MAX_LINE_LENGTH = 400
 IPYNB_MAX_LINE_LENGTH = 5000
+
+
+def _is_image_only_html(value: str) -> bool:
+    """Allow inert images only, after checking each data URL and actual bytes."""
+    from PIL import Image
+
+    class ImageHTML(HTMLParser):
+        valid = True
+        sources: list[str]
+
+        def __init__(self) -> None:
+            super().__init__(convert_charrefs=True)
+            self.sources = []
+
+        def handle_starttag(self, tag, attrs):
+            names = [name for name, _ in attrs]
+            if (tag != "img" or len(names) != len(set(names))
+                    or set(names) - {"src", "width", "height", "alt", "title"}):
+                self.valid = False
+                return
+            attributes = dict(attrs)
+            for name, item in attrs:
+                if (item is None or (name in {"width", "height"}
+                                     and re.fullmatch(r"[1-9][0-9]{0,4}", item) is None)
+                        or (name in {"alt", "title"} and any(
+                            ord(char) < 32 or char in "<>" for char in item))):
+                    self.valid = False
+            self.sources.append(attributes.get("src", ""))
+
+        def handle_startendtag(self, tag, attrs):
+            self.handle_starttag(tag, attrs)
+
+        def handle_data(self, data):
+            if data.strip():
+                self.valid = False
+
+        def handle_endtag(self, tag):
+            self.valid = False
+
+        def handle_comment(self, data):
+            self.valid = False
+
+        def handle_decl(self, decl):
+            self.valid = False
+
+        def handle_pi(self, data):
+            self.valid = False
+
+        def unknown_decl(self, data):
+            self.valid = False
+
+    parser = ImageHTML()
+    try:
+        parser.feed(value)
+        parser.close()
+        # HTMLParser recovers malformed markup; also require complete lexical tags.
+        if (not parser.valid or not parser.sources
+                or re.fullmatch(r"(?:\s*<img\s+[^<>]+/?>)+\s*", value) is None):
+            return False
+        for source in parser.sources:
+            match = re.fullmatch(r"data:image/(png|jpeg|gif|webp);base64,([A-Za-z0-9+/]+={0,2})", source)
+            if match is None:
+                return False
+            mime, encoded = match.groups()
+            data = base64.b64decode(encoded, validate=True)
+            signatures = {
+                "png": data.startswith(b"\x89PNG\r\n\x1a\n") and data.endswith(b"IEND\xaeB`\x82"),
+                "jpeg": data.startswith(b"\xff\xd8\xff") and data.endswith(b"\xff\xd9"),
+                "gif": data.startswith((b"GIF87a", b"GIF89a")) and data.endswith(b";"),
+                "webp": (data.startswith(b"RIFF") and data[8:12] == b"WEBP"
+                         and int.from_bytes(data[4:8], "little") + 8 == len(data)),
+            }
+            if not signatures[mime]:
+                return False
+            with Image.open(io.BytesIO(data)) as picture:
+                if (picture.format != {"png": "PNG", "jpeg": "JPEG", "gif": "GIF", "webp": "WEBP"}[mime]
+                        or picture.width * picture.height > 80 * 1024 * 1024):
+                    return False
+                picture.verify()
+            # verify() checks the container; loading also rejects invalid compressed
+            # pixel data masquerading as an otherwise well-formed image container.
+            with Image.open(io.BytesIO(data)) as picture:
+                picture.load()
+        return True
+    except (ValueError, binascii.Error, OSError, SyntaxError, AssertionError, Image.DecompressionBombError):
+        return False
+
+
+def _json_strings(text: str):
+    """Yield string value spans with their JSON paths (the JSON is already valid)."""
+    decoder = json.JSONDecoder()
+
+    def whitespace(index):
+        while index < len(text) and text[index].isspace():
+            index += 1
+        return index
+
+    def visit(index, path):
+        index = whitespace(index)
+        if text[index] == "{":
+            index = whitespace(index + 1)
+            while text[index] != "}":
+                key, end = decoder.raw_decode(text, index)
+                index = yield from visit(whitespace(end) + 1, (*path, key))
+                index = whitespace(index)
+                if text[index] == ",":
+                    index = whitespace(index + 1)
+            return index + 1
+        if text[index] == "[":
+            index, item = whitespace(index + 1), 0
+            while text[index] != "]":
+                index = yield from visit(index, (*path, item))
+                item += 1
+                index = whitespace(index)
+                if text[index] == ",":
+                    index = whitespace(index + 1)
+            return index + 1
+        value, end = decoder.raw_decode(text, index)
+        if isinstance(value, str):
+            yield path, value, index, end
+        return end
+
+    yield from visit(0, ())
+
+
+def _html_image_output_lines(text: str, cells: list) -> set[int]:
+    """Only exempt serialized strings belonging to valid complete HTML outputs."""
+    allowed: dict[tuple, str] = {}
+    for cell_index, cell in enumerate(cells):
+        if cell.get("cell_type") != "code":
+            continue
+        for output_index, output in enumerate(cell.get("outputs", [])):
+            if output.get("output_type") not in {"display_data", "execute_result"}:
+                continue
+            value = output.get("data", {}).get("text/html")
+            parts = value if isinstance(value, list) else [value]
+            if not all(isinstance(part, str) for part in parts):
+                continue
+            if not _is_image_only_html("".join(parts)):
+                continue
+            prefix = ("cells", cell_index, "outputs", output_index, "data", "text/html")
+            allowed.update({(*prefix, i): part for i, part in enumerate(parts)}
+                           if isinstance(value, list) else {prefix: value})
+    exempt: set[int] = set()
+    # Require the rest of the physical line to be only the corresponding JSON
+    # key/list punctuation. A collapsed source or another value is never exempt.
+    for path, value, start, end in _json_strings(text):
+        if value != allowed.get(path):
+            continue
+        line_start = text.rfind("\n", 0, start) + 1
+        line_end = text.find("\n", end)
+        if line_end == -1:
+            line_end = len(text)
+        before, after = text[line_start:start].strip(), text[end:line_end].strip()
+        if before in {"", '"text/html":', '"text/html": ['} and after in {"", ",", "]", "],"}:
+            exempt.add(text.count("\n", 0, start) + 1)
+    return exempt
 
 
 def _display_path(path: Path) -> str:
@@ -107,7 +269,8 @@ def _notebook_blockers(path: Path) -> list[str]:
     # Notebook images are encoded on one line by nbformat. They are results the
     # learner needs to see, not minified source. Limit the exemption to binary
     # MIME values actually present in an output or attachment; source and HTML
-    # still receive the ordinary serialized-line check.
+    # still receive the ordinary serialized-line check, except for independently
+    # validated image-only HTML at an actual code-cell output location.
     binary_mimes = {"image/png", "image/jpeg", "image/gif", "image/webp", "application/pdf"}
     rendered_values: dict[str, set[str]] = {}
     for cell in cells:
@@ -119,8 +282,11 @@ def _notebook_blockers(path: Path) -> list[str]:
                 if isinstance(value, str):
                     rendered_values.setdefault(mime, set()).add(value)
 
+    html_image_lines = _html_image_output_lines(text, cells)
     for line_number, line in enumerate(lines, 1):
         if len(line) <= IPYNB_MAX_LINE_LENGTH:
+            continue
+        if line_number in html_image_lines:
             continue
         try:
             entry = json.loads("{" + line.strip().rstrip(",") + "}")

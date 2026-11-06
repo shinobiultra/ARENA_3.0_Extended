@@ -1,0 +1,32 @@
+{
+  "schema_version": 1,
+  "section": "16.11",
+  "sources": {
+    "page": {
+      "path": "chapter16_shapley_attribution_baselines/instructions/pages/11_[16.11]_Datamodels_and_Dataset_Cartography.md",
+      "sha256": "d7c2bad397b1cb3e35d14fe9645c1e5c07a70d2ee49249e1be4a73a6da4f6f98"
+    },
+    "exercises": {
+      "path": "chapter16_shapley_attribution_baselines/exercises/part11_datamodels_cartography/16.11_Datamodels_and_Dataset_Cartography_exercises.ipynb",
+      "sha256": "af5f1930367a172c5ed747b968a8079d068a536fe380a519e5ac92d679aac8ee"
+    },
+    "reference": {
+      "path": "chapter16_shapley_attribution_baselines/exercises/part11_datamodels_cartography/16.11_Datamodels_and_Dataset_Cartography_solutions.ipynb",
+      "sha256": "6956ab48f12069132a6697e00dfb64a868b5a01437f207111b5148e58b745fbd"
+    }
+  },
+  "replacements": [
+    {
+      "old": "[16.9 Influence Functions and TracIn](../part9_influence_and_tracin/README.md)",
+      "new": "[16.10 Influence Functions and TracIn](../../exercises/part10_influence_tracin/16.10_Influence_Functions_and_TracIn_exercises.ipynb)",
+      "counts": {
+        "page": 2,
+        "exercises": 2,
+        "reference": 2
+      }
+    }
+  ],
+  "rationale": [
+    "Correct the current configured Influence Functions handoff; historical provenance remains intact."
+  ]
+}

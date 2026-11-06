@@ -764,45 +764,91 @@ requirements:
   - id: circuits.attribution_patching_eap_integrated_effects
     topic: Attribution patching, EAP, integrated gradients, and integrated effects
     chapter: 4 Circuit methods
-    section: "8.3"
+    section: "8.2"
     status: TAUGHT
     roadmap_refs: [Extension-Roadmap.md:825-849, Extension-Roadmap.md:3117-3169]
-    course_sections: ["8.2", "8.3"]
+    course_sections: ["8.2"]
     method_registry_names: ["Attribution patching, EAP, and integrated effects"]
-    evidence: [chapter8_automated_circuits/exercises/part2_attribution_patching_eap, chapter8_automated_circuits/exercises/part3_acdc_circuit_metrics]
-    reason: Section 8.2 supplies exact nonlinear controls; the completed 8.3 learner implements all 32,491 GPT-2 additive edges, gradient contractions, EAP and task/KL integrated scores with fixed corrupt-reference interpolation. Author-code and selector parity, five edge budgets, both IOI corruptions and greater-than frozen transfer retain negative and positive results.
+    evidence:
+      - infrastructure/chapters/chapter8_automated_circuits/master_8_2.py
+      - chapter8_automated_circuits/exercises/part2_attribution_patching_eap/8.2_Attribution_Patching_and_EAP_exercises.ipynb
+      - chapter8_automated_circuits/exercises/part2_attribution_patching_eap/tests.py
+    reason: >-
+      Current 8.2 exposes student implementations of forward/backward caches,
+      attribution patching, exact head/residual/edge interventions, single-component
+      integrated gradients, the 32,491-edge GPT-2 graph, and EAP contractions.
+      Held-out circuit faithfulness and same-size random circuits connect scores
+      to behavior on IOI and greater-than tasks. The retained TAUGHT label records
+      curriculum coverage, not fresh execution or learner acceptance. Numerical
+      and author-parity claims from the retired 8.3 study are not transferred here.
     blocker: null
 
   - id: circuits.eap_ig
     topic: EAP-IG
     chapter: 4 Circuit methods
-    section: "8.3"
+    section: "8.2"
     status: TAUGHT
     roadmap_refs: [Extension-Roadmap.md:3139-3169, Extension-Roadmap.md:6210-6242]
-    evidence: [chapter8_automated_circuits/exercises/part2_attribution_patching_eap, chapter8_automated_circuits/exercises/part3_acdc_circuit_metrics]
-    reason: The full own-answer 8.3 learner implements input-interpolated EAP-IG with an eight-point left grid, task and clean-KL losses, and both top-score and author-style greedy circuit selection. All 32,491 real GPT-2 scores and five selector budgets match the pinned author implementation within numerical tolerance. Greater-than task/KL circuits transfer with recovery 0.8586/0.9090; weak IOI results remain visible. This is a scoped method study, not the paper's complete benchmark suite.
+    evidence:
+      - infrastructure/chapters/chapter8_automated_circuits/master_8_2.py
+      - chapter8_automated_circuits/exercises/part2_attribution_patching_eap/8.2_Attribution_Patching_and_EAP_exercises.ipynb
+      - chapter8_automated_circuits/exercises/part2_attribution_patching_eap/tests.py
+    reason: >-
+      Current 8.2 implements input-embedding interpolation with alpha=k/n_steps,
+      fixed clean-to-corrupt sender differences, and averaged receiver gradients.
+      Its visible examples use five and twenty left-grid steps, check the input-edge
+      completeness limit, and compare selected-circuit faithfulness with EAP and
+      same-size random circuits. One integration step reduces to EAP. The retained
+      TAUGHT status does not certify a new run, full paper replication, or the
+      retired study's eight-point task/KL and author-selector parity claims.
     blocker: null
 
   - id: circuits.atp_star
     topic: AtP star
     chapter: 4 Circuit methods
-    section: unassigned
+    section: "8.3"
     status: UNIMPLEMENTED
     roadmap_refs: [Extension-Roadmap.md:825-849, Extension-Roadmap.md:5269-5288]
-    evidence: [chapter8_automated_circuits/exercises/part6_atp_star]
-    reason: An unreleased candidate now exposes corrected real node gradients, Q/K correction, GradDrop, and exact controlled Pythia comparisons in an executed learner notebook.
-    blocker: Independent review, strict CUDA evidence, release registration, and the paper's subset-sampling false-negative diagnostic remain missing.
+    evidence:
+      - infrastructure/chapters/chapter8_automated_circuits/master_8_3.py
+      - chapter8_automated_circuits/exercises/part3_atp_star/8.3_AtP_from_Scratch_exercises.ipynb
+      - chapter8_automated_circuits/exercises/part3_atp_star/tests.py
+    reason: >-
+      Current 8.3 exposes exact effects for 576 GPT-2 attention nodes, per-prompt
+      attribution, the QK correction, a cancellation organism, and GradDrop.
+      Recall curves and component ablations distinguish gradient dropping from
+      mean-absolute per-prompt aggregation. A budgeted neuron search uses exact
+      verification and explicitly limited group tests. This current GPT-2 lesson
+      is distinct from the retired Pythia candidate.
+    blocker: >-
+      The paper's statistical subset-sampling false-negative bound remains a bonus
+      extension rather than an implemented diagnostic. Current-source independent
+      review, strict CUDA evidence, release registration, and learner acceptance
+      are not established by this path repair; retain the existing UNIMPLEMENTED
+      release blocker despite the implemented candidate methods.
 
   - id: circuits.acdc
     topic: ACDC iterative circuit discovery
     chapter: 4 Circuit methods
-    section: "8.3"
+    section: "8.4"
     status: TAUGHT
     roadmap_refs: [Extension-Roadmap.md:851-872, Extension-Roadmap.md:3258-3310]
+    # Historical key in arena_style_rewrite_status.yml; current lesson is 8.4.
     course_sections: ["8.3"]
     method_registry_names: [ACDC and circuit metrics]
-    evidence: [chapter8_automated_circuits/exercises/part3_acdc_circuit_metrics]
-    reason: Twenty-one exercise groups progress from exact ground truth to sequential ACDC on all 32,491 additive GPT-2 edges with current-hybrid corrupt-reference interventions. The complete 44-code-cell learner, five owned search traces and fourteen figures pass; all 56 tests and separate CUDA remeasurement of five circuits and 320 nulls pass. Greater-than ACDC retains 78 edges and transfers with recovery 0.8318. All four IOI thresholds fail fixed development selection and its holdout remains unopened. Interrupted own-search continuation is recorded explicitly.
+    evidence:
+      - infrastructure/chapters/chapter8_automated_circuits/master_8_4.py
+      - chapter8_automated_circuits/exercises/part4_acdc_circuit_metrics/8.4_ACDC_and_Circuit_Metrics_exercises.ipynb
+      - chapter8_automated_circuits/exercises/part4_acdc_circuit_metrics/tests.py
+    reason: >-
+      Current 8.4 implements corrupt-reference graph forwards, reverse-topological
+      sequential ACDC against the current circuit, and removal of inputs to nodes
+      whose outputs have already been removed. The learner applies the same search
+      to induction and the GPT-2 greater-than graph and compares threshold sweeps
+      with single-edge and random baselines. The historical course-status key 8.3
+      is retained solely for that registry's existing tracking identity. TAUGHT
+      remains a coverage label; the retired 78-edge result and CUDA acceptance
+      counts are not evidence for this current lesson.
     blocker: null
 
   - id: circuits.causal_scrubbing
@@ -818,11 +864,21 @@ requirements:
   - id: circuits.circuit_metrics
     topic: Faithfulness, completeness, minimality, sparsity, and OOD circuit metrics
     chapter: 4 Circuit methods
-    section: "8.3"
+    section: "8.4"
     status: TAUGHT
     roadmap_refs: [Extension-Roadmap.md:851-872, Extension-Roadmap.md:3258-3310]
-    evidence: [chapter8_automated_circuits/exercises/part3_acdc_circuit_metrics]
-    reason: The full own-answer 8.3 learner measures raw task effects, normalized recovery, clean-to-circuit KL, sparsity and changed-wording transfer for four frozen greater-than circuits plus a development-only IOI diagnostic. Every retained ACDC edge is deleted and 72 full-versus-circuit subset removals per circuit probe bounded completeness. Each circuit keeps 32 uniform and 32 receiver-matched nulls; independent CUDA remeasurement matches all five circuits and 320 controls exactly. Sampled completeness is not a global proof and OOD means the declared wording shift.
+    evidence:
+      - infrastructure/chapters/chapter8_automated_circuits/master_8_4.py
+      - chapter8_automated_circuits/exercises/part4_acdc_circuit_metrics/8.4_ACDC_and_Circuit_Metrics_exercises.ipynb
+      - chapter8_automated_circuits/exercises/part4_acdc_circuit_metrics/tests.py
+    reason: >-
+      Current 8.4 teaches normalized faithfulness, clean-to-circuit KL, edge-count
+      sparsity, per-edge minimality, random-subset completeness comparisons, and
+      ROC evaluation against the known induction circuit. Held-out prompts and
+      same-size random circuits test generalization within the declared task;
+      the repeated-pattern play cell changes that task explicitly. Sampled
+      completeness is not a proof. No current OOD or CUDA acceptance claim is
+      inferred from the retired study's circuit counts, controls, or wording shift.
     blocker: null
 
   - id: circuits.attribution_graphs
@@ -2114,24 +2170,54 @@ requirements:
   - id: data_attribution.exact_mc_data_shapley
     topic: Exact and Monte Carlo Data Shapley
     chapter: 11 Shapley and attribution baselines
-    section: "16.7"
+    section: "16.9"
     status: TOY_ONLY
     roadmap_refs: [Extension-Roadmap.md:7053-7118]
+    # Historical key in arena_style_rewrite_status.yml; current lesson is 16.9.
     course_sections: ["16.7"]
     method_registry_names: [Data Shapley in one training run]
-    evidence: [chapter16_shapley_attribution_baselines/exercises/part7_data_shapley_in_one_training_run]
-    reason: Exact, Monte Carlo, and deletion controls exist on a tiny training problem.
-    blocker: The current 16.7 rewrite is uncommitted and has not yet completed the repository verification gates.
+    evidence:
+      - infrastructure/chapters/chapter16_shapley_attribution_baselines/master_16_9.py
+      - chapter16_shapley_attribution_baselines/exercises/part9_data_shapley/16.9_Data_Shapley_in_One_Training_Run_exercises.ipynb
+      - chapter16_shapley_attribution_baselines/exercises/part9_data_shapley/tests.py
+      - docs/mastery/migrations/data_shapley.md
+    reason: >-
+      Current 16.9 implements exact retraining-based Data Shapley, permutation
+      Monte Carlo and truncation on a fixed-denominator logistic game, then batched
+      digit retraining and matched random deletion controls. Leave-one-out and
+      In-Run values answer distinct games and are compared without identifying
+      them as the same estimand. The historical course-status key 16.7 remains a
+      tracking identity, not the current notebook number. Existing CPU execution
+      and strict root-test evidence are documented by the migration record.
+    blocker: >-
+      Retain TOY_ONLY for these bounded logistic/digit studies. The path repair
+      establishes neither large-model data valuation nor general pruning benefit,
+      fresh execution today, full-course verification, or learner acceptance.
 
   - id: data_attribution.in_run_data_shapley
     topic: In-Run Data Shapley first-order attribution
     chapter: 11 Shapley and attribution baselines
-    section: "16.7"
+    section: "16.9"
     status: TOY_ONLY
     roadmap_refs: [Extension-Roadmap.md:7038-7118]
-    evidence: [chapter16_shapley_attribution_baselines/exercises/part7_data_shapley_in_one_training_run]
-    reason: A one-step linear training organism compares in-run scores with exact coalition values.
-    blocker: No multi-step model, Ghost dot product, or realistic optimizer training run is taught.
+    evidence:
+      - infrastructure/chapters/chapter16_shapley_attribution_baselines/master_16_9.py
+      - chapter16_shapley_attribution_baselines/exercises/part9_data_shapley/16.9_Data_Shapley_in_One_Training_Run_exercises.ipynb
+      - chapter16_shapley_attribution_baselines/exercises/part9_data_shapley/tests.py
+      - docs/mastery/migrations/data_shapley.md
+    reason: >-
+      Current 16.9 teaches multi-step minibatch SGD with visible per-example
+      backpropagation factors, Ghost dot products, first-order credit, Hessian-vector
+      second-order corrections, and exact local coalition values. Per-step credits
+      telescope for the exact local game while training parameters match ordinary
+      SGD; validation data affects accounting rather than the update. Digit
+      deletion/retraining controls test whether the credit predicts intervention
+      outcomes. These methods supersede the retired one-step-only description.
+    blocker: >-
+      Retain TOY_ONLY for the controlled SGD organisms. Adam/AdamW state-aware
+      attribution is discussed as a bonus and is not implemented; large-model
+      optimizer evidence and learner acceptance remain absent. In-Run accounting
+      does not equal retraining-based Data Shapley or certify pruning benefit.
 
   - id: data_attribution.influence_functions
     topic: Influence functions

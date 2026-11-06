@@ -60,6 +60,17 @@ def test_encoder_decoder_and_forward_recover_exact_mlp(
         expected_reconstruction,
         msg="The composed transcoder should exactly match the hand-computed MLP replacement.",
     )
+    # Independent mixed inputs, dimensions and decoder reject red-square constants.
+    x=t.tensor([[1.,0.],[0.,1.]])
+    E=t.tensor([[2.,-1.],[-1.,3.],[1.,1.]])
+    b=t.tensor([-1.,-2.,-.5]);D=t.tensor([[1.,2.],[-2.,1.],[.5,-1.]])
+    d=t.tensor([.25,-.5]);expected=t.tensor([[1.5,1.],[-1.5,0.]])
+    pre,features=encode(x,E,b)
+    t.testing.assert_close(pre,t.tensor([[1.,-3.,.5],[-2.,1.,.5]]))
+    t.testing.assert_close(features,t.tensor([[1.,0.,.5],[0.,1.,.5]]))
+    t.testing.assert_close(decode(features,D,d),expected)
+    changed=transcoder_forward(x,E,D,encoder_bias=b,decoder_bias=d)
+    t.testing.assert_close(changed.reconstructed_activations,expected)
     print("All tests in `test_encoder_decoder_and_forward_recover_exact_mlp` passed!")
 
 
@@ -132,6 +143,19 @@ def test_feature_edge_attributions_are_exact_and_conserved(
         attributions.feature_to_score,
         msg="Incoming path attribution must equal each active feature's outgoing score contribution.",
     )
+    # Literal signed paths on changed inputs/weights/readout, one graph per row.
+    E=t.tensor([[2.,-1.],[-1.,3.],[1.,1.]])
+    b=t.tensor([-1.,-2.,-.5]);D=t.tensor([[1.,2.],[-2.,1.],[.5,-1.]])
+    d=t.tensor([.25,-.5]);readout=t.tensor([1.,-1.])
+    fixtures=[(t.tensor([1.,0.]),t.tensor([[-2.,0.,1.5],[0.,0.,0.],[1.,0.,-.75]]),t.tensor([-1.,0.,.75])),
+              (t.tensor([0.,1.]),t.tensor([[0.,0.,0.],[0.,-9.,1.5],[0.,6.,-.75]]),t.tensor([0.,-3.,.75]))]
+    for x,edges,contributions in fixtures:
+        out=transcoder_forward(x,E,D,encoder_bias=b,decoder_bias=d)
+        attr=feature_edge_attributions(x,out.pre_acts,out.feature_acts,E,b,D,readout)
+        t.testing.assert_close(attr.input_to_feature,edges)
+        t.testing.assert_close(attr.feature_to_score,contributions)
+        t.testing.assert_close(attr.input_to_feature.sum(0),contributions)
+        t.testing.assert_close(attr.downstream_effects,t.tensor([-1.,-3.,1.5]))
     print("All tests in `test_feature_edge_attributions_are_exact_and_conserved` passed!")
 
 

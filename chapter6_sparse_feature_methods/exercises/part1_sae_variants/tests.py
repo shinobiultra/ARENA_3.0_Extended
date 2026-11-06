@@ -6,7 +6,7 @@ import torch as t
 
 
 def _solutions():
-    from chapter6_sparse_feature_methods.exercises.part1_sae_variants import solutions
+    from chapter6_sparse_feature_methods.exercises.part1_sae_variants import sae_plumbing as solutions
 
     return solutions
 

@@ -11,7 +11,14 @@ import streamlit_antd_components as sac
 #     {"title": "Bonus", "icon": "star", "subtitle": "(1%)"},
 #     ...
 # ]
-metadata = [{'title': 'Tasks, Metrics and the Patching Loop', 'icon': '1-circle-fill', 'subtitle': '(20%)'}, {'title': 'Sufficiency vs Necessity', 'icon': '2-circle-fill', 'subtitle': '(20%)'}, {'title': 'What Do You Patch In?', 'icon': '3-circle-fill', 'subtitle': '(15%)'}, {'title': 'Direct, Indirect and Total Effects', 'icon': '4-circle-fill', 'subtitle': '(25%)'}, {'title': 'A Second Task, and the Pitfalls Checklist', 'icon': '5-circle-fill', 'subtitle': '(20%)'}, {'title': 'Bonus', 'icon': 'star', 'subtitle': ''}]
+metadata = [
+    {'title': 'Tasks, Metrics and the Patching Loop', 'icon': '1-circle-fill', 'subtitle': '(20%)'},
+    {'title': 'Sufficiency vs Necessity', 'icon': '2-circle-fill', 'subtitle': '(20%)'},
+    {'title': 'What Do You Patch In?', 'icon': '3-circle-fill', 'subtitle': '(15%)'},
+    {'title': 'Direct, Indirect and Total Effects', 'icon': '4-circle-fill', 'subtitle': '(25%)'},
+    {'title': 'A Second Task, and the Pitfalls Checklist', 'icon': '5-circle-fill', 'subtitle': '(20%)'},
+    {'title': 'Bonus', 'icon': 'star', 'subtitle': ''},
+]
 chapter_name = 'chapter8_automated_circuits'
 chapter_name_long = 'Chapter 8 - Automated Circuits'
 section_title = '[8.1] Activation Patching Refresher'
@@ -25,13 +32,14 @@ if str(arena_root_dir) not in sys.path:
 
 from st_chat import display_chat_interface, display_content_with_exercise_chats, initialize_chat
 from st_dependencies import generate_toc, styling
+from infrastructure.extension.render_media import inline_page_media
 
 markdown_content_file = Path(__file__).with_suffix(".md")
 
 # TODO - uncomment the line below, so page is cached (while developing it's easier to comment this out)
 # if st.session_state.get("content_filename", None) != str(markdown_content_file):
 st.session_state["content_filename"] = str(markdown_content_file)
-st.session_state["content"] = markdown_content_file.read_text(encoding="utf-8").split(
+st.session_state["content"] = inline_page_media(markdown_content_file.read_text(encoding="utf-8"), markdown_content_file).split(
     "=== NEW CHAPTER ==="
 )
 

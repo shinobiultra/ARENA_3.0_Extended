@@ -1,0 +1,15 @@
+{
+  "status": "historical_before_registration_and_budget_repair",
+  "files": {
+    "10.1_Capstone_Research_Sprint_exercises.ipynb": {
+      "sha256": "97b5f77ea5545da366faf19f6d117a2b45bd6fbc2ab7e7a94782c9e33e6b46ea",
+      "bytes": 1005399,
+      "snapshot": "10.1_Capstone_Research_Sprint_exercises.ipynb.gz"
+    },
+    "10.1_Capstone_Research_Sprint_solutions.ipynb": {
+      "sha256": "616cf39697d3e6db503fb7b2c1ef4770c201f6479715cb0cab9ef5b3ccd9496e",
+      "bytes": 1012977,
+      "snapshot": "10.1_Capstone_Research_Sprint_solutions.ipynb.gz"
+    }
+  }
+}

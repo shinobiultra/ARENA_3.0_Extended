@@ -1,0 +1,41 @@
+{
+  "baselines": {
+    "required": true
+  },
+  "metrics": {
+    "accepted": true,
+    "learned_hidden_probe_test_accuracy_min": 0.8,
+    "learned_state_intervention_passed": true,
+    "learned_state_intervention_random_target_rate_max": 0.5,
+    "learned_state_intervention_success_rate_min": 0.9,
+    "learned_state_intervention_target_logit_delta_min": 1.0,
+    "max_allowed_gpu_gb": 24,
+    "official_mamba_fast_kernel_available": true,
+    "official_mamba_hidden_shape": [
+      4,
+      11,
+      768
+    ],
+    "official_mamba_hidden_std_min": 0.1,
+    "official_mamba_preflight_passed": true,
+    "tests_passed": true,
+    "tiny_mamba_long_accuracy_min": 0.85,
+    "tiny_mamba_long_late_accuracy_min": 0.8,
+    "tiny_mamba_minus_transformer_long_accuracy_min": 0.2,
+    "tiny_mamba_minus_transformer_long_late_accuracy_min": 0.4,
+    "tiny_mamba_preflight_passed": true,
+    "tiny_mamba_random_label_long_accuracy_max": 0.55,
+    "tiny_mamba_short_accuracy_min": 0.9,
+    "tiny_transformer_comparison_passed": true,
+    "tiny_transformer_long_accuracy_max": 0.75,
+    "tiny_transformer_long_late_accuracy_max": 0.4,
+    "tiny_transformer_short_accuracy_min": 0.95
+  },
+  "negative_controls": {
+    "required_where_applicable": true
+  },
+  "notebook_id": "5_4_mamba_state_tracking",
+  "ood_tests": {
+    "required_where_applicable": true
+  }
+}

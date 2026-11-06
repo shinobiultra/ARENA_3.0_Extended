@@ -1,0 +1,22 @@
+{
+  "development.json": {
+    "sha256": "ec989158afcc8ab3af6fafffddd42d84c11c449cba544cbb276b27a1c75e6307",
+    "gzip_sha256": "bff226b0952bf267d1589660f41b1a1d647dfff124df5f765985a091813f5788"
+  },
+  "final.json": {
+    "sha256": "2cfe1f26f2242ebf22acc3bf1aad39b09aa7e88a94c241257e9ce693da8d81f7",
+    "gzip_sha256": "d1408c0b6e4487d6b7c45cd0769ff66a2c39319a9d84019d768f45df3f8db7fe"
+  },
+  "provenance.json": {
+    "sha256": "22044a58bdd510b9645dee3864ae573e1d92c891ef25da6115579c27f87310c0",
+    "gzip_sha256": "76fb3c554912886fa82e449ce915e0d09f294d0d9097f578aafab8cfecb85809"
+  },
+  "tokenizer.json": {
+    "sha256": "3e050b72d39c0e297b193e7ff4dff6eb603c3f9ef140c451c450ca0e7452252b",
+    "gzip_sha256": "ead0561b3464f347822535d24142411d5a276258b672d2d92aeeb6b4115e5924"
+  },
+  "train.json": {
+    "sha256": "c5ec06679f4f3129912a4bbb62756c6281e874c165c182ad1035962b87443077",
+    "gzip_sha256": "5d6c1dbfc172f3e005c1c9d610dc3bdb6fdc831205d6dbe59c251b2e78e4ce72"
+  }
+}

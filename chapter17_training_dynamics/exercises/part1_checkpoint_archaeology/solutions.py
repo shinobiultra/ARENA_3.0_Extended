@@ -1,13 +1,13 @@
 # %%
-"""Reference solutions for [17.1] checkpoint archaeology.
 
-The learner-facing method is intentionally small enough to run on CPU: train a
-tiny model organism on the complete mod-13 addition table, save real
-checkpoints, reload them, measure a Fourier mechanism score, and test causal
-logit-space interventions.
-"""
 
 from __future__ import annotations
+
+# %%
+
+MAIN = __name__ == "__main__"
+
+# %%
 
 import json
 import sys
@@ -15,15 +15,33 @@ import tempfile
 from pathlib import Path
 from typing import Iterable
 
+import matplotlib.pyplot as plt
 import torch as t
 import torch.nn.functional as F
+from IPython.display import Markdown, display
+
+GT_TIER = "GT-0"
+EXERCISE_ID = "17_1_checkpoint_archaeology_and_mechanism_emergence"
+DIFFICULTY = 4
+IMPORTANCE = 3
+EXPECTED_RUNTIME = "seconds for exact Fourier oracles; about 30 seconds for the CPU train/save/reload notebook contract; parent runner handles CUDA validation"
+REQUIRES_GPU = True
 
 chapter = "chapter17_training_dynamics"
-root_dir = next(p for p in [Path.cwd(), *Path.cwd().parents] if (p / chapter).exists())
+section = "part1_checkpoint_archaeology"
+root_dir = Path(__file__).resolve().parents[3]
+exercises_dir = root_dir / chapter / "exercises"
+section_dir = exercises_dir / section
+assets_dir = root_dir / chapter / "instructions" / "assets"
+
 if str(root_dir) not in sys.path:
     sys.path.append(str(root_dir))
+if str(exercises_dir) not in sys.path:
+    sys.path.append(str(exercises_dir))
 
-from arena_ext.training_dynamics import (  # noqa: E402
+import part1_checkpoint_archaeology.tests as tests
+
+from chapter17_training_dynamics.exercises.part1_checkpoint_archaeology.checkpoint_reports import (
     developmental_comparison_report,
     first_threshold_crossing,
     mechanism_emergence_report,
@@ -33,8 +51,6 @@ from arena_ext.training_dynamics import (  # noqa: E402
     stable_threshold_step,
     toy_training_trajectories,
 )
-
-MAIN = __name__ == "__main__"
 
 MODULAR_ARCHAEOLOGY_MODULUS = 13
 MODULAR_ARCHAEOLOGY_EMBED_DIM = 32
@@ -46,31 +62,10 @@ MODULAR_ARCHAEOLOGY_ACCURACY_THRESHOLD = 0.90
 MODULAR_ARCHAEOLOGY_MECHANISM_THRESHOLD = 0.50
 MODULAR_ARCHAEOLOGY_MIN_CONSECUTIVE = 2
 
+if MAIN:
+    t.manual_seed(0)
 
 # %%
-class TinyModularAdditionMLP(t.nn.Module):
-    """Tiny finite-table model organism for checkpoint archaeology."""
-
-    def __init__(
-        self,
-        *,
-        modulus: int = MODULAR_ARCHAEOLOGY_MODULUS,
-        embed_dim: int = MODULAR_ARCHAEOLOGY_EMBED_DIM,
-        hidden_dim: int = MODULAR_ARCHAEOLOGY_HIDDEN_DIM,
-    ):
-        super().__init__()
-        self.modulus = modulus
-        self.embed = t.nn.Embedding(modulus, embed_dim)
-        self.mlp = t.nn.Sequential(
-            t.nn.Linear(2 * embed_dim, hidden_dim),
-            t.nn.GELU(),
-            t.nn.Linear(hidden_dim, modulus),
-        )
-
-    def forward(self, input_pairs: t.Tensor) -> t.Tensor:
-        embedded = self.embed(input_pairs)
-        return self.mlp(embedded.flatten(start_dim=1))
-
 
 def make_modular_addition_dataset(
     *,
@@ -88,7 +83,6 @@ def make_modular_addition_dataset(
     labels = (pairs[:, 0] + pairs[:, 1]) % modulus
     return pairs, labels
 
-
 def exact_addition_logits(
     *,
     modulus: int = MODULAR_ARCHAEOLOGY_MODULUS,
@@ -102,9 +96,35 @@ def exact_addition_logits(
     logits = t.full((modulus * modulus, modulus), incorrect_logit, device=t.device(device))
     logits[t.arange(labels.numel(), device=labels.device), labels] = correct_logit
     return logits
+if MAIN:
 
+    tests.test_make_modular_addition_dataset_has_exact_finite_table(make_modular_addition_dataset)
 
 # %%
+
+if MAIN:
+    pairs, labels = make_modular_addition_dataset(modulus=MODULAR_ARCHAEOLOGY_MODULUS, device="cpu")
+if MAIN:
+    addition_table = labels.reshape(MODULAR_ARCHAEOLOGY_MODULUS, MODULAR_ARCHAEOLOGY_MODULUS)
+if MAIN:
+    fig, ax = plt.subplots(figsize=(5, 4))
+if MAIN:
+    im = ax.imshow(addition_table, cmap="viridis")
+if MAIN:
+    ax.set_title("Exact target: (a + b) mod 13")
+if MAIN:
+    ax.set_xlabel("b")
+if MAIN:
+    ax.set_ylabel("a")
+if MAIN:
+    fig.colorbar(im, ax=ax, fraction=0.046, pad=0.04)
+if MAIN:
+    plt.show()
+if MAIN:
+    print("Example: (7 + 11) mod 13 =", int(addition_table[7, 11].item()))
+
+# %%
+
 def addition_fourier_mask(
     *,
     modulus: int = MODULAR_ARCHAEOLOGY_MODULUS,
@@ -117,7 +137,6 @@ def addition_fourier_mask(
         input_frequency = (-output_frequency) % modulus
         mask[input_frequency, input_frequency, output_frequency] = True
     return mask
-
 
 def random_fourier_mask(
     *,
@@ -152,7 +171,6 @@ def random_fourier_mask(
         mask[conj[0], conj[1], conj[2]] = True
     return mask.to(device)
 
-
 def _logits_to_centered_cube(logits: t.Tensor, *, modulus: int) -> tuple[t.Tensor, t.Tensor]:
     logits = t.as_tensor(logits).float()
     expected_shape = (modulus * modulus, modulus)
@@ -161,7 +179,6 @@ def _logits_to_centered_cube(logits: t.Tensor, *, modulus: int) -> tuple[t.Tenso
     cube = logits.reshape(modulus, modulus, modulus)
     output_mean = cube.mean(dim=-1, keepdim=True)
     return cube - output_mean, output_mean
-
 
 def fourier_power_fraction(
     logits: t.Tensor,
@@ -182,7 +199,6 @@ def fourier_power_fraction(
         return 0.0
     return float((power[mask].sum() / total_power).item())
 
-
 def addition_mechanism_score(
     logits: t.Tensor,
     *,
@@ -195,9 +211,30 @@ def addition_mechanism_score(
         addition_fourier_mask(modulus=modulus, device=logits.device),
         modulus=modulus,
     )
+if MAIN:
 
+    tests.test_addition_fourier_mask_identifies_exact_addition_rule(
+        addition_fourier_mask,
+        random_fourier_mask,
+        fourier_power_fraction,
+        exact_addition_logits,
+    )
 
 # %%
+
+if MAIN:
+    exact_logits = exact_addition_logits(modulus=MODULAR_ARCHAEOLOGY_MODULUS, device="cpu")
+if MAIN:
+    legal_mask = addition_fourier_mask(modulus=MODULAR_ARCHAEOLOGY_MODULUS, device="cpu")
+if MAIN:
+    random_mask = random_fourier_mask(modulus=MODULAR_ARCHAEOLOGY_MODULUS, seed=17, device="cpu")
+if MAIN:
+    print("legal addition Fourier score:", round(fourier_power_fraction(exact_logits, legal_mask), 4))
+if MAIN:
+    print("same-size random Fourier score:", round(fourier_power_fraction(exact_logits, random_mask), 4))
+
+# %%
+
 def project_logits_to_fourier_mask(
     logits: t.Tensor,
     mask: t.Tensor,
@@ -218,11 +255,9 @@ def project_logits_to_fourier_mask(
     intervened = t.fft.ifftn(filtered, dim=(0, 1, 2)).real + output_mean
     return intervened.reshape(modulus * modulus, modulus)
 
-
 def accuracy_from_logits(logits: t.Tensor, labels: t.Tensor) -> float:
     labels = t.as_tensor(labels, device=logits.device)
     return float(logits.argmax(dim=-1).eq(labels).float().mean().item())
-
 
 def fourier_intervention_report(
     logits: t.Tensor,
@@ -258,9 +293,51 @@ def fourier_intervention_report(
         "legal_ablation_drop": original_accuracy - legal_ablated_accuracy,
         "random_ablation_drop": original_accuracy - random_ablated_accuracy,
     }
+if MAIN:
 
+    tests.test_fourier_intervention_report_is_causal_on_exact_table(
+        fourier_intervention_report,
+        exact_addition_logits,
+        make_modular_addition_dataset,
+    )
 
 # %%
+
+if MAIN:
+    _, labels = make_modular_addition_dataset(modulus=MODULAR_ARCHAEOLOGY_MODULUS, device="cpu")
+if MAIN:
+    exact_report = fourier_intervention_report(exact_logits, labels, random_seed=3)
+if MAIN:
+    for key, value in exact_report.items():
+        print(f"{key:>28}: {value:.4f}")
+
+# %%
+
+class TinyModularAdditionMLP(t.nn.Module):
+    """Tiny finite-table model organism for checkpoint archaeology."""
+
+    def __init__(
+        self,
+        *,
+        modulus: int = MODULAR_ARCHAEOLOGY_MODULUS,
+        embed_dim: int = MODULAR_ARCHAEOLOGY_EMBED_DIM,
+        hidden_dim: int = MODULAR_ARCHAEOLOGY_HIDDEN_DIM,
+    ):
+        super().__init__()
+        self.modulus = modulus
+        self.embed = t.nn.Embedding(modulus, embed_dim)
+        self.mlp = t.nn.Sequential(
+            t.nn.Linear(2 * embed_dim, hidden_dim),
+            t.nn.GELU(),
+            t.nn.Linear(hidden_dim, modulus),
+        )
+
+    def forward(self, input_pairs: t.Tensor) -> t.Tensor:
+        embedded = self.embed(input_pairs)
+        return self.mlp(embedded.flatten(start_dim=1))
+
+# %%
+
 def checkpoint_logits_from_file(
     checkpoint_path: Path,
     *,
@@ -277,7 +354,6 @@ def checkpoint_logits_from_file(
     model.eval()
     with t.inference_mode():
         return model(input_pairs)
-
 
 def train_save_reload_modular_checkpoints(
     *,
@@ -373,17 +449,40 @@ def train_save_reload_modular_checkpoints(
         "random_labels": random_labels,
         "real_checkpoints_reloaded": True,
     }
+if MAIN:
 
+    tests.test_train_save_reload_modular_checkpoints_writes_real_files(
+        train_save_reload_modular_checkpoints
+    )
 
 # %%
+
+if MAIN:
+    with tempfile.TemporaryDirectory(prefix="arena17_small_reload_") as tmp:
+        small_run = train_save_reload_modular_checkpoints(
+            checkpoint_dir=Path(tmp),
+            device="cpu",
+            seed=0,
+            steps=32,
+            checkpoint_steps=[0, 4, 8, 16, 32],
+        )
+if MAIN:
+    print("steps:", small_run["steps"].tolist())
+if MAIN:
+    print("accuracy:", [round(x, 3) for x in small_run["accuracies"].tolist()])
+if MAIN:
+    print("addition Fourier score:", [round(x, 3) for x in small_run["mechanism_scores"].tolist()])
+if MAIN:
+    print("random Fourier score:", [round(x, 4) for x in small_run["random_mechanism_scores"].tolist()])
+
+# %%
+
 def _report_dict(report) -> dict:
     return report.__dict__.copy()
-
 
 def _tensor_to_list(tensor: t.Tensor) -> list[float] | list[int]:
     values = tensor.detach().cpu().tolist()
     return values if isinstance(values, list) else [values]
-
 
 def _select_early_mid_late_steps(steps: t.Tensor, accuracies: t.Tensor) -> dict[str, int]:
     early = int(steps[0].item())
@@ -394,7 +493,6 @@ def _select_early_mid_late_steps(steps: t.Tensor, accuracies: t.Tensor) -> dict[
         mid = int(steps[len(steps) // 2].item())
     late = int(steps[-1].item())
     return {"early": early, "mid": mid, "late": late}
-
 
 def checkpoint_archaeology_signature_result(
     checkpoint_root: Path | None = None,
@@ -607,9 +705,31 @@ def checkpoint_archaeology_signature_result(
 
     with tempfile.TemporaryDirectory(prefix="arena17_checkpoint_archaeology_") as tmp:
         return _run(Path(tmp))
+if MAIN:
 
+    with tempfile.TemporaryDirectory(prefix="arena17_notebook_signature_") as tmp:
+        signature_result = checkpoint_archaeology_signature_result(
+            checkpoint_root=Path(tmp),
+            device="cpu",
+            seed=0,
+            include_figure=False,
+        )
+if MAIN:
+
+    assert signature_result["preflight_passed"]
+if MAIN:
+    assert signature_result["final_accuracy"] == 1.0
+if MAIN:
+    assert signature_result["final_addition_fourier_score"] >= 0.70
+if MAIN:
+    assert signature_result["random_label_peak_accuracy"] <= 0.20
+if MAIN:
+    assert signature_result["random_mechanism_peak_score"] <= 0.05
+if MAIN:
+    print("Signature result accepted: checkpointed training, Fourier metric, interventions, and controls all passed.")
 
 # %%
+
 def plot_checkpoint_archaeology_signature(result: dict, *, save_path: Path | None = None):
     """Create the three-panel learner-facing signature figure."""
 
@@ -695,7 +815,6 @@ def plot_checkpoint_archaeology_signature(result: dict, *, save_path: Path | Non
         fig.savefig(save_path, dpi=180, bbox_inches="tight")
     return fig
 
-
 def metrics_table_markdown(metrics_table: list[dict]) -> str:
     rows = ["| quantity | value | control / threshold | pass |", "|---|---:|---|---|"]
     for row in metrics_table:
@@ -705,8 +824,6 @@ def metrics_table_markdown(metrics_table: list[dict]) -> str:
         )
     return "\n".join(rows)
 
-
-# %%
 def checkpoint_emergence_smoke_test() -> dict:
     steps, trajectories = toy_training_trajectories()
     return _report_dict(
@@ -719,7 +836,6 @@ def checkpoint_emergence_smoke_test() -> dict:
         )
     )
 
-
 def phase_transition_smoke_test() -> dict:
     steps, trajectories = toy_training_trajectories()
     return _report_dict(
@@ -731,7 +847,6 @@ def phase_transition_smoke_test() -> dict:
         )
     )
 
-
 def random_control_smoke_test() -> dict:
     _, trajectories = toy_training_trajectories()
     return _report_dict(
@@ -741,7 +856,6 @@ def random_control_smoke_test() -> dict:
             max_allowed_value=0.2,
         )
     )
-
 
 def developmental_comparison_smoke_test() -> dict:
     steps, trajectories = toy_training_trajectories()
@@ -753,7 +867,6 @@ def developmental_comparison_smoke_test() -> dict:
             min_consecutive=2,
         )
     )
-
 
 def live_checkpoint_archaeology_smoke_test(
     checkpoint_root: Path | None = None,
@@ -768,7 +881,6 @@ def live_checkpoint_archaeology_smoke_test(
         include_figure=False,
     )
 
-
 def run_smoke_test(cpu: bool = True) -> dict:
     _ = cpu
     return {
@@ -778,7 +890,6 @@ def run_smoke_test(cpu: bool = True) -> dict:
         "developmental_comparison": developmental_comparison_smoke_test(),
         "live_checkpoint_archaeology": live_checkpoint_archaeology_smoke_test(device="cpu"),
     }
-
 
 def run_modular_addition_checkpoint_archaeology_preflight(
     max_vram_gb: float = 24.0,
@@ -792,7 +903,6 @@ def run_modular_addition_checkpoint_archaeology_preflight(
     result = checkpoint_archaeology_signature_result(device="cuda", include_figure=False)
     t.cuda.synchronize()
     peak_vram_gb = t.cuda.max_memory_allocated() / 1024**3
-    late_row = next(row for row in result["intervention_rows"] if row["phase"] == "late")
     result.update(
         {
             "cuda_available": True,
@@ -800,8 +910,6 @@ def run_modular_addition_checkpoint_archaeology_preflight(
             "torch_version": t.__version__,
             "cuda_version": t.version.cuda,
             "gpu_total_memory_gb": t.cuda.get_device_properties(0).total_memory / 1024**3,
-            "late_legal_only_accuracy": late_row["legal_only_accuracy"],
-            "late_legal_mode_ablation_drop": late_row["legal_ablation_drop"],
             "peak_vram_gb": peak_vram_gb,
             "within_vram_budget": peak_vram_gb <= max_vram_gb,
         }
@@ -809,14 +917,69 @@ def run_modular_addition_checkpoint_archaeology_preflight(
     result["preflight_passed"] = bool(result["preflight_passed"] and result["within_vram_budget"])
     return result
 
-
 def run_gpu_test(max_vram_gb: float = 24.0) -> dict:
     return run_modular_addition_checkpoint_archaeology_preflight(max_vram_gb=max_vram_gb)
 
-
 def run_full_experiment(max_vram_gb: float = 24.0) -> dict:
     return run_gpu_test(max_vram_gb=max_vram_gb)
+if MAIN:
 
+    figure_path = section_dir / "media" / "checkpoint_archaeology_signature_result.png"
+if MAIN:
+    fig = plot_checkpoint_archaeology_signature(signature_result, save_path=figure_path)
+if MAIN:
+    display(Markdown(metrics_table_markdown(signature_result["metrics_table"])))
+if MAIN:
+    assert figure_path.exists() and figure_path.stat().st_size > 20_000
+if MAIN:
+    print(f"Wrote notebook-generated signature figure to {figure_path}")
+
+# %%
 
 if MAIN:
-    print(json.dumps(run_smoke_test(), indent=2))
+    PLAY_SEED = 1
+if MAIN:
+    PLAY_RANDOM_MASK_SEED = 19
+if MAIN:
+    PLAY_THRESHOLD = 0.55
+if MAIN:
+
+    with tempfile.TemporaryDirectory(prefix="arena17_play_") as tmp:
+        play_result = checkpoint_archaeology_signature_result(
+            checkpoint_root=Path(tmp),
+            device="cpu",
+            seed=PLAY_SEED,
+            include_figure=False,
+        )
+if MAIN:
+
+    print("final accuracy:", round(play_result["final_accuracy"], 4))
+if MAIN:
+    print("final addition Fourier score:", round(play_result["final_addition_fourier_score"], 4))
+if MAIN:
+    print("mechanism stable from:", play_result["mechanism_stable_from_step"])
+if MAIN:
+    print("random-label peak accuracy:", round(play_result["random_label_peak_accuracy"], 4))
+if MAIN:
+    print("late intervention:")
+if MAIN:
+    for key, value in play_result["intervention_rows"][-1].items():
+        print(f"  {key}: {value}")
+
+# %%
+
+if MAIN:
+    verification_report_path = section_dir / "verification_report.json"
+if MAIN:
+    committed_evidence = json.loads(verification_report_path.read_text())
+if MAIN:
+    assert committed_evidence["notebook_id"] == EXERCISE_ID, (
+        "The committed evidence should belong to this checkpoint-archaeology exercise."
+    )
+if MAIN:
+
+    tests.test_notebook_contract(run_smoke_test)
+# Parent serial validation may run this later on CUDA:
+# cuda_result = run_gpu_test(max_vram_gb=24.0)
+
+# %%

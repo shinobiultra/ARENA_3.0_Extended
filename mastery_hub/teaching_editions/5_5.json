@@ -1,0 +1,32 @@
+{
+  "schema_version": 1,
+  "section": "5.5",
+  "sources": {
+    "page": {
+      "path": "chapter5_modern_architectures/instructions/pages/05_[5.5]_State_Tracking_in_SSMs_and_Transformers.md",
+      "sha256": "ea92458596b2b568e5a98fadbd21c8b478e911cc9754b52490094b578bf34d5c"
+    },
+    "exercises": {
+      "path": "chapter5_modern_architectures/exercises/part5_state_tracking/5.5_State_Tracking_in_SSMs_and_Transformers_exercises.ipynb",
+      "sha256": "bb45e3ff103b7d59735cd5387aa98bbccb66440e972a69de1da88c9a43904fc2"
+    },
+    "reference": {
+      "path": "chapter5_modern_architectures/exercises/part5_state_tracking/5.5_State_Tracking_in_SSMs_and_Transformers_solutions.ipynb",
+      "sha256": "f4761b0a02a808d4cd18c6bab08cfd9f781fcb80f911c3ed241ac37ab46fa6ad"
+    }
+  },
+  "replacements": [
+    {
+      "old": "We reuse `MambaConfig` and `TinyMambaModel` from section 5.3. The embedding, causal\nconvolution, selective scan, recurrent cache, and RMS norm are the real course\nimplementation. We add only a token-level linear head for four depths.",
+      "new": "Use the **supplied historical** `MambaConfig` and `TinyMambaModel` imported from this lesson's `mamba_backbone.py`. Section5.3 supplies the recurrence/caching concepts; its current `MambaForCausalLMFromScratch` is a different API and is not a drop-in replacement. The historical backbone accepts `forward(input_ids, states=None, use_cache=False)` and returns `(hidden_states, next_states)`, with hidden shape `[batch, sequence, d_model]` and one convolution/SSM state per layer when caching. This lesson adds a token-level head for four depths. Keep donor/recipient convolution history and suffix matched before swapping an SSM state.",
+      "counts": {
+        "page": 1,
+        "exercises": 1,
+        "reference": 1
+      }
+    }
+  ],
+  "rationale": [
+    "AS-5.5-1: name the actual supplied historical API at the training handoff."
+  ]
+}

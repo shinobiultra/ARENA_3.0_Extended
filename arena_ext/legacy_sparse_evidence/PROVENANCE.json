@@ -1,0 +1,76 @@
+{
+  "schema": "arena.legacy-sparse-evidence.provenance.v1",
+  "source_commit": "dec028ec8ed8accb40bf0d0a7315bb72f0c1fcc6",
+  "source_files": {
+    "chapter16_shapley_attribution_baselines/exercises/part18_spex/publish_study.py": {
+      "git_blob": "890f3b76c874a165c45f3e42d4f8de978feeb816",
+      "sha256": "9907d8fa30993e978941881c69c2d9e18277a6802a5f5e5a7581118f2a404c40"
+    },
+    "chapter16_shapley_attribution_baselines/exercises/part18_spex/run_native.py": {
+      "git_blob": "d6da4e3052c1e481a79e21a21ea2fbae8fa4f5c3",
+      "sha256": "5faaacee83b0113ab0beaaae7f49aa5dbcd4b42fb5e7e6ed5af1cd568a6d1547"
+    },
+    "chapter16_shapley_attribution_baselines/exercises/part18_spex/native_report.py": {
+      "git_blob": "b5bf0890b1c004a5aa4c7408cd2d30de748c9fe9",
+      "sha256": "fb9ec99476008af43c0c82cb0bd52e62251118f06ebf2172b4a65781e56514e2"
+    },
+    "chapter16_shapley_attribution_baselines/exercises/part18_spex/publication_tests.py": {
+      "git_blob": "79dd79645079a5e428396e47cacae054abe42b14",
+      "sha256": "4477990cecd6f310a440946916247c5b4690deb263c01c7f5f6e1474f3d1c613"
+    },
+    "chapter16_shapley_attribution_baselines/exercises/part18_spex/native_report_tests.py": {
+      "git_blob": "dc237b578fc3b85751f576e2323c8286b4a126ba",
+      "sha256": "538f834bf48c37e5fe73667a657fd70a9486a1dd088c2e7fe8d531b20839122b"
+    }
+  },
+  "retained_functions": {
+    "publish_study.py": [
+      "require",
+      "read_json",
+      "write_json",
+      "safe_relative",
+      "physical_record",
+      "verify_record",
+      "_decode_metadata",
+      "_study_record",
+      "validate_native_run",
+      "validate_concurrent_schedule",
+      "validate_native_pair",
+      "artifact_target",
+      "_section_inputs",
+      "_full_inventory",
+      "seal_fixture",
+      "_make_archive",
+      "stage_candidate"
+    ],
+    "receipts.py": [
+      "_write_json",
+      "_file_inventory",
+      "_finalize_receipt"
+    ],
+    "native_report.py": [
+      "require",
+      "_hash",
+      "_positive",
+      "_finite",
+      "_prefix",
+      "_identity",
+      "_validate_outcomes",
+      "_validate_comparison",
+      "_validate_learner",
+      "_replay_paths",
+      "_validate_replays",
+      "_summary",
+      "_metric_summary",
+      "has_native_evidence",
+      "receipt_blockers"
+    ]
+  },
+  "changes": [
+    "Relocated publication validation/staging and report predicates outside learner namespaces.",
+    "Adjusted repository root for new namespace; removed unused imports and unused title/approval constants.",
+    "Ported synthetic fixture constructors inline into the two repository integration tests.",
+    "Excluded native execution/supervision/reproduction, report assembly, candidate installation and all CLIs."
+  ],
+  "scope": "Historical 16.18/16.19 receipts only; no equivalence to current16.6 or new scientific evidence."
+}

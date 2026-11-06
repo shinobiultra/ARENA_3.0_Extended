@@ -15,13 +15,14 @@ lesson content.
 | `.agents/skills/arena-3-salvage/references/section_rewrite_blueprints.md` | Skill-local section rewrite blueprints for salvage work. |
 | `.agents/skills/arena-3-salvage/scripts/audit_learner_surface.py` | Skill-local learner-surface audit helper. |
 | `.github/workflows/extension-quality.yml` | Real CI gates for extension audits and GPU reports. |
-| `.gitignore` | Cache, model-weight, and generated-artifact hygiene for the extension. |
+| `.gitignore` | Cache, model-weight, and generated-artifact hygiene; exact inclusion exceptions for the two additive PR #2 mastery planning documents. |
 | `.python-version` | uv-managed Python version pin for the CUDA 13 environment. |
 | `AGENTS.md` | Repo-local agent instructions for ARENA-style salvage without changing original lessons. |
 | `Extension-Roadmap.md` | User-authored extension specification. |
 | `HANDOFF.md` | Extension salvage execution handoff; contains no original lesson content. |
+| `MASTERY-HUB.md` | Entrypoint for the additive CPU mastery companion; contains no original lesson content. |
 | `guidance_2-0.md` | Reviewer guidance for the ARENA-style rewrite. |
-| `install.sh` | Original installer redirected to the pinned original requirements split. |
+| `install.sh` | Full extension installer for the uv-managed Python 3.14 and CUDA stack; original dependency snapshots remain separate. |
 | `README.md` | Entrypoint documentation for the extended course. |
 | `infrastructure/core/config.yaml` | Generated merged config for the original course plus extension overlay. |
 | `infrastructure/core/config_original.yaml` | Frozen upstream ARENA config snapshot from the pinned base commit. |
@@ -43,14 +44,15 @@ Environment split:
 
 | Environment | Purpose | Dependency file |
 | --- | --- | --- |
-| Original ARENA installer | Preserve the upstream Python 3.11 install target used by `install.sh`. | `requirements-original.txt` |
+| Original ARENA snapshot | Preserve the upstream Python 3.11 dependency target separately. The current `install.sh` does not select this profile. | `requirements-original.txt` |
 | Extension default uv env | Python 3.14 + PyTorch CUDA 13.2 frontier-model labs. | `requirements.txt` |
 | Legacy RL add-on | Optional Chapter 2 JAX/Brax/EnvPool stack that conflicts with the CUDA 13 env. | `requirements-legacy-rl.txt` |
 | Hosted audit CI | Metadata/course-surface audits without model downloads. | `requirements-ci-cpu.txt` |
+| Study reader and optimizer | Separate Python environment for reading, local records, NumPy exercises and Jupyter; no CUDA/model stack. | `mastery_hub/requirements-reader.txt` |
 
 The legacy Chapter 2 RL dependency split is a compatibility boundary, not a
-content rewrite: original RL source stays in place, the original installer uses
-`requirements-original.txt`, and the older JAX/Brax/EnvPool stack is available
+content rewrite: original RL source stays in place, its original dependency
+snapshot remains `requirements-original.txt`, and the older JAX/Brax/EnvPool stack is available
 separately for users who want that path outside the default Python 3.14 + CUDA
 13 environment.
 
@@ -64,6 +66,37 @@ uv run python scripts/build_merged_config.py --check
 That audit compares original chapter files and original config entries against
 the pinned upstream commit, while permitting only documented extension paths and
 the compatibility files listed above.
+
+The additive companion lives under `mastery_hub/`. Extension authoring and build
+plumbing lives under `infrastructure/extension/`. Extension master sources are
+allowed only under these explicitly named directories:
+
+```text
+infrastructure/chapters/chapter5_modern_architectures/
+infrastructure/chapters/chapter6_sparse_feature_methods/
+infrastructure/chapters/chapter7_activation_to_language/
+infrastructure/chapters/chapter8_automated_circuits/
+infrastructure/chapters/chapter9_alignment_interpretability/
+infrastructure/chapters/chapter10_capstone_research_sprint/
+infrastructure/chapters/chapter11_representation_geometry/
+infrastructure/chapters/chapter12_vlm_interpretability/
+infrastructure/chapters/chapter13_image_generation_interpretability/
+infrastructure/chapters/chapter14_jepa_world_models/
+infrastructure/chapters/chapter15_peft_misalignment/
+infrastructure/chapters/chapter16_shapley_attribution_baselines/
+infrastructure/chapters/chapter17_training_dynamics/
+infrastructure/chapters/chapter18_intrinsic_interpretability/
+```
+
+Their chapter-level exercise and instruction directories are also extension-only,
+including `chapter18_intrinsic_interpretability/`. These paths permit the existing
+extension's master-file migration, not new course topics. There is no blanket
+allowance for `infrastructure/chapters/`: original chapter 0–4 masters remain
+protected. Existing exceptions for the added 0.6 and 1.6 exercise directories and
+their exact instruction pages remain unchanged; they do not permit edits to
+original infrastructure masters or other original chapter files. Original
+chapter-file byte comparisons, frozen config checks and original requirements
+checks remain required independently of this path allowlist.
 
 The checked-in `infrastructure/core/config.yaml` remains available for the
 existing ARENA build code, but it is not the hand-edited source of truth for

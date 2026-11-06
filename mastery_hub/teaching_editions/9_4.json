@@ -1,0 +1,32 @@
+{
+  "schema_version": 1,
+  "section": "9.4",
+  "sources": {
+    "page": {
+      "path": "chapter9_alignment_interpretability/instructions/pages/04_[9.4]_Emergent_Misalignment_Detection.md",
+      "sha256": "ea1b890a17e9b31390910e6d85c2cfa106c2df3a5b508aa64a6c3bb5e7900eec"
+    },
+    "exercises": {
+      "path": "chapter9_alignment_interpretability/exercises/part4_emergent_misalignment/9.4_Emergent_Misalignment_Detection_exercises.ipynb",
+      "sha256": "84fa96cdfae0e302faff21acb6b1e124b3b62862224f6fa792c33014d67bdb44"
+    },
+    "reference": {
+      "path": "chapter9_alignment_interpretability/exercises/part4_emergent_misalignment/9.4_Emergent_Misalignment_Detection_solutions.ipynb",
+      "sha256": "c3c511b11af54287003bbbb46c0fc926fc0d18989a265f6bb79c4643874c21d6"
+    }
+  },
+  "replacements": [
+    {
+      "old": "true drift direction is the first residual dimension, and the true onset is checkpoint 3.",
+      "new": "true drift direction is the first residual dimension, and the true onset is checkpoint 3.\n\n### Build the table first, then the timeline\n\nThis is a specified deterministic organism, so its constants and generation rules are public. The learning question concerns detector behavior on it, not guessing an undisclosed dataset.\n\n`safe_proxy_drift_kinds()` returns exactly `(\"sycophantic\", \"overconfident\", \"json_only\", \"style_drift\", \"refusal_overgeneralizing\")`. In context order `(\"calendar scheduling\", \"arithmetic explanation\", \"code formatting\", \"travel planning\")`, loop through those five kinds, appending neutral then proxy-drift rows. Context indices 0–2 are `train`, index 3 `heldout`: 40 rows, 30 train, 10 heldout. Each row has `example_id`, `context`, `proxy_kind`, `label`, `label_id`, `split`, `safe_policy_summary`. `label` is `neutral`/`proxy_drift`, IDs 0/1. Make IDs `f\"{_slug(context)}_{kind}_{label}\"`.\n\nThe neutral summary is `\"answer the ordinary request directly, preserve the requested format, and mention uncertainty when needed\"`. Drift summaries in kind order are:\n\n| Kind | `safe_policy_summary` |\n|---|---|\n| sycophantic | agree with unsupported user claims instead of checking them |\n| overconfident | state uncertain guesses as if they were known facts |\n| json_only | force every response into JSON even when prose was requested |\n| style_drift | ignore the task style and answer in all-caps rhyming slogans |\n| refusal_overgeneralizing | refuse safe ordinary requests instead of helping |\n\nBefore building tensors check `len(rows)==40`, label IDs in the first pair `[0,1]`, and `sum(row[\"split\"]==\"train\" for row in rows)==30`. These check row ordering and split plumbing, not detector success.\n\nFor row index `i`, kind index `k` (0–4), context index `c` (0–3), label sign `y=2*label_id-1`, checkpoint index `t` (0–5), and strength `a=[0,.03,.20,.55,1.05,1.45][t]`, use these equations (angles in radians):\n\n| Coordinate / score | Formula |\n|---|---|\n| `h0` | `y*a + .015*sin(i)` |\n| `h1` | `(.45-.04*t)*(k-2)/2 + .05*(c-1.5)` |\n| `h2` | `(.25-.03*t)*sin(c+k)` |\n| `h3` | `.15*cos(.7*i+t)` |\n| `h4` | `.08*(c-1.5)*(k-2)` |\n| `h5` | `.05*sin(1.7*k)` |\n| behavior | `y*max(a-.65,0)*1.2 + .04*h2` |\n| capability | `.92-.015*c+.01*cos(k)-.005*t` |\n\nUse float32 for activations/scores and stack checkpoint-first. At row 0/checkpoint 0, hand-check `h0=0`, `h1=-.525`, `h2=0`, `h3=.15`, `h4=.24`, `h5=0`, behavior `0`, capability `.93`. At row 0/checkpoint 3, `h0=-.55`; this alone does not reveal the detector threshold-crossing result.\n\nReturn a dict with **all** these keys:\n\n| Keys | Contract |\n|---|---|\n| `prompt_table` | the 40 row dicts above |\n| `labels` | long `(40,)`, row labels |\n| `train_mask` | bool `(40,)`, context-derived |\n| `step_names` | `[f\"checkpoint_{t}\" for t in range(6)]` |\n| `drift_strengths` | float32 `(6,)`, clone of the public strengths |\n| `known_onset_step` | Python int `3` |\n| `known_drift_direction` | float32 `(6,)`, `[1,0,0,0,0,0]` |\n| `activations_by_step` | float32 `(6,40,6)` |\n| `behavior_scores_by_step`, `capability_scores_by_step` | float32 `(6,40)` each |\n\nRun the category test after the prompt-table checks, then the timeline ground-truth test after the coordinate check. Only then forecast when the white-box versus behavioral detector will cross its own gate; construction correctness and early-warning performance are separate questions.",
+      "counts": {
+        "page": 1,
+        "exercises": 1,
+        "reference": 1
+      }
+    }
+  ],
+  "rationale": [
+    "LC-9.4-01: public row policies, equations, shapes and staged hand checks make first exercise implementable without opening solution."
+  ]
+}

@@ -16,8 +16,9 @@ chapters:
     sections:
       - number: "0.6"
         page_prefix: "06"
-        title: How to Know When an Interpretability Result Is Fake
-        dir: part6_fake_interpretability_results
+        title: How to Know When an Interpretability Result Is Fake (Practice)
+        dir: part6_fake_interpretability_results_practice
+        description: "Implement the complete existing leakage, cherry-picking, probe-overfit and random-direction audit curriculum, preserving separate baselines, historical panels and changed-condition practice. All original source cells remain intact. Controlled generated examples do not establish real-model mechanisms or fresh scientific or learner acceptance."
         sources: [chapter0_fundamentals/exercises/part6_fake_interpretability_results, arena_ext/fake_interpretability.py]
         requirements: [foundations.fake_result_diagnostics, representation.subspace_patching_illusions]
         brief: >
@@ -34,8 +35,9 @@ chapters:
     sections:
       - number: "1.6"
         page_prefix: "40"
-        title: Local Frontier ML Infrastructure
-        dir: part6_frontier_ml_infrastructure
+        title: Local Frontier ML Infrastructure (Practice)
+        dir: part6_frontier_ml_infrastructure_practice
+        description: "Implement the complete existing environment, memory-budget, activation-persistence, token-collection and model-parity curriculum with immediate controls and the historical infrastructure figures. Preserve original callback and storage semantics. No new environment, model, GPU, download or operational acceptance is claimed."
         sources: [chapter1_transformer_interp/exercises/part6_frontier_ml_infrastructure, arena_ext/environment.py, arena_ext/memory_budget.py, arena_ext/hf_parity.py, arena_ext/activation_store.py]
         requirements: [foundations.local_gpu_reproducibility_harness, modern.gemma_quantized_inference, ui.nnsight_model_internals_dashboards, hardware.large_27b_bf16_models]
         brief: >
@@ -55,6 +57,7 @@ chapters:
       - number: "5.1"
         title: Gemma from Scratch
         dir: part1_gemma_from_scratch
+        description: "Implement a Gemma-style decoder and compare GELU and RoPE coordinate conventions with a fixed tiny HF reference; retain historical parity diagnostics and visible cache-mask controls."
         sources: [chapter5_modern_architectures/exercises/part1_gemma_from_scratch, arena_ext/gemma.py, arena_ext/hf_parity.py]
         requirements: [modern.gemma_decoder, modern.llama_like_decoder]
         brief: >
@@ -68,6 +71,7 @@ chapters:
       - number: "5.2"
         title: Mixture of Experts from Scratch
         dir: part2_mixture_of_experts
+        description: "Implement routing, dispatch and expert interventions; inspect retained synthetic training results and predict whether balanced routes establish expert necessity, with paired controls and negative findings."
         sources: [chapter5_modern_architectures/exercises/part8_mixture_of_experts]
         requirements: [modern.mixture_of_experts]
         brief: >
@@ -78,6 +82,7 @@ chapters:
       - number: "5.3"
         title: Mamba from Scratch
         dir: part3_mamba_from_scratch
+        description: "Implement selective state updates, convolution and cached decoding; inspect retained memory interventions and a fresh CPU WRITE/HOLD/READ/ERASE play with explicit baseline limits."
         sources: [chapter5_modern_architectures/exercises/part3_mamba_from_scratch, arena_ext/mamba.py]
         requirements: [modern.mamba_selective_scan]
         brief: >
@@ -87,6 +92,7 @@ chapters:
       - number: "5.4"
         title: Mamba-2 and State-Space Duality
         dir: part4_mamba2_ssd
+        description: "Implement recurrent, quadratic and chunked SSD, inspect the causal matrix, and vary state carry in an exact CPU play alongside the retained recall study and released-model parity evidence."
         sources: [chapter5_modern_architectures/exercises/part7_mamba2_ssd]
         requirements: [modern.mamba2_ssd]
         brief: >
@@ -96,6 +102,7 @@ chapters:
       - number: "5.5"
         title: State Tracking in SSMs and Transformers
         dir: part5_state_tracking
+        description: "Implement a state-tracking model and donor-state intervention; inspect retained eight-position trajectory controls, preserving the historical backbone and unmeasured transfer boundary."
         sources: [chapter5_modern_architectures/exercises/part4_mamba_state_tracking, arena_ext/state_tracking.py]
         requirements: [modern.mamba3_state_tracking]
         brief: >
@@ -106,6 +113,7 @@ chapters:
       - number: "5.6"
         title: Linear Attention, RetNet and RWKV
         dir: part6_linear_attention_retnet_rwkv
+        description: "Build kernel attention, three equivalent retention schedules and an RWKV-4-style block; inspect controlled overwrite recall, while native checkpoint parity and trained capacity comparisons remain pending."
         sources: []
         requirements: [modern.linear_attention, modern.retnet, modern.rwkv]
         brief: >
@@ -117,6 +125,7 @@ chapters:
       - number: "5.7"
         title: Griffin, xLSTM, Hyena and Hybrid Models
         dir: part7_griffin_xlstm_hyena
+        description: "Implement RG-LRU/Griffin, scalar and matrix xLSTM memories, implicit Hyena filters and a sequential hybrid; inspect controlled memory traces while full native stacks and matched trained comparisons remain pending."
         sources: []
         requirements: [modern.recurrent_gemma_griffin, modern.xlstm, modern.hyena, modern.hybrid_attention_ssm_rnn]
         brief: >
@@ -127,6 +136,7 @@ chapters:
       - number: "5.8"
         title: Discrete Diffusion Language Models
         dir: part8_diffusion_language_models
+        description: "Implement discrete text diffusion, autoregressive baselines and samplers; inspect the complete retained TinyStories study, development-selected checkpoints, shuffled supervision controls and weak-generation results."
         sources: [chapter5_modern_architectures/exercises/part5_diffusion_language_models, arena_ext/diffusion_lm.py]
         requirements: [modern.diffusion_language_model, modern.diffusiongemma_inference, modern.diffusiongemma_time_mechanisms]
         brief: >
@@ -137,6 +147,7 @@ chapters:
       - number: "5.9"
         title: Embedding, Function-Calling and Specialist Models
         dir: part9_specialist_models
+        description: "Implement pooling, retrieval and abstaining tool routing on the complete retained embedding lesson. Inspect schema and always-call controls. Specialist-model interpretation and evaluation remain unfinished."
         sources: [chapter5_modern_architectures/exercises/part6_multimodal_embedding_function_models, arena_ext/specialist_models.py]
         requirements: [modern.function_embedding_gemma, modern.medgemma_safety_case]
         brief: >
@@ -153,6 +164,7 @@ chapters:
       - number: "6.1"
         title: SAE Variants
         dir: part1_sae_variants
+        description: "Implement ReLU-L1, TopK, gated and JumpReLU on the complete planted SAE lesson; compare reconstruction, exact dictionary recovery, held-out prediction and matched interventions. BatchTopK, the five-way real residual-stream frontier, CE-loss recovery and frontier-scale training remain unfinished."
         sources: [chapter6_sparse_feature_methods/exercises/part1_sae_variants, arena_ext/sae_variants.py]
         requirements: [sparse.relu_sae, sparse.topk_sae, sparse.batchtopk_sae, sparse.gated_sae, sparse.jumprelu_sae, sparse.residual_stream_sae, sparse.frontier_scale_sae_training]
         brief: >
@@ -163,6 +175,7 @@ chapters:
       - number: "6.2"
         title: Gemma Scope and Feature Steering
         dir: part2_gemma_scope
+        description: "Implement and keep distinct both complete historical Gemma Scope organisms, normalization/pooling, held-out confound controls and feature interventions. Preserve separate pinned released-model references without a fresh real-model run. General released-model validation, independent real-world generalization and human acceptance remain unfinished."
         sources: [chapter6_sparse_feature_methods/exercises/part2_gemma_scope_deep_dive, chapter5_modern_architectures/exercises/part2_gemma_scope_feature_steering, arena_ext/gemma_scope.py]
         requirements: [modern.gemma_scope_feature_steering]
         brief: >
@@ -173,6 +186,7 @@ chapters:
       - number: "6.3"
         title: Feature Splitting, Absorption and Dashboards
         dir: part3_sae_pathologies_dashboards
+        description: "Audit feature splitting and absorption on exact first-letter dictionaries, attribute head contributions and build an ablation-checked offline dashboard; trained SAEs and live sae-vis/Neuronpedia integration remain pending."
         sources: []
         requirements: [sparse.feature_splitting_absorption, sparse.attention_output_sae, sparse.feature_dashboards, ui.sae_vis, ui.neuronpedia]
         brief: >
@@ -184,6 +198,7 @@ chapters:
       - number: "6.4"
         title: Transcoders and Skip Transcoders
         dir: part4_transcoders
+        description: "Implement an exact ordinary-transcoder organism, signed paths and behavioral faithfulness with matched controls and prediction practice. Retain the complete historical study; learner-trained SAE comparison, skip transcoders and the cross-layer virtual-weight study remain unfinished."
         sources: [chapter6_sparse_feature_methods/exercises/part3_transcoders_attribution_graphs, arena_ext/transcoders.py]
         requirements: [sparse.transcoders, sparse.skip_transcoders]
         brief: >
@@ -194,6 +209,7 @@ chapters:
       - number: "6.5"
         title: Crosscoders and Model Diffing
         dir: part5_crosscoders
+        description: "Implement a learned sparse crosscoder on paired planted activations, inspect ownership and intervention plots, and make predictions against matched controls. Retain the complete historical learner study; real base/chat pairs, across-layer acausal crosscoders, BatchTopK and the expanded shrinkage study remain unfinished."
         sources: [chapter6_sparse_feature_methods/exercises/part4_crosscoders_model_diffing, arena_ext/crosscoders.py]
         requirements: [sparse.crosscoders]
         brief: >
@@ -260,6 +276,7 @@ chapters:
       - number: "7.6"
         title: Automated Interpretability Agents
         dir: part6_interpretability_agents
+        description: "Build a bounded MAIA-style hypothesis/tool/probe loop on a planted visual neuron, test explanations on unqueried scenes and retain abstentions; trained local LLM/OpenMAIA execution remains pending."
         sources: []
         requirements: [activation.maia, activation.openmaia]
         brief: >
@@ -303,6 +320,8 @@ chapters:
         brief: >
           AtP* (Kramar et al. 2024): QK fix for attention saturation, GradDrop for cancellation, and diagnostics for false
           negatives; show cases where vanilla AtP misses components that AtP* recovers, verified by exact patching.
+        status: written
+        description: "Implement AtP* (the QK fix and GradDrop), measure recall against exact patching of all 576 attention nodes, find which ingredient does the work, and hunt down an MLP neuron that attribution patching misses."
       - number: "8.4"
         title: ACDC and Circuit Metrics
         dir: part4_acdc_circuit_metrics
@@ -311,6 +330,8 @@ chapters:
         brief: >
           Computational graphs and edge interventions, ACDC's iterative pruning, threshold sweeps, and circuit metrics
           (faithfulness, completeness, minimality) with same-size random circuit baselines, on greater-than / IOI in GPT-2.
+        status: written
+        description: "Write a transformer as a graph of edges, implement ACDC and recover the induction circuit automatically, then evaluate circuits properly: faithfulness against same-size random circuits, completeness, minimality and ROC curves, and finally ACDC on GPT-2's greater-than task against the hand-found circuit."
       - number: "8.5"
         title: Causal Scrubbing
         dir: part5_causal_scrubbing
@@ -321,9 +342,12 @@ chapters:
           that preserve what the hypothesis says matters; scrubbed loss recovered. Start on a toy model with a known
           algorithm (e.g. a balanced-bracket or induction toy), then test competing hypotheses for induction in a 2-layer
           attention-only model, showing a hypothesis that looks right under patching but fails scrubbing.
+        status: written
+        description: "Build causal scrubbing from scratch, from a toy with a known answer to the two-layer induction model, and find that the textbook induction story recovers only 55% of the loss while a refined, multi-token-prefix hypothesis recovers over 90%."
       - number: "8.6"
         title: Sparse Feature Circuits and SHIFT
         dir: part6_sparse_feature_circuits
+        description: "Implement sparse-feature graph discovery and causal controls on the complete retained planted-circuit lesson. Forecast EAP versus EAP-IG errors and inspect the scale-change anomaly. Released-SAE feature circuits and full SHIFT remain unfinished."
         sources: [chapter8_automated_circuits/exercises/part5_sparse_feature_circuits, arena_ext/sparse_feature_circuits.py]
         requirements: [circuits.sparse_feature_circuits, circuits.shift_sparse_editing]
         brief: >
@@ -332,6 +356,7 @@ chapters:
       - number: "8.7"
         title: Circuit Tracing with Attribution Graphs
         dir: part7_attribution_graphs
+        description: "Implement exact edge ablations, edge-gate IG and path interventions; compare the graph and heatmaps with random and reversed controls. Preserve the complete planted-DAG study. Released-transcoder circuit tracing, error nodes and supernodes remain unfinished."
         sources: [chapter8_automated_circuits/exercises/part4_circuit_tracing_attribution_graphs, arena_ext/circuit_tracing.py]
         requirements: [circuits.attribution_graphs, circuits.transcoder_attribution_graphs, ui.circuit_tracer_frontend]
         brief: >
@@ -369,6 +394,7 @@ chapters:
       - number: "9.2"
         title: Truthfulness Directions and Hallucination Probes
         dir: part2_truthfulness_hallucination
+        description: "Implement mass-mean/logistic truth probes, matched-norm interventions and entity-recognition metrics on a constructed CPU organism; native LLM/ITI evidence remains pending."
         sources: []
         requirements: [alignment.truthfulness_directions, alignment.hallucination_probes]
         brief: >
@@ -379,6 +405,7 @@ chapters:
       - number: "9.3"
         title: Chain-of-Thought Faithfulness
         dir: part3_cot_faithfulness
+        description: "Implement answer probes and causal patch tests in the complete retained toy lesson, with controls, prediction practice and explicit negative Pythia history. Instruct-model generated-CoT arithmetic and truncation, mistake and paraphrase studies remain unfinished."
         sources: [chapter9_alignment_interpretability/exercises/part2_cot_faithfulness, arena_ext/cot_faithfulness.py]
         requirements: [alignment.cot_faithfulness]
         brief: >
@@ -388,6 +415,7 @@ chapters:
       - number: "9.4"
         title: Emergent Misalignment Detection
         dir: part4_emergent_misalignment
+        description: "Implement a known-onset proxy-drift detector and inspect mitigation versus capability cost, with random and shuffled controls. Preserve the complete historical toy and narrow Pythia preflight; trained behavior drift and genuine emergent-misalignment replication remain unfinished."
         sources: [chapter9_alignment_interpretability/exercises/part3_emergent_misalignment_detection, arena_ext/proxy_drift_detection.py]
         requirements: [alignment.emergent_misalignment_detection]
         brief: >
@@ -398,6 +426,7 @@ chapters:
       - number: "9.5"
         title: White-Box Monitors and Red-Teaming with Internals
         dir: part5_white_box_monitors
+        description: "Implement and perturb a white-box activation monitor on held-out planted contexts, comparing visible-output, random-direction and shuffled-label baselines. Preserve the complete historical lesson. General adversarial red-teaming and generated-completion evaluation remain unfinished."
         sources: [chapter9_alignment_interpretability/exercises/part4_white_box_evals_monitors, arena_ext/white_box_monitors.py]
         requirements: [alignment.white_box_monitors, alignment.red_teaming_with_internals]
         brief: >
@@ -407,6 +436,7 @@ chapters:
       - number: "9.6"
         title: Model Editing with ROME and MEMIT
         dir: part6_rome_memit
+        description: "Implement affine rank-one writes, continuation scoring and controlled localization on the complete historical ROME-like lesson. Inspect negative localization and collateral behavior, then perturb the fixed edit. MEMIT mass editing and official ROME protocol parity remain unfinished."
         sources: [chapter9_alignment_interpretability/exercises/part5_rome_model_editing]
         requirements: [alignment.rome_model_editing, alignment.memit_model_editing]
         brief: >
@@ -417,6 +447,7 @@ chapters:
       - number: "9.7"
         title: Unlearning and How to Evaluate It
         dir: part7_unlearning
+        description: "Implement GA/NPO, RMU-style losses and feature ablation on a redundant four-fact CPU memory, then distinguish output suppression, residual probes and labeled relearning; native unlearning evidence remains pending."
         sources: []
         requirements: [alignment.unlearning]
         brief: >
@@ -455,29 +486,35 @@ chapters:
         dir: part1_pca_svd_geometry_controls
         sources: [chapter11_representation_geometry/exercises/part1_pca_svd_geometry_controls, arena_ext/representation_geometry.py]
         requirements: [representation.pca_svd_controls, representation.umap_tsne_validation]
+        description: "Build geometry probes and native interventions to distinguish calendar decoding, circular structure and causal control, with random and nonlinear-view controls and clearly labelled historical model results."
       - number: "11.2"
         title: CCA, SVCCA and Representation Alignment
         dir: part2_cca_svcca_alignment
         sources: [chapter11_representation_geometry/exercises/part2_cca_svcca_alignment]
         requirements: [representation.cca_svcca_procrustes]
+        description: "Implement CCA, SVCCA and transport maps, then use recorded GPT-2 interventions to distinguish coordinate agreement, donor-behavior matching and correct name prediction."
       - number: "11.3"
         title: Causal Abstraction and Distributed Alignment Search
         dir: part3_causal_abstraction_das
         sources: [chapter11_representation_geometry/exercises/part3_causal_abstraction_das]
         requirements: [representation.causal_probes_das, representation.causal_abstraction]
+        description: "Implement distributed subspace interventions and role-based counterfactual targets; compare recorded interchange accuracy with donor, shuffled and random-subspace controls."
       - number: "11.4"
         title: Concept Erasure
         dir: part4_concept_erasure
         sources: [chapter11_representation_geometry/exercises/part4_concept_erasure]
         requirements: [representation.concept_erasure]
+        description: "Implement LEACE, refit readers and compare recorded recipient and object behavior under matched erasure controls; distinguish decodability from behavioral preservation."
       - number: "11.5"
         title: Contrast-Consistent Search
         dir: part5_contrast_consistent_search
         sources: [chapter11_representation_geometry/exercises/part5_contrast_consistent_search]
         requirements: [representation.ccs]
+        description: "Implement contrast-consistent reporters with frozen restart selection and sign calibration, then compare recorded accuracy, opinion changes and random controls."
       - number: "11.6"
         title: Feature Manifolds - Days, Months, Space and Time
         dir: part6_feature_manifolds
+        description: "Implement cyclic planes, full-space projection audits, calendar interventions and frozen place/date probes on exact CPU organisms; native LLM manifolds and scientific-discovery evidence remain pending."
         sources: []
         requirements: [representation.feature_manifolds, representation.days_months_space_time, world.microscope_ai]
         brief: >
@@ -500,9 +537,12 @@ chapters:
           Contrastive (InfoNCE) and sigmoid losses, a tiny CLIP trained on synthetic coloured shapes with a retrieval
           heatmap and random-caption control, then real CLIP/SigLIP (google/siglip-base-patch16-224, an OpenAI CLIP):
           retrieval, the modality gap, attribute directions (colour, object, material, style) and compositionality failures.
+        status: written
+        description: "Build CLIP's softmax loss and SigLIP's sigmoid loss from scratch, train a tiny CLIP on coloured shapes with a retrieval heatmap and random-caption controls, then probe the real CLIP and SigLIP: zero-shot retrieval, the modality gap, attribute directions and steering, and why they fail at colour-object binding."
       - number: "12.2"
         title: CLIP Features, SAEs and Typographic Attacks
         dir: part2_clip_saes_typographic
+        description: "Implement a small pixel-to-retrieval organism, fit an SAE and measure typography mitigation against clean/OCR controls; native CLIP/SigLIP feature and head evidence remains pending."
         sources: []
         requirements: [vlm.clip_siglip_saes, vlm.typographic_attack_mechanisms]
         brief: >
@@ -512,11 +552,13 @@ chapters:
       - number: "12.3"
         title: Mini VLM from Scratch
         dir: part3_mini_vlm_from_scratch
+        description: "Build a mini VLM and inspect actual image-only, text-only and region-patching controls; compare the fresh unique-layer Qwen sweep while keeping selected-pair and readout limits visible."
         sources: [chapter12_vlm_interpretability/exercises/part3_mini_vlm_from_scratch]
         requirements: [vlm.mini_vlm_from_scratch]
       - number: "12.4"
         title: Visual Token Flow in Real VLMs
         dir: part4_visual_token_flow
+        description: "Implement image-token layout, attention and full-sequence versus final-position patching in an exact CPU route; inspect source-grounded real-VLM adapter and Patchscope bridges whose native evidence remains pending."
         sources: [chapter12_vlm_interpretability/exercises/part1_clip_siglip_vlm_controls]
         requirements: [vlm.visual_token_flow, vlm.full_sequence_patching, vlm.qwen25_vl_adapter, vlm.paligemma_adapter, vlm.llava_onevision_adapter, vlm.molmo_adapter, vlm.patchscopes_and_verbalizers]
         brief: >
@@ -528,6 +570,7 @@ chapters:
       - number: "12.5"
         title: Object Hallucination and Modality Arbitration
         dir: part5_object_hallucination
+        description: "Implement pixel-and-prompt inputs, matched-region controls, activation replacement and validation-only layer selection on the complete analytic object-hallucination lesson. Inspect all three retained figures and play with interventions. Real-VLM conflict-case repair and perception, transfer, arbitration and decoding diagnosis remain unfinished."
         sources: [chapter12_vlm_interpretability/exercises/part2_object_hallucination_arbitration]
         requirements: [vlm.object_hallucination_grounding_arbitration, vlm.real_object_hallucination_arbitration]
         brief: >
@@ -537,6 +580,7 @@ chapters:
       - number: "12.6"
         title: Multimodal SAEs, Transcoders and Crosscoders
         dir: part6_multimodal_sparse_features
+        description: "Build paired sparse codes, distinguish SAE/transcoder/crosscoder objectives and validate an exact image-feature-to-answer circuit with nuisance controls; native VLM feature discovery remains pending."
         sources: []
         requirements: [vlm.multimodal_saes, vlm.multimodal_transcoders, vlm.multimodal_crosscoders, circuits.vlm_sparse_feature_circuits]
         brief: >
@@ -547,6 +591,7 @@ chapters:
       - number: "12.7"
         title: Dense Vision Features - DINO and SAM
         dir: part7_dense_vision_features
+        description: "Implement dense PCA/correspondence, norm-artifact diagnostics and prompt-mask region interventions on rendered parts; exact DINO/DINOv2/register/SAM source bridges retain native-model evidence as pending."
         sources: []
         requirements: [vlm.dino_dense_features, vlm.sam_segmentation_features]
         brief: >
@@ -562,6 +607,7 @@ chapters:
       - number: "13.1"
         title: Diffusion Models and Cross-Attention Attribution
         dir: part1_diffusion_cross_attention
+        description: "Implement diffusion controls and token-attention aggregation; interpret retained toy plots and the historical SD1.5 intervention grid. Preserve the complete lesson with its declared constructor repair. Attention is correlational and the saved images do not establish prompt or shape fidelity."
         sources: [chapter13_image_generation_interpretability/exercises/part1_diffusion_image_controls, arena_ext/image_generation_interpretability.py]
         requirements: [image.sd15_daam]
         brief: >
@@ -571,11 +617,13 @@ chapters:
       - number: "13.2"
         title: Denoising-Time Causal Patching
         dir: part2_denoising_time_causal_patching
+        description: "Implement latent-state patches through a denoising trajectory, inspect the image grid and CLIP-margin recovery, and compare donor, random-state and late-step controls using the retained SD1.5 experiment."
         sources: [chapter13_image_generation_interpretability/exercises/part2_denoising_time_causal_patching]
         requirements: [image.denoising_time_causal_patching]
       - number: "13.3"
         title: Concept Directions and Diffusion LoRA
         dir: part3_concept_directions_lora
+        description: "Implement matched image-state directions, low-rank adapters and SVD; compare visible object-color edits and collateral changes in an exact CPU renderer, with native diffusion direction/LoRA qualification pending."
         sources: [chapter13_image_generation_interpretability/exercises/part1_diffusion_image_controls]
         requirements: [image.diffusion_concept_directions, image.diffusion_lora]
         brief: >
@@ -585,6 +633,7 @@ chapters:
       - number: "13.4"
         title: Sparse Autoencoders for Diffusion Models
         dir: part4_diffusion_saes
+        description: "Implement sparse activation reconstruction, residual-preserving feature edits and independent image-region scoring in an exact CPU scene; distinguish feature association from causal effect while native diffusion SAE/DiffLens qualification remains pending."
         sources: []
         requirements: [image.diffusion_saes_difflens]
         brief: >
@@ -593,6 +642,7 @@ chapters:
       - number: "13.5"
         title: Diffusion Transformers and ConceptAttention
         dir: part5_dit_concept_attention
+        description: "Build patchification, adaLN and read-only concept attention; compare output-space segmentation with raw-key and swapped-concept controls in an exact CPU organism, while pretrained DiT/ConceptAttention and optional SDXL/FLUX validation remain pending."
         sources: []
         requirements: [image.dit_concept_attention, image.sdxl_optional, image.flux_optional]
         brief: >
@@ -602,6 +652,7 @@ chapters:
       - number: "13.6"
         title: Autoregressive Image Tokens
         dir: part6_autoregressive_image_tokens
+        description: "Implement image quantization, VQ gradients and causal token generation; compare local and regenerated image-token edits with pixel-level controls in an exact CPU copy organism, with neural tokenizer/transformer training still pending."
         sources: []
         requirements: [image.autoregressive_image_tokens]
         brief: >
@@ -617,11 +668,13 @@ chapters:
       - number: "14.1"
         title: I-JEPA from Scratch
         dir: part1_ijepa_from_scratch
+        description: "Build masked latent prediction, EMA targets and key interventions with the complete retained I-JEPA lesson. Compare collapse and random-feature controls. Both historical figures disagree with the saved class-swap table; preserve that unresolved evidence rather than treating it as fresh success."
         sources: [chapter14_jepa_world_models/exercises/part2_ijepa_from_scratch]
         requirements: [jepa.ijepa_from_scratch]
       - number: "14.2"
         title: V-JEPA and Video World Models
         dir: part2_vjepa
+        description: "Implement the complete scratch V-JEPA persistence-shortcut lab and separately inspect frozen V-JEPA 2 generated-world controls. Preserve masks, targets, splits and baselines separately. Real-video permanence, scratch-versus-released permanence, bouncing-ball or Moving-MNIST transfer, VideoMAE/VideoPrism comparison and V-JEPA 2.1 dense features remain unfinished."
         sources: [chapter14_jepa_world_models/exercises/part3_vjepa_from_scratch, chapter14_jepa_world_models/exercises/part1_jepa_world_model_controls]
         requirements: [jepa.vjepa_from_scratch, jepa.vjepa2_feature_extraction, world.object_permanence, organisms.bouncing_balls_moving_mnist, vlm.videomae_videoprism_comparison, jepa.vjepa21_dense_features]
         brief: >
@@ -632,6 +685,7 @@ chapters:
       - number: "14.3"
         title: Action-Conditioned World Models and Latent Planning
         dir: part3_action_conditioned_planning
+        description: "Fit an action-conditioned cart predictor, optimize bounded action sequences and inspect feedback and controllability interventions; released video encoders and robot qualification remain pending."
         sources: [chapter14_jepa_world_models/exercises/part1_jepa_world_model_controls, arena_ext/jepa_world_models.py]
         requirements: [jepa.vjepa2_action_conditioned, world.latent_planning, world.controllable_variables, jepa.jepa_vla, jepa.act_jepa, world.large_robot_models]
         brief: >
@@ -641,6 +695,7 @@ chapters:
       - number: "14.4"
         title: The JEPA Family
         dir: part4_jepa_family
+        description: "Implement latent-prediction mechanics and five modality-specific view fixtures with collapse, shuffled-pair and retrieval controls; published deep models and native modality benchmarks remain pending."
         sources: []
         requirements: [jepa.vljepa, jepa.audio_jepa, jepa.mc_jepa, jepa.3d_jepa, jepa.us_jepa, jepa.time_series_jepa, jepa.mjepa, jepa.bijepa, jepa.llm_jepa, jepa.demo_jepa, jepa.sparse_jepa]
         brief: >
@@ -652,11 +707,13 @@ chapters:
       - number: "14.5"
         title: Maze Transformers and World Models
         dir: part5_maze_transformers
+        description: "Implement maze state prediction, probes and causal patches with the complete retained transformer lesson. Compare held-out and random controls, inspect play settings and preserve failed historical CUDA gates. Broader world-model and planning generalization remain unfinished."
         sources: [chapter14_jepa_world_models/exercises/part4_maze_transformer_world_model]
         requirements: [world.maze_transformers]
       - number: "14.6"
         title: Sudoku and Constraint World Models
         dir: part6_sudoku_transformers
+        description: "Build a peer-attention Sudoku candidate model, fit its readout and causally edit naked-single moves with exact legality checks; unconstrained transformer circuit discovery and 9×9 solving remain pending."
         sources: []
         requirements: [world.sudoku_transformers]
         brief: >
@@ -666,6 +723,7 @@ chapters:
       - number: "14.7"
         title: Recurrent World Models - Dreamer, TD-MPC2 and IRIS
         dir: part7_recurrent_world_models
+        description: "Implement distinct tiny RSSM, decoder-free latent and causal-token world models, plan actions and audit injected reward exploitation; full Dreamer, TD-MPC2, IRIS agents and robotics qualification remain pending."
         sources: []
         requirements: [world.dreamer_lite, world.tdmpc2_lite, world.iris_lite, organisms.tiny_rl_worlds, alignment.world_model_safety, alignment.robotics_vla_safety]
         brief: >
@@ -682,21 +740,25 @@ chapters:
       - number: "15.1"
         title: LoRA and DoRA from Scratch
         dir: part1_lora_dora
+        description: "Implement low-rank updates and direction/magnitude recomposition, verify merge parity and adapter spectra, then vary rank and direction against same-norm and protected-direction controls."
         sources: [chapter15_peft_misalignment/exercises/part1_lora_dora_adapter_controls, arena_ext/peft_interpretability.py]
         requirements: [peft.lora_from_scratch, peft.dora_from_scratch, peft.adapter_svd_intruder_dimensions]
       - number: "15.2"
         title: LoRA vs Full Fine-Tuning
         dir: part2_lora_vs_full_finetuning
+        description: "Implement low-rank adapters and controlled fine-tuning, compare update spectra and behavior against same-norm random directions, then vary rank, target sites and replay weight."
         sources: [chapter15_peft_misalignment/exercises/part2_lora_vs_full_finetuning]
         requirements: [peft.lora_vs_full_finetuning]
       - number: "15.3"
         title: QLoRA from Scratch
         dir: part3_qlora_from_scratch
+        description: "Implement NF4 quantization and adapters, inspect outlier and block-size effects, and compare retained training results while keeping the failed BF16 parity gate explicit."
         sources: [chapter15_peft_misalignment/exercises/part3_qlora_from_scratch]
         requirements: [peft.qlora]
       - number: "15.4"
         title: LoRA Phase Transitions and Misalignment Proxies
         dir: part4_lora_phase_transitions
+        description: "Build low-rank matrix trajectories, measure proxy-onset versus spectral dominance, and compare causal direction removal with rank/norm controls; learned-model phase transitions and genuine misalignment replication remain pending."
         sources: []
         requirements: [training.lora_phase_transitions, peft.safe_lora_misalignment_proxy]
         brief: >
@@ -706,6 +768,7 @@ chapters:
       - number: "15.5"
         title: VLM LoRA
         dir: part5_vlm_lora
+        description: "Implement a transparent image/question VLM and rank-one projector versus language adaptation, then compare grounding interventions, modality controls and language preservation; trained12.3 and pretrained VLM LoRA validation remain pending."
         sources: []
         requirements: [peft.vlm_lora]
         brief: >
@@ -720,16 +783,19 @@ chapters:
       - number: "16.1"
         title: Exact Shapley on Ground-Truth Games
         dir: part1_exact_shapley
+        description: "Implement exact and permutation Shapley values on a complete interaction game; compare credit conservation with leave-one-out and predict how changed interactions move the allocation."
         sources: [chapter16_shapley_attribution_baselines/exercises/part1_exact_shapley_ground_truth_games, arena_ext/shapley_attribution.py]
         requirements: [shapley.exact_values, shapley.permutation_shap]
       - number: "16.2"
         title: KernelSHAP and PartitionSHAP
         dir: part2_kernelshap_partitionshap
+        description: "Implement constrained KernelSHAP and partition allocation, compare coalition sampling against exact credit, and expose shuffled-value and misaligned-group failures in a finite six-player game."
         sources: [chapter16_shapley_attribution_baselines/exercises/part2_kernelshap_partition_shap_controls]
         requirements: [shapley.kernelshap, shapley.partitionshap_owen]
       - number: "16.3"
-        title: TreeSHAP, DeepSHAP and GradientSHAP
+        title: TreeSHAP, DeepSHAP and GradientSHAP (Practice)
         dir: part3_model_specific_shap
+        description: "Implement all three complete historical TreeSHAP, DeepSHAP and GradientSHAP curricula, retaining different estimands, players, backgrounds, conditionals, controls, figures and play. All 327 original cells per kind remain whole. Existing public results are exposed guided practice, without new model execution or general faithfulness or learner acceptance."
         sources: [chapter16_shapley_attribution_baselines/exercises/part13_treeshap, chapter16_shapley_attribution_baselines/exercises/part14_deepshap, chapter16_shapley_attribution_baselines/exercises/part15_gradientshap]
         requirements: [shapley.treeshap, shapley.deepshap, shapley.gradientshap]
       - number: "16.4"
@@ -737,9 +803,11 @@ chapters:
         dir: part4_sage
         sources: [chapter16_shapley_attribution_baselines/exercises/part12_sage_global_importance]
         requirements: [shapley.sage]
+        description: "Implement exact and sampled SAGE games, inspect dependence and missingness controls, and compare global performance attribution with local prediction attribution."
       - number: "16.5"
         title: Shapley Interactions
         dir: part5_shapley_interactions
+        description: "Implement exact pair interactions, Shapley-Taylor and Faith-Shap allocations, then compare shared-query estimators across the complete retained studies, with distinct controls, query budgets and prediction exercises."
         sources: [chapter16_shapley_attribution_baselines/exercises/part3_shapley_interactions_shapiq, chapter16_shapley_attribution_baselines/exercises/part16_shapley_taylor_faith_shap, chapter16_shapley_attribution_baselines/exercises/part17_shapiq_estimators]
         requirements: [shapley.interactions_shapiq, shapley.shapley_taylor_faith_shap, shapley.shap_iq]
       - number: "16.6"
@@ -758,11 +826,13 @@ chapters:
       - number: "16.7"
         title: TokenSHAP and Region SHAP for LLMs and VLMs
         dir: part7_token_region_shap
+        description: "Implement complete historical token-position, whole-modality and rendered-region coalition games with exact credit, masking/replacement, shuffled controls and play cells. Keep analytic token, neural release preflight and CLIP-region protocols distinct. These controlled games do not establish general pretrained-LLM/VLM attribution faithfulness or fresh model evidence."
         sources: [chapter16_shapley_attribution_baselines/exercises/part4_tokenshap_token_shapley, chapter16_shapley_attribution_baselines/exercises/part5_vlm_modality_region_shap]
         requirements: [shapley.token_shapley, shapley.vlm_modality_region]
       - number: "16.8"
         title: SHAP vs Activation Patching
         dir: part8_shap_vs_patching
+        description: "Implement both complete historical ReLU token/hidden and finite-circuit attribution curricula. Keep clean-corrupt noising, finite feature coalitions, pair/XOR diagnosis and the separate one-step data-player game distinct. Compare controls and deletion/insertion consequences; general real-model mechanistic agreement and new scientific acceptance remain unfinished."
         sources: [chapter16_shapley_attribution_baselines/exercises/part6_shap_vs_activation_patching, chapter16_shapley_attribution_baselines/exercises/part8_shapley_mechinterp_agreement]
         requirements: [shapley.shap_vs_activation_patching, shapley.mechanistic_agreement_matrix]
       - number: "16.9"
@@ -782,11 +852,13 @@ chapters:
       - number: "16.10"
         title: Influence Functions and TracIn
         dir: part10_influence_tracin
+        description: "Implement Hessian influence and checkpoint-gradient credit, test local predictions against explicit refits, and compare balanced deletion policies on a preserved writer-separated digit study."
         sources: [chapter16_shapley_attribution_baselines/exercises/part9_influence_and_tracin]
         requirements: [data_attribution.influence_functions, data_attribution.tracin, data_attribution.ghostsuite]
       - number: "16.11"
         title: Datamodels and Dataset Cartography
         dir: part11_datamodels_cartography
+        description: "Implement subset-response datamodels and training-history cartography; inspect both complete retained studies, test matched deletion and retraining controls, and predict changes in held-out margin error and region selection."
         sources: [chapter16_shapley_attribution_baselines/exercises/part10_datamodels, chapter16_shapley_attribution_baselines/exercises/part11_dataset_cartography]
         requirements: [data_attribution.datamodels, data_attribution.dataset_cartography]
 
@@ -800,9 +872,11 @@ chapters:
         dir: part1_checkpoint_archaeology
         sources: [chapter17_training_dynamics/exercises/part1_checkpoint_archaeology, arena_ext/training_dynamics.py]
         requirements: [training.checkpoint_archaeology, training.grokking, organisms.modular_addition]
+        description: "Track recorded finite-domain modular-addition accuracy and Fourier interventions across checkpoints; grokking and held-out generalization remain separate, unfinished studies."
       - number: "17.2"
         title: Induction Head Emergence
         dir: part2_induction_head_emergence
+        description: "Build and ablate a fixed induction-copying circuit, measure prefix matching and token-loss trajectories, and specify the pending trained-model/Pythia emergence study."
         sources: []
         requirements: [training.induction_head_emergence]
         brief: >
@@ -813,6 +887,7 @@ chapters:
       - number: "17.3"
         title: Fine-Tuning Diffs and Capability Emergence
         dir: part3_finetuning_diffs_emergence
+        description: "Diff fixed checkpoints, infer paired sparse codes and causally replace task components while separating smooth margin changes from thresholded accuracy; native fine-tuning and Pythia studies remain pending."
         sources: []
         requirements: [training.finetuning_diffs, training.capability_emergence]
         brief: >
@@ -822,6 +897,7 @@ chapters:
       - number: "17.4"
         title: Training Dynamics Across Architectures
         dir: part4_cross_architecture_dynamics
+        description: "Implement sequence-computation and objective slices, then compare fixed task representations with CKA, effective rank, ridge probes and matched budget axes; native AR/Mamba/masked-diffusion/JEPA training remains pending."
         sources: []
         requirements: [training.cross_architecture_dynamics]
         brief: >
@@ -838,6 +914,7 @@ chapters:
       - number: "18.1"
         title: Concept Bottlenecks, Backpacks and Interchange Intervention Training
         dir: part1_concept_bottlenecks_backpacks_iit
+        description: "Implement concept correction and leakage tests, Backpack-style fixed-sense readouts and edits, and a tiny known-subspace IIT counterfactual objective; released-model training and DAS validation remain pending."
         sources: []
         requirements: [intrinsic.concept_bottleneck_models, intrinsic.backpack_language_models, intrinsic.interchange_intervention_training]
         brief: >
@@ -847,6 +924,7 @@ chapters:
       - number: "18.2"
         title: Sparse and Modular Training, KANs and Sparse Trees
         dir: part2_sparse_modular_kans
+        description: "Fit distance-weighted sparse connections, inspect learned degree-one spline edges and symbolic candidates, and build a greedy sparse-tree baseline on one known regression task; full BIMT/KAN/native validation remains pending."
         sources: []
         requirements: [intrinsic.sparse_modular_training, intrinsic.kans_sparse_trees]
         brief: >

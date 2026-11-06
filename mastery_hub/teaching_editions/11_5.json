@@ -1,0 +1,41 @@
+{
+  "schema_version": 1,
+  "section": "11.5",
+  "sources": {
+    "page": {
+      "path": "chapter11_representation_geometry/instructions/pages/05_[11.5]_Contrast-Consistent_Search.md",
+      "sha256": "932f4ff603e00d8f9632e97f45710e70545ebe77fc3ab39a2b9626e7af251b55"
+    },
+    "exercises": {
+      "path": "chapter11_representation_geometry/exercises/part5_contrast_consistent_search/11.5_Contrast-Consistent_Search_exercises.ipynb",
+      "sha256": "6efa3c369d77ace2c41d0be385adf183d42af30f3747da8f6707c79475f3e1f7"
+    },
+    "reference": {
+      "path": "chapter11_representation_geometry/exercises/part5_contrast_consistent_search/11.5_Contrast-Consistent_Search_solutions.ipynb",
+      "sha256": "8f6ff99d27a4e9f596d9d63f322d72fcf3b8749135b9855b4460bf419dd0b704"
+    }
+  },
+  "replacements": [
+    {
+      "old": "Return the two training means, each with shape `[features]`. Then apply\nthose fitted means to both branches of any split. Do not modify the original\nactivations. In particular, the application function must not estimate a new\nmean from the data passed to it.",
+      "new": "Return the two training means, each with shape `[features]`. Then apply\nthose fitted means to both branches of any split. Do not modify the original\nactivations. In particular, the application function must not estimate a new\nmean from the data passed to it.\n\n**Public return contract — `fit_pair_centering`.** For width `d`, return `{\"plus_mean\": [d], \"minus_mean\": [d]}` with detached tensor values of the input dtype/device. `apply_pair_centering` consumes those keys and returns `(centered_plus, centered_minus)`, each with its original `[rows, d]` shape.",
+      "counts": {
+        "page": 1,
+        "exercises": 1,
+        "reference": 1
+      }
+    },
+    {
+      "old": "Return every restart's weights, biases and a `[steps + 1, restarts, 3]`\nhistory containing total, consistency and confidence losses. Use local random\ngenerators so fitting does not reset unrelated notebook randomness. Optimize\nthe sum of the separate reporters' losses. Then implement the stated selection\nrule using only this history.",
+      "new": "Return every restart's weights, biases and a `[steps + 1, restarts, 3]`\nhistory containing total, consistency and confidence losses. Use local random\ngenerators so fitting does not reset unrelated notebook randomness. Optimize\nthe sum of the separate reporters' losses. Then implement the stated selection\nrule using only this history.\n\n**Public fitting and selection interfaces.** Let `R = len(seeds)`, `d = features`, and `S = steps`. Return these exact keys from `fit_ccs_restarts`:\n\n| Key | Shape / type | Meaning |\n| --- | --- | --- |\n| `weights` | `[R, d]` tensor | Final detached reporter weights |\n| `biases` | `[R]` tensor | Final detached biases |\n| `history` | `[S + 1, R, 3]` CPU tensor | Initial and post-update total, consistency, confidence losses in that order |\n| `seeds` | Python `list[int]` of length R | Restart seeds in supplied order |\n\n`weights` and `biases` retain input dtype/device. `select_restart(fitted)` consumes this dictionary and chooses the **first** minimum final total training loss. Return `index` (Python int), `seed` (Python int), `weight` (`[d]` tensor copy), `bias` (scalar tensor copy), and `training_loss` (Python float). Labels and evaluation scores never enter this selection.",
+      "counts": {
+        "page": 1,
+        "exercises": 1,
+        "reference": 1
+      }
+    }
+  ],
+  "rationale": [
+    "GV-03: expose centering, restart and selection schemas without giving optimizer implementation."
+  ]
+}

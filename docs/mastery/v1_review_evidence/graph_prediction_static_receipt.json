@@ -1,0 +1,183 @@
+{
+  "timestamp_utc": "2026-10-20T09:23:27.001145+00:00",
+  "status": "scratch_implementation_ready_for_independent_source_review_only",
+  "scope": "source/AST/JSON/compilation/generation plus distinct anonymous four-node exposed DEV arithmetic; target is never instantiated or evaluated",
+  "payload_snapshot": {
+    "mastery_hub/units/graph_prediction/lesson.py": "7681f24d8f44039614f3b77567bf22f20597dee852890ca91b8b72e185ae2bb3",
+    "mastery_hub/units/graph_prediction/exercises.ipynb": "ab05af58e4afce25ee9deb1252a540e0222d855bf637dfaee7aef5917bc861a6",
+    "scripts/build_graph_prediction_notebook.py": "82e8087e71e349b506d2338291d6971340954432a2bf7a2bc1a287d5be221cc1",
+    "tests/mastery/test_graph_prediction.py": "5994b272ed44938450f62694c85ed9104db7a17616a8e1ea1022980feeffcd3c",
+    "docs/mastery/graph_prediction_protocol.json": "c0300f608e926abeb03c17573105ac94aa7cb0684c9bdeb401b3146f7a1994cd",
+    "docs/mastery/graph_prediction_source_review.json": "5e66575b2fe30e1e43dc71514ca4592f37cb0bb2ad6a08335b134daacb9954f9",
+    "docs/mastery/graph_prediction_design.md": "dac71826ff5e5edf3f60953739f3497cdd5fe13980e6012b834bf105f980e5ba"
+  },
+  "checks": [
+    {
+      "argv": [
+        "uv",
+        "--no-cache",
+        "run",
+        "--no-sync",
+        "--project",
+        "/home/bitwise/Documents/ARENA_3.0_Extended",
+        "python",
+        "-m",
+        "pytest",
+        "-c",
+        "/dev/null",
+        "--rootdir",
+        "/tmp/arena-graph-blind-build-20261020",
+        "--noconftest",
+        "-p",
+        "no:cacheprovider",
+        "/tmp/arena-graph-blind-build-20261020/tests/mastery/test_graph_prediction.py",
+        "-q"
+      ],
+      "exit_code": 0,
+      "stdout_stderr": "docs/mastery/graph_prediction_static_check_1.txt",
+      "stdout_stderr_sha256": "f8923cc457b0d0887900aee37b3291b61306499bee5c3794b9b1f532967789df",
+      "source_snapshot_sha256": "32f76f1c048a726636e3c5fec94e6b0ed15a49f932f92ccef118a9cad10adf8f"
+    },
+    {
+      "argv": [
+        "uv",
+        "--no-cache",
+        "run",
+        "--no-sync",
+        "--project",
+        "/home/bitwise/Documents/ARENA_3.0_Extended",
+        "python",
+        "scripts/build_graph_prediction_notebook.py",
+        "--check"
+      ],
+      "exit_code": 0,
+      "stdout_stderr": "docs/mastery/graph_prediction_static_check_2.txt",
+      "stdout_stderr_sha256": "34057c5ac120d82929e35e9cf4eaf13b5acc4d14b73389469fefd481d0936a6d",
+      "source_snapshot_sha256": "32f76f1c048a726636e3c5fec94e6b0ed15a49f932f92ccef118a9cad10adf8f"
+    }
+  ],
+  "static_compilation": "lesson, generator, tests and every code cell compile",
+  "notebook": {
+    "cells": 24,
+    "code_cells": 12,
+    "output_cells": 0,
+    "executed_cells": 0,
+    "unique_cell_ids": true,
+    "learner_forecast_observation_reflection_transfer": "all blank; AST regression checked"
+  },
+  "prior_check_attempts": [
+    {
+      "kind": "tool_environment_failure",
+      "argv_prefix": "uv run --no-sync --project ... pytest",
+      "result": "Could not acquire lock: read-only /home/bitwise/.cache/uv; exit 2, tests did not start",
+      "response": "retried with uv --no-cache; no escalation, dependency installation or persistent cache change"
+    },
+    {
+      "kind": "earlier_static_DEV_pass",
+      "result": "46 passed in 2.82s",
+      "scope": "earlier source snapshot; superseded by final bound checks"
+    },
+    {
+      "kind": "earlier_static_DEV_pass",
+      "result": "50 passed in 1.99s",
+      "scope": "earlier source snapshot; superseded by final bound checks"
+    },
+    {
+      "kind": "earlier_static_DEV_pass",
+      "result": "57 passed in 4.42s",
+      "scope": "same source/tests as final payload; final rerun above is authoritative"
+    }
+  ],
+  "source_review_inputs": {
+    "/home/bitwise/Documents/ARENA_3.0_Extended/scripts/build_circuit_prediction_notebook.py": {
+      "review_sha256": "b49fa4dd6c462f2756f7d2503e83b7aae80c3ffc6e250eaddcdc38d3a4cacba3",
+      "current_sha256": "b49fa4dd6c462f2756f7d2503e83b7aae80c3ffc6e250eaddcdc38d3a4cacba3",
+      "matches_review": true
+    },
+    "/home/bitwise/Documents/ARENA_3.0_Extended/mastery_hub/units/circuit_prediction/lesson.py": {
+      "review_sha256": "514aa1468f6aa205f6bfd96d246b0f7472421922d8eb510a451414c988dce0bb",
+      "current_sha256": "514aa1468f6aa205f6bfd96d246b0f7472421922d8eb510a451414c988dce0bb",
+      "matches_review": true
+    },
+    "/home/bitwise/Documents/ARENA_3.0_Extended/tests/mastery/test_circuit_prediction.py": {
+      "review_sha256": "a07f3695c61002f5b7dde86f2140fb1d68489a1177dd26f90f6051401b8cd6f8",
+      "current_sha256": "a07f3695c61002f5b7dde86f2140fb1d68489a1177dd26f90f6051401b8cd6f8",
+      "matches_review": true
+    },
+    "/home/bitwise/Documents/ARENA_3.0_Extended/mastery_hub/app.py": {
+      "review_sha256": "258b5f94f625b95a5840a2717946063dfed73f50bc1af6f8268bfcfff23ef6a6",
+      "current_sha256": "258b5f94f625b95a5840a2717946063dfed73f50bc1af6f8268bfcfff23ef6a6",
+      "matches_review": true
+    },
+    "/tmp/arena-graph-migration-20261020/preservation.json": {
+      "review_sha256": "8d8c855e49cfc26d2b1c64bc2a7b39ddcf7617782f9cbd3ab195849a5c401cc5",
+      "current_sha256": "8d8c855e49cfc26d2b1c64bc2a7b39ddcf7617782f9cbd3ab195849a5c401cc5",
+      "matches_review": true
+    },
+    "/tmp/arena-graph-migration-20261020/proposed_case.json": {
+      "review_sha256": "39f9701ca191a58518db2b21cd082e68a54a32e984ee2d5297d51e4ba1fad17c",
+      "current_sha256": "39f9701ca191a58518db2b21cd082e68a54a32e984ee2d5297d51e4ba1fad17c",
+      "matches_review": true
+    },
+    "/tmp/arena-graph-review-20261020/REVIEW.md": {
+      "review_sha256": "69adeeb0704edc83f1db5d0dc77d029f448c2508be80bfc2128da568eb796eb6",
+      "current_sha256": "69adeeb0704edc83f1db5d0dc77d029f448c2508be80bfc2128da568eb796eb6",
+      "matches_review": true
+    },
+    "/home/bitwise/Documents/ARENA_3.0_Extended/mastery_hub/units/circuit_prediction/exercises.ipynb": {
+      "review_sha256": "58ba23fb480df928300d01f8bd79c32743e8558d6096863654935553349061a8",
+      "current_sha256": "58ba23fb480df928300d01f8bd79c32743e8558d6096863654935553349061a8",
+      "matches_review": true
+    },
+    "/home/bitwise/Documents/ARENA_3.0_Extended/mastery_hub/units/shapley_prediction/lesson.py": {
+      "review_sha256": "b06426d5c9757328578ccff543ef3cec4cbca7e8fd23ec6a83c4aa6fdc4ed97b",
+      "current_sha256": "b06426d5c9757328578ccff543ef3cec4cbca7e8fd23ec6a83c4aa6fdc4ed97b",
+      "matches_review": true
+    },
+    "/home/bitwise/Documents/ARENA_3.0_Extended/mastery_hub/units/shapley_prediction/exercises.ipynb": {
+      "review_sha256": "66eed0ccd8159ffa5b63349eda8bb99303b5c32cfbe1f65d0656a0ab298729e0",
+      "current_sha256": "66eed0ccd8159ffa5b63349eda8bb99303b5c32cfbe1f65d0656a0ab298729e0",
+      "matches_review": true
+    },
+    "/home/bitwise/Documents/ARENA_3.0_Extended/mastery_hub/units/sage_prediction/lesson.py": {
+      "review_sha256": "94abc5badfb7a7c11994093e25447d2bcfb25eab66628f02a6f3979eb3fbb8de",
+      "current_sha256": "94abc5badfb7a7c11994093e25447d2bcfb25eab66628f02a6f3979eb3fbb8de",
+      "matches_review": true
+    },
+    "/home/bitwise/Documents/ARENA_3.0_Extended/mastery_hub/units/sage_prediction/exercises.ipynb": {
+      "review_sha256": "55d5241a0fb8382d97a4d844f573a6350f6c9ba9a70f7bc4c3154c66fb6a478c",
+      "current_sha256": "55d5241a0fb8382d97a4d844f573a6350f6c9ba9a70f7bc4c3154c66fb6a478c",
+      "matches_review": true
+    },
+    "/home/bitwise/Documents/ARENA_3.0_Extended/mastery_hub/units/ssd_prediction/lesson.py": {
+      "review_sha256": "431e5cc0ab598e11b98f033038d958ab9d4df603201d6d924303d0a049a1a659",
+      "current_sha256": "431e5cc0ab598e11b98f033038d958ab9d4df603201d6d924303d0a049a1a659",
+      "matches_review": true
+    },
+    "/home/bitwise/Documents/ARENA_3.0_Extended/mastery_hub/units/ssd_prediction/exercises.ipynb": {
+      "review_sha256": "3c2e36206a4ef372363a36331dc12f0a26a5f367b5f291fd0640a24ed795ea17",
+      "current_sha256": "3c2e36206a4ef372363a36331dc12f0a26a5f367b5f291fd0640a24ed795ea17",
+      "matches_review": true
+    }
+  },
+  "payload_unchanged_during_final_checks": true,
+  "selected_external_sources_unchanged_during_final_checks": true,
+  "target_constructor_calls": 0,
+  "target_activations_scores_paths_metrics_controls_predicate_evaluations": 0,
+  "target_attempts": 0,
+  "target_forecasts_entered": 0,
+  "numerical_scope": "only distinct four-node DEV fixtures; no target-shaped successful empirical receipt created",
+  "repository_writes_by_this_worker": 0,
+  "git_mutations": 0,
+  "network_model_training_gpu_cluster_calls": 0,
+  "scientific_execution": false,
+  "empirical_blind_run_exists": false,
+  "accepted": false,
+  "limitations": [
+    "no target attempt or target output",
+    "no human learner walkthrough",
+    "process-local repeat guard and cooperative timeout do not enforce cross-process authority",
+    "no scientific or course-readiness acceptance",
+    "ty unavailable; no install attempted; repository-wide prek hooks were not invoked from isolated scratch"
+  ]
+}

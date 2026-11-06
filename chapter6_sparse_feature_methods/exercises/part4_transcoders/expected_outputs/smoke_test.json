@@ -1,0 +1,19 @@
+{
+  "accepted": true,
+  "claim_scope": "Exact colored-shape ReLU MLP replacement, known signed attribution graph, and CPU intervention controls.",
+  "evidence_level": "exact_model_organism",
+  "gt_tier": "GT-0",
+  "notebook_id": "6_3_transcoders_and_attribution_graphs",
+  "section": "6.3",
+  "tests_passed": true,
+  "title": "Transcoders and Attribution Graphs",
+  "metrics": {
+    "target_score": 1.6,
+    "graph_feature_ids": [4, 0, 2],
+    "graph_edge_count": 10,
+    "faithfulness_curve": [0.78125, 0.90625, 1.0],
+    "same_size_random_curve": [0.0, 0.0, 0.09375],
+    "edge_conservation": 1.0,
+    "shuffled_edge_conservation": 0.0
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "timestamp_utc": "2026-10-20T09:33:31.690571+00:00",
+  "source": "/tmp/arena-graph-blind-build-20261020",
+  "backup": "/tmp/arena-graph-blind-build-20261020-v1-preserved",
+  "source_manifest_sha256": "a0d3d316d181f189f57978f5eabb6ddd11f63cd9283d8b1f6294f5763b1d0c4a",
+  "manifest_payloads_verified": 10,
+  "all_files_verified": 18,
+  "all_file_sha256": {
+    ".pytest_cache/CACHEDIR.TAG": "37dc88ef9a0abeddbe81053a6dd8fdfb13afb613045ea1eb4a5c815a74a3bde4",
+    ".pytest_cache/.gitignore": "3ed731b65d06150c138e2dadb0be0697550888a6b47eb8c45ecc9adba8b8e9bd",
+    ".pytest_cache/README.md": "73fd6fccdd802c419a6b2d983d6c3173b7da97558ac4b589edec2dfe443db9ad",
+    "scripts/build_graph_prediction_notebook.py": "82e8087e71e349b506d2338291d6971340954432a2bf7a2bc1a287d5be221cc1",
+    "mastery_hub/units/graph_prediction/exercises.ipynb": "ab05af58e4afce25ee9deb1252a540e0222d855bf637dfaee7aef5917bc861a6",
+    "mastery_hub/units/graph_prediction/lesson.py": "7681f24d8f44039614f3b77567bf22f20597dee852890ca91b8b72e185ae2bb3",
+    "mastery_hub/units/graph_prediction/__pycache__/lesson.cpython-314.pyc": "f634dde7285924605e776dd3abed5ecc3f9e5f1b96a780bda40cf8b6862c2a86",
+    "scripts/__pycache__/build_graph_prediction_notebook.cpython-314.pyc": "da88a40899c454db3c8fe223b63fc4163079d3019780e6f1e7752425258c4757",
+    "tests/mastery/test_graph_prediction.py": "5994b272ed44938450f62694c85ed9104db7a17616a8e1ea1022980feeffcd3c",
+    "tests/mastery/__pycache__/test_graph_prediction.cpython-314-pytest-9.1.1.pyc": "7aa91fde97623bf15d149aa4f83e79e66bb6680aca81a6286c032841a992c1da",
+    "docs/mastery/graph_prediction_manifest.json": "a0d3d316d181f189f57978f5eabb6ddd11f63cd9283d8b1f6294f5763b1d0c4a",
+    "docs/mastery/graph_prediction_static_receipt.json": "430c88685643d5bdecb17b75b2c00b8bc66f2801b732694dde8ea981eb5b7791",
+    "docs/mastery/graph_prediction_static_check_2.txt": "34057c5ac120d82929e35e9cf4eaf13b5acc4d14b73389469fefd481d0936a6d",
+    "docs/mastery/graph_prediction_static_check_1.txt": "f8923cc457b0d0887900aee37b3291b61306499bee5c3794b9b1f532967789df",
+    "docs/mastery/graph_prediction_design.md": "dac71826ff5e5edf3f60953739f3497cdd5fe13980e6012b834bf105f980e5ba",
+    "docs/mastery/graph_prediction_source_review.json": "5e66575b2fe30e1e43dc71514ca4592f37cb0bb2ad6a08335b134daacb9954f9",
+    "docs/mastery/graph_prediction_protocol.json": "c0300f608e926abeb03c17573105ac94aa7cb0684c9bdeb401b3146f7a1994cd",
+    ".pytest_cache/v/cache/nodeids": "39ec24ab1958dbb255e28852c44f663ab35b9e09ea496434b107afca373513aa"
+  },
+  "includes_all_named_files_and_README_if_present": true,
+  "source_writes": 0
+}

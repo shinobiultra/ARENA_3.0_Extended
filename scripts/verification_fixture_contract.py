@@ -55,9 +55,14 @@ def uses_native_receipts(root: Path, exercise_dir: Path) -> bool:
 
 
 def verification_entrypoint(root: Path, exercise_dir: Path) -> Path:
-    """Locate the real report entrypoint without inventing a legacy GPU hook."""
+    """Locate the report code, or the historical sparse receipt validator."""
     if uses_native_receipts(root, exercise_dir) and exercise_dir.name in SPARSE_RECEIPT_SECTIONS:
-        return root / CHAPTER / "part18_spex/native_report.py"
+        return root / "arena_ext/legacy_sparse_evidence/native_report.py"
+    return exercise_dir / "solutions.py"
+
+
+def experiment_entrypoint(root: Path, exercise_dir: Path) -> Path:
+    """Locate actual experiment code; a receipt validator is never its fallback."""
     return exercise_dir / "solutions.py"
 
 
@@ -137,7 +142,7 @@ def native_receipt_blockers(
 
     summary, learner, fresh = (receipts[name] for name in NATIVE_FIXTURE_NAMES)
     if sparse is not None:
-        from chapter16_shapley_attribution_baselines.exercises.part18_spex.native_report import receipt_blockers
+        from arena_ext.legacy_sparse_evidence.native_report import receipt_blockers
 
         return blockers + receipt_blockers(section, summary, learner, fresh, report)
     metrics = report.get("metrics", {})

@@ -50,13 +50,21 @@ Give GPT-2 Small the prompt
 Yesterday, when Mary and John went to the busy store, John happily gave a cold drink to
 ```
 
-and it answers `" Mary"`, with probability 0.59. This is the indirect object identification (IOI) task you may have met in [1.4.1]: the model has to notice that John is mentioned twice, so the drink must be going to the *other* person. A convenient measure of how confident the model is in the right answer is the logit difference `logit(" Mary") - logit(" John")`, which is **+2.69** here.
+and it answers `" Mary"`, with probability 0.59. This is the indirect object identification (IOI) task you may have met in [1.4.1]: the model has to notice that John is mentioned
+twice, so the drink must be going to the *other* person. A convenient measure of how confident the model is in the right answer is the logit difference `logit(" Mary") - logit("
+John")`, which is **+2.69** here.
 
-Now start deleting words. Delete the first `John` and the logit difference drops to 1.06. Delete the second `John` instead and it drops to -0.40: the model now prefers John! So each `John` on its own looks very important, worth 1.6 and 3.1 logits respectively. If importance were additive, deleting *both* should cost about 4.7 logits and leave us around -2.0. In fact, deleting both Johns leaves the logit difference at **+2.48**, almost exactly where it started.
+Now start deleting words. Delete the first `John` and the logit difference drops to 1.06. Delete the second `John` instead and it drops to -0.40: the model now prefers John! So
+each `John` on its own looks very important, worth 1.6 and 3.1 logits respectively. If importance were additive, deleting *both* should cost about 4.7 logits and leave us around
+-2.0. In fact, deleting both Johns leaves the logit difference at **+2.48**, almost exactly where it started.
 
-The two Johns don't matter separately; they matter *together*. What the model is (partly) using is the fact that a name is repeated, which is exactly the "duplicate token" signal that the IOI circuit is built around. No per-word attribution can express this. The Shapley values you computed in [16.1] and [16.2] will spread the effect across the two Johns somehow, but a list of 16 numbers can't tell you that the effect of one John depends on whether the other is present. For that you need **interactions**, which you met in [16.5].
+The two Johns don't matter separately; they matter *together*. What the model is (partly) using is the fact that a name is repeated, which is exactly the "duplicate token" signal
+that the IOI circuit is built around. No per-word attribution can express this. The Shapley values you computed in [16.1] and [16.2] will spread the effect across the two Johns
+somehow, but a list of 16 numbers can't tell you that the effect of one John depends on whether the other is present. For that you need **interactions**, which you met in [16.5].
 
-The problem is cost. With $n$ words there are $2^n$ subsets of words to keep, and $2^n$ possible interactions. For our 16-word sentence that's 65,536, which is just about feasible for GPT-2 Small. For a paragraph of 100 words it's $10^{30}$. This section is about two recent methods that make interaction discovery scale, by betting that a real model's behaviour is **sparse**: that only a small number of interactions, mostly of low order, matter.
+The problem is cost. With $n$ words there are $2^n$ subsets of words to keep, and $2^n$ possible interactions. For our 16-word sentence that's 65,536, which is just about feasible
+for GPT-2 Small. For a paragraph of 100 words it's $10^{30}$. This section is about two recent methods that make interaction discovery scale, by betting that a real model's
+behaviour is **sparse**: that only a small number of interactions, mostly of low order, matter.
 
 - **SPEX** (Kang, Butler, Agarwal, Erginbas, Pedarsani, Ramchandran & Yu, ICML 2025) treats the model as a function on the Boolean hypercube and recovers its largest Fourier coefficients using cleverly structured queries. Deliberately chosen masks make the unknown interactions collide into a small number of "bins", shifted copies of those masks encode *which* interaction landed in a bin through an error-correcting code, and a peeling decoder untangles the collisions. The number of queries grows like $s \cdot t \log n$ for $s$ interactions of order at most $t$, rather than like $2^n$.
 - **ProxySPEX** (Butler, Agarwal, Kang, Erginbas, Yu & Ramchandran, NeurIPS 2025) takes a more pragmatic route: query the model on random masks, fit a gradient-boosted tree ensemble to the answers, and read the interactions off the trees *exactly*, since every decision tree has a short, exactly computable Fourier expansion. The bet here is that real interactions are **hierarchical**, so that a greedy tree can find them.
@@ -68,9 +76,11 @@ By the end of this section you'll have:
 - built ProxySPEX from scratch, and found the kind of function it can't see;
 - compared both methods against the exact GPT-2 reference, against first-order baselines that can only express additive effects, and against controls (shuffled responses, interaction sets with the words relabelled, dense and misspecified games) that should fail, and do.
 
-One theme runs through the whole section: **every explanation is a model of the model**. A list of interactions is only as good as how well it predicts what the network does on inputs it wasn't fit to. So we'll measure faithfulness (R² on held-out masks) everywhere, and never present an interaction without it.
+One theme runs through the whole section: **every explanation is a model of the model**. A list of interactions is only as good as how well it predicts what the network does on
+inputs it wasn't fit to. So we'll measure faithfulness (R² on held-out masks) everywhere, and never present an interaction without it.
 
-This section assumes you're comfortable with Shapley values and KernelSHAP ([16.1], [16.2]) and have seen Shapley interactions and the Möbius transform ([16.5]). Familiarity with the IOI task ([1.4.1]) helps with interpreting the GPT-2 results but isn't required. No coding theory is assumed: we'll build what we need.
+This section assumes you're comfortable with Shapley values and KernelSHAP ([16.1], [16.2]) and have seen Shapley interactions and the Möbius transform ([16.5]). Familiarity with
+the IOI task ([1.4.1]) helps with interpreting the GPT-2 results but isn't required. No coding theory is assumed: we'll build what we need.
 '''
 
 # ! CELL TYPE: markdown
@@ -82,7 +92,9 @@ r'''
 
 ### 1️⃣ Interactions as Fourier and Möbius coefficients
 
-A value function on masks can be written in two natural bases: the Möbius (AND) basis, where each coefficient is the extra effect of a set of features being present *together*, and the Fourier (parity) basis, which is what SPEX recovers. You'll implement both transforms, convert between them, and derive Shapley values and Shapley interaction indices from either.
+A value function on masks can be written in two natural bases: the Möbius (AND) basis, where each coefficient is the extra effect of a set of features being present *together*, and
+the Fourier (parity) basis, which is what SPEX recovers. You'll implement both transforms, convert between them, and derive Shapley values and Shapley interaction indices from
+either.
 
 > ##### Learning Objectives
 >
@@ -93,7 +105,9 @@ A value function on masks can be written in two natural bases: the Möbius (AND)
 
 ### 2️⃣ How sparse is a real model?
 
-You'll define a word-deletion game on GPT-2 (masking with the attention mask, which is exactly equivalent to deleting words), evaluate it on all $2^{16}$ masks, and compute the exact spectrum. You'll measure how much variance lives at each interaction order and how many coefficients you need, under two read-outs (logit difference and probability), against a shuffled control.
+You'll define a word-deletion game on GPT-2 (masking with the attention mask, which is exactly equivalent to deleting words), evaluate it on all $2^{16}$ masks, and compute the
+exact spectrum. You'll measure how much variance lives at each interaction order and how many coefficients you need, under two read-outs (logit difference and probability), against
+a shuffled control.
 
 > ##### Learning Objectives
 >
@@ -104,7 +118,9 @@ You'll define a word-deletion game on GPT-2 (masking with the attention mask, wh
 
 ### 3️⃣ SPEX: sparse recovery from aliased queries
 
-The core of the section. You'll build every piece of SPEX: subsampling the hypercube so that interactions alias into bins, shifted queries whose signs encode the support of a bin's interaction, a BCH code that makes those shifts cheap ($t \log n$ instead of $n$), singleton detection, and the peeling decoder. You'll test it on planted games where exact recovery can be checked, and break it with dense and misspecified games.
+The core of the section. You'll build every piece of SPEX: subsampling the hypercube so that interactions alias into bins, shifted queries whose signs encode the support of a bin's
+interaction, a BCH code that makes those shifts cheap ($t \log n$ instead of $n$), singleton detection, and the peeling decoder. You'll test it on planted games where exact
+recovery can be checked, and break it with dense and misspecified games.
 
 > ##### Learning Objectives
 >
@@ -115,7 +131,9 @@ The core of the section. You'll build every piece of SPEX: subsampling the hyper
 
 ### 4️⃣ ProxySPEX: reading the spectrum off a tree proxy
 
-You'll derive the exact Fourier expansion of a decision tree, extract the spectrum of a whole gradient-boosted ensemble, select and refit the important coefficients, and wrap it all into ProxySPEX. A set of planted games then shows each method failing where its assumption breaks: SPEX on dense spectra, ProxySPEX on interactions without lower-order "footprints".
+You'll derive the exact Fourier expansion of a decision tree, extract the spectrum of a whole gradient-boosted ensemble, select and refit the important coefficients, and wrap it
+all into ProxySPEX. A set of planted games then shows each method failing where its assumption breaks: SPEX on dense spectra, ProxySPEX on interactions without lower-order
+"footprints".
 
 > ##### Learning Objectives
 >
@@ -125,7 +143,8 @@ You'll derive the exact Fourier expansion of a decision tree, extract the spectr
 
 ### 5️⃣ Head-to-head on GPT-2
 
-You'll compare SPEX, ProxySPEX and first-order baselines on the GPT-2 game against the exact reference, inspect which interactions each method finds (including the John × John interaction), run a permuted-interaction control, and then scale up to a 27-word passage queried live, where no exact answer is available.
+You'll compare SPEX, ProxySPEX and first-order baselines on the GPT-2 game against the exact reference, inspect which interactions each method finds (including the John × John
+interaction), run a permuted-interaction control, and then scale up to a 27-word passage queried live, where no exact answer is available.
 
 > ##### Learning Objectives
 >
@@ -236,9 +255,12 @@ r'''
 r'''
 ## Value functions on masks
 
-Throughout this section we'll work with $n$ **features** (for us, words of a prompt) and **masks** $x \in \{0, 1\}^n$, where $x_i = 1$ means feature $i$ is kept and $x_i = 0$ means it is removed. A **value function** $f : \{0,1\}^n \to \mathbb{R}$ tells us what the model does on each masked input: for example, the logit difference between `" Mary"` and `" John"` when only the kept words are shown to GPT-2.
+Throughout this section we'll work with $n$ **features** (for us, words of a prompt) and **masks** $x \in \{0, 1\}^n$, where $x_i = 1$ means feature $i$ is kept and $x_i = 0$ means
+it is removed. A **value function** $f : \{0,1\}^n \to \mathbb{R}$ tells us what the model does on each masked input: for example, the logit difference between `" Mary"` and `"
+John"` when only the kept words are shown to GPT-2.
 
-In [16.1] you computed Shapley values from $f$. Here we'll do something more ambitious: we'll try to describe $f$ *itself*, completely, as a sum of a small number of simple pieces. There are two natural families of pieces.
+In [16.1] you computed Shapley values from $f$. Here we'll do something more ambitious: we'll try to describe $f$ *itself*, completely, as a sum of a small number of simple pieces.
+There are two natural families of pieces.
 
 **The Möbius (AND) basis.** Any $f$ can be written uniquely as
 
@@ -246,13 +268,15 @@ $$
 f(x) = \sum_{S \subseteq [n]} m(S) \prod_{i \in S} x_i ,
 $$
 
-where the product $\prod_{i \in S} x_i$ is 1 exactly when *all* the features in $S$ are kept. So $m(\{i\})$ is the effect of keeping feature $i$ on its own, $m(\{i, j\})$ is the *extra* effect of keeping $i$ and $j$ together beyond their individual effects, and so on. The coefficients are given by inclusion-exclusion:
+where the product $\prod_{i \in S} x_i$ is 1 exactly when *all* the features in $S$ are kept. So $m(\{i\})$ is the effect of keeping feature $i$ on its own, $m(\{i, j\})$ is the
+*extra* effect of keeping $i$ and $j$ together beyond their individual effects, and so on. The coefficients are given by inclusion-exclusion:
 
 $$
 m(S) = \sum_{T \subseteq S} (-1)^{|S| - |T|} f(T) ,
 $$
 
-where $f(T)$ means $f$ evaluated on the mask that keeps exactly the features in $T$. This is the representation you used in [16.5]: Shapley values and Shapley interaction indices are weighted sums of Möbius coefficients. It's the most interpretable basis.
+where $f(T)$ means $f$ evaluated on the mask that keeps exactly the features in $T$. This is the representation you used in [16.5]: Shapley values and Shapley interaction indices
+are weighted sums of Möbius coefficients. It's the most interpretable basis.
 
 **The Fourier (parity) basis.** Alternatively, write
 
@@ -260,20 +284,26 @@ $$
 f(x) = \sum_{S \subseteq [n]} F(S)\, \chi_S(x), \qquad \chi_S(x) = (-1)^{\sum_{i \in S} x_i} = \prod_{i \in S} (1 - 2 x_i).
 $$
 
-The **character** $\chi_S(x)$ is $+1$ when an even number of the features in $S$ are kept and $-1$ when an odd number are. The characters are orthonormal under the uniform distribution on masks, so the coefficients are simply correlations:
+The **character** $\chi_S(x)$ is $+1$ when an even number of the features in $S$ are kept and $-1$ when an odd number are. The characters are orthonormal under the uniform
+distribution on masks, so the coefficients are simply correlations:
 
 $$
 F(S) = \frac{1}{2^n} \sum_{x \in \{0,1\}^n} f(x)\, \chi_S(x) = \mathbb{E}_{x \sim \text{Unif}}\left[f(x) \chi_S(x)\right].
 $$
 
-This is the basis SPEX works in, for two reasons we'll see in detail: the Fourier transform has very convenient behaviour under *subsampling* (section 3️⃣), and Fourier coefficients are averages, so they're numerically stable in a way Möbius coefficients aren't (section 2️⃣).
+This is the basis SPEX works in, for two reasons we'll see in detail: the Fourier transform has very convenient behaviour under *subsampling* (section 3️⃣), and Fourier
+coefficients are averages, so they're numerically stable in a way Möbius coefficients aren't (section 2️⃣).
 
-We call $|S|$ the **degree** or **order** of the coefficient, and the set of $S$ with nonzero coefficient the **support** of the spectrum. A function is **$s$-sparse** if it has at most $s$ nonzero coefficients, and has **degree $t$** if all of them have $|S| \le t$.
+We call $|S|$ the **degree** or **order** of the coefficient, and the set of $S$ with nonzero coefficient the **support** of the spectrum. A function is **$s$-sparse** if it has at
+most $s$ nonzero coefficients, and has **degree $t$** if all of them have $|S| \le t$.
 
 <details>
 <summary>Aside - a sign convention to keep in mind</summary>
 
-With $\chi_S(x) = (-1)^{\sum_{i\in S} x_i}$, a positive effect of *keeping* a feature shows up as a *negative* Fourier coefficient. For example, $f(x) = x_0$ has $F(\emptyset) = \tfrac12$ and $F(\{0\}) = -\tfrac12$, since $x_0 = \tfrac12 - \tfrac12 \chi_{\{0\}}(x)$. Don't read signs of Fourier coefficients as "helps" or "hurts"; convert to Möbius coefficients or Shapley values for that. (Some papers use $1 - x_i$ in the exponent, i.e. count *removed* features, which flips the signs of odd-degree terms. SPEX and its reference code use the convention we use here.)
+With $\chi_S(x) = (-1)^{\sum_{i\in S} x_i}$, a positive effect of *keeping* a feature shows up as a *negative* Fourier coefficient. For example, $f(x) = x_0$ has $F(\emptyset) =
+\tfrac12$ and $F(\{0\}) = -\tfrac12$, since $x_0 = \tfrac12 - \tfrac12 \chi_{\{0\}}(x)$. Don't read signs of Fourier coefficients as "helps" or "hurts"; convert to Möbius
+coefficients or Shapley values for that. (Some papers use $1 - x_i$ in the exponent, i.e. count *removed* features, which flips the signs of odd-degree terms. SPEX and its
+reference code use the convention we use here.)
 </details>
 '''
 
@@ -365,13 +395,15 @@ r'''
 > You should spend up to 10 minutes on this exercise.
 > ```
 
-Every method in this section produces a sparse spectrum, and we'll judge every spectrum by how well it predicts the model. So the first thing we need is a way to evaluate a spectrum on a batch of masks:
+Every method in this section produces a sparse spectrum, and we'll judge every spectrum by how well it predicts the model. So the first thing we need is a way to evaluate a
+spectrum on a batch of masks:
 
 $$
 \hat f(x) = \sum_{S \in \text{spectrum}} F(S)\, \chi_S(x).
 $$
 
-Implement `predict_spectrum`. It should be vectorised over masks and supports (no Python loop over masks): build the `(batch, k)` matrix of characters $\chi_S(x)$ in one go, and multiply by the vector of coefficients. An empty spectrum predicts zero everywhere.
+Implement `predict_spectrum`. It should be vectorised over masks and supports (no Python loop over masks): build the `(batch, k)` matrix of characters $\chi_S(x)$ in one go, and
+multiply by the vector of coefficients. An empty spectrum predicts zero everywhere.
 '''
 
 # ! CELL TYPE: code
@@ -406,7 +438,8 @@ r'''
 <details>
 <summary>Hint</summary>
 
-`supports_to_matrix(list(spectrum), n)` gives a `(k, n)` 0/1 matrix `K`. Then `masks @ K.T` counts, for every mask and support, how many features of the support are kept. Reduce mod 2 and map $0 \to +1$, $1 \to -1$ with `1 - 2 * (...)`.
+`supports_to_matrix(list(spectrum), n)` gives a `(k, n)` 0/1 matrix `K`. Then `masks @ K.T` counts, for every mask and support, how many features of the support are kept. Reduce
+mod 2 and map $0 \to +1$, $1 \to -1$ with `1 - 2 * (...)`.
 </details>
 '''
 
@@ -424,13 +457,18 @@ r'''
 > You should spend up to 15 minutes on this exercise.
 > ```
 
-Given all $2^n$ values of $f$ (in index order), we want all $2^n$ Fourier coefficients $F(S) = 2^{-n} \sum_x f(x)\chi_S(x)$. Written as a matrix product this is $F = 2^{-n} H f$, where $H_{S, x} = (-1)^{\text{popcount}(S \,\&\, x)}$ is the $2^n \times 2^n$ **Hadamard matrix**. Multiplying by $H$ directly costs $O(4^n)$; the **fast Walsh-Hadamard transform** (FWHT) does it in $O(n 2^n)$, exactly like the FFT.
+Given all $2^n$ values of $f$ (in index order), we want all $2^n$ Fourier coefficients $F(S) = 2^{-n} \sum_x f(x)\chi_S(x)$. Written as a matrix product this is $F = 2^{-n} H f$,
+where $H_{S, x} = (-1)^{\text{popcount}(S \,\&\, x)}$ is the $2^n \times 2^n$ **Hadamard matrix**. Multiplying by $H$ directly costs $O(4^n)$; the **fast Walsh-Hadamard transform**
+(FWHT) does it in $O(n 2^n)$, exactly like the FFT.
 
-The idea: $H$ factorises into $n$ "butterfly" stages, one per bit. At the stage for bit value $h$ (with $h = 1, 2, 4, \ldots, 2^{n-1}$), you pair up every index $i$ whose bit $h$ is 0 with the index $i + h$, and replace the pair $(a, b)$ by $(a + b, a - b)$. After all $n$ stages, divide by $2^n$.
+The idea: $H$ factorises into $n$ "butterfly" stages, one per bit. At the stage for bit value $h$ (with $h = 1, 2, 4, \ldots, 2^{n-1}$), you pair up every index $i$ whose bit $h$
+is 0 with the index $i + h$, and replace the pair $(a, b)$ by $(a + b, a - b)$. After all $n$ stages, divide by $2^n$.
 
-Implement `fwht`, which applies this normalised transform along the **last** axis of an array (any leading batch dimensions should be transformed independently; we'll need that in section 3️⃣). Don't modify the input in place.
+Implement `fwht`, which applies this normalised transform along the **last** axis of an array (any leading batch dimensions should be transformed independently; we'll need that in
+section 3️⃣). Don't modify the input in place.
 
-A neat way to do one stage without explicit index arithmetic: reshape the last axis of length $N$ to `(N // (2*h), 2, h)`. Then `[..., 0, :]` holds the entries whose bit $h$ is 0, and `[..., 1, :]` holds their partners.
+A neat way to do one stage without explicit index arithmetic: reshape the last axis of length $N$ to `(N // (2*h), 2, h)`. Then `[..., 0, :]` holds the entries whose bit $h$ is 0,
+and `[..., 1, :]` holds their partners.
 '''
 
 # ! CELL TYPE: code
@@ -495,7 +533,9 @@ r'''
 > You should spend up to 10-15 minutes on this exercise.
 > ```
 
-The Möbius transform has the same butterfly structure. Inclusion-exclusion over subsets can be done one feature at a time: at the stage for bit $h$, every entry whose bit $h$ is 1 has its partner (the same subset without that feature) *subtracted* from it, and entries whose bit is 0 are left alone. After all $n$ stages, entry $S$ holds $m(S) = \sum_{T \subseteq S} (-1)^{|S|-|T|} f(T)$. There's no normalisation.
+The Möbius transform has the same butterfly structure. Inclusion-exclusion over subsets can be done one feature at a time: at the stage for bit $h$, every entry whose bit $h$ is 1
+has its partner (the same subset without that feature) *subtracted* from it, and entries whose bit is 0 are left alone. After all $n$ stages, entry $S$ holds $m(S) = \sum_{T
+\subseteq S} (-1)^{|S|-|T|} f(T)$. There's no normalisation.
 
 Implement `mobius_transform`, again along the last axis.
 '''
@@ -537,7 +577,8 @@ r'''
 <details>
 <summary>Hint</summary>
 
-Same reshape as in `fwht`. This time you only need one in-place update per stage: `a[..., 1, :] -= a[..., 0, :]`. (In-place updates are fine here because `a` is your own copy, and `reshape` of a contiguous array returns a view of the same memory.)
+Same reshape as in `fwht`. This time you only need one in-place update per stage: `a[..., 1, :] -= a[..., 0, :]`. (In-place updates are fine here because `a` is your own copy, and
+`reshape` of a contiguous array returns a view of the same memory.)
 </details>
 '''
 
@@ -594,7 +635,9 @@ r'''
 - The **AND** game has a single Möbius coefficient, $m(\{0,1,2\}) = 1$, but all 8 Fourier coefficients are nonzero with magnitude $\tfrac18$: expanding $\prod_i \tfrac12(1 - \chi_{\{i\}})$ produces every subset.
 - The **parity** game is the mirror image: a single Fourier coefficient, $F(\{0,1,2\}) = 1$, and 8 Möbius coefficients whose magnitudes *grow* with the order, $(-2)^{|S|}$, reaching $-8$ at the top.
 
-So "sparse" is not a property of a function alone; it's a property of a function *in a basis*. A degree-$d$ AND costs $2^d$ Fourier coefficients, so a spectrum of a few low-order ANDs is still sparse in the Fourier basis (just a constant factor $2^d$ less so). A high-order parity, on the other hand, is a disaster in the Möbius basis. Notice also the magnitudes in the parity row: Möbius coefficients can be much *larger* than the function's values. That will matter a lot in section 2️⃣.
+So "sparse" is not a property of a function alone; it's a property of a function *in a basis*. A degree-$d$ AND costs $2^d$ Fourier coefficients, so a spectrum of a few low-order
+ANDs is still sparse in the Fourier basis (just a constant factor $2^d$ less so). A high-order parity, on the other hand, is a disaster in the Möbius basis. Notice also the
+magnitudes in the parity row: Möbius coefficients can be much *larger* than the function's values. That will matter a lot in section 2️⃣.
 </details>
 '''
 
@@ -612,7 +655,8 @@ r'''
 > You should spend up to 15 minutes on this exercise.
 > ```
 
-SPEX and ProxySPEX both return a sparse **Fourier** spectrum, but we want to report interactions in the interpretable Möbius / Shapley language. The full transforms above work on all $2^n$ values, which we won't have. Instead we convert term by term. Substitute $\chi_{\{i\}} = 1 - 2x_i$:
+SPEX and ProxySPEX both return a sparse **Fourier** spectrum, but we want to report interactions in the interpretable Möbius / Shapley language. The full transforms above work on
+all $2^n$ values, which we won't have. Instead we convert term by term. Substitute $\chi_{\{i\}} = 1 - 2x_i$:
 
 $$
 F(S)\,\chi_S(x) = F(S) \prod_{i \in S} (1 - 2x_i) = F(S) \sum_{T \subseteq S} (-2)^{|T|} \prod_{i \in T} x_i ,
@@ -624,7 +668,8 @@ $$
 m(T) = (-2)^{|T|} \sum_{S \supseteq T} F(S).
 $$
 
-Implement `fourier_to_mobius`, which loops over the terms of a sparse spectrum and accumulates their contributions to all subsets (use `itertools.combinations`). The cost is $\sum_S 2^{|S|}$, which is small as long as the spectrum has low degree.
+Implement `fourier_to_mobius`, which loops over the terms of a sparse spectrum and accumulates their contributions to all subsets (use `itertools.combinations`). The cost is
+$\sum_S 2^{|S|}$, which is small as long as the spectrum has low degree.
 '''
 
 # ! CELL TYPE: code
@@ -659,7 +704,8 @@ r'''
 <details>
 <summary>Hint</summary>
 
-First accumulate `sums[T] += F(S)` for every term `S` and every subset `T` of `S` (including `()` and `S` itself), then multiply each `sums[T]` by `(-2) ** len(T)` at the end. Because `itertools.combinations` of a sorted tuple yields sorted tuples, the keys will automatically be in our canonical form.
+First accumulate `sums[T] += F(S)` for every term `S` and every subset `T` of `S` (including `()` and `S` itself), then multiply each `sums[T]` by `(-2) ** len(T)` at the end.
+Because `itertools.combinations` of a sorted tuple yields sorted tuples, the keys will automatically be in our canonical form.
 </details>
 '''
 
@@ -683,9 +729,12 @@ $$
 I^{\text{SII}}(T) = \sum_{S \supseteq T} \frac{m(S)}{|S| - |T| + 1}.
 $$
 
-In words: every Möbius term $m(S)$ is shared out among the subsets of $S$, with the subsets of size $|T|$ each getting a fraction $1 / (|S| - |T| + 1)$. For a single feature, $|T| = 1$ and the weight is $1 / |S|$: the Möbius term is split equally among its $|S|$ members. That's the **Shapley value**, $\phi_i = I^{\text{SII}}(\{i\}) = \sum_{S \ni i} m(S) / |S|$.
+In words: every Möbius term $m(S)$ is shared out among the subsets of $S$, with the subsets of size $|T|$ each getting a fraction $1 / (|S| - |T| + 1)$. For a single feature, $|T|
+= 1$ and the weight is $1 / |S|$: the Möbius term is split equally among its $|S|$ members. That's the **Shapley value**, $\phi_i = I^{\text{SII}}(\{i\}) = \sum_{S \ni i} m(S) /
+|S|$.
 
-Implement `shapley_interactions`, which returns the SII of every set $T$ with $1 \le |T| \le$ `max_order` that is a subset of some Möbius term (all other SIIs are zero). The test checks your function against a brute-force implementation of the SII's definition in terms of discrete derivatives, which doesn't use Möbius coefficients at all.
+Implement `shapley_interactions`, which returns the SII of every set $T$ with $1 \le |T| \le$ `max_order` that is a subset of some Möbius term (all other SIIs are zero). The test
+checks your function against a brute-force implementation of the SII's definition in terms of discrete derivatives, which doesn't use Möbius coefficients at all.
 '''
 
 # ! CELL TYPE: code
@@ -752,7 +801,9 @@ r'''
 
 </details>
 
-Here's a useful sanity check to do in your head, using the toy games from the figure. In the **AND** game, $m(\{0,1,2\}) = 1$ is the only Möbius term, so each feature has Shapley value $\tfrac13$ and each pair has SII $\tfrac12$. In the **parity** game the Shapley values are all $-\tfrac23$ (they must sum to $f(\mathbf{1}) - f(\mathbf{0}) = -1 - 1 = -2$), which tells you nothing about the fact that the output flips with *every* feature. First-order attributions can't represent a function like that, however you compute them.
+Here's a useful sanity check to do in your head, using the toy games from the figure. In the **AND** game, $m(\{0,1,2\}) = 1$ is the only Möbius term, so each feature has Shapley
+value $\tfrac13$ and each pair has SII $\tfrac12$. In the **parity** game the Shapley values are all $-\tfrac23$ (they must sum to $f(\mathbf{1}) - f(\mathbf{0}) = -1 - 1 = -2$),
+which tells you nothing about the fact that the output flips with *every* feature. First-order attributions can't represent a function like that, however you compute them.
 '''
 
 # ! CELL TYPE: markdown
@@ -785,11 +836,16 @@ r'''
 r'''
 ## The word-deletion game
 
-We'll use GPT-2 Small and the IOI sentence from the introduction. Our features are its 16 words; the final token `" to"` is always kept, since that's where we read off the prediction.
+We'll use GPT-2 Small and the IOI sentence from the introduction. Our features are its 16 words; the final token `" to"` is always kept, since that's where we read off the
+prediction.
 
-What should it mean to "remove" a word? There are several options: delete it, replace it with a placeholder like `"_"`, or replace it with a random word. They define *different* value functions, and therefore different interactions. We'll use **deletion**, because it doesn't introduce any new tokens. To keep all masks in one batch of fixed length, we implement deletion with the attention mask: masked tokens are never attended to, and TransformerLens computes position ids as the cumulative sum of the attention mask, so the kept tokens get exactly the positions they'd have if the masked words had been deleted. You'll check that this really is equivalent to deletion.
+What should it mean to "remove" a word? There are several options: delete it, replace it with a placeholder like `"_"`, or replace it with a random word. They define *different*
+value functions, and therefore different interactions. We'll use **deletion**, because it doesn't introduce any new tokens. To keep all masks in one batch of fixed length, we
+implement deletion with the attention mask: masked tokens are never attended to, and TransformerLens computes position ids as the cumulative sum of the attention mask, so the kept
+tokens get exactly the positions they'd have if the masked words had been deleted. You'll check that this really is equivalent to deletion.
 
-`utils.tokenize_words` splits the sentence into words, tokenises each one (a word can span several tokens: `"Yesterday,"` is two), and returns a `token_to_word` map with entry $-1$ for tokens that are never masked (BOS and the final `" to"`).
+`utils.tokenize_words` splits the sentence into words, tokenises each one (a word can span several tokens: `"Yesterday,"` is two), and returns a `token_to_word` map with entry $-1$
+for tokens that are never masked (BOS and the final `" to"`).
 '''
 
 # ! CELL TYPE: code
@@ -842,7 +898,9 @@ Implement `masked_final_logits`. Given the prompt's tokens `(1, seq)`, the `toke
 1. Build an attention mask of shape `(batch, seq)`: 1 for tokens that are never masked (`token_to_word == -1`), and for every other token, the mask bit of the word it belongs to.
 2. Run the model on the repeated tokens with `attention_mask=...`, and return the logits at the **final** position, shape `(batch, d_vocab)`.
 
-Memory matters here: we'll push 65,536 masks through the model in batches, and the full logits tensor for a batch of 512 sequences of 20 tokens is already 2 GB. So don't compute logits at every position. Instead, run the model with `stop_at_layer=model.cfg.n_layers` (which returns the residual stream after the last block), take the final position, and apply `model.ln_final` and `model.unembed` yourself.
+Memory matters here: we'll push 65,536 masks through the model in batches, and the full logits tensor for a batch of 512 sequences of 20 tokens is already 2 GB. So don't compute
+logits at every position. Instead, run the model with `stop_at_layer=model.cfg.n_layers` (which returns the residual stream after the last block), take the final position, and
+apply `model.ln_final` and `model.unembed` yourself.
 
 The test compares your output with actually deleting the masked words' tokens and running the model normally.
 '''
@@ -885,13 +943,18 @@ r'''
 <details>
 <summary>Hint</summary>
 
-`masks[:, token_to_word[maskable]]` picks, for every maskable token, the bit of the word it belongs to (a word with two tokens gets its bit twice). Assign that into the corresponding columns of an all-ones attention mask. Then `model(tokens.expand(batch, -1), attention_mask=attention_mask, stop_at_layer=model.cfg.n_layers)[:, -1]` is the final residual stream at the last position.
+`masks[:, token_to_word[maskable]]` picks, for every maskable token, the bit of the word it belongs to (a word with two tokens gets its bit twice). Assign that into the
+corresponding columns of an all-ones attention mask. Then `model(tokens.expand(batch, -1), attention_mask=attention_mask, stop_at_layer=model.cfg.n_layers)[:, -1]` is the final
+residual stream at the last position.
 </details>
 
 <details>
 <summary>Aside - why is this exactly deletion?</summary>
 
-Two things change when you delete a token: later tokens can't attend to it, and every later token's position index shifts down by one. The attention mask handles the first. For the second, TransformerLens computes the position ids as `attention_mask.cumsum(-1) - 1` whenever an attention mask is passed (this is how it supports left-padding), so a kept token's position is the number of kept tokens before it. Since GPT-2 uses learned absolute position embeddings, that's exactly what deletion would give. The masked positions still get *computed*, but nothing reads from them. (For a model with rotary embeddings you'd need to check how that implementation derives positions before relying on this.)
+Two things change when you delete a token: later tokens can't attend to it, and every later token's position index shifts down by one. The attention mask handles the first. For the
+second, TransformerLens computes the position ids as `attention_mask.cumsum(-1) - 1` whenever an attention mask is passed (this is how it supports left-padding), so a kept token's
+position is the number of kept tokens before it. Since GPT-2 uses learned absolute position embeddings, that's exactly what deletion would give. The masked positions still get
+*computed*, but nothing reads from them. (For a model with rotary embeddings you'd need to check how that implementation derives positions before relying on this.)
 </details>
 '''
 
@@ -944,7 +1007,9 @@ def ioi_readouts(logits: Tensor) -> Tensor:
 r'''
 ## The exact spectrum
 
-Now for the expensive part: evaluate GPT-2 on **every** one of the $2^{16} = 65{,}536$ masks. This takes about 20-50 seconds on a GPU, depending on what else is running on it (several minutes on a CPU; if you're on a CPU, you can shorten `IOI_TEXT` to 12 words for a 16x speed-up, though the numbers in the text won't match). We'll never do this again; everything afterwards uses this table as ground truth.
+Now for the expensive part: evaluate GPT-2 on **every** one of the $2^{16} = 65{,}536$ masks. This takes about 20-50 seconds on a GPU, depending on what else is running on it
+(several minutes on a CPU; if you're on a CPU, you can shorten `IOI_TEXT` to 12 words for a 16x speed-up, though the numbers in the text won't match). We'll never do this again;
+everything afterwards uses this table as ground truth.
 '''
 
 # ! CELL TYPE: code
@@ -991,7 +1056,9 @@ gave[12]               -0.100    0.014</pre>
 
 </details>
 
-These are the numbers from the introduction (indices in brackets are word positions; there are two Johns, at positions 4 and 10). Look at the `p(Mary)` column too: in probability terms, *every* deletion hurts a lot, including deleting both Johns. The logit difference is a comparison between two names, and deleting both Johns keeps the comparison intact; the probability of Mary also depends on how much mass goes to everything else in the vocabulary, and a mangled sentence spreads that mass around.
+These are the numbers from the introduction (indices in brackets are word positions; there are two Johns, at positions 4 and 10). Look at the `p(Mary)` column too: in probability
+terms, *every* deletion hurts a lot, including deleting both Johns. The logit difference is a comparison between two names, and deleting both Johns keeps the comparison intact; the
+probability of Mary also depends on how much mass goes to everything else in the vocabulary, and a mangled sentence spreads that mass around.
 '''
 
 # ! CELL TYPE: markdown
@@ -1014,7 +1081,9 @@ $$
 \operatorname{Var}_{x \sim \text{Unif}}[f(x)] = \sum_{S \neq \emptyset} F(S)^2 .
 $$
 
-So the squared coefficients ("energies") tell us how the variance of the model's output, over random masks, is split between interactions. Better still, if we approximate $f$ by keeping some set $\mathcal{K}$ of its true coefficients, the approximation's $R^2$ on uniformly random masks is exactly the fraction of non-constant energy in $\mathcal{K}$. That gives two summaries with a direct meaning:
+So the squared coefficients ("energies") tell us how the variance of the model's output, over random masks, is split between interactions. Better still, if we approximate $f$ by
+keeping some set $\mathcal{K}$ of its true coefficients, the approximation's $R^2$ on uniformly random masks is exactly the fraction of non-constant energy in $\mathcal{K}$. That
+gives two summaries with a direct meaning:
 
 - `degree_energy(F)`: for each degree $d = 1, \ldots, n$, the fraction of non-constant energy in coefficients with $|S| = d$. The first entry is the $R^2$ of the **best possible additive (first-order) explanation**: no attribution method that assigns one number per feature can be more faithful than this on random masks.
 - `topk_energy(F)`: entry $k-1$ is the fraction of non-constant energy in the $k$ largest coefficients (by magnitude, excluding the constant), i.e. the $R^2$ of the **best possible $k$-term explanation**.
@@ -1061,7 +1130,9 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-Now the signature result of this part. We compute both exact spectra with your `fwht`, and compare them with a **control**: the same 65,536 values of `p(Mary)`, randomly permuted across masks. The shuffled function has the same distribution of outputs, but none of the structure: any concentration that survives shuffling is an artefact of the measurement, not of the model.
+Now the signature result of this part. We compute both exact spectra with your `fwht`, and compare them with a **control**: the same 65,536 values of `p(Mary)`, randomly permuted
+across masks. The shuffled function has the same distribution of outputs, but none of the structure: any concentration that survives shuffling is an artefact of the measurement,
+not of the model.
 '''
 
 # ! CELL TYPE: code
@@ -1110,13 +1181,21 @@ shuffled control     0.000     0.001     0.009        0.010   0.002   0.010    0
 <details>
 <summary>Help - how should I interpret this?</summary>
 
-**Concentration.** Both read-outs are far more concentrated than the shuffled control. For the logit difference, the 10 largest of the 65,535 non-constant Fourier coefficients explain 84% of the variance over random masks, and the 200 largest explain 95%. For `p(Mary)` the same numbers are 38% and 84%. The shuffled control has exactly the same 65,536 values, but its 200 largest coefficients explain only 3.3%, and 1,000 explain 12%: its spectrum is essentially flat, which is what "no structure" looks like in this basis. So the concentration is a property of the model's behaviour, not of the distribution of its outputs.
+**Concentration.** Both read-outs are far more concentrated than the shuffled control. For the logit difference, the 10 largest of the 65,535 non-constant Fourier coefficients
+explain 84% of the variance over random masks, and the 200 largest explain 95%. For `p(Mary)` the same numbers are 38% and 84%. The shuffled control has exactly the same 65,536
+values, but its 200 largest coefficients explain only 3.3%, and 1,000 explain 12%: its spectrum is essentially flat, which is what "no structure" looks like in this basis. So the
+concentration is a property of the model's behaviour, not of the distribution of its outputs.
 
-**Low order.** For both read-outs most of the energy sits at low degree: 94.5% of the logit difference's variance and 74% of `p(Mary)`'s is in terms of degree $\le 3$. The shuffled control spreads its energy in proportion to how many coefficients there are at each degree ($\binom{16}{d}$, which peaks at $d = 8$), so it has only 1% at degree $\le 3$.
+**Low order.** For both read-outs most of the energy sits at low degree: 94.5% of the logit difference's variance and 74% of `p(Mary)`'s is in terms of degree $\le 3$. The shuffled
+control spreads its energy in proportion to how many coefficients there are at each degree ($\binom{16}{d}$, which peaks at $d = 8$), so it has only 1% at degree $\le 3$.
 
-**The read-out matters.** The logit difference is mostly *additive*: 80% of its variance is first-order. `p(Mary)` is mostly *interactions*: only 24% is first-order, and degrees 2, 3 and 4 each carry more than 10%. It's the same model and the same masks. Logits are (roughly) sums of contributions written into the residual stream by components that read different words, so the effects of deleting words tend to add up. The probability passes the logits through a softmax, which saturates: `p(Mary)` is close to zero unless *everything* the model needs is present, which is AND-like behaviour, and an AND of $d$ words has Fourier mass at every degree up to $d$.
+**The read-out matters.** The logit difference is mostly *additive*: 80% of its variance is first-order. `p(Mary)` is mostly *interactions*: only 24% is first-order, and degrees 2,
+3 and 4 each carry more than 10%. It's the same model and the same masks. Logits are (roughly) sums of contributions written into the residual stream by components that read
+different words, so the effects of deleting words tend to add up. The probability passes the logits through a softmax, which saturates: `p(Mary)` is close to zero unless
+*everything* the model needs is present, which is AND-like behaviour, and an AND of $d$ words has Fourier mass at every degree up to $d$.
 
-**Ceilings for free.** By Parseval, the degree-1 bar is the $R^2$ of the best possible additive explanation on random masks: 0.80 for the logit difference, 0.24 for `p(Mary)`. No attribution method that assigns one number per word can be more faithful than that. Keep these two numbers in mind for section 5️⃣.
+**Ceilings for free.** By Parseval, the degree-1 bar is the $R^2$ of the best possible additive explanation on random masks: 0.80 for the logit difference, 0.24 for `p(Mary)`. No
+attribution method that assigns one number per word can be more faithful than that. Keep these two numbers in mind for section 5️⃣.
 </details>
 '''
 
@@ -1125,7 +1204,8 @@ shuffled control     0.000     0.001     0.009        0.010   0.002   0.010    0
 # ! TAGS: []
 
 r'''
-Which coefficients are the big ones? The cell below lists the largest non-constant Fourier coefficients of each read-out, labelled by words (with their positions, so the two Johns stay distinct).
+Which coefficients are the big ones? The cell below lists the largest non-constant Fourier coefficients of each read-out, labelled by words (with their positions, so the two Johns
+stay distinct).
 '''
 
 # ! CELL TYPE: code
@@ -1175,7 +1255,8 @@ p(Mary): largest Fourier coefficients
 <details>
 <summary>Help - how should I read these?</summary>
 
-Remember the sign convention: a *negative* coefficient on a single word means that keeping the word *increases* the output on average (the average effect of switching word $i$ from removed to kept is $-2F(\{i\})$).
+Remember the sign convention: a *negative* coefficient on a single word means that keeping the word *increases* the output on average (the average effect of switching word $i$ from
+removed to kept is $-2F(\{i\})$).
 
 - **Logit difference.** Mary dominates: keeping Mary raises the logit difference by about $2 \times 1.49 \approx 3$ logits on average. Both Johns have positive coefficients, so on average keeping a John *lowers* the logit difference. The first interactions are Mary × John[4] and **John[4] × John[10]**, the duplicated-name interaction from the introduction, followed by Mary × gave and cold × drink (two adjacent words that read as a phrase).
 - **p(Mary).** The list is the Fourier fingerprint of an AND. Mary, gave and John[10], their three pairs and their triple appear with alternating signs (singletons negative, pairs positive, triple negative), which is exactly the pattern of the AND toy game in section 1️⃣. In words: Mary gets high probability only when the name, the verb that sets up the recipient slot, and the second John are all present.
@@ -1220,9 +1301,16 @@ p(Mary): values in [0.00, 0.80],  max |F(S)| = 0.020,  max |m(S)| = 0.87
 
 </details>
 
-For the logit difference, the six largest exact Möbius coefficients all belong to sets of 12-14 words, they alternate in sign, and the largest (−22.6) is three times larger than anything the function itself ever outputs (its values lie between −7.6 and 4.3). For `p(Mary)` the effect is milder but the same in kind: the largest coefficients sit on sets of 7-10 words, with alternating signs, and are as large as the largest probability. These are not "giant 14-way interactions" in any meaningful sense. Recall that $m(S) = \sum_{T \subseteq S} (-1)^{|S|-|T|} f(T)$ is an alternating sum of $2^{|S|}$ values: a 14th-order discrete derivative. Tiny irregularities in $f$ (the model's response to strange, heavily-masked inputs) get added up with alternating signs and amplified by up to $2^{|S|}$, just like the $(-2)^{|S|}$ growth you saw for the parity toy game. A Fourier coefficient, by contrast, is an *average* of $\pm f(x)$, so $|F(S)| \le \max_x |f(x)|$ always.
+For the logit difference, the six largest exact Möbius coefficients all belong to sets of 12-14 words, they alternate in sign, and the largest (−22.6) is three times larger than
+anything the function itself ever outputs (its values lie between −7.6 and 4.3). For `p(Mary)` the effect is milder but the same in kind: the largest coefficients sit on sets of
+7-10 words, with alternating signs, and are as large as the largest probability. These are not "giant 14-way interactions" in any meaningful sense. Recall that $m(S) = \sum_{T
+\subseteq S} (-1)^{|S|-|T|} f(T)$ is an alternating sum of $2^{|S|}$ values: a 14th-order discrete derivative. Tiny irregularities in $f$ (the model's response to strange,
+heavily-masked inputs) get added up with alternating signs and amplified by up to $2^{|S|}$, just like the $(-2)^{|S|}$ growth you saw for the parity toy game. A Fourier
+coefficient, by contrast, is an *average* of $\pm f(x)$, so $|F(S)| \le \max_x |f(x)|$ always.
 
-This is the practical reason to *find* interactions in the Fourier basis, where small high-order coefficients really are small, and only *convert* a truncated, low-order Fourier spectrum to Möbius / Shapley language at the end. The Shapley values and SII themselves are fine either way: they're weighted averages, and are stable even when computed from these wild exact Möbius coefficients.
+This is the practical reason to *find* interactions in the Fourier basis, where small high-order coefficients really are small, and only *convert* a truncated, low-order Fourier
+spectrum to Möbius / Shapley language at the end. The Shapley values and SII themselves are fine either way: they're weighted averages, and are stable even when computed from these
+wild exact Möbius coefficients.
 '''
 
 # ! CELL TYPE: markdown
@@ -1238,7 +1326,8 @@ r'''
 - By Parseval, degree energies give hard ceilings: no first-order attribution can explain more than about 80% of the logit difference's variance on random masks, or 24% of the probability's.
 - Exact high-order Möbius coefficients of a real model are numerically meaningless; work in the Fourier basis and convert at the end.
 
-This is the empirical premise of SPEX and ProxySPEX: value functions of real models are **approximately sparse and low-degree in the Fourier basis**. The question now is how to find those few hundred coefficients *without* evaluating all $2^n$ masks, because for $n = 100$ we can't.
+This is the empirical premise of SPEX and ProxySPEX: value functions of real models are **approximately sparse and low-degree in the Fourier basis**. The question now is how to
+find those few hundred coefficients *without* evaluating all $2^n$ masks, because for $n = 100$ we can't.
 '''
 
 # ! CELL TYPE: markdown
@@ -1258,16 +1347,20 @@ r'''
 
 Suppose $f$ has $s$ nonzero Fourier coefficients of degree at most $t$, out of $2^n$ possible ones. We get to choose which masks to query. How few queries can we get away with?
 
-Counting suggests the answer can be very small. Each coefficient is described by a support (about $t \log_2 n$ bits) and a value, so $s$ coefficients are described by roughly $s \, t \log n$ numbers, and one might hope that about that many queries suffice. SPEX (building on earlier sparse Walsh-Hadamard transform algorithms such as Li, Bradley & Ramchandran's SPRIGHT) achieves this, in four steps:
+Counting suggests the answer can be very small. Each coefficient is described by a support (about $t \log_2 n$ bits) and a value, so $s$ coefficients are described by roughly $s \,
+t \log n$ numbers, and one might hope that about that many queries suffice. SPEX (building on earlier sparse Walsh-Hadamard transform algorithms such as Li, Bradley & Ramchandran's
+SPRIGHT) achieves this, in four steps:
 
 1. **Aliasing.** Query $f$ on a structured set of $2^b$ masks (a random $b$-dimensional subspace of the hypercube) and take a small $2^b$-point Walsh transform. Each output **bin** is the sum of all the Fourier coefficients that *hash* to it. With $2^b \approx s$ bins, most bins hold zero or one coefficient.
 2. **Delays.** Repeat the same queries with the masks shifted (XORed) by a few fixed patterns. Shifting multiplies each coefficient by a sign that depends on its support, so the sign pattern across shifts encodes *which* support is in a bin.
 3. **Coding.** Choose the shift patterns to be the rows of the parity-check matrix of an error-correcting (BCH) code. Then decoding the support from the sign pattern is exactly syndrome decoding, and needs only $O(t \log n)$ shifts instead of $n$.
 4. **Peeling.** Bins with two or more coefficients (collisions) can't be decoded directly. But if we use a few independent hashes, a coefficient that collides in one hash is probably alone in another. Decode it there, subtract it from every bin it lands in, and repeat. Collisions dissolve one by one.
 
-We'll build each step, and test them on **planted games**: functions given by a random sparse spectrum, so that we know the right answer and can check recovery exactly. We'll come back to GPT-2 in section 5️⃣.
+We'll build each step, and test them on **planted games**: functions given by a random sparse spectrum, so that we know the right answer and can check recovery exactly. We'll come
+back to GPT-2 in section 5️⃣.
 
-Planted games are given to SPEX as an ordinary value function, which we make with `spectrum_oracle` below. (It evaluates in chunks, because dense planted spectra have thousands of terms.)
+Planted games are given to SPEX as an ordinary value function, which we make with `spectrum_oracle` below. (It evaluates in chunks, because dense planted spectra have thousands of
+terms.)
 '''
 
 # ! CELL TYPE: code
@@ -1290,13 +1383,15 @@ def spectrum_oracle(spectrum: Spectrum, chunk: int = 4096) -> Callable[[np.ndarr
 r'''
 ## Aliasing: folding the hypercube
 
-Pick a random binary matrix $M \in \{0,1\}^{n \times b}$ and a **delay** (shift) $d \in \{0,1\}^n$. For each of the $2^b$ small masks $\ell \in \{0,1\}^b$, query $f$ at the full-size mask
+Pick a random binary matrix $M \in \{0,1\}^{n \times b}$ and a **delay** (shift) $d \in \{0,1\}^n$. For each of the $2^b$ small masks $\ell \in \{0,1\}^b$, query $f$ at the
+full-size mask
 
 $$
 x = M\ell + d \pmod 2 .
 $$
 
-The masks $\{M\ell\}$ form a $b$-dimensional linear subspace of the hypercube (a random "slice" of it), and $d$ translates that slice. Now take the normalised $2^b$-point Walsh transform of these $2^b$ values. A two-line calculation (expand $f$ in its Fourier series and swap the sums; see the dropdown) gives the **aliasing identity**:
+The masks $\{M\ell\}$ form a $b$-dimensional linear subspace of the hypercube (a random "slice" of it), and $d$ translates that slice. Now take the normalised $2^b$-point Walsh
+transform of these $2^b$ values. A two-line calculation (expand $f$ in its Fourier series and swap the sums; see the dropdown) gives the **aliasing identity**:
 
 $$
 U_d(j) = \frac{1}{2^b}\sum_{\ell} f(M\ell + d)\,(-1)^{j \cdot \ell} = \sum_{k \,:\, M^\top k \,=\, j} F(k)\,(-1)^{d \cdot k} ,
@@ -1307,7 +1402,8 @@ where $k \in \{0,1\}^n$ is the indicator vector of a support and all arithmetic 
 - Every Fourier coefficient $F(k)$ lands in exactly one **bin** $j = M^\top k$ (a $b$-bit hash of its support).
 - Each bin holds the sum of all coefficients that hash to it, each multiplied by a **sign** $(-1)^{d \cdot k}$ that depends on the delay.
 
-With the zero delay $d = 0$, bin $j$ is just the sum of the coefficients hashing there. That's already useful: if the bin holds a single coefficient (a **singleton**), we've measured its value with $2^b$ queries, regardless of $n$. But we don't know *which* $k$ it was. That's what the other delays are for.
+With the zero delay $d = 0$, bin $j$ is just the sum of the coefficients hashing there. That's already useful: if the bin holds a single coefficient (a **singleton**), we've
+measured its value with $2^b$ queries, regardless of $n$. But we don't know *which* $k$ it was. That's what the other delays are for.
 
 <details>
 <summary>Derivation of the aliasing identity</summary>
@@ -1318,10 +1414,12 @@ $$
 U_d(j) = \frac{1}{2^b}\sum_\ell \sum_k F(k)\,(-1)^{k \cdot (M\ell + d)}(-1)^{j\cdot\ell} = \sum_k F(k)(-1)^{k\cdot d}\;\frac{1}{2^b}\sum_\ell (-1)^{(M^\top k + j)\cdot \ell} .
 $$
 
-Here we used $k \cdot M\ell = (M^\top k)\cdot \ell$. The inner average over $\ell$ is 1 if $M^\top k + j = 0 \pmod 2$, i.e. $M^\top k = j$, and 0 otherwise (characters of $\{0,1\}^b$ are orthogonal). That leaves exactly the coefficients with $M^\top k = j$.
+Here we used $k \cdot M\ell = (M^\top k)\cdot \ell$. The inner average over $\ell$ is 1 if $M^\top k + j = 0 \pmod 2$, i.e. $M^\top k = j$, and 0 otherwise (characters of
+$\{0,1\}^b$ are orthogonal). That leaves exactly the coefficients with $M^\top k = j$.
 </details>
 
-We'll index the small masks $\ell$ in the same order as `all_masks(b)`, so that the bin index $j$ is the integer whose bits (most significant first) are $M^\top k$. The function `bin_index(M, support)` below computes this for a support.
+We'll index the small masks $\ell$ in the same order as `all_masks(b)`, so that the bin index $j$ is the integer whose bits (most significant first) are $M^\top k$. The function
+`bin_index(M, support)` below computes this for a support.
 '''
 
 # ! CELL TYPE: code
@@ -1402,7 +1500,8 @@ r'''
 <details>
 <summary>Hint</summary>
 
-`all_masks(b)` has shape `(2**b, b)`; multiplying it by `M.T` (shape `(b, n)`) gives every $M\ell$ as a row. Add the delay (broadcast) and take `% 2`. For `aliased_bins`, `fwht` already works along the last axis, so you can transform the whole `(P, 2**b)` array of values at once.
+`all_masks(b)` has shape `(2**b, b)`; multiplying it by `M.T` (shape `(b, n)`) gives every $M\ell$ as a row. Add the delay (broadcast) and take `% 2`. For `aliased_bins`, `fwht`
+already works along the last axis, so you can transform the whole `(P, 2**b)` array of values at once.
 </details>
 '''
 
@@ -1411,7 +1510,8 @@ r'''
 # ! TAGS: []
 
 r'''
-Let's look at the bins for a planted game: $n = 100$ features and 40 random coefficients of degree 1-3 (plus a constant), hashed into $2^5 = 32$ bins by one random $M$. We colour each bin by how many true coefficients it holds, which we can compute because we know the truth (SPEX itself never sees this).
+Let's look at the bins for a planted game: $n = 100$ features and 40 random coefficients of degree 1-3 (plus a constant), hashed into $2^5 = 32$ bins by one random $M$. We colour
+each bin by how many true coefficients it holds, which we can compute because we know the truth (SPEX itself never sees this).
 '''
 
 # ! CELL TYPE: code
@@ -1445,9 +1545,12 @@ r'''
 <details>
 <summary>Help - how should I interpret this?</summary>
 
-With 41 coefficients (40 plus the constant) hashed into 32 bins, this hash leaves 9 bins empty, 13 holding exactly one coefficient, and 10 holding two or more (bin 31 holds five). The 13 singletons could be decoded right away. The collisions can't: a value like $F(k_1) + F(k_2)$ doesn't belong to any single support.
+With 41 coefficients (40 plus the constant) hashed into 32 bins, this hash leaves 9 bins empty, 13 holding exactly one coefficient, and 10 holding two or more (bin 31 holds five).
+The 13 singletons could be decoded right away. The collisions can't: a value like $F(k_1) + F(k_2)$ doesn't belong to any single support.
 
-Two things to notice. First, a bin's magnitude says nothing about its type: bin 16 holds two coefficients of opposite sign that nearly cancel, so it looks almost empty, while several singletons are smaller than some collisions. SPEX will need another way to tell singletons apart. Second, look at what we paid: 32 queries summarise a function on $2^{100}$ masks, because aliasing only ever adds up the coefficients that are actually there.
+Two things to notice. First, a bin's magnitude says nothing about its type: bin 16 holds two coefficients of opposite sign that nearly cancel, so it looks almost empty, while
+several singletons are smaller than some collisions. SPEX will need another way to tell singletons apart. Second, look at what we paid: 32 queries summarise a function on $2^{100}$
+masks, because aliasing only ever adds up the coefficients that are actually there.
 </details>
 '''
 
@@ -1466,7 +1569,8 @@ $$
 
 is $\pm 1$, and tells us one bit of information about $k$: the parity $d \cdot k \bmod 2$. The value $F(k)$ cancels, so this works whatever the sign or size of the coefficient.
 
-The simplest choice of delays is the $n$ unit vectors $d = e_1, \ldots, e_n$. Then $e_i \cdot k = k_i$, so the sign of each ratio directly reads off whether feature $i$ is in the support. This "identity delay" design is what early sparse Walsh-Hadamard algorithms used.
+The simplest choice of delays is the $n$ unit vectors $d = e_1, \ldots, e_n$. Then $e_i \cdot k = k_i$, so the sign of each ratio directly reads off whether feature $i$ is in the
+support. This "identity delay" design is what early sparse Walsh-Hadamard algorithms used.
 '''
 
 # ! CELL TYPE: markdown
@@ -1483,7 +1587,8 @@ r'''
 > You should spend up to 5 minutes on this exercise.
 > ```
 
-Implement `read_support_identity`. Its input `u` has length $n + 1$: `u[0]` is the zero-delay value of a singleton bin, and `u[1 + i]` is its value under delay $e_i$. Return the support as a tuple of feature indices.
+Implement `read_support_identity`. Its input `u` has length $n + 1$: `u[0]` is the zero-delay value of a singleton bin, and `u[1 + i]` is its value under delay $e_i$. Return the
+support as a tuple of feature indices.
 '''
 
 # ! CELL TYPE: code
@@ -1510,7 +1615,9 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-Identity delays work, but they cost $n + 1$ copies of every subsampling pattern: for $n = 1000$ features and $2^b = 256$ bins that's 256,256 queries per hash. That throws away most of what sparsity bought us. The fix is to notice that we're asking far too many questions: we know $k$ has at most $t$ ones, so it carries only about $t \log_2 n$ bits of information. We should need only about that many delays.
+Identity delays work, but they cost $n + 1$ copies of every subsampling pattern: for $n = 1000$ features and $2^b = 256$ bins that's 256,256 queries per hash. That throws away most
+of what sparsity bought us. The fix is to notice that we're asking far too many questions: we know $k$ has at most $t$ ones, so it carries only about $t \log_2 n$ bits of
+information. We should need only about that many delays.
 '''
 
 # ! CELL TYPE: markdown
@@ -1526,15 +1633,21 @@ $$
 \text{bits} = D k \pmod 2 .
 $$
 
-This is a familiar object from coding theory: if $D$ is the **parity-check matrix** of a code, then $Dk$ is the **syndrome** of the "error pattern" $k$. A code that can correct $t$ errors is one where every error pattern of weight $\le t$ has a *different* syndrome, and comes with an algorithm that recovers the error pattern from its syndrome. Error correction is exactly what we need: our "errors" are the features in the support.
+This is a familiar object from coding theory: if $D$ is the **parity-check matrix** of a code, then $Dk$ is the **syndrome** of the "error pattern" $k$. A code that can correct $t$
+errors is one where every error pattern of weight $\le t$ has a *different* syndrome, and comes with an algorithm that recovers the error pattern from its syndrome. Error
+correction is exactly what we need: our "errors" are the features in the support.
 
-SPEX uses **binary BCH codes** (Bose, Chaudhuri & Hocquenghem, 1959-60), which are the classic family of $t$-error-correcting codes with a short syndrome and an efficient algebraic decoder. Here's the construction. Let $m$ be the smallest integer with $2^m - 1 \ge n$, and let $\alpha$ be a primitive element of the finite field $\mathrm{GF}(2^m)$, so that $\alpha^0, \alpha^1, \ldots, \alpha^{2^m - 2}$ are all the nonzero field elements. Each field element is an $m$-bit vector. The parity-check matrix has one column per feature $i$:
+SPEX uses **binary BCH codes** (Bose, Chaudhuri & Hocquenghem, 1959-60), which are the classic family of $t$-error-correcting codes with a short syndrome and an efficient algebraic
+decoder. Here's the construction. Let $m$ be the smallest integer with $2^m - 1 \ge n$, and let $\alpha$ be a primitive element of the finite field $\mathrm{GF}(2^m)$, so that
+$\alpha^0, \alpha^1, \ldots, \alpha^{2^m - 2}$ are all the nonzero field elements. Each field element is an $m$-bit vector. The parity-check matrix has one column per feature $i$:
 
 $$
 D_{:, i} = \begin{pmatrix} \alpha^{i} \\ \alpha^{3i} \\ \alpha^{5i} \\ \vdots \\ \alpha^{(2t-1) i} \end{pmatrix} \quad \text{(each entry written as } m \text{ bits)},
 $$
 
-so $D$ has $p = mt \approx t \log_2 n$ rows. If $k$ has ones at positions $i_1, \ldots, i_w$, the syndrome's blocks are the field sums $S_r = \alpha^{r i_1} + \cdots + \alpha^{r i_w}$ for odd $r$ (in characteristic 2, addition is XOR). Recovering $\{i_1, \ldots, i_w\}$ from these power sums is a classic algebra problem with a neat solution, which we'll get to in a moment.
+so $D$ has $p = mt \approx t \log_2 n$ rows. If $k$ has ones at positions $i_1, \ldots, i_w$, the syndrome's blocks are the field sums $S_r = \alpha^{r i_1} + \cdots + \alpha^{r
+i_w}$ for odd $r$ (in characteristic 2, addition is XOR). Recovering $\{i_1, \ldots, i_w\}$ from these power sums is a classic algebra problem with a neat solution, which we'll get
+to in a moment.
 
 You don't need to know anything about finite fields beyond the following, which `utils.GaloisField(m)` provides:
 
@@ -1543,7 +1656,8 @@ You don't need to know anything about finite fields beyond the following, which 
 - `gf.mul(a, b)` and `gf.inv(a)` multiply and invert; addition is `a ^ b`;
 - $\alpha^{2^m - 1} = 1$, so exponents can be reduced modulo `gf.N` $= 2^m - 1$.
 
-Building the tables is a Python loop over all $2^m$ elements, and we'll decode thousands of bins, so use `utils.galois_field(m)` (imported as `galois_field`), which returns a cached `GaloisField(m)`.
+Building the tables is a Python loop over all $2^m$ elements, and we'll decode thousands of bins, so use `utils.galois_field(m)` (imported as `galois_field`), which returns a
+cached `GaloisField(m)`.
 '''
 
 # ! CELL TYPE: code
@@ -1584,7 +1698,8 @@ r'''
 > You should spend up to 10-15 minutes on this exercise.
 > ```
 
-Implement `bch_delay_matrix(n, t)`, which returns the $mt \times n$ binary matrix $D$ described above, with $m$ = `bch_field_degree(n)`. Block $r = 0, \ldots, t-1$ consists of rows $rm, \ldots, rm + m - 1$, and its column $i$ holds the bits of $\alpha^{(2r+1)i}$, least significant bit in the first row of the block.
+Implement `bch_delay_matrix(n, t)`, which returns the $mt \times n$ binary matrix $D$ described above, with $m$ = `bch_field_degree(n)`. Block $r = 0, \ldots, t-1$ consists of rows
+$rm, \ldots, rm + m - 1$, and its column $i$ holds the bits of $\alpha^{(2r+1)i}$, least significant bit in the first row of the block.
 
 The test checks the property that actually matters: for a small code, every support of size at most $t$ produces a different syndrome.
 '''
@@ -1622,7 +1737,8 @@ r'''
 <details>
 <summary>Hint</summary>
 
-For block `r`, `gf.exp[((2 * r + 1) * np.arange(n)) % gf.N]` gives the $n$ field elements as integers. To turn a vector of integers into an `(m, n)` bit matrix, use `(elements[None, :] >> np.arange(m)[:, None]) & 1`. Concatenate the $t$ blocks along axis 0.
+For block `r`, `gf.exp[((2 * r + 1) * np.arange(n)) % gf.N]` gives the $n$ field elements as integers. To turn a vector of integers into an `(m, n)` bit matrix, use
+`(elements[None, :] >> np.arange(m)[:, None]) & 1`. Concatenate the $t$ blocks along axis 0.
 </details>
 '''
 
@@ -1633,20 +1749,23 @@ For block `r`, `gf.exp[((2 * r + 1) * np.arange(n)) % gf.N]` gives the $n$ field
 r'''
 ## Decoding a BCH syndrome
 
-Given the observed bits $Dk$, we want the positions $i_1, \ldots, i_w$ ($w \le t$) of the ones in $k$. Write $X_q = \alpha^{i_q}$ for the unknown **error locators**. Reading the bits back as field elements gives the odd power sums
+Given the observed bits $Dk$, we want the positions $i_1, \ldots, i_w$ ($w \le t$) of the ones in $k$. Write $X_q = \alpha^{i_q}$ for the unknown **error locators**. Reading the
+bits back as field elements gives the odd power sums
 
 $$
 S_1 = \sum_q X_q, \quad S_3 = \sum_q X_q^3, \quad \ldots, \quad S_{2t-1} = \sum_q X_q^{2t-1} ,
 $$
 
-and in characteristic 2 the even ones come for free: $S_{2r} = \sum_q X_q^{2r} = \big(\sum_q X_q^{r}\big)^2 = S_r^2$, since squaring is additive ($(a+b)^2 = a^2 + b^2$ when $1 + 1 = 0$).
+and in characteristic 2 the even ones come for free: $S_{2r} = \sum_q X_q^{2r} = \big(\sum_q X_q^{r}\big)^2 = S_r^2$, since squaring is additive ($(a+b)^2 = a^2 + b^2$ when $1 + 1
+= 0$).
 
 The decoding goes in two steps:
 
 1. **Find the error-locator polynomial** $\Lambda(z) = \prod_{q=1}^w (1 + X_q z) = 1 + \Lambda_1 z + \cdots + \Lambda_w z^w$. Its coefficients are linked to the power sums $S_1, \ldots, S_{2t}$ by a linear recurrence (Newton's identities), and the **Berlekamp-Massey** algorithm finds the shortest recurrence that generates a given sequence. It's provided below: it's a beautiful algorithm, but it's general-purpose sequence analysis rather than anything specific to SPEX. (Implementing it yourself is a bonus exercise.)
 2. **Find the roots** of $\Lambda$. The roots are $z = X_q^{-1} = \alpha^{-i_q}$, so we can simply test every feature position $i = 0, \ldots, n-1$: position $i$ is in the support iff $\Lambda(\alpha^{-i}) = 0$. This brute-force root search is called the **Chien search**, and it costs $O(nt)$, nothing like enumerating all $\binom{n}{t}$ supports.
 
-If $\Lambda$ has degree $L > t$, or doesn't have exactly $L$ roots among the $n$ positions, then the bits weren't the syndrome of any support of size $\le t$, and we report failure (`None`). In SPEX this happens a lot, and usefully: it's how we detect that a bin is *not* a clean singleton.
+If $\Lambda$ has degree $L > t$, or doesn't have exactly $L$ roots among the $n$ positions, then the bits weren't the syndrome of any support of size $\le t$, and we report failure
+(`None`). In SPEX this happens a lot, and usefully: it's how we detect that a bin is *not* a clean singleton.
 '''
 
 # ! CELL TYPE: code
@@ -1690,9 +1809,13 @@ r'''
 <details>
 <summary>Aside - what is Berlekamp-Massey doing?</summary>
 
-It processes the sequence one term at a time, maintaining the shortest recurrence $C$ found so far. At step $r$ it computes the **discrepancy** $d$: the difference between $S_{r+1}$ and what $C$ predicts. If $d = 0$, $C$ still works. If not, it repairs $C$ by subtracting a scaled, shifted copy of the last recurrence $B$ that failed, chosen so that the two failures cancel; if the repair requires a longer recurrence, it updates the length $L$. Massey (1969) proved the result is always the shortest recurrence. For BCH syndromes from $w \le t$ errors, the shortest recurrence is exactly the error locator, of length $w$.
+It processes the sequence one term at a time, maintaining the shortest recurrence $C$ found so far. At step $r$ it computes the **discrepancy** $d$: the difference between
+$S_{r+1}$ and what $C$ predicts. If $d = 0$, $C$ still works. If not, it repairs $C$ by subtracting a scaled, shifted copy of the last recurrence $B$ that failed, chosen so that
+the two failures cancel; if the repair requires a longer recurrence, it updates the length $L$. Massey (1969) proved the result is always the shortest recurrence. For BCH syndromes
+from $w \le t$ errors, the shortest recurrence is exactly the error locator, of length $w$.
 
-If you want to understand it properly, a nice exercise is to run it by hand on $S = (\alpha^3, \alpha^6)$ (a single error at position 3, $t = 1$): you should get $\Lambda(z) = 1 + \alpha^3 z$.
+If you want to understand it properly, a nice exercise is to run it by hand on $S = (\alpha^3, \alpha^6)$ (a single error at position 3, $t = 1$): you should get $\Lambda(z) = 1 +
+\alpha^3 z$.
 </details>
 '''
 
@@ -1718,7 +1841,8 @@ Implement `bch_decode(bits, n, t)`, which takes the $mt$ observed bits and retur
 4. Get $\Lambda$ from `berlekamp_massey`. Let $L = $ `len(locator) - 1`. If $L > t$, return `None`.
 5. Chien search: evaluate $\Lambda(\alpha^{-i}) = \sum_{k} \Lambda_k \alpha^{-ik}$ for every $i = 0, \ldots, n-1$, and collect the $i$ where it's zero. Return the tuple of roots if there are exactly $L$ of them, else `None`.
 
-For step 5, you can vectorise over $i$ using logs: for each nonzero coefficient $\Lambda_k$, the term $\Lambda_k \alpha^{-ik}$ is `gf.exp[(gf.log[Lambda_k] - k * i) % gf.N]`. XOR the terms together.
+For step 5, you can vectorise over $i$ using logs: for each nonzero coefficient $\Lambda_k$, the term $\Lambda_k \alpha^{-ik}$ is `gf.exp[(gf.log[Lambda_k] - k * i) % gf.N]`. XOR
+the terms together.
 '''
 
 # ! CELL TYPE: code
@@ -1824,7 +1948,9 @@ r'''
 
 </details>
 
-At $n = 1024$, a degree-3 BCH design needs 34 delays where identity delays need 1,025: a 30x saving, and the gap grows linearly with $n$. Notice also the other end of the plot: at $n = 16$ (our GPT-2 sentence), BCH with $t = 3$ needs 16 delays and identity needs 17. Coding buys nothing for tiny $n$, which is worth remembering when we compare SPEX with other methods in section 5️⃣.
+At $n = 1024$, a degree-3 BCH design needs 34 delays where identity delays need 1,025: a 30x saving, and the gap grows linearly with $n$. Notice also the other end of the plot: at
+$n = 16$ (our GPT-2 sentence), BCH with $t = 3$ needs 16 delays and identity needs 17. Coding buys nothing for tiny $n$, which is worth remembering when we compare SPEX with other
+methods in section 5️⃣.
 '''
 
 # ! CELL TYPE: markdown
@@ -1834,16 +1960,22 @@ At $n = 1024$, a degree-3 BCH design needs 34 delays where identity delays need 
 r'''
 ## Is this bin a singleton?
 
-We now have everything needed to process one bin. Let $D$ be the delay matrix, and let `delays` be $D$ with a zero row stacked on top, so `u = U[:, j]` has $p + 1$ entries with `u[0]` the zero-delay value. For a candidate support $k$, its **signature** is the vector of signs it would produce, $\sigma_k = \big((-1)^{d_0 \cdot k}, \ldots, (-1)^{d_p \cdot k}\big)$, with $\sigma_k[0] = 1$.
+We now have everything needed to process one bin. Let $D$ be the delay matrix, and let `delays` be $D$ with a zero row stacked on top, so `u = U[:, j]` has $p + 1$ entries with
+`u[0]` the zero-delay value. For a candidate support $k$, its **signature** is the vector of signs it would produce, $\sigma_k = \big((-1)^{d_0 \cdot k}, \ldots, (-1)^{d_p \cdot
+k}\big)$, with $\sigma_k[0] = 1$.
 
-A real bin can be empty, a singleton, or a collision; and with a real model, every bin also contains a little "noise" from the many tiny coefficients that hash into it. So decoding a support isn't enough; we have to check it. SPEX's singleton test is:
+A real bin can be empty, a singleton, or a collision; and with a real model, every bin also contains a little "noise" from the many tiny coefficients that hash into it. So decoding
+a support isn't enough; we have to check it. SPEX's singleton test is:
 
 1. **Decode.** Take the signs of `u[1:] / u[0]` as bits and run `bch_decode`. Skip bins that are (numerically) empty or have `u[0]` ≈ 0.
 2. **Check the hash.** A real singleton must sit in the bin it hashes to: `bin_index(M, support) == j`. A collision often decodes to a random support, which fails this check with probability $1 - 2^{-b}$.
 3. **Estimate the amplitude** by projecting onto the signature: $\hat F = \sigma_k \cdot u / (p+1)$. This is the least-squares fit of $u \approx F \sigma_k$. It's *signed*: negative coefficients come out negative.
 4. **Check the residual.** Accept only if $\| u - \hat F \sigma_k \|^2 \le \gamma \|u\|^2$. The authors use a permissive $\gamma = 0.9$: a bin dominated by one coefficient is accepted, and the leftover will be cleaned up by peeling.
 
-**Soft decoding.** With noisy bins, the sign of a ratio near zero is unreliable, and one wrong bit makes the hard decoder fail. SPEX therefore uses a **Chase decoder**: also try flipping the least reliable bits (the ratios closest to zero), decode each variant, and keep the candidate whose signature fits best. We'll implement a simple version: with `chase_depth = c`, take the $c$ bits with the smallest $|u_d / u_0|$, and try flipping none of them, each one, and each pair. Among the candidates that pass step 2, keep the one with the smallest residual, then apply step 4 to it.
+**Soft decoding.** With noisy bins, the sign of a ratio near zero is unreliable, and one wrong bit makes the hard decoder fail. SPEX therefore uses a **Chase decoder**: also try
+flipping the least reliable bits (the ratios closest to zero), decode each variant, and keep the candidate whose signature fits best. We'll implement a simple version: with
+`chase_depth = c`, take the $c$ bits with the smallest $|u_d / u_0|$, and try flipping none of them, each one, and each pair. Among the candidates that pass step 2, keep the one
+with the smallest residual, then apply step 4 to it.
 '''
 
 # ! CELL TYPE: markdown
@@ -1860,7 +1992,8 @@ r'''
 > You should spend up to 20 minutes on this exercise.
 > ```
 
-Implement `detect_singleton(u, M, delays, j, t, gamma, chase_depth)`, following the four steps and the soft decoding scheme above. Return `(support, amplitude)` for an accepted singleton and `None` otherwise. Treat a bin as empty if its energy $\|u\|^2$ is below `1e-20`, and reject it if $|u_0| < 10^{-9}\|u\|$ (ratios are meaningless then).
+Implement `detect_singleton(u, M, delays, j, t, gamma, chase_depth)`, following the four steps and the soft decoding scheme above. Return `(support, amplitude)` for an accepted
+singleton and `None` otherwise. Treat a bin as empty if its energy $\|u\|^2$ is below `1e-20`, and reject it if $|u_0| < 10^{-9}\|u\|$ (ratios are meaningless then).
 '''
 
 # ! CELL TYPE: code
@@ -1928,7 +2061,8 @@ r'''
 <details>
 <summary>Help - why is the amplitude just a dot product?</summary>
 
-Every signature entry is $\pm 1$, so $\|\sigma_k\|^2 = p + 1$ and the least-squares solution of $\min_F \|u - F\sigma_k\|^2$ is $\sigma_k \cdot u / (p+1)$. If the bin really is a clean singleton with coefficient $F$, then $u = F\sigma_k$ exactly and this returns $F$, with the right sign.
+Every signature entry is $\pm 1$, so $\|\sigma_k\|^2 = p + 1$ and the least-squares solution of $\min_F \|u - F\sigma_k\|^2$ is $\sigma_k \cdot u / (p+1)$. If the bin really is a
+clean singleton with coefficient $F$, then $u = F\sigma_k$ exactly and this returns $F$, with the right sign.
 </details>
 '''
 
@@ -1939,15 +2073,19 @@ Every signature entry is $\pm 1$, so $\|\sigma_k\|^2 = p + 1$ and the least-squa
 r'''
 ## Peeling
 
-One hash isn't enough: in the figure above, 28 of the 41 coefficients sat in collisions. SPEX uses $C = 3$ independent random hashes $M_1, M_2, M_3$, each with the same delays, so the total number of queries is
+One hash isn't enough: in the figure above, 28 of the 41 coefficients sat in collisions. SPEX uses $C = 3$ independent random hashes $M_1, M_2, M_3$, each with the same delays, so
+the total number of queries is
 
 $$
 Q = C \cdot (p + 1) \cdot 2^b .
 $$
 
-Then it **peels**: sweep over all bins of all hashes; whenever a bin passes the singleton test with $(k, \hat F)$, add $\hat F$ to our estimate of $F(k)$, and subtract $\hat F \sigma_k$ from the bin $k$ hashes to in *every* hash, including bins we haven't looked at yet. A coefficient that collided with $k$ somewhere else is now alone there, and will be found on a later visit. Repeat sweeps until a sweep finds nothing.
+Then it **peels**: sweep over all bins of all hashes; whenever a bin passes the singleton test with $(k, \hat F)$, add $\hat F$ to our estimate of $F(k)$, and subtract $\hat F
+\sigma_k$ from the bin $k$ hashes to in *every* hash, including bins we haven't looked at yet. A coefficient that collided with $k$ somewhere else is now alone there, and will be
+found on a later visit. Repeat sweeps until a sweep finds nothing.
 
-This is the same algorithm as decoding fountain codes or finding the 2-core of a random hypergraph, and it has a sharp threshold: when the number of coefficients per bin $s / 2^b$ is below a constant, peeling resolves everything with high probability; above it, it gets stuck almost immediately. We'll see the threshold in a moment.
+This is the same algorithm as decoding fountain codes or finding the 2-core of a random hypergraph, and it has a sharp threshold: when the number of coefficients per bin $s / 2^b$
+is below a constant, peeling resolves everything with high probability; above it, it gets stuck almost immediately. We'll see the threshold in a moment.
 '''
 
 # ! CELL TYPE: markdown
@@ -2043,13 +2181,15 @@ r'''
 <details>
 <summary>Hint</summary>
 
-The structure is two nested loops inside a sweep loop. Keep a counter of how many singletons were found in the current sweep, and `break` when it's zero. The subtraction must happen *immediately* (not at the end of the sweep), so that later bins in the same sweep already see the cleaned-up residual.
+The structure is two nested loops inside a sweep loop. Keep a counter of how many singletons were found in the current sweep, and `break` when it's zero. The subtraction must
+happen *immediately* (not at the end of the sweep), so that later bins in the same sweep already see the cleaned-up residual.
 </details>
 
 <details>
 <summary>Help - my recovered coefficients are twice / half the right size</summary>
 
-Check that you subtract the coefficient's signature from its bin in *every* group, including the group where you found it. If you forget the current group, the same bin will be detected again on the next sweep and its amplitude added twice.
+Check that you subtract the coefficient's signature from its bin in *every* group, including the group where you found it. If you forget the current group, the same bin will be
+detected again on the next sweep and its amplitude added twice.
 </details>
 '''
 
@@ -2075,7 +2215,8 @@ r'''
 > You should spend up to 5 minutes on this exercise.
 > ```
 
-Return the $R^2$ of a spectrum's predictions on a set of masks: $1 - \sum (y - \hat y)^2 / \sum (y - \bar y)^2$. This is the one number we'll use to judge every explanation. Note that $R^2$ can be negative: an explanation can be worse than predicting the mean.
+Return the $R^2$ of a spectrum's predictions on a set of masks: $1 - \sum (y - \hat y)^2 / \sum (y - \bar y)^2$. This is the one number we'll use to judge every explanation. Note
+that $R^2$ can be negative: an explanation can be worse than predicting the mean.
 '''
 
 # ! CELL TYPE: code
@@ -2106,7 +2247,8 @@ if MAIN:
 r'''
 ## Watching collisions dissolve
 
-Let's run SPEX on the planted game from before ($n = 100$, 40 coefficients of degree $\le 3$) with $b = 4$: just 16 bins per hash, so 48 bins in total for 41 coefficients. Every hash is full of collisions. The heatmap shows the residual energy of every bin, before peeling and after each sweep.
+Let's run SPEX on the planted game from before ($n = 100$, 40 coefficients of degree $\le 3$) with $b = 4$: just 16 bins per hash, so 48 bins in total for 41 coefficients. Every
+hash is full of collisions. The heatmap shows the residual energy of every bin, before peeling and after each sweep.
 '''
 
 # ! CELL TYPE: code
@@ -2156,7 +2298,8 @@ Each row is a snapshot of all 48 bins (3 hashes × 16 bins); black means numeric
 - **Sweeps 2-3** clear almost everything that remains, as each subtraction turns more collisions into singletons.
 - The few cells still glowing in sweeps 3-5, at energies from $10^{-2}$ down to $10^{-10}$, are *corrections*. With $\gamma = 0.9$, a bin dominated by one coefficient is accepted even though a smaller one shares it, so the first amplitude estimate is slightly off; later sweeps see the leftover and refine it. After that the sweeps only polish at the level of floating-point noise, and sweep 9 finds nothing and stops.
 
-The result: all 41 coefficients, signs included, to 11 decimal places, from 1,056 queries (1,012 distinct masks: a few masks, like the empty one, appear in every hash). For comparison, there are about 167,000 candidate supports of degree $\le 3$ on 100 features.
+The result: all 41 coefficients, signs included, to 11 decimal places, from 1,056 queries (1,012 distinct masks: a few masks, like the empty one, appear in every hash). For
+comparison, there are about 167,000 candidate supports of degree $\le 3$ on 100 features.
 </details>
 '''
 
@@ -2167,7 +2310,8 @@ The result: all 41 coefficients, signs included, to 11 decimal places, from 1,05
 r'''
 ## How many queries does SPEX need?
 
-Now the main SPEX experiment. We vary the number of bins $2^b$ for planted games with $s = 10$, 40 and 160 coefficients ($n = 100$, degree $\le 3$), averaging over three random designs, and measure $R^2$ on 2,000 held-out random masks. Two **controls** should fail:
+Now the main SPEX experiment. We vary the number of bins $2^b$ for planted games with $s = 10$, 40 and 160 coefficients ($n = 100$, degree $\le 3$), averaging over three random
+designs, and measure $R^2$ on 2,000 held-out random masks. Two **controls** should fail:
 
 - **Dense spectrum**: 3,000 small coefficients instead of a few large ones. Same kind of function, but not sparse.
 - **Wrong degree**: 20 coefficients of degree 5, decoded with $t = 3$. Sparse, but outside the code's correction radius.
@@ -2240,11 +2384,18 @@ degree-5 game decoded with t = 5           1.000  1.000  1.000  1.000  1.000  1.
 <details>
 <summary>Help - how should I interpret this?</summary>
 
-**A sharp threshold in the number of bins.** Each sparse game goes from useless to *exact* recovery within one or two doublings of the number of bins: $s = 40$ needs $2^b = 16$ bins per hash (48 bins in total for 41 coefficients), $s = 160$ needs 64 (192 bins for 161 coefficients). Below the threshold peeling stalls almost immediately and $R^2$ is near zero; above it, every coefficient is found exactly. A rule of thumb from these runs: three hashes with at least as many bins in total as there are coefficients. So the cost grows with $s$ (and with $t \log n$ through the delays), and not at all with $2^n$.
+**A sharp threshold in the number of bins.** Each sparse game goes from useless to *exact* recovery within one or two doublings of the number of bins: $s = 40$ needs $2^b = 16$
+bins per hash (48 bins in total for 41 coefficients), $s = 160$ needs 64 (192 bins for 161 coefficients). Below the threshold peeling stalls almost immediately and $R^2$ is near
+zero; above it, every coefficient is found exactly. A rule of thumb from these runs: three hashes with at least as many bins in total as there are coefficients. So the cost grows
+with $s$ (and with $t \log n$ through the delays), and not at all with $2^n$.
 
-**The controls fail, as they should.** The dense game never gets above $R^2 = 0$, even with 16,896 queries: its 3,000 coefficients fill every bin with a sum of many terms, nothing ever looks like a singleton, and SPEX returns (almost) nothing. The degree-5 game decoded with $t = 3$ also stays at zero at every budget: a weight-5 support is outside the code's correction radius, so `bch_decode` either fails or returns a wrong support that the hash and residual checks reject. More bins don't help, because the problem isn't collisions. The *same* game decoded with $t = 5$ is recovered exactly at every budget; the price of the larger $t$ is paid in delays (36 per hash instead of 22), not in bins.
+**The controls fail, as they should.** The dense game never gets above $R^2 = 0$, even with 16,896 queries: its 3,000 coefficients fill every bin with a sum of many terms, nothing
+ever looks like a singleton, and SPEX returns (almost) nothing. The degree-5 game decoded with $t = 3$ also stays at zero at every budget: a weight-5 support is outside the code's
+correction radius, so `bch_decode` either fails or returns a wrong support that the hash and residual checks reject. More bins don't help, because the problem isn't collisions. The
+*same* game decoded with $t = 5$ is recovered exactly at every budget; the price of the larger $t$ is paid in delays (36 per hash instead of 22), not in bins.
 
-Notice that SPEX fails *safely* on these controls: when its assumptions are wrong it returns a near-empty spectrum with $R^2 \approx 0$, rather than a confident wrong answer. That's the hash and residual checks doing their job.
+Notice that SPEX fails *safely* on these controls: when its assumptions are wrong it returns a near-empty spectrum with $R^2 \approx 0$, rather than a confident wrong answer.
+That's the hash and residual checks doing their job.
 </details>
 '''
 
@@ -2255,7 +2406,8 @@ Notice that SPEX fails *safely* on these controls: when its assumptions are wron
 r'''
 ### A thousand features
 
-To make the scaling concrete: here is a planted game on $n = 1000$ features with 100 coefficients of degree $\le 3$. The hypercube has $2^{1000} \approx 10^{301}$ points, and there are about 166 million candidate supports of degree $\le 3$. Enumerating them, as a regression over all low-order terms would, is already out of reach.
+To make the scaling concrete: here is a planted game on $n = 1000$ features with 100 coefficients of degree $\le 3$. The hypercube has $2^{1000} \approx 10^{301}$ points, and there
+are about 166 million candidate supports of degree $\le 3$. Enumerating them, as a regression over all low-order terms would, is already out of reach.
 '''
 
 # ! CELL TYPE: code
@@ -2286,7 +2438,8 @@ candidate supports of degree &lt;= 3: 166,667,501</pre>
 
 </details>
 
-That's the promise of SPEX: the query cost depends on $s$, $t$ and only *logarithmically* on $n$. The catch, which the controls above made visible, is that this guarantee is about functions that are *exactly* sparse and low-degree. A real model is only approximately so. Section 5️⃣ will show what that costs.
+That's the promise of SPEX: the query cost depends on $s$, $t$ and only *logarithmically* on $n$. The catch, which the controls above made visible, is that this guarantee is about
+functions that are *exactly* sparse and low-degree. A real model is only approximately so. Section 5️⃣ will show what that costs.
 '''
 
 # ! CELL TYPE: markdown
@@ -2318,12 +2471,17 @@ r'''
 r'''
 ## Why a proxy?
 
-SPEX's queries are rigid: $C(mt + 1)2^b$ masks from fixed structured designs, and every one of them is needed to keep the bins clean. When the function is only approximately sparse, many bins never pass the singleton test and those queries are wasted. Butler et al. (2025) observed that in practice SPEX needs a lot of queries on real LLM tasks, and proposed a two-stage alternative:
+SPEX's queries are rigid: $C(mt + 1)2^b$ masks from fixed structured designs, and every one of them is needed to keep the bins clean. When the function is only approximately
+sparse, many bins never pass the singleton test and those queries are wasted. Butler et al. (2025) observed that in practice SPEX needs a lot of queries on real LLM tasks, and
+proposed a two-stage alternative:
 
 1. Query the model on $Q$ **uniformly random** masks, and fit a cheap **proxy** model to the responses: a gradient-boosted tree ensemble.
 2. Compute the proxy's Fourier spectrum **exactly**, keep its largest coefficients, and refit their values on the queried data.
 
-Why trees? Two reasons. First, trees are **cheap to read**: a decision tree is a sum of leaf indicators, each leaf indicator is a product of conditions on a few features, and so every tree has a small, exactly computable Fourier expansion. Second, trees are good at finding **hierarchical** interactions: if a set of features matters jointly *and* its subsets also matter on their own (as for an AND), then a greedy split on one feature already reduces the error, and the tree can find the rest of the interaction below that split. Butler et al. report that LLM interactions are typically hierarchical in this sense. We'll test what happens when they aren't.
+Why trees? Two reasons. First, trees are **cheap to read**: a decision tree is a sum of leaf indicators, each leaf indicator is a product of conditions on a few features, and so
+every tree has a small, exactly computable Fourier expansion. Second, trees are good at finding **hierarchical** interactions: if a set of features matters jointly *and* its
+subsets also matter on their own (as for an AND), then a greedy split on one feature already reduces the error, and the tree can find the rest of the interaction below that split.
+Butler et al. report that LLM interactions are typically hierarchical in this sense. We'll test what happens when they aren't.
 
 So ProxySPEX has three distinct sources of error, which we'll keep separate:
 
@@ -2357,15 +2515,20 @@ $$
 G(S) \mathrel{+}= \frac{G_L(S) + G_R(S)}{2}, \qquad G(S \,\triangle\, \{i\}) \mathrel{+}= \frac{G_L(S) - G_R(S)}{2},
 $$
 
-where $\triangle$ is the symmetric difference, because $\chi_{\{i\}}\chi_S = \chi_{S \triangle \{i\}}$ (if $i \in S$, the two factors of $(-1)^{x_i}$ cancel). A leaf with value $v$ has spectrum $\{\emptyset: v\}$. Recursing from the leaves up gives the whole tree's spectrum, and a tree of depth $d$ has no terms of degree $> d$.
+where $\triangle$ is the symmetric difference, because $\chi_{\{i\}}\chi_S = \chi_{S \triangle \{i\}}$ (if $i \in S$, the two factors of $(-1)^{x_i}$ cancel). A leaf with value $v$
+has spectrum $\{\emptyset: v\}$. Recursing from the leaves up gives the whole tree's spectrum, and a tree of depth $d$ has no terms of degree $> d$.
 
 <details>
 <summary>Aside - when does S contain i already?</summary>
 
-On binary features a tree never splits twice on the same feature along one path (after the first split, the feature is constant in that subtree, so there's nothing to gain). So in practice $i \notin S$ for every $S$ in the subtrees, and $S \triangle \{i\} = S \cup \{i\}$. Using the symmetric difference costs nothing and keeps the formula correct in general; a version using set union would silently be wrong for repeated splits.
+On binary features a tree never splits twice on the same feature along one path (after the first split, the feature is constant in that subtree, so there's nothing to gain). So in
+practice $i \notin S$ for every $S$ in the subtrees, and $S \triangle \{i\} = S \cup \{i\}$. Using the symmetric difference costs nothing and keeps the formula correct in general;
+a version using set union would silently be wrong for repeated splits.
 </details>
 
-We'll use scikit-learn trees. A fitted `DecisionTreeRegressor` exposes its structure as arrays in `tree.tree_`: for node `v`, `children_left[v]` and `children_right[v]` (both `-1` for a leaf), `feature[v]` (the split feature), and `value[v]` (the leaf prediction, as an array: use `value[v].ravel()[0]`). With 0/1 features, scikit-learn's thresholds are 0.5, so the left child is always $x_i = 0$.
+We'll use scikit-learn trees. A fitted `DecisionTreeRegressor` exposes its structure as arrays in `tree.tree_`: for node `v`, `children_left[v]` and `children_right[v]` (both `-1`
+for a leaf), `feature[v]` (the split feature), and `value[v]` (the leaf prediction, as an array: use `value[v].ravel()[0]`). With 0/1 features, scikit-learn's thresholds are 0.5,
+so the left child is always $x_i = 0$.
 '''
 
 # ! CELL TYPE: markdown
@@ -2382,7 +2545,8 @@ r'''
 > You should spend up to 15-20 minutes on this exercise.
 > ```
 
-Implement `tree_to_fourier`, which returns the exact Fourier spectrum of a fitted regression tree, by recursion from the root (node 0). The test checks that `predict_spectrum` of your spectrum reproduces `tree.predict` on every mask.
+Implement `tree_to_fourier`, which returns the exact Fourier spectrum of a fitted regression tree, by recursion from the root (node 0). The test checks that `predict_spectrum` of
+your spectrum reproduces `tree.predict` on every mask.
 '''
 
 # ! CELL TYPE: code
@@ -2427,7 +2591,8 @@ r'''
 <details>
 <summary>Hint</summary>
 
-Write an inner function `recurse(node)` that returns a dict. For a leaf, return `{(): value}`. For a split node, recurse into both children, then loop over the union of their keys and apply the two update rules. `tuple(sorted(set(S) ^ {i}))` computes $S \triangle \{i\}$ in canonical form.
+Write an inner function `recurse(node)` that returns a dict. For a leaf, return `{(): value}`. For a split node, recurse into both children, then loop over the union of their keys
+and apply the two update rules. `tuple(sorted(set(S) ^ {i}))` computes $S \triangle \{i\}$ in canonical form.
 </details>
 '''
 
@@ -2451,9 +2616,11 @@ $$
 \hat f(x) = c_0 + \eta \sum_{r=1}^{R} h_r(x) ,
 $$
 
-where $c_0$ is the initial constant prediction (the mean of the training targets), $\eta$ is the learning rate and $h_r$ are the trees, each fitted to the residuals of the ensemble so far. The Fourier transform is linear, so the ensemble's spectrum is $c_0$ on the constant plus $\eta$ times the sum of the trees' spectra.
+where $c_0$ is the initial constant prediction (the mean of the training targets), $\eta$ is the learning rate and $h_r$ are the trees, each fitted to the residuals of the ensemble
+so far. The Fourier transform is linear, so the ensemble's spectrum is $c_0$ on the constant plus $\eta$ times the sum of the trees' spectra.
 
-For a fitted `GradientBoostingRegressor`: the trees are `gbt.estimators_[:, 0]`, the learning rate is `gbt.learning_rate`, and $c_0$ is `gbt.init_.constant_` (an array; take its single entry).
+For a fitted `GradientBoostingRegressor`: the trees are `gbt.estimators_[:, 0]`, the learning rate is `gbt.learning_rate`, and $c_0$ is `gbt.init_.constant_` (an array; take its
+single entry).
 '''
 
 # ! CELL TYPE: code
@@ -2486,7 +2653,9 @@ if MAIN:
 r'''
 ## Selecting and refitting
 
-A fitted ensemble of 500 depth-5 trees has a spectrum with thousands of terms, most of them tiny: the trees' fitting noise. ProxySPEX keeps the smallest set of largest-magnitude coefficients that holds 95% of the (non-constant) energy, and then **refits** the kept coefficients on the queried data by ridge regression on their characters, because the trees' estimates of individual coefficients are biased by shrinkage and by the noise terms we just dropped.
+A fitted ensemble of 500 depth-5 trees has a spectrum with thousands of terms, most of them tiny: the trees' fitting noise. ProxySPEX keeps the smallest set of largest-magnitude
+coefficients that holds 95% of the (non-constant) energy, and then **refits** the kept coefficients on the queried data by ridge regression on their characters, because the trees'
+estimates of individual coefficients are biased by shrinkage and by the noise terms we just dropped.
 
 <details>
 <summary>Aside - two details where implementations differ</summary>
@@ -2567,7 +2736,8 @@ r'''
 <details>
 <summary>Hint - the inclusive boundary</summary>
 
-With `cumulative = np.cumsum(energies) / energies.sum()`, the number of terms to keep is `np.searchsorted(cumulative, energy) + 1`: `searchsorted` returns the first index whose value is $\ge$ `energy`. Subtract a tiny tolerance (`energy - 1e-12`) to protect against floating-point error when the boundary is hit exactly.
+With `cumulative = np.cumsum(energies) / energies.sum()`, the number of terms to keep is `np.searchsorted(cumulative, energy) + 1`: `searchsorted` returns the first index whose
+value is $\ge$ `energy`. Subtract a tiny tolerance (`energy - 1e-12`) to protect against floating-point error when the boundary is hit exactly.
 </details>
 '''
 
@@ -2591,9 +2761,13 @@ Implement `proxyspex(f, n, budget, ...)`:
 2. Fit `GradientBoostingRegressor(n_estimators=n_estimators, max_depth=max_depth, learning_rate=0.1, random_state=seed)`.
 3. Extract its spectrum, then select and refit with `max_terms=budget // 2`. Return the spectrum and the masks.
 
-The paper uses LightGBM with a small cross-validated grid over depth, number of trees and learning rate; we use fixed settings (500 trees of depth 5) to keep things fast and simple, and you can try tuning them in the bonus.
+The paper uses LightGBM with a small cross-validated grid over depth, number of trees and learning rate; we use fixed settings (500 trees of depth 5) to keep things fast and
+simple, and you can try tuning them in the bonus.
 
-Also implement `first_order_baseline(X, y)`, our stand-in for first-order attribution methods: fit an ordinary linear regression $y \approx a + \sum_i w_i x_i$ on the same masks, and return it **as a Fourier spectrum** so that it can be evaluated and compared like everything else. (By Parseval, this least-squares fit on uniform masks converges to the best possible additive explanation, i.e. it's the *strongest* first-order baseline; it is the Banzhaf-style counterpart of KernelSHAP, which weights masks differently.) Use $x_i = \tfrac12 - \tfrac12\chi_{\{i\}}$ to convert.
+Also implement `first_order_baseline(X, y)`, our stand-in for first-order attribution methods: fit an ordinary linear regression $y \approx a + \sum_i w_i x_i$ on the same masks,
+and return it **as a Fourier spectrum** so that it can be evaluated and compared like everything else. (By Parseval, this least-squares fit on uniform masks converges to the best
+possible additive explanation, i.e. it's the *strongest* first-order baseline; it is the Banzhaf-style counterpart of KernelSHAP, which weights masks differently.) Use $x_i =
+\tfrac12 - \tfrac12\chi_{\{i\}}$ to convert.
 '''
 
 # ! CELL TYPE: code
@@ -2667,7 +2841,10 @@ Let's open ProxySPEX up on two kinds of planted game:
 - an **AND game**: 15 random AND terms of degree 1-3, so its Fourier spectrum has a few dozen terms, all hierarchical (every AND of degree $d$ comes with Fourier terms on all of its subsets);
 - a **pure parity game**: 5 parities of degree 3 and a constant, and nothing else. Extremely sparse, but no single feature or pair has any marginal effect: there's no lower-order "footprint" for a greedy split to find.
 
-We give ProxySPEX the same budget SPEX uses at $b = 5$, $t = 3$ (1,824 queries for $n = 32$, 2,112 for $n = 100$), and measure on 2,000 held-out masks: how well the fitted trees predict the game (proxy error), the largest difference between the trees' predictions and their extracted spectrum (extraction error), and how well the final selected and refit spectrum predicts the game. We also report the explanation's **effective size**: the number of its terms that carry 99% of its (non-constant) energy. The ridge refit can leave many terms with tiny coefficients, and those shouldn't count.
+We give ProxySPEX the same budget SPEX uses at $b = 5$, $t = 3$ (1,824 queries for $n = 32$, 2,112 for $n = 100$), and measure on 2,000 held-out masks: how well the fitted trees
+predict the game (proxy error), the largest difference between the trees' predictions and their extracted spectrum (extraction error), and how well the final selected and refit
+spectrum predicts the game. We also report the explanation's **effective size**: the number of its terms that carry 99% of its (non-constant) energy. The ridge refit can leave many
+terms with tiny coefficients, and those shouldn't count.
 
 Before running: which of the three numbers do you expect to be bad for the parity game?
 '''
@@ -2739,13 +2916,20 @@ pure parity game, n = 100 (6 true Fourier terms, 2112 queries)
 
 </details>
 
-**Extraction is exact.** In every case the extracted spectrum (tens of thousands of terms) reproduces the trees to about $10^{-13}$, i.e. floating-point precision. Whatever goes wrong with ProxySPEX, it isn't step 2.
+**Extraction is exact.** In every case the extracted spectrum (tens of thousands of terms) reproduces the trees to about $10^{-13}$, i.e. floating-point precision. Whatever goes
+wrong with ProxySPEX, it isn't step 2.
 
-**AND game.** The trees fit well ($R^2 = 0.98$). Selection keeps 25 terms (including the constant) and the refit reaches 0.95, slightly *below* the trees: the 16 smallest true terms (a degree-3 AND spreads its weight over eight Fourier terms of magnitude $w/8$) fall under the 95% energy cut. That's the price of a compact explanation.
+**AND game.** The trees fit well ($R^2 = 0.98$). Selection keeps 25 terms (including the constant) and the refit reaches 0.95, slightly *below* the trees: the 16 smallest true
+terms (a degree-3 AND spreads its weight over eight Fourier terms of magnitude $w/8$) fall under the 95% energy cut. That's the price of a compact explanation.
 
-**Pure parities, $n = 32$.** Exactly as the hierarchy argument predicts, the trees are poor ($R^2 = 0.54$): no single split reduces the error, so the greedy splits are close to random. And yet the final explanation is *perfect*, with an effective size of 5 (the five parities; the other 908 kept terms end up with negligible coefficients after the refit). How? The trees' spectrum is a bad *model* but a decent *candidate list*: with 913 slots among only 5,488 possible supports of degree $\le 3$, the true parities made it onto the list, and the ridge refit, which fits the actual data, picked them out.
+**Pure parities, $n = 32$.** Exactly as the hierarchy argument predicts, the trees are poor ($R^2 = 0.54$): no single split reduces the error, so the greedy splits are close to
+random. And yet the final explanation is *perfect*, with an effective size of 5 (the five parities; the other 908 kept terms end up with negligible coefficients after the refit).
+How? The trees' spectrum is a bad *model* but a decent *candidate list*: with 913 slots among only 5,488 possible supports of degree $\le 3$, the true parities made it onto the
+list, and the ridge refit, which fits the actual data, picked them out.
 
-**Pure parities, $n = 100$.** With more features there are about 167,000 supports of degree $\le 3$, and the trees have no footprint to follow: their $R^2$ is *negative*. Now the candidate list misses one of the parities and fills up with noise, and the final explanation has $R^2 = 0.68$ with an effective size of 596. The refit can only rescue the proxy if the proxy at least proposes the right supports.
+**Pure parities, $n = 100$.** With more features there are about 167,000 supports of degree $\le 3$, and the trees have no footprint to follow: their $R^2$ is *negative*. Now the
+candidate list misses one of the parities and fills up with noise, and the final explanation has $R^2 = 0.68$ with an effective size of 596. The refit can only rescue the proxy if
+the proxy at least proposes the right supports.
 '''
 
 # ! CELL TYPE: markdown
@@ -2762,7 +2946,8 @@ Now the controls for both methods at once, at $n = 100$. Four planted games, eac
 - **Pure parities** (as above): no lower-order footprint at all.
 - **Dense game**: 3,000 small random coefficients. Nobody's assumption holds.
 
-We also run ProxySPEX on **shuffled responses** (the same masks, with the values permuted), which should fail on every game, and the first-order baseline. The right-hand panel shows each explanation's effective size against the true number of terms.
+We also run ProxySPEX on **shuffled responses** (the same masks, with the values permuted), which should fail on every game, and the first-order baseline. The right-hand panel
+shows each explanation's effective size against the true number of terms.
 '''
 
 # ! CELL TYPE: code
@@ -2842,7 +3027,9 @@ Read the figure one game at a time.
 - **Dense game.** Everything fails. SPEX returns an empty spectrum ($R^2 = -0.03$), ProxySPEX overfits ($-0.43$), and the first-order baseline is at zero.
 - **Shuffled responses.** ProxySPEX trained on permuted values is far worse than predicting the mean on every game ($-0.65$ to $-0.81$). An explanation with hundreds of terms will happily fit noise; only held-out faithfulness exposes it.
 
-So the two methods make different bets. SPEX bets on *exact sparsity and low degree*: when that holds it is exact, whatever the interactions look like, and when it fails it returns (almost) nothing. ProxySPEX bets on *hierarchy*: when that holds it works, and when it fails it returns a large explanation that isn't faithful. Which bet suits real models is an empirical question, and the subject of the next section.
+So the two methods make different bets. SPEX bets on *exact sparsity and low degree*: when that holds it is exact, whatever the interactions look like, and when it fails it returns
+(almost) nothing. ProxySPEX bets on *hierarchy*: when that holds it works, and when it fails it returns a large explanation that isn't faithful. Which bet suits real models is an
+empirical question, and the subject of the next section.
 </details>
 '''
 
@@ -2876,7 +3063,9 @@ r'''
 r'''
 ## Faithfulness against the exact game
 
-Back to GPT-2. Because we evaluated all 65,536 masks in section 2️⃣, we can give the methods a *lookup table* as their value function: querying the table is identical to querying the model (it's deterministic), but costs nothing, so we can try many budgets. And we can measure each explanation's $R^2$ on **all** $2^{16}$ masks, which is its exact faithfulness under uniform masking.
+Back to GPT-2. Because we evaluated all 65,536 masks in section 2️⃣, we can give the methods a *lookup table* as their value function: querying the table is identical to querying
+the model (it's deterministic), but costs nothing, so we can try many budgets. And we can measure each explanation's $R^2$ on **all** $2^{16}$ masks, which is its exact
+faithfulness under uniform masking.
 
 For both read-outs we run:
 
@@ -2885,7 +3074,8 @@ For both read-outs we run:
 - the **first-order baseline** on the same masks as ProxySPEX;
 - **ProxySPEX on shuffled responses**, a control that should fail;
 
-and draw two exact ceilings from the spectrum: the best possible additive explanation (degree-1 energy) and the best possible explanation using only terms of degree $\le 3$ (which is all SPEX with $t = 3$ is allowed to find).
+and draw two exact ceilings from the spectrum: the best possible additive explanation (degree-1 energy) and the best possible explanation using only terms of degree $\le 3$ (which
+is all SPEX with $t = 3$ is allowed to find).
 
 This takes about a minute.
 '''
@@ -2960,13 +3150,21 @@ p(Mary)
 <details>
 <summary>Help - how should I interpret this?</summary>
 
-**Interactions buy real faithfulness, and how much depends on the read-out.** On `p(Mary)`, the first-order baseline saturates at its ceiling of 0.24 almost immediately, while ProxySPEX reaches 0.78 with 2,048 queries (3% of the cube) and 0.82 with 4,096. On the logit difference, where 80% of the variance is additive, interactions take $R^2$ from 0.80 to 0.91 (ProxySPEX) and 0.92 (SPEX at 12,288 queries): they recover a bit over half of the variance that no additive explanation can reach.
+**Interactions buy real faithfulness, and how much depends on the read-out.** On `p(Mary)`, the first-order baseline saturates at its ceiling of 0.24 almost immediately, while
+ProxySPEX reaches 0.78 with 2,048 queries (3% of the cube) and 0.82 with 4,096. On the logit difference, where 80% of the variance is additive, interactions take $R^2$ from 0.80 to
+0.91 (ProxySPEX) and 0.92 (SPEX at 12,288 queries): they recover a bit over half of the variance that no additive explanation can reach.
 
-**ProxySPEX is much more query-efficient than SPEX here.** At around 3,000 queries, ProxySPEX's `p(Mary)` explanation (0.78 at 2,048) beats SPEX's (0.60 at 3,072), and SPEX needs 12,288 queries, 19% of the entire cube, to reach 0.69. This matches what Butler et al. report on LLM tasks. Two reasons are visible in this notebook: at $n = 16$ the BCH code saves nothing (16 delays per hash against 17 for identity delays), and a real model's spectrum has a long tail of small coefficients that pollutes every bin, so many bins fail the singleton test and their queries are wasted. ProxySPEX's random queries are never wasted.
+**ProxySPEX is much more query-efficient than SPEX here.** At around 3,000 queries, ProxySPEX's `p(Mary)` explanation (0.78 at 2,048) beats SPEX's (0.60 at 3,072), and SPEX needs
+12,288 queries, 19% of the entire cube, to reach 0.69. This matches what Butler et al. report on LLM tasks. Two reasons are visible in this notebook: at $n = 16$ the BCH code saves
+nothing (16 delays per hash against 17 for identity delays), and a real model's spectrum has a long tail of small coefficients that pollutes every bin, so many bins fail the
+singleton test and their queries are wasted. ProxySPEX's random queries are never wasted.
 
-**But SPEX doesn't plateau.** On the logit difference, ProxySPEX levels off around 0.91: the 95%-energy rule keeps only 60-odd terms, and more queries don't change that. SPEX keeps improving as bins are added and ends up slightly ahead. On `p(Mary)`, ProxySPEX goes *above* the dash-dot "best degree $\le 3$" line (0.82 > 0.74): its depth-5 trees can represent terms up to degree 5, which matter for this AND-like read-out. SPEX with $t = 3$ is capped by that line by construction.
+**But SPEX doesn't plateau.** On the logit difference, ProxySPEX levels off around 0.91: the 95%-energy rule keeps only 60-odd terms, and more queries don't change that. SPEX keeps
+improving as bins are added and ends up slightly ahead. On `p(Mary)`, ProxySPEX goes *above* the dash-dot "best degree $\le 3$" line (0.82 > 0.74): its depth-5 trees can represent
+terms up to degree 5, which matter for this AND-like read-out. SPEX with $t = 3$ is capped by that line by construction.
 
-**Controls.** ProxySPEX trained on shuffled responses is far below zero at every budget ($-0.38$ to $-0.90$; the plot clips these at $-0.25$). The explanations' faithfulness comes from the model's actual structure, not from the flexibility of a few hundred fitted coefficients.
+**Controls.** ProxySPEX trained on shuffled responses is far below zero at every budget ($-0.38$ to $-0.90$; the plot clips these at $-0.25$). The explanations' faithfulness comes
+from the model's actual structure, not from the flexibility of a few hundred fitted coefficients.
 </details>
 '''
 
@@ -2977,7 +3175,9 @@ p(Mary)
 r'''
 ### What about the Shapley values themselves?
 
-Our first-order baseline is the *best-fitting* additive model, which is a generous comparison. The additive explanation people usually look at is different: KernelSHAP (as in [16.2]) estimates Shapley values $\phi_i$ and presents $f(\emptyset) + \sum_i \phi_i x_i$ as the explanation model, which by efficiency matches the model exactly on the empty and full masks. How faithful is that explanation on the masks in between? We can compute the exact Shapley values from the exact Möbius coefficients and check.
+Our first-order baseline is the *best-fitting* additive model, which is a generous comparison. The additive explanation people usually look at is different: KernelSHAP (as in
+[16.2]) estimates Shapley values $\phi_i$ and presents $f(\emptyset) + \sum_i \phi_i x_i$ as the explanation model, which by efficiency matches the model exactly on the empty and
+full masks. How faithful is that explanation on the masks in between? We can compute the exact Shapley values from the exact Möbius coefficients and check.
 '''
 
 # ! CELL TYPE: code
@@ -3005,7 +3205,12 @@ p(Mary): exact Shapley values as an additive model, R² on all masks = -18.547  
 
 </details>
 
-The Shapley additive model is barely better than the mean for the logit difference ($R^2 = 0.04$), and catastrophically wrong for `p(Mary)` ($R^2 = -18.5$). Neither is a bug: Shapley values are designed to *divide up* $f(\mathbf{1}) - f(\emptyset)$ fairly among the words, not to predict $f$ on other masks. For `p(Mary)`, the full sentence has probability 0.59 and the empty one 0.00, so the Shapley model predicts something like 0.3 for a typical half-masked sentence, where the real probability is close to zero (the AND behaviour again). For the logit difference the issue is the anchoring: the model has to pass through $f(\emptyset) = -1.27$ and $f(\mathbf{1}) = 2.69$, whereas the best-fitting additive model is free to choose its intercept and slopes to match the bulk of the masks. Shapley values are a fine summary of the two endpoints, but they shouldn't be read as a model of what the network does when words are missing. The interaction methods are judged by faithfulness, so they can't hide this kind of failure.
+The Shapley additive model is barely better than the mean for the logit difference ($R^2 = 0.04$), and catastrophically wrong for `p(Mary)` ($R^2 = -18.5$). Neither is a bug:
+Shapley values are designed to *divide up* $f(\mathbf{1}) - f(\emptyset)$ fairly among the words, not to predict $f$ on other masks. For `p(Mary)`, the full sentence has
+probability 0.59 and the empty one 0.00, so the Shapley model predicts something like 0.3 for a typical half-masked sentence, where the real probability is close to zero (the AND
+behaviour again). For the logit difference the issue is the anchoring: the model has to pass through $f(\emptyset) = -1.27$ and $f(\mathbf{1}) = 2.69$, whereas the best-fitting
+additive model is free to choose its intercept and slopes to match the bulk of the masks. Shapley values are a fine summary of the two endpoints, but they shouldn't be read as a
+model of what the network does when words are missing. The interaction methods are judged by faithfulness, so they can't hide this kind of failure.
 '''
 
 # ! CELL TYPE: markdown
@@ -3015,9 +3220,13 @@ The Shapley additive model is barely better than the mean for the logit differen
 r'''
 ## Are the interactions specific?
 
-ProxySPEX's explanation has dozens to hundreds of terms; the first-order baseline has 17. Maybe any explanation with that many free parameters, fit to the same data, would do as well? We need a control that has the same number of terms and the same *kind* of terms, but the wrong interactions.
+ProxySPEX's explanation has dozens to hundreds of terms; the first-order baseline has 17. Maybe any explanation with that many free parameters, fit to the same data, would do as
+well? We need a control that has the same number of terms and the same *kind* of terms, but the wrong interactions.
 
-A clean way to build one is to **relabel the words**: draw a random permutation $\pi$ of the $n$ features, keep the constant and first-order terms as they are, and replace every interaction support $S$ (degree $\ge 2$) by $\pi(S) = \{\pi(i) : i \in S\}$. Then refit all the coefficients by ridge regression on the same training data. The control has exactly the same number of terms, the same degree profile and even the same "shape" (two interactions that shared a word still share a word), and the same fitting procedure; only *which* words interact has been scrambled. If ProxySPEX's interactions are specific, this should do clearly worse.
+A clean way to build one is to **relabel the words**: draw a random permutation $\pi$ of the $n$ features, keep the constant and first-order terms as they are, and replace every
+interaction support $S$ (degree $\ge 2$) by $\pi(S) = \{\pi(i) : i \in S\}$. Then refit all the coefficients by ridge regression on the same training data. The control has exactly
+the same number of terms, the same degree profile and even the same "shape" (two interactions that shared a word still share a word), and the same fitting procedure; only *which*
+words interact has been scrambled. If ProxySPEX's interactions are specific, this should do clearly worse.
 '''
 
 # ! CELL TYPE: markdown
@@ -3034,7 +3243,9 @@ r'''
 > You should spend up to 10 minutes on this exercise.
 > ```
 
-Implement `permuted_support_control(spectrum, X, y, seed)`. Draw `perm = np.random.default_rng(seed).permutation(n)`, map every support of degree $\ge 2$ to the sorted tuple of `perm[i]` for its features, keep supports of degree $\le 1$ unchanged (adding the constant if it's missing), refit all coefficients with the same `RidgeCV` call as in `select_and_refit`, and return the new spectrum. (Because `perm` is a bijection, distinct supports stay distinct, so the dict has as many entries as the original spectrum.)
+Implement `permuted_support_control(spectrum, X, y, seed)`. Draw `perm = np.random.default_rng(seed).permutation(n)`, map every support of degree $\ge 2$ to the sorted tuple of
+`perm[i]` for its features, keep supports of degree $\le 1$ unchanged (adding the constant if it's missing), refit all coefficients with the same `RidgeCV` call as in
+`select_and_refit`, and return the new spectrum. (Because `perm` is a bijection, distinct supports stay distinct, so the dict has as many entries as the original spectrum.)
 '''
 
 # ! CELL TYPE: code
@@ -3101,9 +3312,13 @@ p(Mary)       281.0                267.0         0.776                          
 
 </details>
 
-Relabelling the interactions costs most of what they bought. For `p(Mary)`, ProxySPEX's 267 interaction terms take $R^2$ from 0.24 (first-order) to 0.78; the same number of interactions, with the same degrees and the same overlap structure but on scrambled words, reach only 0.42 on average (0.52 at best over 5 permutations). For the logit difference the specific interactions add 0.10 over first-order (0.80 → 0.91), while permuted ones add 0.03 on average (0.83).
+Relabelling the interactions costs most of what they bought. For `p(Mary)`, ProxySPEX's 267 interaction terms take $R^2$ from 0.24 (first-order) to 0.78; the same number of
+interactions, with the same degrees and the same overlap structure but on scrambled words, reach only 0.42 on average (0.52 at best over 5 permutations). For the logit difference
+the specific interactions add 0.10 over first-order (0.80 → 0.91), while permuted ones add 0.03 on average (0.83).
 
-The permuted interactions aren't worthless (they still beat first-order), and it's worth understanding why: with dozens to hundreds of terms among only 120 pairs and 560 triples of 16 words, a random relabelling inevitably hits *some* real interactions, and the ridge refit makes the most of whatever it gets. That's why the right comparison is "same size, wrong words", rather than "first-order against anything bigger".
+The permuted interactions aren't worthless (they still beat first-order), and it's worth understanding why: with dozens to hundreds of terms among only 120 pairs and 560 triples of
+16 words, a random relabelling inevitably hits *some* real interactions, and the ridge refit makes the most of whatever it gets. That's why the right comparison is "same size,
+wrong words", rather than "first-order against anything bigger".
 '''
 
 # ! CELL TYPE: markdown
@@ -3113,7 +3328,9 @@ The permuted interactions aren't worthless (they still beat first-order), and it
 r'''
 ## Which interactions did they find?
 
-Faithfulness tells us the explanations predict the model; now let's read them. We convert each method's Fourier spectrum to Möbius coefficients and then to pairwise Shapley interaction indices, using your functions from section 1️⃣, and compare with the exact pairwise SII (computed from the full exact Möbius transform; recall from section 2️⃣ that SII, unlike individual high-order Möbius coefficients, is a stable average). We use the logit-difference game with ProxySPEX at 2,048 queries and SPEX at $b = 8$.
+Faithfulness tells us the explanations predict the model; now let's read them. We convert each method's Fourier spectrum to Möbius coefficients and then to pairwise Shapley
+interaction indices, using your functions from section 1️⃣, and compare with the exact pairwise SII (computed from the full exact Möbius transform; recall from section 2️⃣ that
+SII, unlike individual high-order Möbius coefficients, is a stable average). We use the logit-difference game with ProxySPEX at 2,048 queries and SPEX at $b = 8$.
 '''
 
 # ! CELL TYPE: code
@@ -3195,11 +3412,19 @@ store,[9]  0.515      0.235  0.041</pre>
 <details>
 <summary>Help - how should I interpret this?</summary>
 
-**The headline interaction is found.** In the exact game the largest pairwise interaction is **John[4] × John[10]** (+1.51): the two mentions of John matter jointly, which is the duplicate-name signal from the introduction. ProxySPEX (2,048 queries) ranks it first too, and SPEX ranks it second, just behind Mary × John[4], which is the exact game's #2. Both methods' heatmaps reproduce the main structure: a block of positive interactions among Mary, the two Johns, *and* and *gave*, which are exactly the words the IOI task is about.
+**The headline interaction is found.** In the exact game the largest pairwise interaction is **John[4] × John[10]** (+1.51): the two mentions of John matter jointly, which is the
+duplicate-name signal from the introduction. ProxySPEX (2,048 queries) ranks it first too, and SPEX ranks it second, just behind Mary × John[4], which is the exact game's #2. Both
+methods' heatmaps reproduce the main structure: a block of positive interactions among Mary, the two Johns, *and* and *gave*, which are exactly the words the IOI task is about.
 
-**The details are approximate.** The correlation with the exact pairwise SII over all 120 pairs is 0.80 for both methods. Both underestimate the largest interactions (ProxySPEX's John × John is +1.01 against +1.51), both leave Mary × John[10] (exact #3) out of their top five, and both promote cold × drink into their top four, although it doesn't make the exact top five. Remember that these explanations have $R^2 \approx 0.9$: the 10% of the variance they miss is spread over thousands of small higher-order terms, and the SII redistributes higher-order terms down onto pairs, so pairwise SII is sensitive to exactly what a sparse explanation leaves out.
+**The details are approximate.** The correlation with the exact pairwise SII over all 120 pairs is 0.80 for both methods. Both underestimate the largest interactions (ProxySPEX's
+John × John is +1.01 against +1.51), both leave Mary × John[10] (exact #3) out of their top five, and both promote cold × drink into their top four, although it doesn't make the
+exact top five. Remember that these explanations have $R^2 \approx 0.9$: the 10% of the variance they miss is spread over thousands of small higher-order terms, and the SII
+redistributes higher-order terms down onto pairs, so pairwise SII is sensitive to exactly what a sparse explanation leaves out.
 
-**Shapley values are robust.** All three agree that Mary dominates (3.63 exact; 3.27 and 3.35 from the sparse explanations), and on the signs of the next four words; smaller ones like *store* are less reliable. The negative Shapley values for both Johns are worth a second look: averaged over coalitions, adding a John *lowers* the logit difference (presumably by making " John" a more available answer), but the positive John × John interaction says that adding the *second* John helps Mary. A per-word attribution averages that dependency away.
+**Shapley values are robust.** All three agree that Mary dominates (3.63 exact; 3.27 and 3.35 from the sparse explanations), and on the signs of the next four words; smaller ones
+like *store* are less reliable. The negative Shapley values for both Johns are worth a second look: averaged over coalitions, adding a John *lowers* the logit difference
+(presumably by making " John" a more available answer), but the positive John × John interaction says that adding the *second* John helps Mary. A per-word attribution averages that
+dependency away.
 </details>
 '''
 
@@ -3210,9 +3435,12 @@ store,[9]  0.515      0.235  0.041</pre>
 r'''
 ## Scaling up: a 27-word passage, queried live
 
-Sixteen words was chosen so that we could check everything exactly. Now let's go past that: a longer version of the sentence with 27 words. There are $2^{27} \approx 1.3 \times 10^8$ masks, so no exact reference; we judge every explanation by its $R^2$ on 2,000 **held-out** random masks, queried live. Each method gets the same budget as SPEX at $b = 6$.
+Sixteen words was chosen so that we could check everything exactly. Now let's go past that: a longer version of the sentence with 27 words. There are $2^{27} \approx 1.3 \times
+10^8$ masks, so no exact reference; we judge every explanation by its $R^2$ on 2,000 **held-out** random masks, queried live. Each method gets the same budget as SPEX at $b = 6$.
 
-Two practical details. First, SPEX's designs contain repeated masks (e.g. the all-zeros mask appears in every hash), so the number of *distinct* forward passes is a bit lower than the number of queries; the `CachedValueFunction` wrapper below evaluates each distinct mask once and counts them. Second, both read-outs come from the same forward pass, so we cache both and run each method on each read-out without extra model calls.
+Two practical details. First, SPEX's designs contain repeated masks (e.g. the all-zeros mask appears in every hash), so the number of *distinct* forward passes is a bit lower than
+the number of queries; the `CachedValueFunction` wrapper below evaluates each distinct mask once and counts them. Second, both read-outs come from the same forward pass, so we
+cache both and run each method on each read-out without extra model calls.
 '''
 
 # ! CELL TYPE: code
@@ -3314,11 +3542,19 @@ ProxySPEX's largest pairwise SII (logit diff):
 <details>
 <summary>Help - how should I interpret this?</summary>
 
-The ordering from the 16-word game holds up on a passage with $2^{27}$ masks: ProxySPEX is the most faithful on both read-outs (held-out $R^2$ of 0.85 and 0.71), SPEX is in between (0.77 and 0.29), the first-order baseline is lowest (0.68 and 0.14), and the shuffled control is far below zero. As before, the gap between first-order and ProxySPEX is much larger for the probability (0.14 → 0.71) than for the logit difference (0.68 → 0.85). SPEX suffers most on `p(Mary)`, whose spectrum is the least sparse; and with $n = 27$ the BCH code still saves little (16 delays per hash against 28), so its structured queries buy it nothing here.
+The ordering from the 16-word game holds up on a passage with $2^{27}$ masks: ProxySPEX is the most faithful on both read-outs (held-out $R^2$ of 0.85 and 0.71), SPEX is in between
+(0.77 and 0.29), the first-order baseline is lowest (0.68 and 0.14), and the shuffled control is far below zero. As before, the gap between first-order and ProxySPEX is much larger
+for the probability (0.14 → 0.71) than for the logit difference (0.68 → 0.85). SPEX suffers most on `p(Mary)`, whose spectrum is the least sparse; and with $n = 27$ the BCH code
+still saves little (16 delays per hash against 28), so its structured queries buy it nothing here.
 
-(By coincidence, the full passage has the same logit difference as the 16-word sentence to two decimal places, 2.69; its probability, 0.46, is different. It's the test of `masked_final_logits` that guarantees the masking is right.)
+(By coincidence, the full passage has the same logit difference as the 16-word sentence to two decimal places, 2.69; its probability, 0.46, is different. It's the test of
+`masked_final_logits` that guarantees the masking is right.)
 
-The interactions tell a recognisably similar story with one new protagonist. Mary × John[5], **John[5] × John[17]** (the duplicated name again) and Mary × gave are all there. The new top interaction, Mary × sandwich, involves the last word before the final " to". One plausible reading: deleting *sandwich* leaves "...a cold drink and a small to", where " to" no longer reads as the start of the recipient phrase, so the evidence for Mary only counts when the phrase is intact. If that's right, it's an interaction about *grammaticality* rather than about who received the drink, which is a useful reminder that deletion games probe the edited text the model sees, not just "which facts it uses". (Testing this reading with a few hand-made masks is a good exercise.)
+The interactions tell a recognisably similar story with one new protagonist. Mary × John[5], **John[5] × John[17]** (the duplicated name again) and Mary × gave are all there. The
+new top interaction, Mary × sandwich, involves the last word before the final " to". One plausible reading: deleting *sandwich* leaves "...a cold drink and a small to", where " to"
+no longer reads as the start of the recipient phrase, so the evidence for Mary only counts when the phrase is intact. If that's right, it's an interaction about *grammaticality*
+rather than about who received the drink, which is a useful reminder that deletion games probe the edited text the model sees, not just "which facts it uses". (Testing this reading
+with a few hand-made masks is a good exercise.)
 </details>
 '''
 
@@ -3329,7 +3565,9 @@ The interactions tell a recognisably similar story with one new protagonist. Mar
 r'''
 ## Try it yourself
 
-`explain_prompt` below runs ProxySPEX live on any prompt you like, compares it with the first-order baseline on held-out masks, and prints the largest pairwise interactions and Shapley values. The words of `text` are the features; `final` is always kept. With a `contrast` token, the read-out is the logit difference `target - contrast`; without one, it's the log-probability of `target`. Both tokens must be single tokens (with their leading space).
+`explain_prompt` below runs ProxySPEX live on any prompt you like, compares it with the first-order baseline on held-out masks, and prints the largest pairwise interactions and
+Shapley values. The words of `text` are the features; `final` is always kept. With a `contrast` token, the read-out is the logit difference `target - contrast`; without one, it's
+the log-probability of `target`. Both tokens must be single tokens (with their leading space).
 
 Some things to try:
 
@@ -3405,7 +3643,10 @@ largest Shapley values:
 
 </details>
 
-The negation example works nicely. The read-out, `logit(" terrible") - logit(" great")`, is 1.24 on the full prompt. ProxySPEX explains it with $R^2 = 0.91$ on held-out masks, against 0.55 for the best-fitting additive model, so this behaviour is substantially interactive. The top interaction is **not × good** (+1.99): *not* pushes towards *terrible* much more when *good* is there to be negated, and *not* also has by far the largest Shapley value. Other entries are less obvious: what's going on with not × honestly (−1.10), or the × service? Look at a few hand-made masks (with your `make_value_function`) before believing any story about them.
+The negation example works nicely. The read-out, `logit(" terrible") - logit(" great")`, is 1.24 on the full prompt. ProxySPEX explains it with $R^2 = 0.91$ on held-out masks,
+against 0.55 for the best-fitting additive model, so this behaviour is substantially interactive. The top interaction is **not × good** (+1.99): *not* pushes towards *terrible*
+much more when *good* is there to be negated, and *not* also has by far the largest Shapley value. Other entries are less obvious: what's going on with not × honestly (−1.10), or
+the × service? Look at a few hand-made masks (with your `make_value_function`) before believing any story about them.
 '''
 
 # ! CELL TYPE: markdown
@@ -3421,7 +3662,10 @@ r'''
 - Both methods recover the duplicated-name interaction (John × John) that the IOI circuit relies on, and agree with the exact Shapley values; finer pairwise structure is only approximately right (correlation 0.80 with the exact pairwise SII).
 - The exact Shapley values, used as an additive model, are not faithful under masking ($R^2$ of 0.04 and −18.5). Judge an explanation by its held-out faithfulness, not by whether its numbers look reasonable.
 
-**Limitations.** A deletion game is one particular intervention, and an interaction in it is a statement about the model's behaviour on edited text, not about its internal mechanism. Our ProxySPEX uses scikit-learn gradient boosting with fixed hyperparameters and a cap on the number of terms, rather than the paper's tuned LightGBM; our SPEX uses a simple Chase decoder and no final refit. All GPT-2 results come from two IOI-style prompts and one negation prompt on one small model, so treat the comparisons as illustrations of how the methods behave, not as a benchmark.
+**Limitations.** A deletion game is one particular intervention, and an interaction in it is a statement about the model's behaviour on edited text, not about its internal
+mechanism. Our ProxySPEX uses scikit-learn gradient boosting with fixed hyperparameters and a cap on the number of terms, rather than the paper's tuned LightGBM; our SPEX uses a
+simple Chase decoder and no final refit. All GPT-2 results come from two IOI-style prompts and one negation prompt on one small model, so treat the comparisons as illustrations of
+how the methods behave, not as a benchmark.
 '''
 
 # ! CELL TYPE: markdown
@@ -3439,7 +3683,8 @@ r'''
 r'''
 ## Test the hierarchy hypothesis on GPT-2
 
-ProxySPEX's design rests on the claim that interactions in LLMs are *hierarchical*: an important interaction $S$ tends to come with important lower-order subsets. You have the exact spectrum, so you can test this directly rather than trusting it. Some ways to operationalise it:
+ProxySPEX's design rests on the claim that interactions in LLMs are *hierarchical*: an important interaction $S$ tends to come with important lower-order subsets. You have the
+exact spectrum, so you can test this directly rather than trusting it. Some ways to operationalise it:
 
 - For each of the 20 largest Fourier coefficients of degree $\ge 2$, compute the rank (by magnitude) of each of its subsets of size $|S| - 1$. Compare with the ranks you'd expect for random subsets of the same sizes.
 - Fit ProxySPEX with `max_depth=2` (trees that can only represent pairs) on the `p(Mary)` game and see how much of the degree-3 energy it still recovers, via the refit. If interactions were not hierarchical, shallow trees would never propose the right degree-3 supports.
@@ -3447,11 +3692,14 @@ ProxySPEX's design rests on the claim that interactions in LLMs are *hierarchica
 
 ## Implement Berlekamp-Massey yourself
 
-We gave you `berlekamp_massey`. Re-implement it from the description in the aside (or from Massey's 1969 paper, *Shift-register synthesis and BCH decoding*), and check it against the provided version on random syndromes. Then try **Peterson's algorithm**, which solves Newton's identities directly as a $t \times t$ linear system over $\mathrm{GF}(2^m)$: simpler for $t \le 3$, but $O(t^3)$ instead of $O(t^2)$.
+We gave you `berlekamp_massey`. Re-implement it from the description in the aside (or from Massey's 1969 paper, *Shift-register synthesis and BCH decoding*), and check it against
+the provided version on random syndromes. Then try **Peterson's algorithm**, which solves Newton's identities directly as a $t \times t$ linear system over $\mathrm{GF}(2^m)$:
+simpler for $t \le 3$, but $O(t^3)$ instead of $O(t^2)$.
 
 ## Soft decoding and the γ threshold
 
-Our Chase decoder tries at most $1 + c + \binom{c}{2}$ bit flips. On the GPT-2 games, how do SPEX's faithfulness and number of recovered terms change with `chase_depth` in $\{0, 3, 6\}$ and `gamma` in $\{0.3, 0.6, 0.9\}$? Can you find settings where a *more* permissive singleton test makes the explanation worse, because it accepts collisions as singletons?
+Our Chase decoder tries at most $1 + c + \binom{c}{2}$ bit flips. On the GPT-2 games, how do SPEX's faithfulness and number of recovered terms change with `chase_depth` in $\{0, 3,
+6\}$ and `gamma` in $\{0.3, 0.6, 0.9\}$? Can you find settings where a *more* permissive singleton test makes the explanation worse, because it accepts collisions as singletons?
 
 ## Compare with the reference implementations
 
@@ -3459,15 +3707,20 @@ The authors' package is [`spectralexplain`](https://github.com/basics-lab/spectr
 
 ## Other interaction indices
 
-Your Möbius coefficients give every other index too. Implement the **Banzhaf interaction index** ($\sum_{S \supseteq T} m(S) / 2^{|S| - |T|}$), the **Shapley-Taylor** index and **Faith-Shapley** (both defined in [16.5]) from a sparse Möbius spectrum, and compare their top pairs on the IOI game. Which indices agree, and why?
+Your Möbius coefficients give every other index too. Implement the **Banzhaf interaction index** ($\sum_{S \supseteq T} m(S) / 2^{|S| - |T|}$), the **Shapley-Taylor** index and
+**Faith-Shapley** (both defined in [16.5]) from a sparse Möbius spectrum, and compare their top pairs on the IOI game. Which indices agree, and why?
 
 ## Masking is a modelling choice
 
-Repeat section 2️⃣ with a different intervention: replace masked words with a fixed placeholder token (e.g. `" _"`), or keep the attention mask but *don't* shift positions (pass explicit position ids through a hook). How do the degree energies change? An interaction between two words under deletion is not the same claim as an interaction under replacement, and neither is a claim about the model's internal mechanism.
+Repeat section 2️⃣ with a different intervention: replace masked words with a fixed placeholder token (e.g. `" _"`), or keep the attention mask but *don't* shift positions (pass
+explicit position ids through a hook). How do the degree energies change? An interaction between two words under deletion is not the same claim as an interaction under replacement,
+and neither is a claim about the model's internal mechanism.
 
 ## From interactions to circuits
 
-The John × John interaction is a behavioural fingerprint of the duplicate-token signal. Use activation patching ([1.4.1]) to test it mechanistically: does patching the S-inhibition heads' outputs from the "both Johns present" run into a run with one John deleted restore the logit difference? Section [16.8] goes further in comparing Shapley-style attributions with patching.
+The John × John interaction is a behavioural fingerprint of the duplicate-token signal. Use activation patching ([1.4.1]) to test it mechanistically: does patching the S-inhibition
+heads' outputs from the "both Johns present" run into a run with one John deleted restore the logit difference? Section [16.8] goes further in comparing Shapley-style attributions
+with patching.
 
 ## Further reading
 

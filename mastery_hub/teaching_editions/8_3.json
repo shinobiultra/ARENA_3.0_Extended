@@ -1,0 +1,32 @@
+{
+  "schema_version": 1,
+  "section": "8.3",
+  "sources": {
+    "page": {
+      "path": "chapter8_automated_circuits/instructions/pages/03_[8.3]_AtP_from_Scratch.md",
+      "sha256": "4326435bb99dbc7240230c8b356a756dac600ec43d355d4011594c5e800d5a37"
+    },
+    "exercises": {
+      "path": "chapter8_automated_circuits/exercises/part3_atp_star/8.3_AtP_from_Scratch_exercises.ipynb",
+      "sha256": "79dacdcb06ed99f83c963dbe1901872dd7c08188b5ce3a303b53364df14c6834"
+    },
+    "reference": {
+      "path": "chapter8_automated_circuits/exercises/part3_atp_star/8.3_AtP_from_Scratch_solutions.ipynb",
+      "sha256": "d56c1c2a1260decc3b291983baeb8675cc16935a3c06e1897dd2cc5683bc06f2"
+    }
+  },
+  "replacements": [
+    {
+      "old": "entry `j` is the fraction of important nodes (`|exact| > threshold`) among the first `j + 1` nodes in that order.",
+      "new": "entry `j` is **recall at k = j + 1**: the number of important nodes (`|exact| > threshold`) in those first `k` verified nodes divided by the **total number of important nodes in the whole flattened tensor**, not by `k`.\n\nFor a hand check, take `exact = [0, .5, -.3, .05, .2]`, `scores = [.9, .1, .8, .7, 0]`, and `threshold = .1`. Important indices are `[1, 2, 4]`; descending absolute-score order is `[0, 2, 3, 1, 4]`. Cumulative discoveries are `[0, 1, 1, 2, 3]`, so recall is `[0, 1/3, 1/3, 2/3, 1]`. Dividing by `[1, 2, 3, 4, 5]` instead would compute precision and answer a different question.\n\nUse a stable sort: equal absolute scores keep flattened input order. The plotted task assumes at least one important node. With none, recall has a zero denominator and is undefined; the retained implementation returns NaNs. Check that precondition before plotting rather than treating this case as zero recall.",
+      "counts": {
+        "page": 1,
+        "exercises": 1,
+        "reference": 1
+      }
+    }
+  ],
+  "rationale": [
+    "LC-8.3-01: fix recall denominator, hand example, stable tie convention and explicit undefined empty-positive case consistent with retained implementation."
+  ]
+}

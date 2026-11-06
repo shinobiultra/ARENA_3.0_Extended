@@ -1,0 +1,32 @@
+{
+  "schema_version": 1,
+  "section": "12.3",
+  "sources": {
+    "page": {
+      "path": "chapter12_vlm_interpretability/instructions/pages/03_[12.3]_Mini_VLM_from_Scratch.md",
+      "sha256": "bf47cb3f7bcb8bcb910792b6c60a61864316dacac4b9dc89caf29bfa8f48c4e6"
+    },
+    "exercises": {
+      "path": "chapter12_vlm_interpretability/exercises/part3_mini_vlm_from_scratch/12.3_Mini_VLM_from_Scratch_exercises.ipynb",
+      "sha256": "757fec8ec719230b2f1043c7e7c0835fe9d8d43af6aece547efeaf1f745daac1"
+    },
+    "reference": {
+      "path": "chapter12_vlm_interpretability/exercises/part3_mini_vlm_from_scratch/12.3_Mini_VLM_from_Scratch_solutions.ipynb",
+      "sha256": "a7d6170062044e88ae25c0e5794154b0c253a811aed02b780f84534f802cb16f"
+    }
+  },
+  "replacements": [
+    {
+      "old": "**The labels come from the scene description, never from pixels.** The renderer takes a list of `SceneObject`s and draws them, so the answer to every question is a function of that\nlist. If you wanted to know what the right answer is, you would never look at the image; if the model gets it right, it must have extracted the information from the image. That is\nwhat makes this a clean testbed.",
+      "new": "**The labels come from the scene description, never from pixels.** The renderer takes a list of `SceneObject`s and draws them; the correct answer is an exact function of that list. An individual correct model answer can still come from a prior or a lucky guess. Evidence that the model uses the image comes from comparing matched image interventions and the text-only, image-only, blank, noise and shuffled-image controls below. Exact scene labels let us score those comparisons without inferring ground truth from model behavior.",
+      "counts": {
+        "page": 1,
+        "exercises": 1,
+        "reference": 1
+      }
+    }
+  ],
+  "rationale": [
+    "GV-06: distinguish exact ground truth from evidence for image use; individual correctness does not establish causality."
+  ]
+}

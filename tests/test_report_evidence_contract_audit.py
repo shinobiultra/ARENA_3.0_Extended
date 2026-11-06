@@ -8,6 +8,13 @@ from arena_ext.verification import build_report_input_manifest, verify_report_in
 
 from pathlib import Path
 
+import json
+
+import pytest
+import yaml
+
+import scripts.audit_report_evidence_contracts as audit
+
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -119,6 +126,94 @@ def test_report_contract_flags_expected_metric_regression():
 
 def test_current_report_evidence_contracts_pass():
     assert report_evidence_blockers() == []
+
+
+def _write_contract_record(tmp_path, name, *, report=None):
+    directory = tmp_path / name
+    directory.mkdir()
+    lock, valid_report = _valid_lock_report()
+    record = {
+        "lock_path": directory / "artifacts.lock.yml",
+        "report_path": directory / "verification_report.json",
+    }
+    record["lock_path"].write_text(yaml.safe_dump(lock))
+    record["report_path"].write_text(json.dumps(valid_report if report is None else report))
+    return record
+
+
+@pytest.mark.parametrize("missing_keys", [("lock_path",), ("report_path",), ("lock_path", "report_path")])
+def test_report_scan_keeps_missing_files_and_later_metric_and_freshness_failures(tmp_path, monkeypatch, missing_keys):
+    missing = _write_contract_record(tmp_path, "missing")
+    for key in missing_keys:
+        missing[key].unlink()
+    lock, bad_report = _valid_lock_report()
+    bad_report["metrics"]["gpu_test"]["accuracy"] = 0.5
+    bad_report["report_inputs"]["files"][0]["sha256"] = "0" * 64
+    expected_contract = report_contract_blockers(lock, bad_report)
+    assert any("expected gpu_test.accuracy" in blocker for blocker in expected_contract)
+    assert any("report input hash changed" in blocker for blocker in expected_contract)
+    later = _write_contract_record(tmp_path, "later", report=bad_report)
+    monkeypatch.setattr(audit, "verification_report_records", lambda: [missing, later])
+
+    blockers = report_evidence_blockers()
+
+    assert len(blockers) == len(missing_keys) + len(expected_contract)
+    for key, blocker in zip(missing_keys, blockers, strict=False):
+        assert "missing" in blocker and str(missing[key]) in blocker
+    assert blockers[len(missing_keys):] == expected_contract
+
+
+@pytest.mark.parametrize("key,payload", [
+    ("lock_path", b"["), ("report_path", b"{"),
+    ("lock_path", b"[]"), ("report_path", b"[]"),
+    ("lock_path", b""), ("report_path", b'"string"'),
+    ("lock_path", b"\xff"), ("report_path", b"\xff"),
+])
+def test_report_scan_keeps_malformed_files_and_continues(tmp_path, monkeypatch, key, payload):
+    malformed = _write_contract_record(tmp_path, "malformed")
+    malformed[key].write_bytes(payload)
+    _, rejected = _valid_lock_report()
+    rejected["accepted"] = False
+    later = _write_contract_record(tmp_path, "later", report=rejected)
+    monkeypatch.setattr(audit, "verification_report_records", lambda: [malformed, later])
+
+    blockers = report_evidence_blockers()
+
+    assert len(blockers) == 2
+    assert str(malformed[key]) in blockers[0] and "invalid" in blockers[0]
+    assert blockers[1] == "section_x: report is not accepted"
+
+
+def test_report_scan_keeps_read_errors_and_continues(tmp_path, monkeypatch):
+    unreadable = _write_contract_record(tmp_path, "unreadable")
+    valid = _write_contract_record(tmp_path, "valid")
+    original = Path.read_text
+
+    def read(path, *args, **kwargs):
+        if path == unreadable["lock_path"]:
+            raise PermissionError("test access denial")
+        return original(path, *args, **kwargs)
+
+    monkeypatch.setattr(Path, "read_text", read)
+    monkeypatch.setattr(audit, "verification_report_records", lambda: [unreadable, valid])
+    blockers = report_evidence_blockers()
+    assert len(blockers) == 1
+    assert str(unreadable["lock_path"]) in blockers[0]
+    assert "PermissionError" in blockers[0]
+
+
+def test_report_scan_keeps_malformed_contract_and_continues(tmp_path, monkeypatch):
+    _, malformed = _valid_lock_report()
+    malformed["metrics"] = []
+    broken = _write_contract_record(tmp_path, "broken", report=malformed)
+    _, rejected = _valid_lock_report()
+    rejected["accepted"] = False
+    later = _write_contract_record(tmp_path, "later", report=rejected)
+    monkeypatch.setattr(audit, "verification_report_records", lambda: [broken, later])
+    blockers = report_evidence_blockers()
+    assert len(blockers) == 2
+    assert "invalid contract" in blockers[0] and str(broken["report_path"]) in blockers[0]
+    assert blockers[1] == "section_x: report is not accepted"
 
 
 def test_report_record_discovery_includes_docs_evidence_reports():

@@ -1,0 +1,131 @@
+{
+  "schema_version": 1,
+  "section": "12.5",
+  "sources": {
+    "page": {
+      "path": "chapter12_vlm_interpretability/instructions/pages/05_[12.5]_Object_Hallucination_and_Modality_Arbitration.md",
+      "sha256": "f43851220940e0d7cc86085cb50438fa7d03bee99d3f690a7e6e34f039c98ec7"
+    },
+    "exercises": {
+      "path": "chapter12_vlm_interpretability/exercises/part5_object_hallucination/12.5_Object_Hallucination_and_Modality_Arbitration_exercises.ipynb",
+      "sha256": "d7ced28aac70741314edb2159371f50d2f9342aa901b57385bd411d8ff88a1c2"
+    },
+    "reference": {
+      "path": "chapter12_vlm_interpretability/exercises/part5_object_hallucination/12.5_Object_Hallucination_and_Modality_Arbitration_solutions.ipynb",
+      "sha256": "11732cccc5f1d78fe4dac9cc9f134eb5b9dbd1aa805716bcbcec0c616d330e02"
+    }
+  },
+  "replacements": [
+    {
+      "old": "## Commit before reveal: Input forecast\n\nBefore reading the prompt-encoder solution, write which fields are inputs and which are\nevaluation-only. Would changing `object_present` metadata without changing image or prompt change\ninference?\n\nForecast: ______\n\nConfidence (0–1): ______\n\nCausal reasoning: ______\n\nPrior exposure: ______\n\nFrozen inputs / method fingerprint / selection rule: ______\n\nAfter you commit and inspect the reference or execute your authorized experiment:\n\nObserved result and control results: ______\n\nDiscrepancy and alternative explanation: ______\n\nChanged-condition forecast before another execution: ______\n",
+      "new": "## Predict and check: Input forecast\n\nBefore reading the prompt-encoder solution, write which fields are inputs and which are\nevaluation-only. Would changing `object_present` metadata without changing image or prompt change\ninference?\n\nWrite a brief prediction and causal reason, then check the immediate test or worked comparison. If it disagrees, note what changed in your model. Use the measurement checkpoint below for confidence, exact experiment settings and reflection.\n\nKeep any answers already written in the earlier full form; do not erase or replace learner records.",
+      "counts": {
+        "page": 1,
+        "exercises": 1,
+        "reference": 1
+      }
+    },
+    {
+      "old": "## Commit before reveal: Factorial forecast\n\nBefore inspecting the factorial builder, forecast how many rows and positive labels occur in each\nsplit. State why a split missing one color-shape combination would admit a shortcut.\n\nForecast: ______\n\nConfidence (0–1): ______\n\nCausal reasoning: ______\n\nPrior exposure: ______\n\nFrozen inputs / method fingerprint / selection rule: ______\n\nAfter you commit and inspect the reference or execute your authorized experiment:\n\nObserved result and control results: ______\n\nDiscrepancy and alternative explanation: ______\n\nChanged-condition forecast before another execution: ______\n",
+      "new": "## Predict and check: Factorial forecast\n\nBefore inspecting the factorial builder, forecast how many rows and positive labels occur in each\nsplit. State why a split missing one color-shape combination would admit a shortcut.\n\nWrite a brief prediction and causal reason, then check the immediate test or worked comparison. If it disagrees, note what changed in your model. Use the measurement checkpoint below for confidence, exact experiment settings and reflection.\n\nKeep any answers already written in the earlier full form; do not erase or replace learner records.",
+      "counts": {
+        "page": 1,
+        "exercises": 1,
+        "reference": 1
+      }
+    },
+    {
+      "old": "## Commit before reveal: Control forecast\n\nFor a 32 × 32 target on the 6 × 6 patch grid, forecast the patch count and the overlap allowed\nbetween object, background and random regions. Explain why the distractor box must also be excluded.\n\nForecast: ______\n\nConfidence (0–1): ______\n\nCausal reasoning: ______\n\nPrior exposure: ______\n\nFrozen inputs / method fingerprint / selection rule: ______\n\nAfter you commit and inspect the reference or execute your authorized experiment:\n\nObserved result and control results: ______\n\nDiscrepancy and alternative explanation: ______\n\nChanged-condition forecast before another execution: ______\n",
+      "new": "## Predict and check: Control forecast\n\nFor a 32 × 32 target on the 6 × 6 patch grid, forecast the patch count and the overlap allowed\nbetween object, background and random regions. Explain why the distractor box must also be excluded.\n\nWrite a brief prediction and causal reason, then check the immediate test or worked comparison. If it disagrees, note what changed in your model. Use the measurement checkpoint below for confidence, exact experiment settings and reflection.\n\nKeep any answers already written in the earlier full form; do not erase or replace learner records.",
+      "counts": {
+        "page": 1,
+        "exercises": 1,
+        "reference": 1
+      }
+    },
+    {
+      "old": "## Commit before reveal: Behavior forecast\n\nBefore reading metrics or saved baseline output, forecast joint accuracy, conflict accuracy and\nabsent-object hallucination rate separately. Rank joint, image-question only, text only and shuffled\nimages; state the denominator for each rate.\n\nForecast: ______\n\nConfidence (0–1): ______\n\nCausal reasoning: ______\n\nPrior exposure: ______\n\nFrozen inputs / method fingerprint / selection rule: ______\n\nAfter you commit and inspect the reference or execute your authorized experiment:\n\nObserved result and control results: ______\n\nDiscrepancy and alternative explanation: ______\n\nChanged-condition forecast before another execution: ______\n",
+      "new": "## Predict and check: Behavior forecast\n\nBefore reading metrics or saved baseline output, forecast joint accuracy, conflict accuracy and\nabsent-object hallucination rate separately. Rank joint, image-question only, text only and shuffled\nimages; state the denominator for each rate.\n\nWrite a brief prediction and causal reason, then check the immediate test or worked comparison. If it disagrees, note what changed in your model. Use the measurement checkpoint below for confidence, exact experiment settings and reflection.\n\nKeep any answers already written in the earlier full form; do not erase or replace learner records.",
+      "counts": {
+        "page": 1,
+        "exercises": 1,
+        "reference": 1
+      }
+    },
+    {
+      "old": "## Commit before reveal: Cache forecast\n\nBefore reading the cache solution, forecast the leading cache dimension and identify the state\nbefore visual routing versus the state after prior routing. Which token rows hold evidence at each\npoint?\n\nForecast: ______\n\nConfidence (0–1): ______\n\nCausal reasoning: ______\n\nPrior exposure: ______\n\nFrozen inputs / method fingerprint / selection rule: ______\n\nAfter you commit and inspect the reference or execute your authorized experiment:\n\nObserved result and control results: ______\n\nDiscrepancy and alternative explanation: ______\n\nChanged-condition forecast before another execution: ______\n",
+      "new": "## Predict and check: Cache forecast\n\nBefore reading the cache solution, forecast the leading cache dimension and identify the state\nbefore visual routing versus the state after prior routing. Which token rows hold evidence at each\npoint?\n\nWrite a brief prediction and causal reason, then check the immediate test or worked comparison. If it disagrees, note what changed in your model. Use the measurement checkpoint below for confidence, exact experiment settings and reflection.\n\nKeep any answers already written in the earlier full form; do not erase or replace learner records.",
+      "counts": {
+        "page": 1,
+        "exercises": 1,
+        "reference": 1
+      }
+    },
+    {
+      "old": "## Commit before reveal: Replacement forecast\n\nForecast the exact effect of strength 0, 0.5 and 1 on two selected token rows. State which recipient\nrows must remain byte-equal and whether the original tensor may change.\n\nForecast: ______\n\nConfidence (0–1): ______\n\nCausal reasoning: ______\n\nPrior exposure: ______\n\nFrozen inputs / method fingerprint / selection rule: ______\n\nAfter you commit and inspect the reference or execute your authorized experiment:\n\nObserved result and control results: ______\n\nDiscrepancy and alternative explanation: ______\n\nChanged-condition forecast before another execution: ______\n",
+      "new": "## Predict and check: Replacement forecast\n\nForecast the exact effect of strength 0, 0.5 and 1 on two selected token rows. State which recipient\nrows must remain byte-equal and whether the original tensor may change.\n\nWrite a brief prediction and causal reason, then check the immediate test or worked comparison. If it disagrees, note what changed in your model. Use the measurement checkpoint below for confidence, exact experiment settings and reflection.\n\nKeep any answers already written in the earlier full form; do not erase or replace learner records.",
+      "counts": {
+        "page": 1,
+        "exercises": 1,
+        "reference": 1
+      }
+    },
+    {
+      "old": "## Commit before reveal: Patch forecast\n\nBefore the sweep solution or saved heatmap, forecast which of cache layers 0–4 can still change the\nanswer when only visual rows are replaced. Predict object, background, same-size-random and\nfull-visual effects separately, with a causal reason for each.\n\nForecast: ______\n\nConfidence (0–1): ______\n\nCausal reasoning: ______\n\nPrior exposure: ______\n\nFrozen inputs / method fingerprint / selection rule: ______\n\nAfter you commit and inspect the reference or execute your authorized experiment:\n\nObserved result and control results: ______\n\nDiscrepancy and alternative explanation: ______\n\nChanged-condition forecast before another execution: ______\n",
+      "new": "## Predict and check: Patch forecast\n\nBefore the sweep solution or saved heatmap, forecast which of cache layers 0–4 can still change the\nanswer when only visual rows are replaced. Predict object, background, same-size-random and\nfull-visual effects separately, with a causal reason for each.\n\nWrite a brief prediction and causal reason, then check the immediate test or worked comparison. If it disagrees, note what changed in your model. Use the measurement checkpoint below for confidence, exact experiment settings and reflection.\n\nKeep any answers already written in the earlier full form; do not erase or replace learner records.",
+      "counts": {
+        "page": 1,
+        "exercises": 1,
+        "reference": 1
+      }
+    },
+    {
+      "old": "## Commit before reveal: Selection forecast\n\nFreeze candidate layers 0–4 and select the maximum validation object directional effect minus the\nlarger absolute control effect; ties choose the smallest layer. Forecast the selected layer before\nthe solution. Why must test rows be rejected by selection?\n\nForecast: ______\n\nConfidence (0–1): ______\n\nCausal reasoning: ______\n\nPrior exposure: ______\n\nFrozen inputs / method fingerprint / selection rule: ______\n\nAfter you commit and inspect the reference or execute your authorized experiment:\n\nObserved result and control results: ______\n\nDiscrepancy and alternative explanation: ______\n\nChanged-condition forecast before another execution: ______\n",
+      "new": "## Predict and check: Selection forecast\n\nFreeze candidate layers 0–4 and select the maximum validation object directional effect minus the\nlarger absolute control effect; ties choose the smallest layer. Forecast the selected layer before\nthe solution. Why must test rows be rejected by selection?\n\nWrite a brief prediction and causal reason, then check the immediate test or worked comparison. If it disagrees, note what changed in your model. Use the measurement checkpoint below for confidence, exact experiment settings and reflection.\n\nKeep any answers already written in the earlier full form; do not erase or replace learner records.",
+      "counts": {
+        "page": 1,
+        "exercises": 1,
+        "reference": 1
+      }
+    },
+    {
+      "old": "## Commit before reveal: Play forecast\n\nBefore the exposed play output, change only strength from 1.0 to 0.25 with blue/circle, layer 0 and\nobject region fixed. Forecast whether the answer still flips relative to its recipient. Freeze all\nother values and record this as an unmeasured changed-condition prediction. The original unchanged\nplay cell below is preserved; edit a copy only after committing. Reusing the same test renders is\nguided practice, never independent evaluation.\n\nForecast: ______\n\nConfidence (0–1): ______\n\nCausal reasoning: ______\n\nPrior exposure: ______\n\nFrozen inputs / method fingerprint / selection rule: ______\n\nAfter you commit and inspect the reference or execute your authorized experiment:\n\nObserved result and control results: ______\n\nDiscrepancy and alternative explanation: ______\n\nChanged-condition forecast before another execution: ______\n",
+      "new": "## Predict and check: Play forecast\n\nBefore the exposed play output, change only strength from 1.0 to 0.25 with blue/circle, layer 0 and\nobject region fixed. Forecast whether the answer still flips relative to its recipient. Freeze all\nother values and record this as an unmeasured changed-condition prediction. The original unchanged\nplay cell below is preserved; edit a copy only after committing. Reusing the same test renders is\nguided practice, never independent evaluation.\n\nWrite a brief prediction and causal reason, then check the immediate test or worked comparison. If it disagrees, note what changed in your model. Record any subsequent measurement and changed settings in your measurement-checkpoint record.\n\nKeep any answers already written in the earlier full form; do not erase or replace learner records.",
+      "counts": {
+        "page": 1,
+        "exercises": 1,
+        "reference": 1
+      }
+    },
+    {
+      "old": "## Commit before reveal: Escalation boundary\n\nBefore reading the optional real-VLM code, name an observation that would show neutral-prior visual\ntransfer but fail to show conflict-case hallucination repair. The real-VLM route remains unexecuted.\nDo not change `RUN_CUDA_RELEASE = False` as part of this migration.\n\nForecast: ______\n\nConfidence (0–1): ______\n\nCausal reasoning: ______\n\nPrior exposure: ______\n\nFrozen inputs / method fingerprint / selection rule: ______\n\nAfter you commit and inspect the reference or execute your authorized experiment:\n\nObserved result and control results: ______\n\nDiscrepancy and alternative explanation: ______\n\nChanged-condition forecast before another execution: ______\n",
+      "new": "## Predict and check: Escalation boundary\n\nBefore reading the optional real-VLM code, name an observation that would show neutral-prior visual\ntransfer but fail to show conflict-case hallucination repair. The real-VLM route remains unexecuted.\nDo not change `RUN_CUDA_RELEASE = False` as part of this migration.\n\nWrite a brief prediction and causal reason, then check the immediate test or worked comparison. If it disagrees, note what changed in your model. Record any subsequent measurement and changed settings in your measurement-checkpoint record.\n\nKeep any answers already written in the earlier full form; do not erase or replace learner records.",
+      "counts": {
+        "page": 1,
+        "exercises": 1,
+        "reference": 1
+      }
+    },
+    {
+      "old": "## Commit before reveal: Signature forecast\n\nBefore inspecting saved figures, commit a numeric forecast for the mean donor-directed object margin\neffect on the eight original test pairs at the validation-selected layer. Also forecast both\ndisjoint control magnitudes and full-visual effect. These historical public cases have unknown or\nseen exposure; they are not a new untouched TEST.\n\nForecast: ______\n\nConfidence (0–1): ______\n\nCausal reasoning: ______\n\nPrior exposure: ______\n\nFrozen inputs / method fingerprint / selection rule: ______\n\nAfter you commit and inspect the reference or execute your authorized experiment:\n\nObserved result and control results: ______\n\nDiscrepancy and alternative explanation: ______\n\nChanged-condition forecast before another execution: ______\n",
+      "new": "## Measurement checkpoint — freeze the layer/region comparison\n\nComplete the core exercises and their immediate tests before freezing a full experiment. Return to the predictions beside each function if a test changed your causal model. This checkpoint is after the method and selection tests and before the signature sweep/reveal. The introductory cold-open table is the other main commitment; routine shape/count checks need no new full form.\n\nBefore the saved figures or an authorized measured sweep, forecast the mean donor-directed object-margin effect on the eight original test pairs at the validation-selected layer, both disjoint control magnitudes and the full-visual effect. These public historical cases remain guided practice with seen or unknown exposure.\n\n| Before the sweep or reveal | Your record |\n| --- | --- |\n| Object, background, same-size-random and full-visual forecasts | ______ |\n| Confidence (0–1) and causal explanation for their ordering | ______ |\n| Prior exposure and source | ______ |\n| Exact code/configuration fingerprint and original pair IDs | ______ |\n| Regions, strengths, margin definition and denominator | ______ |\n| Candidate layers 0–4; validation-only rule; smallest-layer tie break | ______ |\n\nFreeze only after tests pass. Retain the displayed rule: maximize validation object directional effect minus the larger absolute control effect; reject test rows from selection. The reported public test comparison follows the frozen rule and does not become independent evaluation.\n\nAfter inspecting the reference or completing the authorized measurement, record the observed result **and all controls**, a discrepancy with an alternative explanation, and a changed-condition forecast (for example strength 0.25 with image, layer and region fixed) before any further run. Keep previous entries and failed controls as records; changed inputs require a new dated entry, not an overwrite.",
+      "counts": {
+        "page": 1,
+        "exercises": 1,
+        "reference": 1
+      }
+    },
+    {
+      "old": "| Exact implementation/configuration fingerprint | ______ |",
+      "new": "| Causal update after the worked answer and baseline comparison | ______ |\n\nKeep this cold arbitration record. Freeze exact code, cohort, settings and selection at the named measurement checkpoint after the core tests; retain any existing fingerprint or previous full-form answers.",
+      "counts": {
+        "page": 1,
+        "exercises": 1,
+        "reference": 1
+      }
+    }
+  ],
+  "rationale": [
+    "GV-07: preserve local causal predictions and immediate tests; consolidate full records into cold arbitration and post-test layer/region measurement checkpoints; retain earlier learner entries."
+  ]
+}

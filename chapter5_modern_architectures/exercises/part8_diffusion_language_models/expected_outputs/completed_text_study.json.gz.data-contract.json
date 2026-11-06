@@ -1,0 +1,27 @@
+{
+  "schema": "arena.bounded-json-data.v1",
+  "name": "completed_text_study.json.gz",
+  "record": {
+    "type": "regular",
+    "size_bytes": 7304827,
+    "sha256": "dba28eeedf9bc7d6c9f928d9a01c3d893461aadd4fe5fa1e5df33863082bc2eb",
+    "format": "gzip-json",
+    "decoded_size_bytes": 44218340,
+    "decoded_sha256": "6c64dfb24bf539ae14de1851616210a6d64eb4b90f23b8567121f49b46baee96"
+  },
+  "provenance": {
+    "kind": "historical_data_packaging",
+    "packaged_at_utc": "2026-09-08T03:30:18.089958+00:00",
+    "measurement_claim": "Packaging only; all recorded outcomes, values and measurement dates are unchanged.",
+    "source_data": {
+      "repository_path": "chapter5_modern_architectures/exercises/part5_diffusion_language_models/expected_outputs/completed_text_study.json.gz",
+      "absolute_path": "/home/bitwise/.cache/arena_extended/evidence_packaging/original_json/dba28eeedf9bc7d6c9f928d9a01c3d893461aadd4fe5fa1e5df33863082bc2eb.json.gz",
+      "sha256": "dba28eeedf9bc7d6c9f928d9a01c3d893461aadd4fe5fa1e5df33863082bc2eb",
+      "size_bytes": 7304827
+    }
+  },
+  "limits": {
+    "encoded_bytes": 16777216,
+    "decoded_bytes": 67108864
+  }
+}

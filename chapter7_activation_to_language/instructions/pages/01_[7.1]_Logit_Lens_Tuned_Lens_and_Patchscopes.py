@@ -11,7 +11,12 @@ import streamlit_antd_components as sac
 #     {"title": "Bonus", "icon": "star", "subtitle": "(1%)"},
 #     ...
 # ]
-metadata = [{'title': 'The Logit Lens', 'icon': '1-circle-fill', 'subtitle': '(30%)'}, {'title': 'The Tuned Lens', 'icon': '2-circle-fill', 'subtitle': '(30%)'}, {'title': 'Patchscopes', 'icon': '3-circle-fill', 'subtitle': '(30%)'}, {'title': 'Bonus', 'icon': 'star', 'subtitle': '(10%)'}]
+metadata = [
+    {'title': 'The Logit Lens', 'icon': '1-circle-fill', 'subtitle': '(30%)'},
+    {'title': 'The Tuned Lens', 'icon': '2-circle-fill', 'subtitle': '(30%)'},
+    {'title': 'Patchscopes', 'icon': '3-circle-fill', 'subtitle': '(30%)'},
+    {'title': 'Bonus', 'icon': 'star', 'subtitle': '(10%)'},
+]
 chapter_name = 'chapter7_activation_to_language'
 chapter_name_long = 'Chapter 7 - Activation to Language'
 section_title = '[7.1] Logit Lens Tuned Lens and Patchscopes'
@@ -25,13 +30,14 @@ if str(arena_root_dir) not in sys.path:
 
 from st_chat import display_chat_interface, display_content_with_exercise_chats, initialize_chat
 from st_dependencies import generate_toc, styling
+from infrastructure.extension.render_media import inline_page_media
 
 markdown_content_file = Path(__file__).with_suffix(".md")
 
 # TODO - uncomment the line below, so page is cached (while developing it's easier to comment this out)
 # if st.session_state.get("content_filename", None) != str(markdown_content_file):
 st.session_state["content_filename"] = str(markdown_content_file)
-st.session_state["content"] = markdown_content_file.read_text(encoding="utf-8").split(
+st.session_state["content"] = inline_page_media(markdown_content_file.read_text(encoding="utf-8"), markdown_content_file).split(
     "=== NEW CHAPTER ==="
 )
 

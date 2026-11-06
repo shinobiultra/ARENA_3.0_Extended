@@ -1,0 +1,32 @@
+{
+  "schema_version": 1,
+  "section": "14.7",
+  "sources": {
+    "page": {
+      "path": "chapter14_jepa_world_models/instructions/pages/07_[14.7]_Recurrent_World_Models_Dreamer_TD-MPC2_and_IRIS.md",
+      "sha256": "bf54d5c9db2c356e833cbe8abe1b188dc8f9d29473e089f95886de4b1fd8c843"
+    },
+    "exercises": {
+      "path": "chapter14_jepa_world_models/exercises/part7_recurrent_world_models/14.7_Recurrent_World_Models_Dreamer_TD-MPC2_and_IRIS_exercises.ipynb",
+      "sha256": "e7e4c946da6655f48a9ff0471cc97a926833ee7e9dd281ea1e0913a3bf7c3c09"
+    },
+    "reference": {
+      "path": "chapter14_jepa_world_models/exercises/part7_recurrent_world_models/14.7_Recurrent_World_Models_Dreamer_TD-MPC2_and_IRIS_solutions.ipynb",
+      "sha256": "fcd15b346ffeb095da8f44a0d253834f42f42307ca7c76952ca5d34320eaf751"
+    }
+  },
+  "replacements": [
+    {
+      "old": "The immediate semantic fixture should print `All tests in test_iris_logits passed!`. With zero attention/MLP branches, the function preserves the input one-hot residual exactly.\n\n</details>\n\n<details><summary>Help - why this step?</summary>\n\nImplement the stated operation before continuing. Inspect the fixture if the test fails: it is an independent small example, not a comparison with a hidden solution. The following experiment calls this function, so changing it changes the actual result.\n\n</details>",
+      "new": "The immediate semantic fixture should print `All tests in test_iris_logits passed!`. The zero-branch edge case preserves the input one-hot residual. A second deterministic fixture checks nonzero attention, normalization, MLP and five-logit readout against an independent prefix-by-prefix oracle. Changing future tokens must leave the earlier logits unchanged.\n\n</details>\n\n<details><summary>Help - why this step?</summary>\n\nCompute Q, K and V from the same pre-attention stream. Add attention before applying the normalized MLP, and add that MLP output as a second residual. If the zero-branch check passes but the nonzero oracle fails, inspect these two additions and the key-width scaling. If an earlier logit changes after editing only future tokens, inspect the causal mask and its query/key orientation.\n\n</details>",
+      "counts": {
+        "page": 1,
+        "exercises": 1,
+        "reference": 1
+      }
+    }
+  ],
+  "rationale": [
+    "GW-147-01"
+  ]
+}

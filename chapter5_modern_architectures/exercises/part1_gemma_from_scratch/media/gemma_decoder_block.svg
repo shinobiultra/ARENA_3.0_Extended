@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="760" height="240" viewBox="0 0 760 240" role="img" aria-labelledby="title desc">
+  <title id="title">Gemma decoder block dataflow</title>
+  <desc id="desc">A compact Gemma decoder block showing embedding scale, RMSNorm, grouped-query attention with RoPE, residual connections, SwiGLU, final norm, and LM head.</desc>
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#334155" />
+    </marker>
+    <style>
+      .box { fill: #f8fafc; stroke: #334155; stroke-width: 1.5; rx: 8; }
+      .attn { fill: #ecfeff; stroke: #0e7490; }
+      .mlp { fill: #fef3c7; stroke: #b45309; }
+      .resid { fill: #eef2ff; stroke: #4338ca; }
+      .text { font: 14px sans-serif; fill: #0f172a; text-anchor: middle; dominant-baseline: middle; }
+      .small { font: 12px sans-serif; fill: #475569; text-anchor: middle; dominant-baseline: middle; }
+      .line { stroke: #334155; stroke-width: 1.5; fill: none; marker-end: url(#arrow); }
+    </style>
+  </defs>
+  <rect x="20" y="92" width="92" height="56" class="box resid" />
+  <text x="66" y="112" class="text">tokens</text>
+  <text x="66" y="132" class="small">embed * sqrt(d)</text>
+  <rect x="142" y="92" width="82" height="56" class="box" />
+  <text x="183" y="120" class="text">RMSNorm</text>
+  <rect x="254" y="76" width="122" height="88" class="box attn" />
+  <text x="315" y="103" class="text">GQA + RoPE</text>
+  <text x="315" y="126" class="small">Q heads &gt; KV heads</text>
+  <text x="315" y="146" class="small">causal mask</text>
+  <rect x="406" y="92" width="88" height="56" class="box resid" />
+  <text x="450" y="120" class="text">residual +</text>
+  <rect x="524" y="92" width="82" height="56" class="box" />
+  <text x="565" y="120" class="text">RMSNorm</text>
+  <rect x="636" y="76" width="104" height="88" class="box mlp" />
+  <text x="688" y="103" class="text">SwiGLU</text>
+  <text x="688" y="126" class="small">gate * up</text>
+  <text x="688" y="146" class="small">down proj</text>
+  <path d="M112 120 H142" class="line" />
+  <path d="M224 120 H254" class="line" />
+  <path d="M376 120 H406" class="line" />
+  <path d="M494 120 H524" class="line" />
+  <path d="M606 120 H636" class="line" />
+  <path d="M66 148 C66 210 450 210 450 150" class="line" />
+  <path d="M450 148 C450 198 688 198 688 166" class="line" />
+  <text x="450" y="224" class="small">repeat block, then final RMSNorm and tied LM head</text>
+</svg>

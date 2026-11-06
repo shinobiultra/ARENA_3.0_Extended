@@ -1,0 +1,10 @@
+{
+  "accepted": true,
+  "claim_scope": "Exact safe model-organism theorem plus a separately pinned Pythia CUDA mechanics preflight; not a deployment monitor.",
+  "evidence_level": "exact_model_organism_ground_truth",
+  "gt_tier": "GT-3",
+  "notebook_id": "9_4_white_box_evals_and_monitors",
+  "section": "9.4",
+  "tests_passed": true,
+  "title": "White-box Evals and Monitors"
+}

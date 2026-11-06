@@ -50,24 +50,36 @@ You've met this prompt before:
 When Mary and John went to the store, John gave a drink to
 ```
 
-GPT-2 Small answers `" Mary"`, and in [1.4.1] you found the circuit that does it: duplicate-token and induction heads notice that John appears twice, S-inhibition heads pass that on to the final position, and the **name mover heads** 9.9, 9.6 and 10.0 copy the remaining name, Mary, into the logits.
+GPT-2 Small answers `" Mary"`, and in [1.4.1] you found the circuit that does it: duplicate-token and induction heads notice that John appears twice, S-inhibition heads pass that
+on to the final position, and the **name mover heads** 9.9, 9.6 and 10.0 copy the remaining name, Mary, into the logits.
 
-Here's a fact you'll establish for yourself in this section. On the dataset we'll build, the three name movers between them write about **+4.3** onto the logit difference `logit(Mary) - logit(John)`, which is *more than the model's entire logit difference* of 2.9. So if we patch their outputs with outputs from a corrupted prompt, so that they no longer know which name to copy, the logit difference should collapse. It doesn't. It falls by 0.03 (from 2.92 to 2.90).
+Here's a fact you'll establish for yourself in this section. On the dataset we'll build, the three name movers between them write about **+4.3** onto the logit difference
+`logit(Mary) - logit(John)`, which is *more than the model's entire logit difference* of 2.9. So if we patch their outputs with outputs from a corrupted prompt, so that they no
+longer know which name to copy, the logit difference should collapse. It doesn't. It falls by 0.03 (from 2.92 to 2.90).
 
-Removing more than 100% of the answer barely changes the answer. Is the name-mover story wrong? No. But the experiment asked a different question from the one you probably thought you were asking, and the rest of the model answered it by **repairing itself**.
+Removing more than 100% of the answer barely changes the answer. Is the name-mover story wrong? No. But the experiment asked a different question from the one you probably thought
+you were asking, and the rest of the model answered it by **repairing itself**.
 
-This section is about asking activation patching the right question. A patching experiment looks like one operation ("replace this activation, see what happens"), but its result depends on at least four choices:
+This section is about asking activation patching the right question. A patching experiment looks like one operation ("replace this activation, see what happens"), but its result
+depends on at least four choices:
 
 1. **The prompts and the metric.** What behaviour, measured how? A logit difference, a probability and a log-probability can disagree about which components matter, and even about the *sign* of an effect.
 2. **The direction.** Patching clean activations into a corrupted run (*denoising*) tells you what is **sufficient** to restore a behaviour. Patching corrupted activations into a clean run (*noising*) tells you what is **necessary**. In a circuit with any redundancy or any serial dependencies, these give different answers.
 3. **What you patch in.** A corrupted prompt, a zero vector, the dataset mean or another random prompt's activation are four different counterfactuals, and each one only removes the information it actually changes.
 4. **What the rest of the model is allowed to do.** If downstream components recompute in response to your patch, you measure a **total effect**. If you freeze them, you measure a **direct effect**. The difference, the **indirect effect**, is where both circuits and self-repair live.
 
-You'll study these on two real GPT-2 Small tasks: indirect object identification (IOI, Wang et al. 2022) and greater-than (Hanna et al. 2023). By the end you'll have written, from scratch, a small patching toolkit (metrics, a generic patching hook, layer × position sweeps over the residual stream, attention and MLP outputs, head and head × position sweeps, and a "frozen downstream" runner for direct and indirect effects), and used it to produce the pictures that go with each choice above. The headline picture is the **Hydra plot**: total effect against direct effect for knocking out sets of heads, where the name movers sit far off the line that 30 random sets of heads follow.
+You'll study these on two real GPT-2 Small tasks: indirect object identification (IOI, Wang et al. 2022) and greater-than (Hanna et al. 2023). By the end you'll have written, from
+scratch, a small patching toolkit (metrics, a generic patching hook, layer × position sweeps over the residual stream, attention and MLP outputs, head and head × position sweeps,
+and a "frozen downstream" runner for direct and indirect effects), and used it to produce the pictures that go with each choice above. The headline picture is the **Hydra plot**:
+total effect against direct effect for knocking out sets of heads, where the name movers sit far off the line that 30 random sets of heads follow.
 
-Every result in this section has a control next to it: a **placebo corruption** that changes only task-irrelevant words, **shuffled clean/corrupted pairings**, **random sets of heads**, **held-out templates** and **per-prompt distributions** instead of averages.
+Every result in this section has a control next to it: a **placebo corruption** that changes only task-irrelevant words, **shuffled clean/corrupted pairings**, **random sets of
+heads**, **held-out templates** and **per-prompt distributions** instead of averages.
 
-This section assumes you've done [1.4.1] Indirect Object Identification (or at least its activation patching and path patching parts), so you're comfortable with TransformerLens hooks, `run_with_cache`, and the IOI circuit. It's the first section of Chapter 8. The `PatchingTask` interface you'll define in part 1️⃣ (clean tokens, corrupted tokens, a per-prompt metric, position labels) is the minimal input that the methods in the rest of the chapter (attribution patching, AtP*, ACDC) need, and the exhaustive sweeps you compute here are the ground truth those faster methods try to approximate.
+This section assumes you've done [1.4.1] Indirect Object Identification (or at least its activation patching and path patching parts), so you're comfortable with TransformerLens
+hooks, `run_with_cache`, and the IOI circuit. It's the first section of Chapter 8. The `PatchingTask` interface you'll define in part 1️⃣ (clean tokens, corrupted tokens, a
+per-prompt metric, position labels) is the minimal input that the methods in the rest of the chapter (attribution patching, AtP*, ACDC) need, and the exhaustive sweeps you compute
+here are the ground truth those faster methods try to approximate.
 '''
 
 # ! CELL TYPE: markdown
@@ -79,7 +91,9 @@ r'''
 
 ### 1️⃣ Tasks, metrics and the patching loop
 
-You'll build an IOI dataset with a fixed token template, write four corruptions of it, and package the result in a small `PatchingTask` interface. Then you'll write the metric, the normalised patching score, a generic patching hook, and a layer × position sweep, and use them to watch information move from the second subject token to the final position, in both patching directions. A shuffled-pairing control tells you which parts of that picture are about *this* prompt and which are about the template.
+You'll build an IOI dataset with a fixed token template, write four corruptions of it, and package the result in a small `PatchingTask` interface. Then you'll write the metric, the
+normalised patching score, a generic patching hook, and a layer × position sweep, and use them to watch information move from the second subject token to the final position, in
+both patching directions. A shuffled-pairing control tells you which parts of that picture are about *this* prompt and which are about the template.
 
 > ##### Learning Objectives
 >
@@ -90,7 +104,8 @@ You'll build an IOI dataset with a fixed token template, write four corruptions 
 
 ### 2️⃣ Sufficiency vs necessity: denoising and noising
 
-Denoising asks "is this enough?", noising asks "is this needed?". You'll see why these differ for AND-like and OR-like circuits, sweep every attention head in both directions, and plot one against the other. A placebo corruption gives you a noise floor for the whole plot.
+Denoising asks "is this enough?", noising asks "is this needed?". You'll see why these differ for AND-like and OR-like circuits, sweep every attention head in both directions, and
+plot one against the other. A placebo corruption gives you a noise floor for the whole plot.
 
 > ##### Learning Objectives
 >
@@ -100,7 +115,8 @@ Denoising asks "is this enough?", noising asks "is this needed?". You'll see why
 
 ### 3️⃣ What do you patch in? Corruptions and ablations
 
-You'll run the same noising sweep with seven different sources: three corrupted-prompt datasets, zero ablation, mean ablation, resample ablation and a placebo. They pick out overlapping but different sets of heads, and you'll explain the differences.
+You'll run the same noising sweep with seven different sources: three corrupted-prompt datasets, zero ablation, mean ablation, resample ablation and a placebo. They pick out
+overlapping but different sets of heads, and you'll explain the differences.
 
 > ##### Learning Objectives
 >
@@ -110,7 +126,8 @@ You'll run the same noising sweep with seven different sources: three corrupted-
 
 ### 4️⃣ Direct, indirect and total effects
 
-You'll write a forward pass in which any chosen set of components is frozen at its clean value, and use it to split every head's total effect into a direct and an indirect part. Then you'll knock out the name movers and watch the rest of the model compensate.
+You'll write a forward pass in which any chosen set of components is frozen at its clean value, and use it to split every head's total effect into a direct and an indirect part.
+Then you'll knock out the name movers and watch the rest of the model compensate.
 
 > ##### Learning Objectives
 >
@@ -120,7 +137,8 @@ You'll write a forward pass in which any chosen set of components is frozen at i
 
 ### 5️⃣ A second task, and the pitfalls checklist
 
-You'll plug the greater-than task into the same interface, find that MLPs matter far more there than in IOI, and then go through the pitfalls that make patching results misleading: averages that hide per-prompt structure, results that don't transfer to held-out templates, metrics that disagree about sign, and subspace patching illusions.
+You'll plug the greater-than task into the same interface, find that MLPs matter far more there than in IOI, and then go through the pitfalls that make patching results misleading:
+averages that hide per-prompt structure, results that don't transfer to held-out templates, metrics that disagree about sign, and subspace patching illusions.
 
 > ##### Learning Objectives
 >
@@ -131,7 +149,8 @@ You'll plug the greater-than task into the same interface, find that MLPs matter
 
 ### ☆ Bonus
 
-Path patching with your frozen-run function, Gaussian-noise corruptions, a positive-total-effect anomaly, self-repair through LayerNorm, greater-than MLP neurons, and further reading.
+Path patching with your frozen-run function, Gaussian-noise corruptions, a positive-total-effect anomaly, self-repair through LayerNorm, greater-than MLP neurons, and further
+reading.
 '''
 
 # ! CELL TYPE: markdown
@@ -224,7 +243,10 @@ r'''
 r'''
 ## What a patching experiment is made of
 
-Let's fix some notation. We have a model, a **clean** input $x_{\text{clean}}$ on which it shows some behaviour, and a **corrupted** input $x_{\text{corr}}$ on which it doesn't. A **metric** $M$ maps the model's output to a number measuring the behaviour (higher = more of it). For a model component $c$ (a residual stream vector at some position, an attention head's output, an MLP's output...), write $a_c(x)$ for its activation on input $x$, and $M(x \mid a_c \leftarrow v)$ for the metric when we run the model on $x$ but overwrite $c$'s activation with $v$, letting everything downstream recompute.
+Let's fix some notation. We have a model, a **clean** input $x_{\text{clean}}$ on which it shows some behaviour, and a **corrupted** input $x_{\text{corr}}$ on which it doesn't. A
+**metric** $M$ maps the model's output to a number measuring the behaviour (higher = more of it). For a model component $c$ (a residual stream vector at some position, an attention
+head's output, an MLP's output...), write $a_c(x)$ for its activation on input $x$, and $M(x \mid a_c \leftarrow v)$ for the metric when we run the model on $x$ but overwrite $c$'s
+activation with $v$, letting everything downstream recompute.
 
 There are two ways to patch:
 
@@ -234,7 +256,8 @@ $$
 \underbrace{M\big(x_{\text{clean}} \mid a_c \leftarrow a_c(x_{\text{corr}})\big)}_{\text{noising: break one activation}}
 $$
 
-In [1.4.1], most of the choices that go into these formulas were made for you: the prompts, the corruption (swap the subject, or replace every name), the metric (logit difference), and the direction. In this section we'll make each of them deliberately, and see how much the answer depends on them.
+In [1.4.1], most of the choices that go into these formulas were made for you: the prompts, the corruption (swap the subject, or replace every name), the metric (logit difference),
+and the direction. In this section we'll make each of them deliberately, and see how much the answer depends on them.
 
 We'll write everything from scratch with hooks rather than using `transformer_lens.patching`. (The tests use `transformer_lens.patching` as an independent check on your code.)
 '''
@@ -269,15 +292,23 @@ We'll generate IOI prompts from a family of 64 templates of the form
 {opener} {A} and {B} {action} the {PLACE}, {C} {verb} a {OBJECT} to
 ```
 
-with four openers (`When`, `After`, `While`, `Once`), four actions (`went to`, `were at`, `arrived at`, `got to`) and four verbs (`gave`, `handed`, `passed`, `sent`). In a clean prompt, `{A}` is the indirect object (IO) and `{B}` and `{C}` are both the subject (S), so the clean prompts are all **ABBA**-ordered: `"When Mary and John went to the store, John gave a drink to"`.
+with four openers (`When`, `After`, `While`, `Once`), four actions (`went to`, `were at`, `arrived at`, `got to`) and four verbs (`gave`, `handed`, `passed`, `sent`). In a clean
+prompt, `{A}` is the indirect object (IO) and `{B}` and `{C}` are both the subject (S), so the clean prompts are all **ABBA**-ordered: `"When Mary and John went to the store, John
+gave a drink to"`.
 
 Two design decisions are worth making explicit, because they'll come back to bite us (in a useful way) later.
 
-**Every prompt has exactly the same token template.** All names, places and objects are single tokens, so every prompt is 15 tokens long, with IO at position 2, the first subject (S1) at position 4, the second subject (S2) at position 10 and the final token (END) at position 14. This makes "patch position 10" mean the same thing for every prompt, so we can batch everything and label positions with roles. It's the reason we vary the *filler* words (opener, action, verb, place, object) rather than the sentence structure: we want results that aren't about one particular sentence, without giving up aligned positions.
+**Every prompt has exactly the same token template.** All names, places and objects are single tokens, so every prompt is 15 tokens long, with IO at position 2, the first subject
+(S1) at position 4, the second subject (S2) at position 10 and the final token (END) at position 14. This makes "patch position 10" mean the same thing for every prompt, so we can
+batch everything and label positions with roles. It's the reason we vary the *filler* words (opener, action, verb, place, object) rather than the sentence structure: we want
+results that aren't about one particular sentence, without giving up aligned positions.
 
-**We only use ABBA order.** The IOI paper mixes ABBA and BABA (`"When John and Mary went to the store, John gave a drink to"`). Mixing them would put IO at position 2 in half the prompts and at position 4 in the other half. We've chosen alignment over balance, and in part 5️⃣ we'll test what that choice costs us by evaluating on held-out BABA prompts. Keep in mind already that, in our dataset, *"the answer is the first name"* is always true. A model that had only learned that heuristic would score well.
+**We only use ABBA order.** The IOI paper mixes ABBA and BABA (`"When John and Mary went to the store, John gave a drink to"`). Mixing them would put IO at position 2 in half the
+prompts and at position 4 in the other half. We've chosen alignment over balance, and in part 5️⃣ we'll test what that choice costs us by evaluating on held-out BABA prompts. Keep
+in mind already that, in our dataset, *"the answer is the first name"* is always true. A model that had only learned that heuristic would score well.
 
-The cell below defines the template family, an `IOIExample` dataclass, and a sampler. Each example stores the template with the filler words already filled in, and the names that the different corruptions will use: `io`, `s`, a third name `c`, and three more fresh names `xyz`.
+The cell below defines the template family, an `IOIExample` dataclass, and a sampler. Each example stores the template with the filler words already filled in, and the names that
+the different corruptions will use: `io`, `s`, a third name `c`, and three more fresh names `xyz`.
 '''
 
 # ! CELL TYPE: code
@@ -338,7 +369,8 @@ r'''
 > The code is one line; the important part is thinking about what each corruption removes.
 > ```
 
-A corrupted prompt should differ from the clean prompt in exactly the information you want to localise, and in nothing else. Implement `ioi_prompt`, which fills an example's name slots `{A}`, `{B}`, `{C}` according to a **scheme** written in the IOI paper's notation:
+A corrupted prompt should differ from the clean prompt in exactly the information you want to localise, and in nothing else. Implement `ioi_prompt`, which fills an example's name
+slots `{A}`, `{B}`, `{C}` according to a **scheme** written in the IOI paper's notation:
 
 | scheme | `{A}`, `{B}`, `{C}` | example | what changes relative to clean |
 |---|---|---|---|
@@ -347,7 +379,8 @@ A corrupted prompt should differ from the clean prompt in exactly the informatio
 | `"ABC"` | `io, s, c` | When Mary and John went to the store, **Tom** gave a drink to | S2 is a new name: nothing is duplicated, so there's no reason to prefer Mary over John |
 | `"XYZ"` | `*xyz` | When **Ann** and **Bob** went to the store, **Tom** gave a drink to | every name is new: neither Mary nor John appears at all |
 
-`ABA` is (up to which half of the pair you call clean) the corruption used in the activation patching part of [1.4.1]; `XYZ` is the one used in its path patching part, where it was called the "ABC dataset", confusingly. Our `ABC` is the minimal one: it changes a single token.
+`ABA` is (up to which half of the pair you call clean) the corruption used in the activation patching part of [1.4.1]; `XYZ` is the one used in its path patching part, where it was
+called the "ABC dataset", confusingly. Our `ABC` is the minimal one: it changes a single token.
 '''
 
 # ! CELL TYPE: code
@@ -381,7 +414,9 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-Now let's sample 100 examples, and also a **placebo** version of them: the same names, but freshly sampled filler words (opener, action, verb, place, object). The placebo will be our control corruption throughout. It changes a lot of tokens, but none of the information that IOI depends on, so if patching from it ever looks like it matters, that tells us how big a "meaningless" effect can be.
+Now let's sample 100 examples, and also a **placebo** version of them: the same names, but freshly sampled filler words (opener, action, verb, place, object). The placebo will be
+our control corruption throughout. It changes a lot of tokens, but none of the information that IOI depends on, so if patching from it ever looks like it matters, that tells us how
+big a "meaningless" effect can be.
 '''
 
 # ! CELL TYPE: code
@@ -434,9 +469,12 @@ r'''
 > You should spend up to 5 minutes on this exercise.
 > ```
 
-You wrote this in [1.4.1]; this time we want it **per prompt**, because we'll be looking at distributions over prompts as well as means. Implement `logit_diff`, which takes logits of shape `(batch, seq, d_vocab)` and `answer_tokens` of shape `(batch, 2)` (the correct and incorrect answer token for each prompt), and returns `logit[correct] - logit[incorrect]` at the **final** position, as a tensor of shape `(batch,)`.
+You wrote this in [1.4.1]; this time we want it **per prompt**, because we'll be looking at distributions over prompts as well as means. Implement `logit_diff`, which takes logits
+of shape `(batch, seq, d_vocab)` and `answer_tokens` of shape `(batch, 2)` (the correct and incorrect answer token for each prompt), and returns `logit[correct] - logit[incorrect]`
+at the **final** position, as a tensor of shape `(batch,)`.
 
-For IOI the correct answer is IO and the incorrect one is S. Note that we always measure the metric with respect to the *clean* prompt's answers, even when we run the model on a corrupted prompt. On an `ABC` prompt, "the correct answer" still means Mary, even though the model has no reason to say Mary.
+For IOI the correct answer is IO and the incorrect one is S. Note that we always measure the metric with respect to the *clean* prompt's answers, even when we run the model on a
+corrupted prompt. On an `ABC` prompt, "the correct answer" still means Mary, even though the model has no reason to say Mary.
 '''
 
 # ! CELL TYPE: code
@@ -482,15 +520,18 @@ r'''
 r'''
 ## The `PatchingTask` interface
 
-Everything we do from now on needs the same four things: clean tokens, corrupted tokens, a metric, and some labels for the sequence positions. We'll bundle them into a small dataclass:
+Everything we do from now on needs the same four things: clean tokens, corrupted tokens, a metric, and some labels for the sequence positions. We'll bundle them into a small
+dataclass:
 
 - `clean_tokens` and `corrupted_tokens` have the same shape `(batch, seq)`, and row `i` of each is a matched pair.
 - `metric` maps logits `(batch, seq, d_vocab)` to a **per-prompt** score `(batch,)`, where higher means "more of the clean behaviour". It closes over whatever it needs (here, the answer tokens), so code that uses a task never needs to know what the task is.
 - `labels` names each position, for plotting.
 
-The contract is that **all prompts in a task share one token template**: the same length, and the same role at each position. Tasks are cheap to make, so when you want to test a different template (or a different word order), you make a different task rather than padding.
+The contract is that **all prompts in a task share one token template**: the same length, and the same role at each position. Tasks are cheap to make, so when you want to test a
+different template (or a different word order), you make a different task rather than padding.
 
-Every function you write from here on takes a `PatchingTask` (or its parts), so you can point the whole toolkit at a new task by writing one constructor. You can also import `PatchingTask`, `make_ioi_task` and (later) `make_greater_than_task` from this section's `solutions.py` in later sections.
+Every function you write from here on takes a `PatchingTask` (or its parts), so you can point the whole toolkit at a new task by writing one constructor. You can also import
+`PatchingTask`, `make_ioi_task` and (later) `make_greater_than_task` from this section's `solutions.py` in later sections.
 '''
 
 # ! CELL TYPE: code
@@ -566,7 +607,8 @@ def make_ioi_task(
 # ! TAGS: []
 
 r'''
-Let's build one task per corruption, plus the placebo, and see what each corruption does to the model's behaviour. As in [7.1], it's worth knowing how the model behaves *before* we look inside it.
+Let's build one task per corruption, plus the placebo, and see what each corruption does to the model's behaviour. As in [7.1], it's worth knowing how the model behaves *before* we
+look inside it.
 '''
 
 # ! CELL TYPE: code
@@ -659,13 +701,16 @@ r'''
 > You should spend up to 5 minutes on this exercise.
 > ```
 
-Raw logit differences aren't comparable across tasks, corruptions or directions, so we'll usually report a normalised **patching score**. Every patching run starts in one run (the **base**) and patches in activations from another (the **source**), so the natural scale is "how far did one patch move us from the base towards the source?":
+Raw logit differences aren't comparable across tasks, corruptions or directions, so we'll usually report a normalised **patching score**. Every patching run starts in one run (the
+**base**) and patches in activations from another (the **source**), so the natural scale is "how far did one patch move us from the base towards the source?":
 
 $$
 \text{score} = \frac{M_{\text{patched}} - M_{\text{base}}}{M_{\text{source}} - M_{\text{base}}}
 $$
 
-For **denoising**, base = corrupted and source = clean, so this is the familiar "fraction of performance recovered" from [1.4.1] (0 = still corrupted, 1 = fully clean). For **noising**, base = clean and source = corrupted, so it's "fraction of performance destroyed" (0 = still clean, 1 = as bad as the corrupted run). With this convention a score of 1 always means "this one patch is as good as patching everything", in either direction, so we can put denoising and noising scores on the same axes.
+For **denoising**, base = corrupted and source = clean, so this is the familiar "fraction of performance recovered" from [1.4.1] (0 = still corrupted, 1 = fully clean). For
+**noising**, base = clean and source = corrupted, so it's "fraction of performance destroyed" (0 = still clean, 1 = as bad as the corrupted run). With this convention a score of 1
+always means "this one patch is as good as patching everything", in either direction, so we can put denoising and noising scores on the same axes.
 
 Implement `patching_score`. It should work on Python floats and on tensors of any shape (so you can normalise a whole sweep at once).
 
@@ -700,7 +745,10 @@ r'''
 <details>
 <summary>Aside - normalise the mean, not each prompt</summary>
 
-We'll always compute $M$ as a **mean over prompts** first, and normalise afterwards. The alternative, normalising each prompt separately and averaging the ratios, looks more principled but is a trap: for some prompts the clean-corrupted gap is close to zero (look at the strip plot above: some clean prompts have a logit difference near 0, and some `ABC` prompts are as high as typical clean ones). Those prompts get enormous ratios that dominate the average. If you want per-prompt information, look at per-prompt *raw* effects (we'll do this in part 5️⃣), not per-prompt ratios.
+We'll always compute $M$ as a **mean over prompts** first, and normalise afterwards. The alternative, normalising each prompt separately and averaging the ratios, looks more
+principled but is a trap: for some prompts the clean-corrupted gap is close to zero (look at the strip plot above: some clean prompts have a logit difference near 0, and some `ABC`
+prompts are as high as typical clean ones). Those prompts get enormous ratios that dominate the average. If you want per-prompt information, look at per-prompt *raw* effects (we'll
+do this in part 5️⃣), not per-prompt ratios.
 </details>
 '''
 
@@ -728,9 +776,12 @@ r'''
 > Everything else in this section is built on this function.
 > ```
 
-In [1.4.1] you wrote a separate hook function for each kind of patch (residual stream by position, head output, head output by position...). They're all the same operation: *at one hook point, overwrite some slice of the activation with the same slice of a source activation*. So let's write it once.
+In [1.4.1] you wrote a separate hook function for each kind of patch (residual stream by position, head output, head output by position...). They're all the same operation: *at one
+hook point, overwrite some slice of the activation with the same slice of a source activation*. So let's write it once.
 
-Implement `patch_run`, which runs the model on `base_tokens` with a single forward hook at `hook_name`. The hook should overwrite `activation[index]` with `source_activation[index]`, and `patch_run` should return the logits. `source_activation` has the same shape as the activation at that hook point (e.g. it's `clean_cache[hook_name]`), and `index` is any valid tensor index. NumPy's `np.s_` is a convenient way to write one:
+Implement `patch_run`, which runs the model on `base_tokens` with a single forward hook at `hook_name`. The hook should overwrite `activation[index]` with
+`source_activation[index]`, and `patch_run` should return the logits. `source_activation` has the same shape as the activation at that hook point (e.g. it's
+`clean_cache[hook_name]`), and `index` is any valid tensor index. NumPy's `np.s_` is a convenient way to write one:
 
 ```python
 np.s_[:, 10]          # residual stream: every prompt, position 10 -> shape (batch, d_model)
@@ -782,13 +833,15 @@ r'''
 <details>
 <summary>Hint</summary>
 
-Define a hook function `hook_fn(activation, hook)` inside `patch_run` (so it can see `index` and `source_activation`), assign `activation[index] = source_activation[index]`, and return `activation`. Then call `model.run_with_hooks(base_tokens, fwd_hooks=[(hook_name, hook_fn)])`.
+Define a hook function `hook_fn(activation, hook)` inside `patch_run` (so it can see `index` and `source_activation`), assign `activation[index] = source_activation[index]`, and
+return `activation`. Then call `model.run_with_hooks(base_tokens, fwd_hooks=[(hook_name, hook_fn)])`.
 </details>
 
 <details>
 <summary>Help - the test says the cached source activation was modified.</summary>
 
-Make sure you write *into* the activation flowing through the model, not into `source_activation`. `activation[index] = source_activation[index]` copies values from the source into the model's activation; `source_activation[index] = ...` would corrupt your cache, and every later patch that uses it.
+Make sure you write *into* the activation flowing through the model, not into `source_activation`. `activation[index] = source_activation[index]` copies values from the source into
+the model's activation; `source_activation[index] = ...` would corrupt your cache, and every later patch that uses it.
 </details>
 '''
 
@@ -806,13 +859,16 @@ r'''
 > You should spend up to 15 minutes on this exercise.
 > ```
 
-Now implement the classic sweep: for every layer and every position, patch one activation vector and record the normalised patching score. Your function should work for any per-layer activation with shape `(batch, seq, d_model)`, which TransformerLens names `"resid_pre"`, `"attn_out"` and `"mlp_out"` (use `get_act_name(act_name, layer)` to get the hook name, e.g. `get_act_name("attn_out", 3) == "blocks.3.hook_attn_out"`).
+Now implement the classic sweep: for every layer and every position, patch one activation vector and record the normalised patching score. Your function should work for any
+per-layer activation with shape `(batch, seq, d_model)`, which TransformerLens names `"resid_pre"`, `"attn_out"` and `"mlp_out"` (use `get_act_name(act_name, layer)` to get the
+hook name, e.g. `get_act_name("attn_out", 3) == "blocks.3.hook_attn_out"`).
 
 - For `direction="denoise"`, the base run is the corrupted prompt and the source is the clean prompt.
 - For `direction="noise"`, it's the other way round.
 - Compute $M_{\text{base}}$ and $M_{\text{source}}$ as mean metrics over the batch, and return a `(n_layers, seq)` tensor of `patching_score(mean patched metric, M_base, M_source)`.
 
-There's one extra argument, `source_perm`. If it's given, it's a permutation of the batch indices, and you should patch row `i` of the base run with row `source_perm[i]` of the source activations, i.e. with an activation from a *different* prompt. Keep normalising with the unpermuted $M_{\text{source}}$. We'll use this as a control in a moment.
+There's one extra argument, `source_perm`. If it's given, it's a permutation of the batch indices, and you should patch row `i` of the base run with row `source_perm[i]` of the
+source activations, i.e. with an activation from a *different* prompt. Keep normalising with the unpermuted $M_{\text{source}}$. We'll use this as a control in a moment.
 
 To save memory, cache only the activations you need: `model.run_with_cache(tokens, names_filter=lambda name: name.endswith(f"hook_{act_name}"))`.
 '''
@@ -872,7 +928,9 @@ r'''
 <details>
 <summary>Hint</summary>
 
-Set up `base, source` tokens according to `direction`. Run the base once to get `base_metric`, and the source once with `run_with_cache` (filtered) to get both `source_metric` and the source activations. Then loop over layers (getting the hook name and the source activation for that layer, permuted if necessary) and positions (calling `patch_run` with `np.s_[:, pos]`).
+Set up `base, source` tokens according to `direction`. Run the base once to get `base_metric`, and the source once with `run_with_cache` (filtered) to get both `source_metric` and
+the source activations. Then loop over layers (getting the hook name and the source activation for that layer, permuted if necessary) and positions (calling `patch_run` with
+`np.s_[:, pos]`).
 </details>
 '''
 
@@ -881,9 +939,11 @@ Set up `base, source` tokens according to `direction`. Run the base once to get 
 # ! TAGS: []
 
 r'''
-Let's run three sweeps over the residual stream (`resid_pre`): denoising, noising, and a **shuffled** denoising sweep in which every corrupted prompt receives the clean activation of a *different* prompt (we use a cyclic shift, so no prompt is paired with itself).
+Let's run three sweeps over the residual stream (`resid_pre`): denoising, noising, and a **shuffled** denoising sweep in which every corrupted prompt receives the clean activation
+of a *different* prompt (we use a cyclic shift, so no prompt is paired with itself).
 
-The shuffled sweep is a control for a question that's easy to forget to ask: *is the patched activation carrying information about this particular prompt, or something generic about the template?* If patching in another prompt's clean activation works just as well, then whatever is being restored isn't specific to the names in this prompt.
+The shuffled sweep is a control for a question that's easy to forget to ask: *is the patched activation carrying information about this particular prompt, or something generic
+about the template?* If patching in another prompt's clean activation works just as well, then whatever is being restored isn't specific to the names in this prompt.
 
 Before running the cell, predict what the denoising heatmap will look like for positions *before* S2 (position 10). (Hint: how do the clean and `ABC` prompts differ?)
 '''
@@ -916,11 +976,20 @@ r'''
 <details>
 <summary>Help - how should I interpret these plots?</summary>
 
-**Denoising (left).** Every position before S2 is exactly zero, as you should have predicted: the clean and `ABC` prompts are identical there, so patching changes nothing. The rest of the picture has two parts. Up to layer 7, restoring the residual stream at S2 alone restores essentially all of the behaviour (1.00 at layers 0-4, still 0.90 at layer 7). From layer 9 onwards, restoring END alone does the same. Layer 8 is the handoff, with about half at each position (0.53 at S2, 0.56 at END). So all the information that distinguishes `"... Jane passed"` from `"... Scott passed"` sits at S2 until layer 7, and is moved to END by attention in layers 7 and 8. This is the same picture as in [1.4.1], which used the `ABA` corruption.
+**Denoising (left).** Every position before S2 is exactly zero, as you should have predicted: the clean and `ABC` prompts are identical there, so patching changes nothing. The rest
+of the picture has two parts. Up to layer 7, restoring the residual stream at S2 alone restores essentially all of the behaviour (1.00 at layers 0-4, still 0.90 at layer 7). From
+layer 9 onwards, restoring END alone does the same. Layer 8 is the handoff, with about half at each position (0.53 at S2, 0.56 at END). So all the information that distinguishes
+`"... Jane passed"` from `"... Scott passed"` sits at S2 until layer 7, and is moved to END by attention in layers 7 and 8. This is the same picture as in [1.4.1], which used the
+`ABA` corruption.
 
-Two details are worth noticing. At layers 9-11 END denoising *overshoots* (1.27, 1.16 and 1.08): restoring END alone gives a *higher* logit difference than the clean run, so something downstream of END reads S2 and, in the clean run, works against the answer. In the noising plot, the S2 column goes slightly *negative* at layers 9-10 (-0.30, -0.18): corrupting S2 late in the network helps a little. Both suggest that some late heads read S2 and push against IO. We'll meet good candidates (heads with negative effects in layers 10-11) in part 2️⃣, but we won't pin this particular effect down; it's a nice exercise.
+Two details are worth noticing. At layers 9-11 END denoising *overshoots* (1.27, 1.16 and 1.08): restoring END alone gives a *higher* logit difference than the clean run, so
+something downstream of END reads S2 and, in the clean run, works against the answer. In the noising plot, the S2 column goes slightly *negative* at layers 9-10 (-0.30, -0.18):
+corrupting S2 late in the network helps a little. Both suggest that some late heads read S2 and push against IO. We'll meet good candidates (heads with negative effects in layers
+10-11) in part 2️⃣, but we won't pin this particular effect down; it's a nice exercise.
 
-**Noising (middle).** Almost a mirror image of denoising. For residual stream patching that's what we should expect: at any layer, the residual stream at the right position is a *bottleneck*, since all the information that distinguishes clean from corrupted has to pass through it. Patching a bottleneck gives the full effect in either direction. (This is the "serial" case of part 2️⃣.)
+**Noising (middle).** Almost a mirror image of denoising. For residual stream patching that's what we should expect: at any layer, the residual stream at the right position is a
+*bottleneck*, since all the information that distinguishes clean from corrupted has to pass through it. Patching a bottleneck gives the full effect in either direction. (This is
+the "serial" case of part 2️⃣.)
 
 **Shuffled pairs (right).** Now each `ABC` prompt receives the clean residual stream of a *different* prompt, with different names. Two quite different things happen.
 
@@ -959,13 +1028,21 @@ layer 11, END: matched  1.08   shuffled  0.08</pre>
 <details>
 <summary>Question - why does a <i>different</i> prompt's S2 vector restore so much at early layers, but its END vector almost nothing at layer 11?</summary>
 
-Start with layer 0 at S2, where the residual stream is just a token embedding. The shuffled source puts another prompt's S2 name there, which is a third name for this prompt, just like `ABC`. So it restores nothing (-0.08).
+Start with layer 0 at S2, where the residual stream is just a token embedding. The shuffled source puts another prompt's S2 name there, which is a third name for this prompt, just
+like `ABC`. So it restores nothing (-0.08).
 
-By layer 4, though, a *different* prompt's S2 vector restores 0.40 of the behaviour, and by layer 7 it restores 0.76, not far from the matched vector's 0.90. Some of what S2 carries by then doesn't depend on which name is at S2. The obvious candidate is the output of the duplicate-token and induction heads: *"this token is a repeat of an earlier token"*, and perhaps *"the earlier copy is at position 4"*. Every prompt in our dataset has the same template, so that information is identical across prompts, and another prompt's S2 vector carries it just as well. (In [1.4.1]'s bonus section you found that the S-inhibition heads move a mixture of positional and token information. This is the same phenomenon, seen from a different angle.)
+By layer 4, though, a *different* prompt's S2 vector restores 0.40 of the behaviour, and by layer 7 it restores 0.76, not far from the matched vector's 0.90. Some of what S2
+carries by then doesn't depend on which name is at S2. The obvious candidate is the output of the duplicate-token and induction heads: *"this token is a repeat of an earlier
+token"*, and perhaps *"the earlier copy is at position 4"*. Every prompt in our dataset has the same template, so that information is identical across prompts, and another prompt's
+S2 vector carries it just as well. (In [1.4.1]'s bonus section you found that the S-inhibition heads move a mixture of positional and token information. This is the same
+phenomenon, seen from a different angle.)
 
-END tells a different story. At layer 10 a shuffled END vector still restores 0.70, plausibly because the remaining heads only need to know *where* to attend ("the name at position 2"), which is the same instruction in every prompt. But by layer 11 the END residual stream has turned into "predict *this* name", which is prompt-specific, and another prompt's END vector (which predicts some other name) restores almost nothing (0.08).
+END tells a different story. At layer 10 a shuffled END vector still restores 0.70, plausibly because the remaining heads only need to know *where* to attend ("the name at position
+2"), which is the same instruction in every prompt. But by layer 11 the END residual stream has turned into "predict *this* name", which is prompt-specific, and another prompt's
+END vector (which predicts some other name) restores almost nothing (0.08).
 
-So the shuffled control splits the information flow into a template-level part and a prompt-specific part, which a matched sweep can't do. Remember this in part 3️⃣: mean and resample ablation can't see template-level information either.
+So the shuffled control splits the information flow into a template-level part and a prompt-specific part, which a matched sweep can't do. Remember this in part 3️⃣: mean and
+resample ablation can't see template-level information either.
 </details>
 '''
 
@@ -982,7 +1059,8 @@ r'''
 - In the residual stream, the information that distinguishes clean from `ABC` sits at S2 up to layer 7 and at END from layer 9. Denoising and noising agree here, because the residual stream at the right position is a bottleneck.
 - The shuffled-pairing control shows that part of what's stored at S2 (from layer 4) and at END (up to layer 10) is the same for every prompt with our template, while the END residual stream at layer 11 is entirely prompt-specific. It also shows that a control can introduce changes of its own (different names at IO and S1).
 
-Residual stream patching is easy to interpret precisely because the residual stream is a bottleneck. Individual heads aren't bottlenecks, and that's where the two patching directions start to disagree.
+Residual stream patching is easy to interpret precisely because the residual stream is a bottleneck. Individual heads aren't bottlenecks, and that's where the two patching
+directions start to disagree.
 '''
 
 # ! CELL TYPE: markdown
@@ -1000,7 +1078,8 @@ r'''
 r'''
 ## Two questions, not one
 
-[1.4.1] gave you the slogan: **noising tells you what is necessary, denoising tells you what is sufficient.** Let's make that precise, because the two directions really do answer different questions as soon as a behaviour depends on more than one component.
+[1.4.1] gave you the slogan: **noising tells you what is necessary, denoising tells you what is sufficient.** Let's make that precise, because the two directions really do answer
+different questions as soon as a behaviour depends on more than one component.
 
 - **Denoising** component $c$: the model runs on the corrupted prompt, except that $c$ gets its clean value. A high score means "$c$'s clean value, together with *corrupted* values everywhere else upstream, is enough to bring back the behaviour".
 - **Noising** component $c$: the model runs on the clean prompt, except that $c$ gets its corrupted value. A high score means "the behaviour can't survive without $c$'s clean value, even with *clean* values everywhere else".
@@ -1044,9 +1123,12 @@ OR      y = a or b     denoising a: 1   noising a: 0</pre>
 
 </details>
 
-Each row is a different signature. If you only ran one direction, you couldn't tell an AND input from a serial one (noising gives 1 for both), or an OR input from a serial one (denoising gives 1 for both).
+Each row is a different signature. If you only ran one direction, you couldn't tell an AND input from a serial one (noising gives 1 for both), or an OR input from a serial one
+(denoising gives 1 for both).
 
-Real circuits are mixtures of all three. The IOI circuit has serial structure (duplicate-token heads → S-inhibition heads → name movers), AND-like structure (the name movers need both "which names are in context" and "which one is duplicated"), and OR-like structure (several heads, including backup name movers, can each do part of the same job). So we should expect heads to sit at very different places on a denoising-vs-noising plot. Let's make that plot.
+Real circuits are mixtures of all three. The IOI circuit has serial structure (duplicate-token heads → S-inhibition heads → name movers), AND-like structure (the name movers need
+both "which names are in context" and "which one is duplicated"), and OR-like structure (several heads, including backup name movers, can each do part of the same job). So we
+should expect heads to sit at very different places on a denoising-vs-noising plot. Let's make that plot.
 '''
 
 # ! CELL TYPE: markdown
@@ -1063,9 +1145,12 @@ r'''
 > You should spend up to 10 minutes on this exercise.
 > ```
 
-Implement `head_sweep`. For every (layer, head), it should run the model on `base_tokens` with that head's output at *all* positions replaced by the source, and record the **mean metric** (not the patching score; we'll normalise afterwards, which lets us reuse this function with sources that aren't a corrupted prompt, like ablations).
+Implement `head_sweep`. For every (layer, head), it should run the model on `base_tokens` with that head's output at *all* positions replaced by the source, and record the **mean
+metric** (not the patching score; we'll normalise afterwards, which lets us reuse this function with sources that aren't a corrupted prompt, like ablations).
 
-We patch at `hook_z`, the per-head attention output *before* it's multiplied by $W_O$. Since a head's contribution to the residual stream is $z^{(h)} W_O^{(h)}$, replacing $z^{(h)}$ is exactly the same as replacing the head's output, but it's cheaper (no need for `use_attn_result`). `source_z` is a list with one tensor per layer, each of shape `(batch, seq, n_heads, d_head)`, i.e. what you get from `cache["z", layer]`.
+We patch at `hook_z`, the per-head attention output *before* it's multiplied by $W_O$. Since a head's contribution to the residual stream is $z^{(h)} W_O^{(h)}$, replacing
+$z^{(h)}$ is exactly the same as replacing the head's output, but it's cheaper (no need for `use_attn_result`). `source_z` is a list with one tensor per layer, each of shape
+`(batch, seq, n_heads, d_head)`, i.e. what you get from `cache["z", layer]`.
 '''
 
 # ! CELL TYPE: code
@@ -1109,7 +1194,8 @@ r'''
 Loop over layers and heads, and call `patch_run` with hook name `get_act_name("z", layer)`, source `source_z[layer]`, and index `np.s_[:, :, head]`.
 </details>
 
-We'll need the `hook_z` activations for lots of different prompts, so here's a helper. We also record the head classes the IOI paper identified, which we'll use to colour our plots. (These labels come from Wang et al.'s analysis on *their* dataset; part of our job is to check whether they hold up on ours.)
+We'll need the `hook_z` activations for lots of different prompts, so here's a helper. We also record the head classes the IOI paper identified, which we'll use to colour our
+plots. (These labels come from Wang et al.'s analysis on *their* dataset; part of our job is to check whether they hold up on ours.)
 '''
 
 # ! CELL TYPE: code
@@ -1146,7 +1232,9 @@ IOI_HEAD_CLASSES = {  # from Wang et al. (2022), figure 2
 # ! TAGS: []
 
 r'''
-Now let's run three head sweeps on the `ABC` task: denoising, noising, and the **placebo control**: noising with activations from the placebo prompts (same names, different filler words), normalised by the same clean-vs-`ABC` gap as the real noising sweep. The placebo changes no IOI-relevant information, so the largest placebo score tells us how big a score can get "for free", from heads that react to changes in the filler words. We'll call that the **noise floor**.
+Now let's run three head sweeps on the `ABC` task: denoising, noising, and the **placebo control**: noising with activations from the placebo prompts (same names, different filler
+words), normalised by the same clean-vs-`ABC` gap as the real noising sweep. The placebo changes no IOI-relevant information, so the largest placebo score tells us how big a score
+can get "for free", from heads that react to changes in the filler words. We'll call that the **noise floor**.
 '''
 
 # ! CELL TYPE: code
@@ -1237,7 +1325,8 @@ r'''
 <details>
 <summary>Help - how should I interpret this plot?</summary>
 
-First, the control. The placebo sweep's largest score is 0.076 in absolute value (the yellow square). Every head outside the square responds to the IOI information more than any head responds to arbitrary changes of filler words; inside it, don't interpret anything.
+First, the control. The placebo sweep's largest score is 0.076 in absolute value (the yellow square). Every head outside the square responds to the IOI information more than any
+head responds to arbitrary changes of filler words; inside it, don't interpret anything.
 
 Here are the exact scores for the heads that matter (the cell prints them):
 
@@ -1261,7 +1350,8 @@ Most heads sit close to the diagonal, but the departures from it are informative
 - **Negative heads: 10.7, 11.10, 11.2 and 9.6.** Both scores are negative: restoring their clean output makes things *worse*, and corrupting them makes things *better*. In the clean run these heads push against the correct answer. 10.7 and 11.10 are the IOI paper's negative name movers, but 9.6 is supposed to be a name mover, so its negative scores are a puzzle. We'll come back to it in part 4️⃣.
 - **Missing: the name movers.** 9.9 and 10.0, the heads that write the answer into the logits, have single-head scores of 0.04 and 0.15 when noised, and 0.17 and 0.16 when denoised: smaller than most of the S-inhibition heads, which merely tell them what to do. Keep this in mind.
 
-Finally, neither set of scores adds up to 1 (the sums over all heads are 1.54 for denoising and 1.72 for noising). Single-head patching scores are not a decomposition of the behaviour into parts; they're 144 separate experiments.
+Finally, neither set of scores adds up to 1 (the sums over all heads are 1.54 for denoising and 1.72 for noising). Single-head patching scores are not a decomposition of the
+behaviour into parts; they're 144 separate experiments.
 </details>
 '''
 
@@ -1279,9 +1369,12 @@ r'''
 > You should spend up to 10 minutes on this exercise.
 > ```
 
-A head's output at different positions can play completely different roles (an induction head's output at S2 means "S2 is a repeat", its output at END might mean nothing at all). Implement `head_position_sweep`, which for each head in `heads` (given as strings like `"9.6"`; use `parse_head`) and each position, patches only that head's output at that one position, and returns the mean metric as a `(len(heads), seq)` tensor.
+A head's output at different positions can play completely different roles (an induction head's output at S2 means "S2 is a repeat", its output at END might mean nothing at all).
+Implement `head_position_sweep`, which for each head in `heads` (given as strings like `"9.6"`; use `parse_head`) and each position, patches only that head's output at that one
+position, and returns the mean metric as a `(len(heads), seq)` tensor.
 
-This is the same as `head_sweep` with a different index. (If you're tempted to sweep every head at every position: that's $144 \times 15 = 2160$ forward passes. It's fine for GPT-2 Small and 100 prompts, but it's exactly the scaling problem that attribution patching in 8.2 exists to solve.)
+This is the same as `head_sweep` with a different index. (If you're tempted to sweep every head at every position: that's $144 \times 15 = 2160$ forward passes. It's fine for GPT-2
+Small and 100 prompts, but it's exactly the scaling problem that attribution patching in 8.2 exists to solve.)
 '''
 
 # ! CELL TYPE: code
@@ -1356,13 +1449,15 @@ r'''
 <details>
 <summary>Help - how should I interpret this plot?</summary>
 
-Every column before S2 is zero (the cell checks this), because the clean and `ABC` prompts are identical up to S2 and attention is causal. Beyond that, the heads split cleanly by position.
+Every column before S2 is zero (the cell checks this), because the clean and `ABC` prompts are identical up to S2 and attention is causal. Beyond that, the heads split cleanly by
+position.
 
 - **Duplicate-token and induction heads (0.10, 3.0, 5.5, 5.9) matter only at S2** (0.17, 0.29, 0.40, 0.30). Their job is to write "this token is a repeat" into S2's residual stream; their output at END is irrelevant. This matches part 1️⃣, where everything before layer 7 happened at S2.
 - **S-inhibition heads (7.3, 7.9, 8.6, 8.10) and the later heads matter only at END.** The S-inhibition heads move information from S2 to END in layers 7-8, exactly where the residual stream sweep showed the handoff, and the name movers and negative name movers write from END into the logits. 10.7 (-0.57) and 11.10 (-0.31) are the most negative cells.
 - **6.9 and 9.9 are empty.** 6.9 is an induction head in the IOI paper but does nothing measurable here, and 9.9's single-position score is as small as its all-position one.
 
-For heads that act at one position only, the all-position score and the single-position score are the same experiment (compare 5.5: 0.40 in both). Head × position sweeps earn their cost for heads that do different things at different positions, which is more common in longer prompts.
+For heads that act at one position only, the all-position score and the single-position score are the same experiment (compare 5.5: 0.40 in both). Head × position sweeps earn their
+cost for heads that do different things at different positions, which is more common in longer prompts.
 </details>
 '''
 
@@ -1396,7 +1491,8 @@ r'''
 r'''
 ## The corruption is the question
 
-When you noise a component, you replace its activation with *something*. Whatever you choose, the experiment measures the effect of changing the information that differs between the clean activation and that something, and nothing else. Here are the common choices, all of which you'll find in published work:
+When you noise a component, you replace its activation with *something*. Whatever you choose, the experiment measures the effect of changing the information that differs between
+the clean activation and that something, and nothing else. Here are the common choices, all of which you'll find in published work:
 
 | source of the replacement | used in | what it removes |
 |---|---|---|
@@ -1406,7 +1502,9 @@ When you noise a component, you replace its activation with *something*. Whateve
 | **resample ablation**: replace with the activation on another random prompt | causal scrubbing (Chan et al. 2022) | whatever varies across that dataset, while keeping each activation a "real" one |
 | **Gaussian noise** added to input embeddings | ROME's causal tracing (Meng et al. 2022) | depends on the noise scale; usually off-distribution |
 
-The key point is in the last column. **An ablation can only remove information that differs between the clean run and the replacement.** Mean ablation over a dataset preserves everything that's constant across that dataset. Zero ablation removes everything, including information that the model relies on for *every* task, which tells you about the model's general health rather than about the task.
+The key point is in the last column. **An ablation can only remove information that differs between the clean run and the replacement.** Mean ablation over a dataset preserves
+everything that's constant across that dataset. Zero ablation removes everything, including information that the model relies on for *every* task, which tells you about the model's
+general health rather than about the task.
 
 Zhang & Nanda ([*Towards Best Practices of Activation Patching*](https://arxiv.org/abs/2309.16042), 2023) compared several of these systematically and found that they can give quite different circuits; they recommend matched corrupted prompts (which they call "symmetric token replacement") over Gaussian noise. Let's see the differences for ourselves.
 
@@ -1474,7 +1572,8 @@ r'''
 <details>
 <summary>Hint - how do I make a permutation with no fixed points?</summary>
 
-Take a random ordering `order` of the indices, and map each index to the next one in that order (wrapping around): `perm[order[k]] = order[k + 1]`. This is a single cycle through all the prompts, so nobody maps to themselves. In code: `perm = t.empty_like(order); perm[order] = order.roll(-1)`.
+Take a random ordering `order` of the indices, and map each index to the next one in that order (wrapping around): `perm[order[k]] = order[k + 1]`. This is a single cycle through
+all the prompts, so nobody maps to themselves. In code: `perm = t.empty_like(order); perm[order] = order.roll(-1)`.
 </details>
 '''
 
@@ -1483,9 +1582,12 @@ Take a random ordering `order` of the indices, and map each index to the next on
 # ! TAGS: []
 
 r'''
-Now let's run the same noising head sweep with seven different replacements: the three corrupted-prompt datasets, the three ablations of the clean activations, and the placebo. Since these replacements don't share a common "corrupted run", we report the **raw change in logit difference**, $\Delta M = M_{\text{patched}} - M_{\text{clean}}$, rather than a normalised score. Negative means the head's clean output was helping.
+Now let's run the same noising head sweep with seven different replacements: the three corrupted-prompt datasets, the three ablations of the clean activations, and the placebo.
+Since these replacements don't share a common "corrupted run", we report the **raw change in logit difference**, $\Delta M = M_{\text{patched}} - M_{\text{clean}}$, rather than a
+normalised score. Negative means the head's clean output was helping.
 
-Before you run it: which heads do you expect zero ablation to flag that the others don't? Which heads do you expect *mean* ablation to miss, given that every prompt in our dataset is ABBA?
+Before you run it: which heads do you expect zero ablation to flag that the others don't? Which heads do you expect *mean* ablation to miss, given that every prompt in our dataset
+is ABBA?
 '''
 
 # ! CELL TYPE: code
@@ -1555,15 +1657,28 @@ CONTROL: placebo       most negative: 4.7 (-0.14), 5.11 (-0.10), 3.10 (-0.05), 6
 <details>
 <summary>Help - how should I interpret these results?</summary>
 
-**The three corrupted-prompt datasets agree.** `ABC` and `XYZ` give almost identical maps (correlation 0.97) and the same top heads: 5.5, 8.10, 5.9, 3.0, 7.9, 8.6. `ABA` correlates 0.89 with `ABC` and finds the same heads, with effects about twice as large (5.5: -1.54 vs -0.80), because the `ABA` corrupted run doesn't just lack the signal, it carries the opposite one. `ABA` also gives the name movers 9.9 (-1.03) and 10.0 (-0.79) large effects, which `ABC` doesn't: in an `ABA` prompt, the name movers' corrupted output actively copies the wrong name, which is a much bigger change than copying "nothing in particular".
+**The three corrupted-prompt datasets agree.** `ABC` and `XYZ` give almost identical maps (correlation 0.97) and the same top heads: 5.5, 8.10, 5.9, 3.0, 7.9, 8.6. `ABA` correlates
+0.89 with `ABC` and finds the same heads, with effects about twice as large (5.5: -1.54 vs -0.80), because the `ABA` corrupted run doesn't just lack the signal, it carries the
+opposite one. `ABA` also gives the name movers 9.9 (-1.03) and 10.0 (-0.79) large effects, which `ABC` doesn't: in an `ABA` prompt, the name movers' corrupted output actively
+copies the wrong name, which is a much bigger change than copying "nothing in particular".
 
-**Zero ablation finds different heads.** Its top heads are 0.9 (-2.30), 5.9, 1.3, 8.3 and 4.11, and its map is covered in moderate effects of both signs, particularly in layers 0-1. Head 0.9 doesn't show up under any other replacement. Zeroing a head's output doesn't remove "IOI information"; it removes everything the head ever writes, including whatever it writes on every prompt, and the downstream layers have never seen a residual stream without that. The result is an off-distribution input, and the effects mostly measure how much the model depends on the head in general. Zero ablation correlates only 0.46-0.55 with every other replacement.
+**Zero ablation finds different heads.** Its top heads are 0.9 (-2.30), 5.9, 1.3, 8.3 and 4.11, and its map is covered in moderate effects of both signs, particularly in layers
+0-1. Head 0.9 doesn't show up under any other replacement. Zeroing a head's output doesn't remove "IOI information"; it removes everything the head ever writes, including whatever
+it writes on every prompt, and the downstream layers have never seen a residual stream without that. The result is an off-distribution input, and the effects mostly measure how
+much the model depends on the head in general. Zero ablation correlates only 0.46-0.55 with every other replacement.
 
-**Mean and resample ablation miss the start of the circuit.** They agree with each other almost perfectly (0.99) and correlate 0.72-0.82 with the corrupted prompts, but look at what's missing from their top heads: 5.5, 5.9, 3.0 and 8.6 are gone, and the effects of 8.10 (-0.34 and -0.29) and 7.9 (-0.23 and -0.26) are less than half of what `ABC` gives. What they find instead are the late heads: name mover 10.0 (-0.39), backup name movers 10.1 and 10.6, and the negative heads 10.7 and 11.10 with positive effects.
+**Mean and resample ablation miss the start of the circuit.** They agree with each other almost perfectly (0.99) and correlate 0.72-0.82 with the corrupted prompts, but look at
+what's missing from their top heads: 5.5, 5.9, 3.0 and 8.6 are gone, and the effects of 8.10 (-0.34 and -0.29) and 7.9 (-0.23 and -0.26) are less than half of what `ABC` gives.
+What they find instead are the late heads: name mover 10.0 (-0.39), backup name movers 10.1 and 10.6, and the negative heads 10.7 and 11.10 with positive effects.
 
-Why? Every prompt in our dataset is ABBA, so the duplicated name is always at positions 4 and 10. The duplicate-token and induction heads write something like "S2 repeats the token at position 4" into S2, and that's *the same in every prompt*. Replacing a head's output with its mean over the dataset, or with its output on another prompt from the dataset, leaves that information intact. Only what varies across prompts (here, mostly the identity of the names) gets ablated. It's the same template-level information that the shuffled control detected at S2 in part 1️⃣.
+Why? Every prompt in our dataset is ABBA, so the duplicated name is always at positions 4 and 10. The duplicate-token and induction heads write something like "S2 repeats the token
+at position 4" into S2, and that's *the same in every prompt*. Replacing a head's output with its mean over the dataset, or with its output on another prompt from the dataset,
+leaves that information intact. Only what varies across prompts (here, mostly the identity of the names) gets ablated. It's the same template-level information that the shuffled
+control detected at S2 in part 1️⃣.
 
-**The placebo stays near zero.** Its largest effects are 4.7 (-0.14) and 5.10 (+0.16). Interestingly, the placebo map correlates more with mean ablation (0.42) than with the corrupted prompts (0.13-0.15). Mean and resample ablation also replace whatever a head encodes about the filler words, so they pick up the same small filler-sensitive effects (4.7 is in the top six of both).
+**The placebo stays near zero.** Its largest effects are 4.7 (-0.14) and 5.10 (+0.16). Interestingly, the placebo map correlates more with mean ablation (0.42) than with the
+corrupted prompts (0.13-0.15). Mean and resample ablation also replace whatever a head encodes about the filler words, so they pick up the same small filler-sensitive effects (4.7
+is in the top six of both).
 </details>
 
 <details>
@@ -1607,7 +1722,8 @@ r'''
 r'''
 ## Letting the rest of the model react (or not)
 
-Every patch so far let everything downstream of the patched component **recompute**. That's the natural thing to do, but it means a patching score mixes together everything the change causes: the component's own contribution to the logits, its influence on later components, and those components' reactions.
+Every patch so far let everything downstream of the patched component **recompute**. That's the natural thing to do, but it means a patching score mixes together everything the
+change causes: the component's own contribution to the logits, its influence on later components, and those components' reactions.
 
 Causal mediation analysis (Pearl 2001; applied to transformers by Vig et al. 2020 and McGrath et al. 2023) separates these. For a component $c$ and the noising direction:
 
@@ -1621,7 +1737,9 @@ $$
 $$
 - The **indirect effect** is the rest: $\text{IE}(c) = \text{TE}(c) - \text{DE}(c)$. It's the part of $c$'s effect that goes *through* other components. For an S-inhibition head this is the whole point (it affects the output only by changing what the name movers attend to). For a name mover it should be small... unless the rest of the model reacts to its absence.
 
-"Freeze every other component" has to include the final LayerNorm. The final LayerNorm divides the residual stream by its norm, and the norm depends on everything, so we also freeze its scale at the clean value. Then the direct effect of a head is exactly linear: if $\Delta o_h$ is the change in head $h$'s output at the final position and $\sigma$ is the frozen LayerNorm scale,
+"Freeze every other component" has to include the final LayerNorm. The final LayerNorm divides the residual stream by its norm, and the norm depends on everything, so we also
+freeze its scale at the clean value. Then the direct effect of a head is exactly linear: if $\Delta o_h$ is the change in head $h$'s output at the final position and $\sigma$ is
+the frozen LayerNorm scale,
 
 $$
 \text{DE}(h) = \frac{\Delta o_h \cdot (W_U[:, \text{IO}] - W_U[:, \text{S}])}{\sigma}
@@ -1629,7 +1747,8 @@ $$
 
 which is the **direct logit attribution** of the change. This identity is how the tests check your implementation.
 
-We can also do anything in between: let some downstream components recompute and freeze the rest. That gives "path-restricted" effects, a generalisation of the path patching you did in [1.4.1] (where heads were frozen and MLPs recomputed).
+We can also do anything in between: let some downstream components recompute and freeze the rest. That gives "path-restricted" effects, a generalisation of the path patching you
+did in [1.4.1] (where heads were frozen and MLPs recomputed).
 '''
 
 # ! CELL TYPE: markdown
@@ -1646,7 +1765,8 @@ r'''
 > You should spend up to 20-25 minutes on this exercise.
 > ```
 
-We'll treat the model as a graph of **nodes**: every attention head (named `"layer.head"`, e.g. `"9.6"`), every MLP (named `"mlp{layer}"`, e.g. `"mlp9"`), and the final LayerNorm scale (`"ln_final"`). `all_nodes(model)` returns the full set.
+We'll treat the model as a graph of **nodes**: every attention head (named `"layer.head"`, e.g. `"9.6"`), every MLP (named `"mlp{layer}"`, e.g. `"mlp9"`), and the final LayerNorm
+scale (`"ln_final"`). `all_nodes(model)` returns the full set.
 
 Implement `run_with_frozen`, which runs the model on `base_tokens` and:
 
@@ -1660,9 +1780,11 @@ Then:
 - `recompute = set()` gives the **direct** effect;
 - anything in between restricts the paths through which the patch can act.
 
-Freezing nodes *upstream* of the patched head is harmless: they'd compute their clean values anyway. So you don't need to work out what's downstream of what, which keeps the code simple.
+Freezing nodes *upstream* of the patched head is harmless: they'd compute their clean values anyway. So you don't need to work out what's downstream of what, which keeps the code
+simple.
 
-A few tips: one hook per layer at `hook_z` can handle all of that layer's heads (`hook.layer()` gives you the layer index). Hook functions can return a new tensor instead of modifying the activation in place, which is the simplest way to freeze an MLP or the LayerNorm scale.
+A few tips: one hook per layer at `hook_z` can handle all of that layer's heads (`hook.layer()` gives you the layer index). Hook functions can return a new tensor instead of
+modifying the activation in place, which is the simplest way to freeze an MLP or the LayerNorm scale.
 '''
 
 # ! CELL TYPE: code
@@ -1747,7 +1869,8 @@ You need three kinds of hooks:
 <details>
 <summary>Help - my "direct effect" test fails, but the other two pass.</summary>
 
-Check that you freeze the final LayerNorm scale and every MLP. Without the LayerNorm, changing one head's output changes the norm of the final residual stream, which rescales *every* component's contribution to the logits. Without the MLPs, late MLPs react to the change. Either way the result is no longer the direct logit attribution of the change.
+Check that you freeze the final LayerNorm scale and every MLP. Without the LayerNorm, changing one head's output changes the norm of the final residual stream, which rescales
+*every* component's contribution to the logits. Without the MLPs, late MLPs react to the change. Either way the result is no longer the direct logit attribution of the change.
 </details>
 '''
 
@@ -1765,7 +1888,8 @@ r'''
 > You should spend up to 10 minutes on this exercise.
 > ```
 
-Implement `total_and_direct_effect`, which noises a **set** of heads at once (patching each one's `hook_z` with its value in `corrupted_cache`) and returns `(total effect, direct effect)` as two floats, each measured as the change in the mean metric relative to the clean run.
+Implement `total_and_direct_effect`, which noises a **set** of heads at once (patching each one's `hook_z` with its value in `corrupted_cache`) and returns `(total effect, direct
+effect)` as two floats, each measured as the change in the mean metric relative to the clean run.
 '''
 
 # ! CELL TYPE: code
@@ -1875,7 +1999,8 @@ The diagonal is where a head's whole effect is direct. The heads fall into three
 - **Far above the diagonal: the name movers.** Noising 9.9 has a direct effect of -2.02, two-thirds of the whole clean logit difference (2.92), but a total effect of only about -0.07. Its indirect effect is +1.94: the rest of the model makes up for almost everything 9.9 stops writing. 9.6 is stranger still: direct effect -0.88, total effect **+0.33**, so noising it makes the model *better*. 10.0 is in between (direct -0.64, total -0.29).
 - **On or below the diagonal, at the top right: the negative heads.** 10.7 writes against the answer (noising it has a direct effect of +1.59), but its total effect is only +1.14, so even its effect is partly compensated. 11.10 and 11.2 sit on the diagonal: their effects are purely direct.
 
-The name movers are exactly the heads that part 2️⃣ found "unimportant in both directions". Their single-head patching scores were small because the model compensates for each of them, not because they don't do anything.
+The name movers are exactly the heads that part 2️⃣ found "unimportant in both directions". Their single-head patching scores were small because the model compensates for each of
+them, not because they don't do anything.
 </details>
 '''
 
@@ -1886,7 +2011,9 @@ The name movers are exactly the heads that part 2️⃣ found "unimportant in bo
 r'''
 ## Restricting paths
 
-The indirect effect lumps together every route from a head to the logits. With `run_with_frozen` we can open the routes one at a time: noise a "sender" head, and let only a chosen set of downstream nodes recompute. For example, "noise 8.10, recompute only the name movers" asks *how much of 8.10's effect could flow through the name movers, if nothing else reacted?*
+The indirect effect lumps together every route from a head to the logits. With `run_with_frozen` we can open the routes one at a time: noise a "sender" head, and let only a chosen
+set of downstream nodes recompute. For example, "noise 8.10, recompute only the name movers" asks *how much of 8.10's effect could flow through the name movers, if nothing else
+reacted?*
 
 '''
 
@@ -1904,7 +2031,8 @@ r'''
 > You should spend up to 5-10 minutes on this exercise.
 > ```
 
-Implement `path_restricted_effects`, which noises a single `sender` head and, for each named route in `routes` (a dict from route name to a set of nodes to recompute), returns the change in mean metric relative to the clean run.
+Implement `path_restricted_effects`, which noises a single `sender` head and, for each named route in `routes` (a dict from route name to a set of nodes to recompute), returns the
+change in mean metric relative to the clean run.
 '''
 
 # ! CELL TYPE: code
@@ -1985,9 +2113,12 @@ Read across the row for 8.10.
 - But if the negative name movers can react as well, the effect drops back to -0.72, and letting every late head react gives -0.92, close to the total. So the paths through the name movers and through the negative name movers have large effects of *opposite sign* that mostly cancel, a cancellation that's invisible in the total effect.
 - Path effects don't add up. "Via name movers only" (-2.00) plus "direct" (-0.27) is nothing like "total" (-0.77), because each restricted run freezes the components that would otherwise respond.
 
-7.9 shows the same pattern more weakly (-0.88 via the name movers, -0.58 total). For the early heads 5.5 and 3.0, the late heads are the wrong place to look: letting only heads in layers 9-11 recompute gives almost nothing (-0.12 and -0.04), and their effect only appears once the middle layers, where the S-inhibition heads are, can recompute as well (-0.72 and -0.86). That's the serial structure (duplicate/induction heads → S-inhibition heads → name movers), read directly off the table.
+7.9 shows the same pattern more weakly (-0.88 via the name movers, -0.58 total). For the early heads 5.5 and 3.0, the late heads are the wrong place to look: letting only heads in
+layers 9-11 recompute gives almost nothing (-0.12 and -0.04), and their effect only appears once the middle layers, where the S-inhibition heads are, can recompute as well (-0.72
+and -0.86). That's the serial structure (duplicate/induction heads → S-inhibition heads → name movers), read directly off the table.
 
-One more detail: for 3.0, "via all heads" (MLPs and the final LayerNorm frozen) gives -0.86, more than its total effect of -0.58. When the MLPs and the LayerNorm are allowed to react, they absorb part of the effect: another, smaller instance of compensation.
+One more detail: for 3.0, "via all heads" (MLPs and the final LayerNorm frozen) gives -0.86, more than its total effect of -0.58. When the MLPs and the LayerNorm are allowed to
+react, they absorb part of the effect: another, smaller instance of compensation.
 </details>
 '''
 
@@ -1998,7 +2129,9 @@ One more detail: for 3.0, "via all heads" (MLPs and the final LayerNorm frozen) 
 r'''
 ## The Hydra effect: knocking out the name movers
 
-We can now resolve the puzzle from the introduction. Let's noise all three name movers at once and measure the total and direct effects. To know whether the gap between them is unusual, we need a **control**: the same measurement for 30 random sets of three heads, drawn from the same layers (9-11, excluding the name movers). If nothing special is going on, the total effect of a set of heads should be roughly equal to its direct effect, i.e. the points should lie near the line TE = DE.
+We can now resolve the puzzle from the introduction. Let's noise all three name movers at once and measure the total and direct effects. To know whether the gap between them is
+unusual, we need a **control**: the same measurement for 30 random sets of three heads, drawn from the same layers (9-11, excluding the name movers). If nothing special is going
+on, the total effect of a set of heads should be roughly equal to its direct effect, i.e. the points should lie near the line TE = DE.
 
 We'll add one more group for contrast: the four S-inhibition heads, whose effect we expect to be almost entirely *indirect*.
 
@@ -2060,13 +2193,19 @@ Name movers: total - direct = +3.51</pre>
 <details>
 <summary>Help - how should I interpret this plot?</summary>
 
-**The control behaves as expected.** For random sets of three heads from layers 9-11, the total effect is close to the direct effect: the median gap $|\text{TE} - \text{DE}|$ is 0.03, and the largest is 0.47. (The two points furthest to the right, slightly below the line, are the two random sets that happen to include the negative name mover 10.7, whose own effect we just saw is partly compensated; they account for the largest gaps.)
+**The control behaves as expected.** For random sets of three heads from layers 9-11, the total effect is close to the direct effect: the median gap $|\text{TE} - \text{DE}|$ is
+0.03, and the largest is 0.47. (The two points furthest to the right, slightly below the line, are the two random sets that happen to include the negative name mover 10.7, whose
+own effect we just saw is partly compensated; they account for the largest gaps.)
 
-**The name movers are far off the line.** Their direct effect is -3.53: with everything else frozen, replacing their outputs removes more than the entire clean logit difference of 2.92 (the logit difference would go from +2.92 to about -0.6, so the model would slightly prefer S). Their total effect is -0.03. The model makes up for 3.51 of the 3.53 logits we removed. That gap is more than seven times the largest gap in the control.
+**The name movers are far off the line.** Their direct effect is -3.53: with everything else frozen, replacing their outputs removes more than the entire clean logit difference of
+2.92 (the logit difference would go from +2.92 to about -0.6, so the model would slightly prefer S). Their total effect is -0.03. The model makes up for 3.51 of the 3.53 logits we
+removed. That gap is more than seven times the largest gap in the control.
 
-**The S-inhibition heads are off the line in the other direction.** Direct effect -0.35, total effect -2.00. That's not compensation, it's the circuit: their effect works through the name movers, so most of it is indirect.
+**The S-inhibition heads are off the line in the other direction.** Direct effect -0.35, total effect -2.00. That's not compensation, it's the circuit: their effect works through
+the name movers, so most of it is indirect.
 
-So this plot has a simple reading. Below the diagonal, effects are *mediated* by downstream components; above it, they're *compensated* by downstream components. Both are invisible if you only measure total effects, which is what ordinary activation patching does.
+So this plot has a simple reading. Below the diagonal, effects are *mediated* by downstream components; above it, they're *compensated* by downstream components. Both are invisible
+if you only measure total effects, which is what ordinary activation patching does.
 </details>
 '''
 
@@ -2084,17 +2223,21 @@ r'''
 > You should spend up to 15-20 minutes on this exercise.
 > ```
 
-Who picks up the slack? To find out, we'll compute each head's **direct contribution** to the logit difference, once in the clean run and once in the run where the name movers are knocked out, and look at which heads change.
+Who picks up the slack? To find out, we'll compute each head's **direct contribution** to the logit difference, once in the clean run and once in the run where the name movers are
+knocked out, and look at which heads change.
 
-Implement `head_direct_contributions`, which takes a cache (containing `hook_z` and `ln_final.hook_scale`) and the answer tokens, and returns a `(n_layers, n_heads)` tensor: the mean over prompts of each head's direct logit attribution at the final position,
+Implement `head_direct_contributions`, which takes a cache (containing `hook_z` and `ln_final.hook_scale`) and the answer tokens, and returns a `(n_layers, n_heads)` tensor: the
+mean over prompts of each head's direct logit attribution at the final position,
 
 $$
 \text{DLA}(h) = \frac{z^{(h)}_{\text{END}} W_O^{(h)} \cdot \big(W_U[:, \text{correct}] - W_U[:, \text{incorrect}]\big)}{\sigma_{\text{END}}}
 $$
 
-where $\sigma_{\text{END}}$ is the final LayerNorm scale at the final position *in the same run* (so that in each run, the contributions of all heads, MLPs, embeddings and biases add up to that run's logit difference).
+where $\sigma_{\text{END}}$ is the final LayerNorm scale at the final position *in the same run* (so that in each run, the contributions of all heads, MLPs, embeddings and biases
+add up to that run's logit difference).
 
-This is the same quantity as the direct logit attribution in [1.2] and [1.4.1], but computed from `hook_z` and `W_O` rather than from `cache.stack_head_results`. (The test checks it against `stack_head_results`.)
+This is the same quantity as the direct logit attribution in [1.2] and [1.4.1], but computed from `hook_z` and `W_O` rather than from `cache.stack_head_results`. (The test checks
+it against `stack_head_results`.)
 '''
 
 # ! CELL TYPE: code
@@ -2132,13 +2275,17 @@ r'''
 <details>
 <summary>Hint</summary>
 
-Stack `cache["z", layer][:, -1]` over layers to get shape `(layer, batch, head, d_head)`. Multiply by `model.W_O` (shape `(layer, head, d_head, d_model)`) with an einsum to get each head's output `(layer, batch, head, d_model)`. Divide by `cache["ln_final.hook_scale"][:, -1]` (shape `(batch, 1)`; broadcast it carefully). Finally take the dot product with the per-prompt logit difference direction `W_U[:, correct] - W_U[:, incorrect]`, of shape `(d_model, batch)`, and average over the batch.
+Stack `cache["z", layer][:, -1]` over layers to get shape `(layer, batch, head, d_head)`. Multiply by `model.W_O` (shape `(layer, head, d_head, d_model)`) with an einsum to get
+each head's output `(layer, batch, head, d_model)`. Divide by `cache["ln_final.hook_scale"][:, -1]` (shape `(batch, 1)`; broadcast it carefully). Finally take the dot product with
+the per-prompt logit difference direction `W_U[:, correct] - W_U[:, incorrect]`, of shape `(d_model, batch)`, and average over the batch.
 </details>
 
 <details>
 <summary>Aside - why doesn't the head's mean get subtracted, like layernorm would?</summary>
 
-The final LayerNorm also subtracts the mean of the residual stream over `d_model`. TransformerLens loads GPT-2 with `center_writing_weights=True`, which makes every component's output (including every head's $W_O$ output) mean-zero over `d_model`, so the subtraction does nothing to it. If you load a model without that option, you'd need to centre each head's output yourself.
+The final LayerNorm also subtracts the mean of the residual stream over `d_model`. TransformerLens loads GPT-2 with `center_writing_weights=True`, which makes every component's
+output (including every head's $W_O$ output) mean-zero over `d_model`, so the subtraction does nothing to it. If you load a model without that option, you'd need to centre each
+head's output yourself.
 </details>
 '''
 
@@ -2147,7 +2294,8 @@ The final LayerNorm also subtracts the mean of the residual stream over `d_model
 # ! TAGS: []
 
 r'''
-Now let's run the knocked-out model with a cache, and compare. We use TransformerLens's `model.hooks` context manager so that `run_with_cache` runs with our patching hooks attached.
+Now let's run the knocked-out model with a cache, and compare. We use TransformerLens's `model.hooks` context manager so that `run_with_cache` runs with our patching hooks
+attached.
 '''
 
 # ! CELL TYPE: code
@@ -2218,20 +2366,26 @@ Direct contributions, clean -&gt; knocked out:
 <details>
 <summary>Help - how should I interpret this?</summary>
 
-In the clean run, the name movers contribute +4.34 to the logit difference, and the negative heads take some of it back (10.7 contributes -1.71, 11.2 -0.50). When we knock the name movers out, their contributions drop by 3.52 in total (9.9: -2.00, 9.6: -0.87, 10.0: -0.64), and the other heads' contributions rise by 3.47, almost exactly the same amount. The compensation comes from two different mechanisms.
+In the clean run, the name movers contribute +4.34 to the logit difference, and the negative heads take some of it back (10.7 contributes -1.71, 11.2 -0.50). When we knock the name
+movers out, their contributions drop by 3.52 in total (9.9: -2.00, 9.6: -0.87, 10.0: -0.64), and the other heads' contributions rise by 3.47, almost exactly the same amount. The
+compensation comes from two different mechanisms.
 
 - **Suppression is withdrawn.** By far the biggest change is the negative name mover 10.7, whose contribution goes from -1.71 to +0.16 (a change of +1.87). 11.2 does the same thing on a smaller scale (-0.50 → -0.03). 10.7 is a *copy suppression* head (McDougall et al. 2023): it pushes down tokens that earlier layers are predicting. When the name movers stop predicting IO, 10.7 stops suppressing it. McGrath et al. call this **erasure**: part of the downstream computation was cancelling the upstream signal, and the cancellation disappears along with the signal. (Wang et al. list 11.2 as a *backup* name mover, but on our data its clean contribution is negative, so here it behaves more like a negative one.)
 - **Backups step up.** 10.10 (+0.37 → +0.81), 10.2 (-0.09 → +0.27), 10.6 (+0.30 → +0.56) and 10.1 (+0.35 → +0.55) all write *more* IO once the name movers are gone. These are among the IOI paper's backup name movers: they were doing a little of the job all along, and they do more of it when the main heads fail.
 
-Together, these changes almost exactly cancel the knockout. This experiment doesn't tell us *how* the backups know to step up. One hypothesis is that they read the name movers' output at END, and do less when it says the job is already done. You could test it with `run_with_frozen`, by noising the name movers and letting only one backup head recompute.
+Together, these changes almost exactly cancel the knockout. This experiment doesn't tell us *how* the backups know to step up. One hypothesis is that they read the name movers'
+output at END, and do less when it says the job is already done. You could test it with `run_with_frozen`, by noising the name movers and letting only one backup head recompute.
 </details>
 
 <details>
 <summary>Question - does this mean the name movers "don't matter"?</summary>
 
-No, and this is exactly why you should never read "small total effect" as "unimportant". In the clean model, the name movers do most of the work: their direct contribution is larger than the whole logit difference. The model *also* contains machinery that can do the job when they fail, and machinery (the negative name movers) whose suppression depends on what the name movers do. A complete description of the circuit has to include both.
+No, and this is exactly why you should never read "small total effect" as "unimportant". In the clean model, the name movers do most of the work: their direct contribution is
+larger than the whole logit difference. The model *also* contains machinery that can do the job when they fail, and machinery (the negative name movers) whose suppression depends
+on what the name movers do. A complete description of the circuit has to include both.
 
-It does mean that **single-component total effects are a poor guide to what a component does**, and that circuit-discovery methods built on them (including ACDC in 8.4) can miss components whose effect is masked by backups. Direct effects, path-restricted effects and joint ablations are the tools that reveal them.
+It does mean that **single-component total effects are a poor guide to what a component does**, and that circuit-discovery methods built on them (including ACDC in 8.4) can miss
+components whose effect is masked by backups. Direct effects, path-restricted effects and joint ablations are the tools that reveal them.
 </details>
 '''
 
@@ -2269,7 +2423,8 @@ Hanna et al. ([*How does GPT-2 compute greater-than?*](https://arxiv.org/abs/230
 The war lasted from the year 1732 to the year 17
 ```
 
-A model that understands the sentence should continue with a two-digit year *greater than* 32. GPT-2 tokenizes `" 1732"` as `" 17"` + `"32"`, so the next token is one of the 100 two-digit tokens `"00"`, ..., `"99"`, and we can read off the model's whole distribution over end years.
+A model that understands the sentence should continue with a two-digit year *greater than* 32. GPT-2 tokenizes `" 1732"` as `" 17"` + `"32"`, so the next token is one of the 100
+two-digit tokens `"00"`, ..., `"99"`, and we can read off the model's whole distribution over end years.
 
 The natural metric is the **probability difference**: the total probability on years greater than the start year YY, minus the total probability on years less than or equal to it,
 
@@ -2277,11 +2432,15 @@ $$
 \text{PD} = \sum_{y > YY} p(y) - \sum_{y \le YY} p(y)
 $$
 
-which is +1 if the model is perfectly right and -1 if it's perfectly wrong. The standard corruption replaces the start year with `01` ("from the year 1701"). This keeps everything else identical but makes almost every year "greater". Note that it doesn't erase the task: on `01` prompts, the model should *also* predict a year greater than 01. The corrupted run is only wrong relative to the *clean* start year, which is what the metric measures.
+which is +1 if the model is perfectly right and -1 if it's perfectly wrong. The standard corruption replaces the start year with `01` ("from the year 1701"). This keeps everything
+else identical but makes almost every year "greater". Note that it doesn't erase the task: on `01` prompts, the model should *also* predict a year greater than 01. The corrupted
+run is only wrong relative to the *clean* start year, which is what the metric measures.
 
-This is a useful second task because it's quite different from IOI: the answer depends on comparing two numbers rather than moving a name, and the metric is a sum of probabilities rather than a logit difference.
+This is a useful second task because it's quite different from IOI: the answer depends on comparing two numbers rather than moving a name, and the metric is a sum of probabilities
+rather than a logit difference.
 
-We keep only centuries 12-17 and start years 02-98 for which both `" XXYY"` and `" XX01"` split into exactly the tokens `" XX"` + `"YY"`, so that every prompt has the same 13-token template.
+We keep only centuries 12-17 and start years 02-98 for which both `" XXYY"` and `" XX01"` split into exactly the tokens `" XX"` + `"YY"`, so that every prompt has the same 13-token
+template.
 '''
 
 # ! CELL TYPE: code
@@ -2319,7 +2478,8 @@ r'''
 > You should spend up to 10 minutes on this exercise.
 > ```
 
-Implement the probability difference metric. `year_tokens` is a tensor of the 100 token ids for `"00"`, ..., `"99"` (in order), and `start_years` contains each clean prompt's YY as an integer. Use the softmax over the **full vocabulary** at the final position (so the 100 probabilities don't necessarily sum to 1), and return one PD per prompt.
+Implement the probability difference metric. `year_tokens` is a tensor of the 100 token ids for `"00"`, ..., `"99"` (in order), and `start_years` contains each clean prompt's YY as
+an integer. Use the softmax over the **full vocabulary** at the final position (so the 100 probabilities don't necessarily sum to 1), and return one PD per prompt.
 '''
 
 # ! CELL TYPE: code
@@ -2354,7 +2514,8 @@ r'''
 <details>
 <summary>Hint</summary>
 
-Index the softmaxed final logits with `year_tokens` to get a `(batch, 100)` tensor. Build a boolean mask `greater[b, y] = y > start_years[b]` by broadcasting `t.arange(100)` against `start_years[:, None]`, and use it (and its negation `~greater`) to sum the two groups.
+Index the softmaxed final logits with `year_tokens` to get a `(batch, 100)` tensor. Build a boolean mask `greater[b, y] = y > start_years[b]` by broadcasting `t.arange(100)`
+against `start_years[:, None]`, and use it (and its negation `~greater`) to sum the two groups.
 </details>
 
 Here's the task constructor. Note how little of it is specific to greater-than: everything task-specific lives in the metric.
@@ -2433,11 +2594,15 @@ Mean probability mass on the 100 two-digit tokens (clean): 0.999</pre>
 <details>
 <summary>Help - how should I interpret this plot?</summary>
 
-**Clean prompts (left).** Practically all the probability (99.9%) goes to the two-digit year tokens, and almost all of it sits just to the right of the red line: the model predicts end years *after* the start year, concentrated in the decades immediately following it, with almost nothing before YY. That's a sharp, prompt-dependent threshold, and it gives a PD of 0.80. There are also faint vertical stripes at a few round years (e.g. 50), which the model likes regardless of YY.
+**Clean prompts (left).** Practically all the probability (99.9%) goes to the two-digit year tokens, and almost all of it sits just to the right of the red line: the model predicts
+end years *after* the start year, concentrated in the decades immediately following it, with almost nothing before YY. That's a sharp, prompt-dependent threshold, and it gives a PD
+of 0.80. There are also faint vertical stripes at a few round years (e.g. 50), which the model likes regardless of YY.
 
-**Corrupted prompts (right).** With a start year of 01, the model puts most of its mass on years from 02 to about 20, for every prompt, regardless of the clean YY. (The red line is irrelevant to these prompts, but it's what the metric is measured against.) Measured against the clean start year, those predictions are mostly "too early", so PD is -0.58.
+**Corrupted prompts (right).** With a start year of 01, the model puts most of its mass on years from 02 to about 20, for every prompt, regardless of the clean YY. (The red line is
+irrelevant to these prompts, but it's what the metric is measured against.) Measured against the clean start year, those predictions are mostly "too early", so PD is -0.58.
 
-So the clean-corrupted gap is about 1.39 PD, and the question for patching is: which components carry "the start year is YY" to the final position, and which use it to put the probability mass after YY?
+So the clean-corrupted gap is about 1.39 PD, and the question for patching is: which components carry "the start year is YY" to the final position, and which use it to put the
+probability mass after YY?
 </details>
 '''
 
@@ -2446,7 +2611,8 @@ So the clean-corrupted gap is about 1.39 PD, and the question for patching is: w
 # ! TAGS: []
 
 r'''
-Since the greater-than task satisfies the same interface, all our sweeps work on it without modification. Let's sweep the residual stream, the attention outputs and the MLP outputs (denoising), and then compare with the attention and MLP sweeps for IOI.
+Since the greater-than task satisfies the same interface, all our sweeps work on it without modification. Let's sweep the residual stream, the attention outputs and the MLP outputs
+(denoising), and then compare with the attention and MLP sweeps for IOI.
 '''
 
 # ! CELL TYPE: code
@@ -2513,11 +2679,19 @@ The greater-than sweep cell also prints the residual stream columns:
 <pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace">resid_pre at YY, by layer:  [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.93, 0.82, 0.55, 0.22, -0.02, 0.0]
 resid_pre at END, by layer: [0.0, -0.0, -0.0, -0.0, -0.0, -0.0, 0.13, 0.28, 0.53, 0.74, 0.99, 1.0]</pre>
 
-**Greater-than.** The residual stream sweep has the same two-phase shape as IOI: the information sits at YY up to layer 5, then moves to the final position over layers 6-10 (the YY column falls from 1.00 at layer 5 to 0.22 at layer 9, while END rises from 0.13 at layer 6 to 0.99 at layer 10). The attention sweep shows *how* it moves: attention outputs at END in layers 5-9 each restore a little (0.07 to 0.27). The MLP sweep shows where it's *used*: MLPs 8-11 at END restore 0.19, 0.47, 0.51 and 0.13. Their scores add up to 1.35, more than 1, so they overlap rather than add. This matches Hanna et al.: attention heads in layers 5-9 move the start year to the final position, and MLPs 8-11 compute "greater than YY" from it. At the YY position, MLP0 alone restores 0.86. As in many GPT-2 circuits, MLP0 acts like an extended token embedding.
+**Greater-than.** The residual stream sweep has the same two-phase shape as IOI: the information sits at YY up to layer 5, then moves to the final position over layers 6-10 (the YY
+column falls from 1.00 at layer 5 to 0.22 at layer 9, while END rises from 0.13 at layer 6 to 0.99 at layer 10). The attention sweep shows *how* it moves: attention outputs at END
+in layers 5-9 each restore a little (0.07 to 0.27). The MLP sweep shows where it's *used*: MLPs 8-11 at END restore 0.19, 0.47, 0.51 and 0.13. Their scores add up to 1.35, more
+than 1, so they overlap rather than add. This matches Hanna et al.: attention heads in layers 5-9 move the start year to the final position, and MLPs 8-11 compute "greater than YY"
+from it. At the YY position, MLP0 alone restores 0.86. As in many GPT-2 circuits, MLP0 acts like an extended token embedding.
 
-**IOI.** At END, attention restores most of the behaviour (layers 7 and 8: 0.54 and 0.73), and the late attention layers 10 and 11 have *negative* scores (-0.23 and -0.53), which is where the negative name movers live. The MLPs at END do essentially nothing (summed score 0.09). At S2, attention layers 0, 3 and 5 (the duplicate-token and induction heads) and MLP0 (0.92) matter.
+**IOI.** At END, attention restores most of the behaviour (layers 7 and 8: 0.54 and 0.73), and the late attention layers 10 and 11 have *negative* scores (-0.23 and -0.53), which
+is where the negative name movers live. The MLPs at END do essentially nothing (summed score 0.09). At S2, attention layers 0, 3 and 5 (the duplicate-token and induction heads) and
+MLP0 (0.92) matter.
 
-So the two tasks route information the same way (attention moves a token's information to the final position) but compute the answer in different places: IOI in attention heads (the name movers copy the name), greater-than mostly in MLPs. A method that only looks at attention heads, like the head sweeps of parts 2️⃣-4️⃣, would miss most of the greater-than circuit.
+So the two tasks route information the same way (attention moves a token's information to the final position) but compute the answer in different places: IOI in attention heads
+(the name movers copy the name), greater-than mostly in MLPs. A method that only looks at attention heads, like the head sweeps of parts 2️⃣-4️⃣, would miss most of the
+greater-than circuit.
 </details>
 '''
 
@@ -2526,7 +2700,8 @@ So the two tasks route information the same way (attention moves a token's infor
 # ! TAGS: []
 
 r'''
-Which attention heads move the year? Run the denoising head sweep on greater-than, and compare with Hanna et al., who found heads 5.1, 5.5, 6.1, 6.9, 7.10, 8.8, 8.11 and 9.1 attending from the final position to YY.
+Which attention heads move the year? Run the denoising head sweep on greater-than, and compare with Hanna et al., who found heads 5.1, 5.5, 6.1, 6.9, 7.10, 8.8, 8.11 and 9.1
+attending from the final position to YY.
 '''
 
 # ! CELL TYPE: code
@@ -2553,7 +2728,10 @@ Sum over all 144 heads: 0.78</pre>
 
 </details>
 
-The top six heads (9.1, 7.10, 8.11, 6.9, 5.1 and 5.5) and 8.8 in eighth place are all on Hanna et al.'s list, which is reassuring, since we used a different, smaller dataset and plain activation patching rather than path patching. (6.1, the one head from their list that's missing, isn't in the top 10, so it scores 0.01 or less here.) Two things are different from IOI. No single head matters much: the largest denoising score is 0.28, and the scores of all 144 heads add up to 0.78, compared with 1.35 for the MLPs at END. And the important heads are spread over layers 5-9 rather than concentrated in a couple of layers, consistent with the attention sweep above.
+The top six heads (9.1, 7.10, 8.11, 6.9, 5.1 and 5.5) and 8.8 in eighth place are all on Hanna et al.'s list, which is reassuring, since we used a different, smaller dataset and
+plain activation patching rather than path patching. (6.1, the one head from their list that's missing, isn't in the top 10, so it scores 0.01 or less here.) Two things are
+different from IOI. No single head matters much: the largest denoising score is 0.28, and the scores of all 144 heads add up to 0.78, compared with 1.35 for the MLPs at END. And
+the important heads are spread over layers 5-9 rather than concentrated in a couple of layers, consistent with the attention sweep above.
 '''
 
 # ! CELL TYPE: markdown
@@ -2563,7 +2741,8 @@ The top six heads (9.1, 7.10, 8.11, 6.9, 5.1 and 5.5) and 8.8 in eighth place ar
 r'''
 ## Pitfall: averages hide prompts
 
-Every number so far has been a mean over 100 prompts. A mean of -0.1 could be every prompt moving a little, or half the prompts moving a lot in each direction, and those are very different mechanisms. Before you call a component "unimportant" (or "important"), look at the distribution.
+Every number so far has been a mean over 100 prompts. A mean of -0.1 could be every prompt moving a little, or half the prompts moving a lot in each direction, and those are very
+different mechanisms. Before you call a component "unimportant" (or "important"), look at the distribution.
 
 '''
 
@@ -2691,7 +2870,8 @@ There are three kinds of head here.
 - **A mean near zero that hides both signs.** Name mover 9.9 has a mean of -0.07, and its CI touches zero ([-0.16, +0.00]), so by the usual standard it "has no effect". But its per-prompt effects range from -1.24 to +1.37, and 60% of them are negative. Noising it hurts on some prompts and helps on others, and the mean averages two real effects into nothing. (After part 4️⃣, a natural guess is that the balance between 9.9 and its backups differs from prompt to prompt.)
 - **Heavy tails.** The negative name mover 10.7 has the largest mean (+1.14) but also by far the largest spread (std 0.98): on some prompts, noising it adds more than 3 logits (max +3.64); on 9% of prompts it goes the other way (min -1.11).
 
-The general lesson: a mean with a confidence interval tells you whether an *average* effect is distinguishable from zero. It doesn't tell you whether the effect is the same on every prompt, and mechanisms often aren't.
+The general lesson: a mean with a confidence interval tells you whether an *average* effect is distinguishable from zero. It doesn't tell you whether the effect is the same on
+every prompt, and mechanisms often aren't.
 </details>
 '''
 
@@ -2702,9 +2882,11 @@ The general lesson: a mean with a confidence interval tells you whether an *aver
 r'''
 ## Pitfall: one template family is not the task
 
-All our IOI results come from one family of templates with ABBA order. Do they describe "how GPT-2 does IOI", or "how GPT-2 does *this sentence*"? The only way to find out is to rerun the analysis on templates we didn't look at while forming our conclusions.
+All our IOI results come from one family of templates with ABBA order. Do they describe "how GPT-2 does IOI", or "how GPT-2 does *this sentence*"? The only way to find out is to
+rerun the analysis on templates we didn't look at while forming our conclusions.
 
-We'll use four held-out template families: the same family in **BABA** order (`"When John and Mary went to the store, John gave a drink to"`), and three structurally different sentences from the IOI paper's template list.
+We'll use four held-out template families: the same family in **BABA** order (`"When John and Mary went to the store, John gave a drink to"`), and three structurally different
+sentences from the IOI paper's template list.
 
 '''
 
@@ -2722,7 +2904,9 @@ r'''
 > You should spend up to 10 minutes on this exercise.
 > ```
 
-Implement `heldout_noising_scores`. For each template family, sample `n` examples, build an `ABC` task with `make_ioi_task`, and compute the normalised head noising scores, exactly as we did for the main task in part 2️⃣. Also print each task's sequence length and clean and corrupted mean logit differences (you'll want them for the interpretation). Return a dict from family name to the `(n_layers, n_heads)` scores.
+Implement `heldout_noising_scores`. For each template family, sample `n` examples, build an `ABC` task with `make_ioi_task`, and compute the normalised head noising scores, exactly
+as we did for the main task in part 2️⃣. Also print each task's sequence length and clean and corrupted mean logit differences (you'll want them for the interpretation). Return a
+dict from family name to the `(n_layers, n_heads)` scores.
 '''
 
 # ! CELL TYPE: code
@@ -2803,11 +2987,17 @@ BABA order top 6: 8.6 (0.50), 5.5 (0.37), 7.9 (0.30), 6.9 (0.26), 8.10 (0.25), 9
 <details>
 <summary>Help - how should I interpret this?</summary>
 
-**The three structurally different ABBA templates transfer well** (r = 0.96-0.98 with the main template). Their top heads come from the same set: 5.5, 8.10, 7.9, 3.0, 5.9 and 8.6, in slightly different orders. Our conclusions about the duplication → S-inhibition part of the circuit aren't specific to one sentence frame.
+**The three structurally different ABBA templates transfer well** (r = 0.96-0.98 with the main template). Their top heads come from the same set: 5.5, 8.10, 7.9, 3.0, 5.9 and 8.6,
+in slightly different orders. Our conclusions about the duplication → S-inhibition part of the circuit aren't specific to one sentence frame.
 
-**BABA order transfers less well** (r = 0.81), and the differences look systematic rather than noisy. The top head is now the S-inhibition head 8.6 (0.50, compared with 0.17 on the main task), 6.9 and 9.9 enter the top six, 3.0 and 5.9 drop out, and 8.10 falls from 0.38 to 0.25. Look at the corrupted baseline, too: on BABA prompts the `ABC` logit difference is **-0.73**, the mirror image of the +0.92 we saw on ABBA. Without a duplicated name, the model prefers the *first* name, which in BABA order is the subject. So for GPT-2 Small, ABBA and BABA IOI are not quite the same computation: in one the positional prior helps the circuit, in the other the circuit has to overcome it, and the work is spread differently across heads.
+**BABA order transfers less well** (r = 0.81), and the differences look systematic rather than noisy. The top head is now the S-inhibition head 8.6 (0.50, compared with 0.17 on the
+main task), 6.9 and 9.9 enter the top six, 3.0 and 5.9 drop out, and 8.10 falls from 0.38 to 0.25. Look at the corrupted baseline, too: on BABA prompts the `ABC` logit difference
+is **-0.73**, the mirror image of the +0.92 we saw on ABBA. Without a duplicated name, the model prefers the *first* name, which in BABA order is the subject. So for GPT-2 Small,
+ABBA and BABA IOI are not quite the same computation: in one the positional prior helps the circuit, in the other the circuit has to overcome it, and the work is spread differently
+across heads.
 
-This is the price of our ABBA-only design choice from part 1️⃣, made visible. Any description of "the IOI circuit" based only on ABBA prompts (like everything in parts 1️⃣-4️⃣) should be read as a description of ABBA IOI.
+This is the price of our ABBA-only design choice from part 1️⃣, made visible. Any description of "the IOI circuit" based only on ABBA prompts (like everything in parts 1️⃣-4️⃣)
+should be read as a description of ABBA IOI.
 </details>
 '''
 
@@ -2818,7 +3008,10 @@ This is the price of our ABBA-only design choice from part 1️⃣, made visible
 r'''
 ## Pitfall: the metric decides the answer
 
-The logit difference has become the default IOI metric for good reasons (Zhang & Nanda 2023 recommend it): it's linear in the final residual stream (which is what made our direct effects exact), it isn't saturated by the softmax, and it measures the *choice between the two names*, which is the thing IOI is about. But other metrics are often used, and they measure different things. The probability of the correct answer, for example, also goes up if the model becomes more confident that the next token is *some* name, and down if probability leaks to tokens like `" the"` or `" them"`.
+The logit difference has become the default IOI metric for good reasons (Zhang & Nanda 2023 recommend it): it's linear in the final residual stream (which is what made our direct
+effects exact), it isn't saturated by the softmax, and it measures the *choice between the two names*, which is the thing IOI is about. But other metrics are often used, and they
+measure different things. The probability of the correct answer, for example, also goes up if the model becomes more confident that the next token is *some* name, and down if
+probability leaks to tokens like `" the"` or `" them"`.
 
 '''
 
@@ -2836,7 +3029,8 @@ r'''
 > You should spend up to 10 minutes on this exercise (mostly on the interpretation).
 > ```
 
-Implement `answer_probability`, the per-prompt probability of the correct answer (`answer_tokens[:, 0]`) at the final position. Then run the cell after it, which repeats the `ABC` noising head sweep with this metric and plots each head's change in probability against its change in logit difference.
+Implement `answer_probability`, the per-prompt probability of the correct answer (`answer_tokens[:, 0]`) at the final position. Then run the cell after it, which repeats the `ABC`
+noising head sweep with this metric and plots each head's change in probability against its change in logit difference.
 '''
 
 # ! CELL TYPE: code
@@ -2973,7 +3167,9 @@ r'''
 
 Everything in this section patched whole activations: a whole residual stream vector, a whole head output. A natural next step is to patch only a **subspace**, e.g. a single direction you believe encodes "which name is the IO". Makelov, Lange & Nanda ([*Is This the Subspace You Are Looking For? An Interpretability Illusion for Subspace Activation Patching*](https://arxiv.org/abs/2311.17030), 2023) showed that this can produce convincing effects that aren't there. If a direction combines a component that *distinguishes* the two prompts (but is never read by the model) with a *dormant* component (that the model would read, but which is normally inactive), patching along that direction activates the dormant pathway. You get a large patching effect from a direction that played no role in the model's actual computation.
 
-You built exactly this illusion on a toy model in [0.6] How to Know When an Interpretability Result Is Fake. The lesson for this chapter: whole-component patching is relatively safe (you replace an activation with another activation the model actually produces), but as soon as you patch subspaces, features or edges, ask whether your intervention could be *creating* the path it reports.
+You built exactly this illusion on a toy model in [0.6] How to Know When an Interpretability Result Is Fake. The lesson for this chapter: whole-component patching is relatively
+safe (you replace an activation with another activation the model actually produces), but as soon as you patch subspaces, features or edges, ask whether your intervention could be
+*creating* the path it reports.
 '''
 
 # ! CELL TYPE: markdown
@@ -3006,7 +3202,8 @@ Here is everything from this section, in the form of questions to ask of any act
 r'''
 ## Try it yourself
 
-Now design your own patching experiment. The cell below builds a task from any IOI-style template and corruption scheme you like, and runs the residual stream sweep and the head noising sweep on it. Some things to try:
+Now design your own patching experiment. The cell below builds a task from any IOI-style template and corruption scheme you like, and runs the residual stream sweep and the head
+noising sweep on it. Some things to try:
 
 - **Your own template.** Write a template with `{A}`, `{B}`, `{C}` (and optionally `{PLACE}`, `{OBJECT}`). Does the S2 → END handoff happen at the same layers? Are the same heads important? (Keep every slot single-token, so all prompts have the same length.)
 - **A different corruption.** Try `"XYZ"`: now the IO and S1 positions differ between clean and corrupted prompts too. Which positions light up in the residual stream sweep, and what do you think they're carrying?
@@ -3056,7 +3253,9 @@ r'''
 Top heads by noising score: 8.10 (0.50), 5.9 (0.47), 5.5 (0.35), 7.9 (0.31), 3.0 (0.23), 8.6 (0.17), 7.3 (0.17), 9.9 (0.14)
 Correlation with the main task's noising scores: 0.96</pre>
 
-With six extra tokens between the names and S2, the picture barely changes. The S2 → END handoff still happens at layer 8 (0.47 at S2, 0.48 at END), the same heads come out on top, and the head noising scores correlate 0.96 with the main task's. The first-name prior is stronger here (`ABC` logit difference 1.48). Now try something that *should* change the picture, such as the `XYZ` corruption, or a template with three names in the first clause.
+With six extra tokens between the names and S2, the picture barely changes. The S2 → END handoff still happens at layer 8 (0.47 at S2, 0.48 at END), the same heads come out on top,
+and the head noising scores correlate 0.96 with the main task's. The first-name prior is stronger here (`ABC` logit difference 1.48). Now try something that *should* change the
+picture, such as the `XYZ` corruption, or a template with three names in the first clause.
 </details>
 '''
 
@@ -3090,15 +3289,22 @@ r'''
 r'''
 ## Path patching, rebuilt
 
-In [1.4.1] you implemented path patching with a three-step algorithm. Your `run_with_frozen` does most of it in one call: noising a sender head with `recompute = {receiver heads} ∪ {all MLPs} ∪ {"ln_final"}` lets the change reach the logits only through the receivers (and the MLPs, which [1.4.1]'s version also treated as part of the direct path). Use this to reproduce [1.4.1]'s "path patching to the name movers" result, and check where the two methods differ. (Hint: [1.4.1] patched only the receivers' *queries*; here the receivers' keys and values also see the change. How would you restrict `run_with_frozen` to queries only?)
+In [1.4.1] you implemented path patching with a three-step algorithm. Your `run_with_frozen` does most of it in one call: noising a sender head with `recompute = {receiver heads} ∪
+{all MLPs} ∪ {"ln_final"}` lets the change reach the logits only through the receivers (and the MLPs, which [1.4.1]'s version also treated as part of the direct path). Use this to
+reproduce [1.4.1]'s "path patching to the name movers" result, and check where the two methods differ. (Hint: [1.4.1] patched only the receivers' *queries*; here the receivers'
+keys and values also see the change. How would you restrict `run_with_frozen` to queries only?)
 
 ## Gaussian-noise corruptions
 
-ROME's "causal tracing" corrupts the subject by adding Gaussian noise (3× the embedding standard deviation) to its token embeddings, rather than swapping in a different token. Implement this as a corruption for IOI (add noise to the `hook_embed` output at the S2 position, or at all name positions), cache the resulting activations, and add it to the corruption grid of part 3️⃣. How well does it agree with `ABC`? Which heads does it flag that `ABC` doesn't?
+ROME's "causal tracing" corrupts the subject by adding Gaussian noise (3× the embedding standard deviation) to its token embeddings, rather than swapping in a different token.
+Implement this as a corruption for IOI (add noise to the `hook_embed` output at the S2 position, or at all name positions), cache the resulting activations, and add it to the
+corruption grid of part 3️⃣. How well does it agree with `ABC`? Which heads does it flag that `ABC` doesn't?
 
 ## An anomaly: noising 9.6 helps
 
-In part 4️⃣, noising name mover 9.6 on its own *increased* the logit difference (look at its total effect), even though its direct effect is negative. Which heads respond to 9.6 being noised? Use `head_direct_contributions` on a run with only 9.6 noised, and compare with the clean run. Is the negative name mover 10.7 involved, as it was for the full knockout?
+In part 4️⃣, noising name mover 9.6 on its own *increased* the logit difference (look at its total effect), even though its direct effect is negative. Which heads respond to 9.6
+being noised? Use `head_direct_contributions` on a run with only 9.6 noised, and compare with the clean run. Is the negative name mover 10.7 involved, as it was for the full
+knockout?
 
 ## Self-repair through LayerNorm
 
@@ -3106,7 +3312,9 @@ Our direct effects froze the final LayerNorm scale. When you remove a component,
 
 ## Greater-than MLP neurons
 
-Hanna et al. show that MLPs 8-11 contain neurons that upweight years greater than YY. Take the MLP with the biggest denoising score at the final position, find the neurons whose activation difference (clean vs `01`) contributes most to PD, and plot each one's output direction projected onto the 100 year tokens, $W_{out}[n] \, W_U[:, \text{years}]$. Do you see neurons that boost a *range* of years?
+Hanna et al. show that MLPs 8-11 contain neurons that upweight years greater than YY. Take the MLP with the biggest denoising score at the final position, find the neurons whose
+activation difference (clean vs `01`) contributes most to PD, and plot each one's output direction projected onto the 100 year tokens, $W_{out}[n] \, W_U[:, \text{years}]$. Do you
+see neurons that boost a *range* of years?
 
 ## Further reading
 
@@ -3120,5 +3328,6 @@ Hanna et al. show that MLPs 8-11 contain neurons that upweight years greater tha
 - Makelov, Lange & Nanda (2023), [*Is This the Subspace You Are Looking For?*](https://arxiv.org/abs/2311.17030). The subspace patching illusion.
 - Chan et al. (2022), [*Causal Scrubbing*](https://www.lesswrong.com/posts/JvZhhzycHu2Yd57RN/causal-scrubbing-a-method-for-rigorously-testing). Resample ablation taken to its logical conclusion; it's the subject of section 8.5.
 
-The next section, 8.2, asks how to get sweeps like these without thousands of forward passes: attribution patching approximates them with a single backward pass, and exact patching results like the ones you computed here are the ground truth to check it against.
+The next section, 8.2, asks how to get sweeps like these without thousands of forward passes: attribution patching approximates them with a single backward pass, and exact patching
+results like the ones you computed here are the ground truth to check it against.
 '''

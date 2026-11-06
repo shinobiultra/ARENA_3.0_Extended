@@ -1,0 +1,128 @@
+FFFF                                                                     [100%]
+=================================== FAILURES ===================================
+_ test_practice_oracle_rejects_review_mutants[half-exact-scores-    if type(steps) is not int or steps <= 0:-    return exact_edge_effects(graph)/2\n    if type(steps) is not int or steps <= 0:] _
+
+mutant = 'half-exact', stage = 'scores'
+before = '    if type(steps) is not int or steps <= 0:'
+after = '    return exact_edge_effects(graph)/2\n    if type(steps) is not int or steps <= 0:'
+
+    @pytest.mark.parametrize(('mutant','stage','before','after'),[
+     ('half-exact','scores','    if type(steps) is not int or steps <= 0:',
+      '    return exact_edge_effects(graph)/2\n    if type(steps) is not int or steps <= 0:'),
+     ('one-midpoint','scores','    if type(steps) is not int or steps <= 0:',
+      '    steps=1\n    if type(steps) is not int or steps <= 0:'),
+     ('omit-corrupt','assembly',"denominator = metrics['full']-metrics['corrupt']",
+      "denominator = metrics['full']"),
+     ('max-drop','assembly',"'minimality':min(path_result['drops'])/denominator",
+      "'minimality':max(path_result['drops'])/denominator")])
+    def test_practice_oracle_rejects_review_mutants(mutant,stage,before,after):
+        source=lesson.REFERENCE_METHODS.replace(before,after)
+        assert source!=lesson.REFERENCE_METHODS
+        ns=lesson.practice_namespace(source)
+        make=ns['make_graph']
+        def distinct_only(case):
+            assert len(case['node_order'])==4
+            assert case['node_order'][0]=='practice-input'
+            return make(case)
+        ns['make_graph']=distinct_only
+>       with pytest.raises(AssertionError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE AssertionError
+
+tests/mastery/test_graph_prediction.py:357: Failed
+_ test_practice_oracle_rejects_review_mutants[one-midpoint-scores-    if type(steps) is not int or steps <= 0:-    steps=1\n    if type(steps) is not int or steps <= 0:] _
+
+mutant = 'one-midpoint', stage = 'scores'
+before = '    if type(steps) is not int or steps <= 0:'
+after = '    steps=1\n    if type(steps) is not int or steps <= 0:'
+
+    @pytest.mark.parametrize(('mutant','stage','before','after'),[
+     ('half-exact','scores','    if type(steps) is not int or steps <= 0:',
+      '    return exact_edge_effects(graph)/2\n    if type(steps) is not int or steps <= 0:'),
+     ('one-midpoint','scores','    if type(steps) is not int or steps <= 0:',
+      '    steps=1\n    if type(steps) is not int or steps <= 0:'),
+     ('omit-corrupt','assembly',"denominator = metrics['full']-metrics['corrupt']",
+      "denominator = metrics['full']"),
+     ('max-drop','assembly',"'minimality':min(path_result['drops'])/denominator",
+      "'minimality':max(path_result['drops'])/denominator")])
+    def test_practice_oracle_rejects_review_mutants(mutant,stage,before,after):
+        source=lesson.REFERENCE_METHODS.replace(before,after)
+        assert source!=lesson.REFERENCE_METHODS
+        ns=lesson.practice_namespace(source)
+        make=ns['make_graph']
+        def distinct_only(case):
+            assert len(case['node_order'])==4
+            assert case['node_order'][0]=='practice-input'
+            return make(case)
+        ns['make_graph']=distinct_only
+>       with pytest.raises(AssertionError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE AssertionError
+
+tests/mastery/test_graph_prediction.py:357: Failed
+_ test_practice_oracle_rejects_review_mutants[omit-corrupt-assembly-denominator = metrics['full']-metrics['corrupt']-denominator = metrics['full']] _
+
+mutant = 'omit-corrupt', stage = 'assembly'
+before = "denominator = metrics['full']-metrics['corrupt']"
+after = "denominator = metrics['full']"
+
+    @pytest.mark.parametrize(('mutant','stage','before','after'),[
+     ('half-exact','scores','    if type(steps) is not int or steps <= 0:',
+      '    return exact_edge_effects(graph)/2\n    if type(steps) is not int or steps <= 0:'),
+     ('one-midpoint','scores','    if type(steps) is not int or steps <= 0:',
+      '    steps=1\n    if type(steps) is not int or steps <= 0:'),
+     ('omit-corrupt','assembly',"denominator = metrics['full']-metrics['corrupt']",
+      "denominator = metrics['full']"),
+     ('max-drop','assembly',"'minimality':min(path_result['drops'])/denominator",
+      "'minimality':max(path_result['drops'])/denominator")])
+    def test_practice_oracle_rejects_review_mutants(mutant,stage,before,after):
+        source=lesson.REFERENCE_METHODS.replace(before,after)
+        assert source!=lesson.REFERENCE_METHODS
+        ns=lesson.practice_namespace(source)
+        make=ns['make_graph']
+        def distinct_only(case):
+            assert len(case['node_order'])==4
+            assert case['node_order'][0]=='practice-input'
+            return make(case)
+        ns['make_graph']=distinct_only
+>       with pytest.raises(AssertionError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE AssertionError
+
+tests/mastery/test_graph_prediction.py:357: Failed
+_ test_practice_oracle_rejects_review_mutants[max-drop-assembly-'minimality':min(path_result['drops'])/denominator-'minimality':max(path_result['drops'])/denominator] _
+
+mutant = 'max-drop', stage = 'assembly'
+before = "'minimality':min(path_result['drops'])/denominator"
+after = "'minimality':max(path_result['drops'])/denominator"
+
+    @pytest.mark.parametrize(('mutant','stage','before','after'),[
+     ('half-exact','scores','    if type(steps) is not int or steps <= 0:',
+      '    return exact_edge_effects(graph)/2\n    if type(steps) is not int or steps <= 0:'),
+     ('one-midpoint','scores','    if type(steps) is not int or steps <= 0:',
+      '    steps=1\n    if type(steps) is not int or steps <= 0:'),
+     ('omit-corrupt','assembly',"denominator = metrics['full']-metrics['corrupt']",
+      "denominator = metrics['full']"),
+     ('max-drop','assembly',"'minimality':min(path_result['drops'])/denominator",
+      "'minimality':max(path_result['drops'])/denominator")])
+    def test_practice_oracle_rejects_review_mutants(mutant,stage,before,after):
+        source=lesson.REFERENCE_METHODS.replace(before,after)
+        assert source!=lesson.REFERENCE_METHODS
+        ns=lesson.practice_namespace(source)
+        make=ns['make_graph']
+        def distinct_only(case):
+            assert len(case['node_order'])==4
+            assert case['node_order'][0]=='practice-input'
+            return make(case)
+        ns['make_graph']=distinct_only
+>       with pytest.raises(AssertionError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE AssertionError
+
+tests/mastery/test_graph_prediction.py:357: Failed
+=========================== short test summary info ============================
+FAILED tests/mastery/test_graph_prediction.py::test_practice_oracle_rejects_review_mutants[half-exact-scores-    if type(steps) is not int or steps <= 0:-    return exact_edge_effects(graph)/2\n    if type(steps) is not int or steps <= 0:]
+FAILED tests/mastery/test_graph_prediction.py::test_practice_oracle_rejects_review_mutants[one-midpoint-scores-    if type(steps) is not int or steps <= 0:-    steps=1\n    if type(steps) is not int or steps <= 0:]
+FAILED tests/mastery/test_graph_prediction.py::test_practice_oracle_rejects_review_mutants[omit-corrupt-assembly-denominator = metrics['full']-metrics['corrupt']-denominator = metrics['full']]
+FAILED tests/mastery/test_graph_prediction.py::test_practice_oracle_rejects_review_mutants[max-drop-assembly-'minimality':min(path_result['drops'])/denominator-'minimality':max(path_result['drops'])/denominator]
+4 failed, 57 deselected in 1.28s

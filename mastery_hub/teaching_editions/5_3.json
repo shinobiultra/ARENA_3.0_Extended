@@ -1,0 +1,71 @@
+{
+  "schema_version": 1,
+  "section": "5.3",
+  "sources": {
+    "page": {
+      "path": "chapter5_modern_architectures/instructions/pages/03_[5.3]_Mamba_from_Scratch.md",
+      "sha256": "35420afea9fe1b47a9d4b433fe76503f175a7d35c0d1f39fbb5ca80fda55b8b6"
+    },
+    "exercises": {
+      "path": "chapter5_modern_architectures/exercises/part3_mamba_from_scratch/5.3_Mamba_from_Scratch_exercises.ipynb",
+      "sha256": "27026a893d5cb7138c83f0a943d3221cfa60d84dfca520f4ea35418d5aae7b81"
+    },
+    "reference": {
+      "path": "chapter5_modern_architectures/exercises/part3_mamba_from_scratch/5.3_Mamba_from_Scratch_solutions.ipynb",
+      "sha256": "247e06b358927098a0b082ee0e943a50d04bd99ad84a14f80fd95f7348da7b1e"
+    }
+  },
+  "replacements": [
+    {
+      "old": "## Core Question",
+      "new": "## Choose your execution route\n\nPrerequisites: Original ARENA1.1 module/caching conventions, tensor broadcasting and the scalar recurrence developed here. A fresh CPU learner needs PyTorch and the course dependencies, **no pretrained cache** for the analytic route. Work through dynamics, scans, mixer/model/cache tests and the model-free weight-mapping tests; then run the WRITE/HOLD/READ/ERASE signature and play.\n\nThe optional checkpoint route additionally needs the exact `REAL_MAMBA_MODEL_ID` and full `REAL_MAMBA_REVISION` printed in setup cached in advance, plus Transformers' compatible Mamba implementation and sufficient CPU RAM for both130M models. `local_files_only=True` does not acquire missing files. Cache acquisition is a separate deliberate action; no alternate revision is substituted. CUDA release hooks are a third, separately authorized route.\n\n### Practice opens with optional native execution off\n\nThe **Practice** workspace defaults `RUN_OPTIONAL_NATIVE=False`. Keep it false for the CPU route. The course reader automatically guards the optional native execution cells in the blank Practice notebook; core function definitions, stubs and all original reference results remain preserved. The Reference notebook retains historical unguarded code and is a reading artifact until its prerequisites are met. In a fresh kernel run Practice setup first, then inspect the flag before continuing. Setting the flag true opts into every guarded native branch in this section; meet all their prerequisites first. No model acquisition occurs with the flag false.\n\nThe guard begins at `parity_start`, leaving `hf_to_local_key`, `load_hf_mamba_weights`, `load_pinned_mamba_130m_cpu` and `pinned_mamba_cpu_parity` defined. With the flag false the cached-load tail is skipped, and execution continues at `tests.test_weight_mapping_without_checkpoint` and `tests.test_parity_assembly_without_checkpoint`, then the exact selective-memory signature and WRITE/HOLD/READ/ERASE play. Read saved checkpoint output as historical; your analytic memory result is a separate computation.\n\n## Core Question",
+      "counts": {
+        "page": 1,
+        "exercises": 1,
+        "reference": 1
+      }
+    },
+    {
+      "old": "The checkpoint `state-spaces/mamba-130m-hf` is already cached and pinned to revision `1e76775...`.",
+      "new": "The historical run used a cached `state-spaces/mamba-130m-hf` pinned to revision `1e76775...`; a fresh learner may have no cache.",
+      "counts": {
+        "page": 1,
+        "exercises": 1,
+        "reference": 1
+      }
+    },
+    {
+      "old": "this notebook executes its complete scientific path on CPU.",
+      "new": "the analytic route runs on CPU without weights; optional checkpoint parity needs its pinned cache.",
+      "counts": {
+        "page": 1,
+        "exercises": 1,
+        "reference": 1
+      }
+    },
+    {
+      "old": "**Claim.** By the end of this notebook, you will have built the Mamba-1 computation",
+      "new": "**Claim for the full optional checkpoint route.** By the end of this notebook, you will have built the Mamba-1 computation",
+      "counts": {
+        "page": 1,
+        "exercises": 1,
+        "reference": 1
+      }
+    }
+  ],
+  "rationale": [
+    "AS-5.3-1: preserve definitions and analytic continuation while guarding cached parity in a working copy."
+  ],
+  "practice_code_replacements": [
+    {
+      "old": "import gc\nimport sys\nimport time\nfrom dataclasses import dataclass\nfrom pathlib import Path\nfrom typing import Any\n\nimport matplotlib.pyplot as plt\nimport torch as t\nimport torch.nn as nn\nimport torch.nn.functional as F\n\nchapter = \"chapter5_modern_architectures\"\nsection = \"part3_mamba_from_scratch\"\nroot_dir = next(p for p in [Path.cwd(), *Path.cwd().parents] if (p / chapter).exists())\nexercises_dir = root_dir / chapter / \"exercises\"\nif str(root_dir) not in sys.path:\n    sys.path.append(str(root_dir))\nif str(exercises_dir) not in sys.path:\n    sys.path.append(str(exercises_dir))\n\nimport part3_mamba_from_scratch.tests as tests\n\nEXERCISE_ID = \"5_3_mamba_from_scratch\"\nGT_TIER = \"GT-1\"\nDIFFICULTY = 4\nIMPORTANCE = 5\nEXPECTED_RUNTIME = \"about 3 minutes CPU including cached Mamba-130M parity\"\nREQUIRES_GPU = True\n\nREAL_MAMBA_MODEL_ID = \"state-spaces/mamba-130m-hf\"\nREAL_MAMBA_REVISION = \"1e76775f628fbf1350fbe4dbb3d971ba64af25a1\"\n\nEVENT_HOLD = 0\nEVENT_WRITE = 1\nEVENT_READ = 2\nEVENT_ERASE = 3\n\nt.set_grad_enabled(True)\nprint(f\"PyTorch {t.__version__}; learner device = CPU\")",
+      "new": "RUN_OPTIONAL_NATIVE = False\nimport gc\nimport sys\nimport time\nfrom dataclasses import dataclass\nfrom pathlib import Path\nfrom typing import Any\n\nimport matplotlib.pyplot as plt\nimport torch as t\nimport torch.nn as nn\nimport torch.nn.functional as F\n\nchapter = \"chapter5_modern_architectures\"\nsection = \"part3_mamba_from_scratch\"\nroot_dir = next(p for p in [Path.cwd(), *Path.cwd().parents] if (p / chapter).exists())\nexercises_dir = root_dir / chapter / \"exercises\"\nif str(root_dir) not in sys.path:\n    sys.path.append(str(root_dir))\nif str(exercises_dir) not in sys.path:\n    sys.path.append(str(exercises_dir))\n\nimport part3_mamba_from_scratch.tests as tests\n\nEXERCISE_ID = \"5_3_mamba_from_scratch\"\nGT_TIER = \"GT-1\"\nDIFFICULTY = 4\nIMPORTANCE = 5\nEXPECTED_RUNTIME = \"about 3 minutes CPU including cached Mamba-130M parity\"\nREQUIRES_GPU = True\n\nREAL_MAMBA_MODEL_ID = \"state-spaces/mamba-130m-hf\"\nREAL_MAMBA_REVISION = \"1e76775f628fbf1350fbe4dbb3d971ba64af25a1\"\n\nEVENT_HOLD = 0\nEVENT_WRITE = 1\nEVENT_READ = 2\nEVENT_ERASE = 3\n\nt.set_grad_enabled(True)\nprint(f\"PyTorch {t.__version__}; learner device = CPU\")",
+      "reason": "Default Practice to analytic CPU execution; optional archived/native/training branches require a deliberate opt-in."
+    },
+    {
+      "old": "def hf_to_local_key(hf_key: str) -> str:\n    \"\"\"Map one public Transformers Mamba key to the from-scratch module tree.\"\"\"\n\n    raise NotImplementedError()\n\n\ndef load_hf_mamba_weights(\n    local_model: MambaForCausalLMFromScratch,\n    hf_state_dict: dict[str, t.Tensor],\n) -> dict[str, Any]:\n    \"\"\"Copy every checkpoint tensor through a visible one-key-at-a-time mapping.\"\"\"\n\n    raise NotImplementedError()\n\n\ndef load_pinned_mamba_130m_cpu(\n) -> tuple[Any, MambaForCausalLMFromScratch, dict[str, Any]]:\n    \"\"\"Load the cached pinned 130M reference and its weight-mapped local twin on CPU.\"\"\"\n\n    from transformers import MambaForCausalLM\n\n    official = MambaForCausalLM.from_pretrained(\n        REAL_MAMBA_MODEL_ID,\n        revision=REAL_MAMBA_REVISION,\n        local_files_only=True,\n        dtype=t.float32,\n    ).cpu().eval()\n    local = MambaForCausalLMFromScratch(\n        MambaConfig.from_hf_config(official.config)\n    ).cpu().eval()\n    mapping = load_hf_mamba_weights(local, official.state_dict())\n    return official, local, mapping\n\n\n@t.inference_mode()\ndef pinned_mamba_cpu_parity() -> dict[str, Any]:\n    \"\"\"Check every hidden state, final logits, cache behavior, and greedy tokens.\"\"\"\n\n    raise NotImplementedError()\n\n\nparity_start = time.perf_counter()\nparity_report = pinned_mamba_cpu_parity()\ntests.test_pinned_mamba_130m_weight_and_output_parity(lambda: parity_report)\nprint(f\"Mapped tensors:       {parity_report['mapped_tensor_count']}\")\nprint(f\"Hidden max |diff|:    {parity_report['hidden_max_abs_diff']:.3e}\")\nprint(f\"Hidden mean |diff|:   {parity_report['hidden_max_mean_abs_diff']:.3e}\")\nprint(f\"Logits max |diff|:    {parity_report['logits_max_abs_diff']:.3e}\")\nprint(f\"Logits mean |diff|:   {parity_report['logits_mean_abs_diff']:.3e}\")\nprint(f\"Logits top-1 agree:   {parity_report['logits_top1_agreement']:.3f}\")\nprint(f\"Cache max |diff|:     {parity_report['cache_max_abs_diff']:.3e}\")\nprint(f\"Greedy tokens match:  {parity_report['greedy_tokens_match']}\")\nprint(f\"CPU parity time:      {time.perf_counter() - parity_start:.1f}s\")\ngc.collect()",
+      "new": "def hf_to_local_key(hf_key: str) -> str:\n    \"\"\"Map one public Transformers Mamba key to the from-scratch module tree.\"\"\"\n\n    raise NotImplementedError()\n\n\ndef load_hf_mamba_weights(\n    local_model: MambaForCausalLMFromScratch,\n    hf_state_dict: dict[str, t.Tensor],\n) -> dict[str, Any]:\n    \"\"\"Copy every checkpoint tensor through a visible one-key-at-a-time mapping.\"\"\"\n\n    raise NotImplementedError()\n\n\ndef load_pinned_mamba_130m_cpu(\n) -> tuple[Any, MambaForCausalLMFromScratch, dict[str, Any]]:\n    \"\"\"Load the cached pinned 130M reference and its weight-mapped local twin on CPU.\"\"\"\n\n    from transformers import MambaForCausalLM\n\n    official = MambaForCausalLM.from_pretrained(\n        REAL_MAMBA_MODEL_ID,\n        revision=REAL_MAMBA_REVISION,\n        local_files_only=True,\n        dtype=t.float32,\n    ).cpu().eval()\n    local = MambaForCausalLMFromScratch(\n        MambaConfig.from_hf_config(official.config)\n    ).cpu().eval()\n    mapping = load_hf_mamba_weights(local, official.state_dict())\n    return official, local, mapping\n\n\n@t.inference_mode()\ndef pinned_mamba_cpu_parity() -> dict[str, Any]:\n    \"\"\"Check every hidden state, final logits, cache behavior, and greedy tokens.\"\"\"\n\n    raise NotImplementedError()\n\n\nif RUN_OPTIONAL_NATIVE:\n    parity_start = time.perf_counter()\n    parity_report = pinned_mamba_cpu_parity()\n    tests.test_pinned_mamba_130m_weight_and_output_parity(lambda: parity_report)\n    print(f\"Mapped tensors:       {parity_report['mapped_tensor_count']}\")\n    print(f\"Hidden max |diff|:    {parity_report['hidden_max_abs_diff']:.3e}\")\n    print(f\"Hidden mean |diff|:   {parity_report['hidden_max_mean_abs_diff']:.3e}\")\n    print(f\"Logits max |diff|:    {parity_report['logits_max_abs_diff']:.3e}\")\n    print(f\"Logits mean |diff|:   {parity_report['logits_mean_abs_diff']:.3e}\")\n    print(f\"Logits top-1 agree:   {parity_report['logits_top1_agreement']:.3f}\")\n    print(f\"Cache max |diff|:     {parity_report['cache_max_abs_diff']:.3e}\")\n    print(f\"Greedy tokens match:  {parity_report['greedy_tokens_match']}\")\n    print(f\"CPU parity time:      {time.perf_counter() - parity_start:.1f}s\")\n    gc.collect()",
+      "reason": "Keep checkpoint mapping/parity definitions; guard only cached130M execution and dependent outputs."
+    }
+  ]
+}

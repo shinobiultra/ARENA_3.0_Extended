@@ -1,0 +1,871 @@
+{
+  "notebooks": [
+    {
+      "section": "0.6",
+      "role": "exercises",
+      "path": "chapter0_fundamentals/exercises/part6_fake_interpretability_results_practice/0.6_How_to_Know_When_an_Interpretability_Result_Is_Fake_Practice_exercises.ipynb",
+      "sha256": "e13c2a0ecb12df834e7193b4759187cd34c855228e7fd37582e2a5e585f2b415",
+      "size_bytes": 131030
+    },
+    {
+      "section": "0.6",
+      "role": "reference",
+      "path": "chapter0_fundamentals/exercises/part6_fake_interpretability_results_practice/0.6_How_to_Know_When_an_Interpretability_Result_Is_Fake_Practice_solutions.ipynb",
+      "sha256": "ca963567ff2f6859909766733a6eae19a27a21197e96afcf8ae11be7de89bc33",
+      "size_bytes": 120342
+    },
+    {
+      "section": "1.6",
+      "role": "exercises",
+      "path": "chapter1_transformer_interp/exercises/part6_frontier_ml_infrastructure_practice/1.6_Local_Frontier_ML_Infrastructure_Practice_exercises.ipynb",
+      "sha256": "445c5099bdfb18408a674f65d6bd114c9d4cc5282e5d1e43111e608a2740189e",
+      "size_bytes": 133389
+    },
+    {
+      "section": "1.6",
+      "role": "reference",
+      "path": "chapter1_transformer_interp/exercises/part6_frontier_ml_infrastructure_practice/1.6_Local_Frontier_ML_Infrastructure_Practice_solutions.ipynb",
+      "sha256": "494080d3b4d423c18fb84ddccb829af915fc7763e9e7e69701f94568cadce9f3",
+      "size_bytes": 128719
+    },
+    {
+      "section": "5.1",
+      "role": "exercises",
+      "path": "chapter5_modern_architectures/exercises/part1_gemma_from_scratch/5.1_Gemma_from_Scratch_exercises.ipynb",
+      "sha256": "c0e267634d3efe4e032d5b3b80bcd70df7c871a1412df86fb9b35eaa8219b0a4",
+      "size_bytes": 311211
+    },
+    {
+      "section": "5.1",
+      "role": "reference",
+      "path": "chapter5_modern_architectures/exercises/part1_gemma_from_scratch/5.1_Gemma_from_Scratch_solutions.ipynb",
+      "sha256": "19292c3c889242e88a53a62c1075a721a2674077a27bc5af12416f5e73b81a2f",
+      "size_bytes": 343183
+    },
+    {
+      "section": "5.2",
+      "role": "exercises",
+      "path": "chapter5_modern_architectures/exercises/part2_mixture_of_experts/5.2_Mixture_of_Experts_from_Scratch_exercises.ipynb",
+      "sha256": "35d2dbb5ce971e055695ea73500fd36c3e35e2744b29f1fdddec75dfade3330b",
+      "size_bytes": 574843
+    },
+    {
+      "section": "5.2",
+      "role": "reference",
+      "path": "chapter5_modern_architectures/exercises/part2_mixture_of_experts/5.2_Mixture_of_Experts_from_Scratch_solutions.ipynb",
+      "sha256": "d01ac0653f20da9d4db0c48f26f7fe1f9f72528143007ce6cc3252b4a6626190",
+      "size_bytes": 794680
+    },
+    {
+      "section": "5.3",
+      "role": "exercises",
+      "path": "chapter5_modern_architectures/exercises/part3_mamba_from_scratch/5.3_Mamba_from_Scratch_exercises.ipynb",
+      "sha256": "27026a893d5cb7138c83f0a943d3221cfa60d84dfca520f4ea35418d5aae7b81",
+      "size_bytes": 178162
+    },
+    {
+      "section": "5.3",
+      "role": "reference",
+      "path": "chapter5_modern_architectures/exercises/part3_mamba_from_scratch/5.3_Mamba_from_Scratch_solutions.ipynb",
+      "sha256": "247e06b358927098a0b082ee0e943a50d04bd99ad84a14f80fd95f7348da7b1e",
+      "size_bytes": 671463
+    },
+    {
+      "section": "5.4",
+      "role": "exercises",
+      "path": "chapter5_modern_architectures/exercises/part4_mamba2_ssd/5.4_Mamba-2_and_State-Space_Duality_exercises.ipynb",
+      "sha256": "97eb75ba7c73dda7cc5a5501ecd2cf1645c113fa37a601a81c51e725671355ea",
+      "size_bytes": 608262
+    },
+    {
+      "section": "5.4",
+      "role": "reference",
+      "path": "chapter5_modern_architectures/exercises/part4_mamba2_ssd/5.4_Mamba-2_and_State-Space_Duality_solutions.ipynb",
+      "sha256": "16c7d3e0f648aea4a9d7446eed6e02f1c9033591e6019365325f8058f4aea35f",
+      "size_bytes": 594753
+    },
+    {
+      "section": "5.5",
+      "role": "exercises",
+      "path": "chapter5_modern_architectures/exercises/part5_state_tracking/5.5_State_Tracking_in_SSMs_and_Transformers_exercises.ipynb",
+      "sha256": "bb45e3ff103b7d59735cd5387aa98bbccb66440e972a69de1da88c9a43904fc2",
+      "size_bytes": 342269
+    },
+    {
+      "section": "5.5",
+      "role": "reference",
+      "path": "chapter5_modern_architectures/exercises/part5_state_tracking/5.5_State_Tracking_in_SSMs_and_Transformers_solutions.ipynb",
+      "sha256": "f4761b0a02a808d4cd18c6bab08cfd9f781fcb80f911c3ed241ac37ab46fa6ad",
+      "size_bytes": 347877
+    },
+    {
+      "section": "5.8",
+      "role": "exercises",
+      "path": "chapter5_modern_architectures/exercises/part8_diffusion_language_models/5.8_Discrete_Diffusion_Language_Models_exercises.ipynb",
+      "sha256": "87962808c29177d689f4f1da95bf534e797dd440ddbc633f2955eff73f23ea61",
+      "size_bytes": 1894867
+    },
+    {
+      "section": "5.8",
+      "role": "reference",
+      "path": "chapter5_modern_architectures/exercises/part8_diffusion_language_models/5.8_Discrete_Diffusion_Language_Models_solutions.ipynb",
+      "sha256": "476a52176bcf7f325a126f9c3e8efe7c5816248e6cf3aa749a5f789c186629ad",
+      "size_bytes": 1948242
+    },
+    {
+      "section": "5.9",
+      "role": "exercises",
+      "path": "chapter5_modern_architectures/exercises/part9_specialist_models/5.9_Embedding_Function-Calling_and_Specialist_Models_exercises.ipynb",
+      "sha256": "64d88f773480da5a61bbba90269b6ddaa9bcf3c975ddbcc3e96ffdfbe4075ee5",
+      "size_bytes": 63809
+    },
+    {
+      "section": "5.9",
+      "role": "reference",
+      "path": "chapter5_modern_architectures/exercises/part9_specialist_models/5.9_Embedding_Function-Calling_and_Specialist_Models_solutions.ipynb",
+      "sha256": "949908d8516b0bd68122616da6c550ae2af1ded8001db806f08b3fd8f36dcc77",
+      "size_bytes": 97494
+    },
+    {
+      "section": "6.1",
+      "role": "exercises",
+      "path": "chapter6_sparse_feature_methods/exercises/part1_sae_variants/6.1_SAE_Variants_exercises.ipynb",
+      "sha256": "1a7c9c46544bac992f49069a52b05aa6e9f54a973a6fe6037fe6eada28c28aab",
+      "size_bytes": 80690
+    },
+    {
+      "section": "6.1",
+      "role": "reference",
+      "path": "chapter6_sparse_feature_methods/exercises/part1_sae_variants/6.1_SAE_Variants_solutions.ipynb",
+      "sha256": "42e42e8c3ad5b47e36bcbab6577d56a62c5546e4e27e8fc451e7cfdb9bee4958",
+      "size_bytes": 86897
+    },
+    {
+      "section": "6.2",
+      "role": "exercises",
+      "path": "chapter6_sparse_feature_methods/exercises/part2_gemma_scope/6.2_Gemma_Scope_and_Feature_Steering_exercises.ipynb",
+      "sha256": "6d952301a63e0d9033070b0798d362244c6098f8fddc5f8a752e60410e644be7",
+      "size_bytes": 159145
+    },
+    {
+      "section": "6.2",
+      "role": "reference",
+      "path": "chapter6_sparse_feature_methods/exercises/part2_gemma_scope/6.2_Gemma_Scope_and_Feature_Steering_solutions.ipynb",
+      "sha256": "ecdfc9cdc29d5149fba038f1ff3bc9a09c29f0f123d25ef1ed703d859a93c595",
+      "size_bytes": 568989
+    },
+    {
+      "section": "6.4",
+      "role": "exercises",
+      "path": "chapter6_sparse_feature_methods/exercises/part4_transcoders/6.4_Transcoders_and_Skip_Transcoders_exercises.ipynb",
+      "sha256": "29f6e99135c5fdffa4f941e6f4893fe6656511fb7fe693edefcd598c0d9031fa",
+      "size_bytes": 426749
+    },
+    {
+      "section": "6.4",
+      "role": "reference",
+      "path": "chapter6_sparse_feature_methods/exercises/part4_transcoders/6.4_Transcoders_and_Skip_Transcoders_solutions.ipynb",
+      "sha256": "f6f168fb3b5e73fd8a719312872b48e47ca13e68ed0cba3c0bed2dbff5198fb3",
+      "size_bytes": 427059
+    },
+    {
+      "section": "6.5",
+      "role": "exercises",
+      "path": "chapter6_sparse_feature_methods/exercises/part5_crosscoders/6.5_Crosscoders_and_Model_Diffing_exercises.ipynb",
+      "sha256": "ed8d7738042900b4f3bc073938612b355d169020a9e1d7ead9917a73ac3b8635",
+      "size_bytes": 303746
+    },
+    {
+      "section": "6.5",
+      "role": "reference",
+      "path": "chapter6_sparse_feature_methods/exercises/part5_crosscoders/6.5_Crosscoders_and_Model_Diffing_solutions.ipynb",
+      "sha256": "ae043b14167308960a9e1876f376f75bd0a5eba7b87df527b19a81fac24dfd89",
+      "size_bytes": 316477
+    },
+    {
+      "section": "7.1",
+      "role": "exercises",
+      "path": "chapter7_activation_to_language/exercises/part1_lenses_patchscopes/7.1_Logit_Lens_Tuned_Lens_and_Patchscopes_exercises.ipynb",
+      "sha256": "8660ad73a33415d0a68b6417536209d5d90378b7e589c0de792ae93a9236ebb1",
+      "size_bytes": 492217
+    },
+    {
+      "section": "7.1",
+      "role": "reference",
+      "path": "chapter7_activation_to_language/exercises/part1_lenses_patchscopes/7.1_Logit_Lens_Tuned_Lens_and_Patchscopes_solutions.ipynb",
+      "sha256": "05bff1b721738d951f223e0e85df0f87baa5d0340cbaebcb84cc14efec4fe28f",
+      "size_bytes": 578734
+    },
+    {
+      "section": "7.2",
+      "role": "exercises",
+      "path": "chapter7_activation_to_language/exercises/part2_feature_verbalizers/7.2_Feature_Verbalizers_exercises.ipynb",
+      "sha256": "c1e1fb2c394213eada4907d381a490a07a80a1d8559c738de88569ed333e90b6",
+      "size_bytes": 971026
+    },
+    {
+      "section": "7.2",
+      "role": "reference",
+      "path": "chapter7_activation_to_language/exercises/part2_feature_verbalizers/7.2_Feature_Verbalizers_solutions.ipynb",
+      "sha256": "2dd940927215c07b238dda0b132435e42d039b2633cd4de2566eb2b65c3b0881",
+      "size_bytes": 993450
+    },
+    {
+      "section": "7.3",
+      "role": "exercises",
+      "path": "chapter7_activation_to_language/exercises/part3_mini_activation_oracles/7.3_Mini_Activation_Oracles_exercises.ipynb",
+      "sha256": "26e5585cbcc12a5915d8898b9fc289c24280f88818b9c7a2c8a94abdbab3e337",
+      "size_bytes": 967295
+    },
+    {
+      "section": "7.3",
+      "role": "reference",
+      "path": "chapter7_activation_to_language/exercises/part3_mini_activation_oracles/7.3_Mini_Activation_Oracles_solutions.ipynb",
+      "sha256": "4d452a3d529e102eafa339952cdbacfab743f658ba81814e8de4fdb5dc17c249",
+      "size_bytes": 999827
+    },
+    {
+      "section": "7.4",
+      "role": "exercises",
+      "path": "chapter7_activation_to_language/exercises/part4_mini_natural_language_autoencoders/7.4_Mini_Natural_Language_Autoencoders_exercises.ipynb",
+      "sha256": "501056d877624ee553646df9d6c93aa98b7ef8f1280caca3e2e0e8faac902701",
+      "size_bytes": 744992
+    },
+    {
+      "section": "7.4",
+      "role": "reference",
+      "path": "chapter7_activation_to_language/exercises/part4_mini_natural_language_autoencoders/7.4_Mini_Natural_Language_Autoencoders_solutions.ipynb",
+      "sha256": "c5820dd0f49575ae67c4c294fd1584f0088ba7df1a4d5287648a3cd1ac3816b1",
+      "size_bytes": 770652
+    },
+    {
+      "section": "7.5",
+      "role": "exercises",
+      "path": "chapter7_activation_to_language/exercises/part5_predictive_concept_decoders/7.5_Predictive_Concept_Decoders_exercises.ipynb",
+      "sha256": "a4e6145388c94a442426be42cb13b9ce2cb2222ea35ef10ede0e789fe2545747",
+      "size_bytes": 969277
+    },
+    {
+      "section": "7.5",
+      "role": "reference",
+      "path": "chapter7_activation_to_language/exercises/part5_predictive_concept_decoders/7.5_Predictive_Concept_Decoders_solutions.ipynb",
+      "sha256": "dac859244b356c68c7eb7408c354997e0506cf478a401336ef865cd840aca62c",
+      "size_bytes": 1002587
+    },
+    {
+      "section": "8.1",
+      "role": "exercises",
+      "path": "chapter8_automated_circuits/exercises/part1_activation_patching_refresher/8.1_Activation_Patching_Refresher_exercises.ipynb",
+      "sha256": "5d3989e672fc3f7e741eec636f8ce59d67ba9bc3b77434128470bd26c02780f2",
+      "size_bytes": 1618613
+    },
+    {
+      "section": "8.1",
+      "role": "reference",
+      "path": "chapter8_automated_circuits/exercises/part1_activation_patching_refresher/8.1_Activation_Patching_Refresher_solutions.ipynb",
+      "sha256": "5fcc94b482ef1b13ae88c57a1dbd4598deada089f23c1f9874f1a703daa31e7c",
+      "size_bytes": 1623559
+    },
+    {
+      "section": "8.2",
+      "role": "exercises",
+      "path": "chapter8_automated_circuits/exercises/part2_attribution_patching_eap/8.2_Attribution_Patching_and_EAP_exercises.ipynb",
+      "sha256": "6b19f585031f885b2ae204b55ebc7f7d9df678274141749737be14ee01a75e10",
+      "size_bytes": 1354663
+    },
+    {
+      "section": "8.2",
+      "role": "reference",
+      "path": "chapter8_automated_circuits/exercises/part2_attribution_patching_eap/8.2_Attribution_Patching_and_EAP_solutions.ipynb",
+      "sha256": "cd5926c7f629cfe167c2915c79dcc33efca8608a0a8303cf8d3257038b182f9d",
+      "size_bytes": 1365946
+    },
+    {
+      "section": "8.3",
+      "role": "exercises",
+      "path": "chapter8_automated_circuits/exercises/part3_atp_star/8.3_AtP_from_Scratch_exercises.ipynb",
+      "sha256": "79dacdcb06ed99f83c963dbe1901872dd7c08188b5ce3a303b53364df14c6834",
+      "size_bytes": 628156
+    },
+    {
+      "section": "8.3",
+      "role": "reference",
+      "path": "chapter8_automated_circuits/exercises/part3_atp_star/8.3_AtP_from_Scratch_solutions.ipynb",
+      "sha256": "d56c1c2a1260decc3b291983baeb8675cc16935a3c06e1897dd2cc5683bc06f2",
+      "size_bytes": 636529
+    },
+    {
+      "section": "8.4",
+      "role": "exercises",
+      "path": "chapter8_automated_circuits/exercises/part4_acdc_circuit_metrics/8.4_ACDC_and_Circuit_Metrics_exercises.ipynb",
+      "sha256": "80022e96857ab352d1a1839a8004b5914875e984405ff6535f5e684bec36ea73",
+      "size_bytes": 951947
+    },
+    {
+      "section": "8.4",
+      "role": "reference",
+      "path": "chapter8_automated_circuits/exercises/part4_acdc_circuit_metrics/8.4_ACDC_and_Circuit_Metrics_solutions.ipynb",
+      "sha256": "49aa72791d98c508818b7619292a0d88076d4ece14d67e72ebc123d0afa43e2a",
+      "size_bytes": 1026985
+    },
+    {
+      "section": "8.5",
+      "role": "exercises",
+      "path": "chapter8_automated_circuits/exercises/part5_causal_scrubbing/8.5_Causal_Scrubbing_exercises.ipynb",
+      "sha256": "14eb65d2d0afca15b3793090c942b54674806597ec47b2fd34a69dd91c8b7efb",
+      "size_bytes": 256177
+    },
+    {
+      "section": "8.5",
+      "role": "reference",
+      "path": "chapter8_automated_circuits/exercises/part5_causal_scrubbing/8.5_Causal_Scrubbing_solutions.ipynb",
+      "sha256": "9d45d2b75b4035dce523d48384b280f4f68af54bc1a33393c2a23daf8e8e5b46",
+      "size_bytes": 256419
+    },
+    {
+      "section": "8.6",
+      "role": "exercises",
+      "path": "chapter8_automated_circuits/exercises/part6_sparse_feature_circuits/8.6_Sparse_Feature_Circuits_and_SHIFT_exercises.ipynb",
+      "sha256": "94221602571192da265bcb8c4ac5a567dae4a725ca07731535bd70fa38ffc8f7",
+      "size_bytes": 153553
+    },
+    {
+      "section": "8.6",
+      "role": "reference",
+      "path": "chapter8_automated_circuits/exercises/part6_sparse_feature_circuits/8.6_Sparse_Feature_Circuits_and_SHIFT_solutions.ipynb",
+      "sha256": "f763686a0558bc5f795e14617784fe51a197af3a5774fce5dafcaedbd937bc3f",
+      "size_bytes": 393364
+    },
+    {
+      "section": "8.7",
+      "role": "exercises",
+      "path": "chapter8_automated_circuits/exercises/part7_attribution_graphs/8.7_Circuit_Tracing_with_Attribution_Graphs_exercises.ipynb",
+      "sha256": "0fd93d5b0ddbfec404dcbc82f786eb68985ddb1deb26bcc79ed3d6b77671b520",
+      "size_bytes": 111542
+    },
+    {
+      "section": "8.7",
+      "role": "reference",
+      "path": "chapter8_automated_circuits/exercises/part7_attribution_graphs/8.7_Circuit_Tracing_with_Attribution_Graphs_solutions.ipynb",
+      "sha256": "2d5fd8bebd139609ad395f92a45c5717883e5cb702234f46e612caa75c8a2fd2",
+      "size_bytes": 315981
+    },
+    {
+      "section": "8.8",
+      "role": "exercises",
+      "path": "chapter8_automated_circuits/exercises/part8_circuit_benchmarks/8.8_Benchmarking_Circuit_Discovery_on_Compiled_Transformers_exercises.ipynb",
+      "sha256": "3f28fa228310782a0d490f901d3c1f303f9824d74c62eccd9303a44d557a30db",
+      "size_bytes": 290032
+    },
+    {
+      "section": "8.8",
+      "role": "reference",
+      "path": "chapter8_automated_circuits/exercises/part8_circuit_benchmarks/8.8_Benchmarking_Circuit_Discovery_on_Compiled_Transformers_solutions.ipynb",
+      "sha256": "20b3734aa45d5d66f2f24a4932307fc8876fc3fa82cd605a7a40299f18620248",
+      "size_bytes": 297343
+    },
+    {
+      "section": "9.1",
+      "role": "exercises",
+      "path": "chapter9_alignment_interpretability/exercises/part1_refusal_directions/9.1_Refusal_Directions_and_Representation_Engineering_exercises.ipynb",
+      "sha256": "ae6f48048177c540d5c695293456754cd42faa4353825ae766958715be824c53",
+      "size_bytes": 1578892
+    },
+    {
+      "section": "9.1",
+      "role": "reference",
+      "path": "chapter9_alignment_interpretability/exercises/part1_refusal_directions/9.1_Refusal_Directions_and_Representation_Engineering_solutions.ipynb",
+      "sha256": "909a175009b71947c51e3e7ace082ac876825a0aeded2baa8e7b9f203415e85f",
+      "size_bytes": 1697669
+    },
+    {
+      "section": "9.3",
+      "role": "exercises",
+      "path": "chapter9_alignment_interpretability/exercises/part3_cot_faithfulness/9.3_Chain-of-Thought_Faithfulness_exercises.ipynb",
+      "sha256": "da2558a4d3614bb2be8f166a447a284c9aff741e8af92ce5f01545abf5878440",
+      "size_bytes": 234895
+    },
+    {
+      "section": "9.3",
+      "role": "reference",
+      "path": "chapter9_alignment_interpretability/exercises/part3_cot_faithfulness/9.3_Chain-of-Thought_Faithfulness_solutions.ipynb",
+      "sha256": "12528ecc4c9dcc09e66a4cb412c384e4c218d3b0c44d1c9282e01f408bfbd5df",
+      "size_bytes": 238315
+    },
+    {
+      "section": "9.4",
+      "role": "exercises",
+      "path": "chapter9_alignment_interpretability/exercises/part4_emergent_misalignment/9.4_Emergent_Misalignment_Detection_exercises.ipynb",
+      "sha256": "84fa96cdfae0e302faff21acb6b1e124b3b62862224f6fa792c33014d67bdb44",
+      "size_bytes": 100308
+    },
+    {
+      "section": "9.4",
+      "role": "reference",
+      "path": "chapter9_alignment_interpretability/exercises/part4_emergent_misalignment/9.4_Emergent_Misalignment_Detection_solutions.ipynb",
+      "sha256": "c3c511b11af54287003bbbb46c0fc926fc0d18989a265f6bb79c4643874c21d6",
+      "size_bytes": 260354
+    },
+    {
+      "section": "9.5",
+      "role": "exercises",
+      "path": "chapter9_alignment_interpretability/exercises/part5_white_box_monitors/9.5_White-Box_Monitors_and_Red-Teaming_with_Internals_exercises.ipynb",
+      "sha256": "4284cf161c58e2d66f1fcf8e1201e8b35c813d0ec0c11e32b711b47663e36be6",
+      "size_bytes": 81412
+    },
+    {
+      "section": "9.5",
+      "role": "reference",
+      "path": "chapter9_alignment_interpretability/exercises/part5_white_box_monitors/9.5_White-Box_Monitors_and_Red-Teaming_with_Internals_solutions.ipynb",
+      "sha256": "f384d9fbb8bbff752b2c91e017c435d909672b7829292d90d5af6a5a498ad720",
+      "size_bytes": 251240
+    },
+    {
+      "section": "9.6",
+      "role": "exercises",
+      "path": "chapter9_alignment_interpretability/exercises/part6_rome_memit/9.6_Model_Editing_with_ROME_and_MEMIT_exercises.ipynb",
+      "sha256": "b82110d0bc6fad67bb87f14a24b3bcfb32562574224c19215052779a7f35bd09",
+      "size_bytes": 154264
+    },
+    {
+      "section": "9.6",
+      "role": "reference",
+      "path": "chapter9_alignment_interpretability/exercises/part6_rome_memit/9.6_Model_Editing_with_ROME_and_MEMIT_solutions.ipynb",
+      "sha256": "8a78043bd497656c0b66ee2ff5529e45a36815729e48a65698508668a1ef6969",
+      "size_bytes": 610143
+    },
+    {
+      "section": "10.1",
+      "role": "exercises",
+      "path": "chapter10_capstone_research_sprint/exercises/part1_capstone_research_sprint/10.1_Capstone_Research_Sprint_exercises.ipynb",
+      "sha256": "20e1bd068c920e7048ad4ef08f1d183b4b42cfc84c40aceff725da8a25974302",
+      "size_bytes": 1008752
+    },
+    {
+      "section": "10.1",
+      "role": "reference",
+      "path": "chapter10_capstone_research_sprint/exercises/part1_capstone_research_sprint/10.1_Capstone_Research_Sprint_solutions.ipynb",
+      "sha256": "d2116c74f02736a34ef165af8915d2296a7e0ade56a8866fdd66cc4f6d0cc1aa",
+      "size_bytes": 1016743
+    },
+    {
+      "section": "11.1",
+      "role": "exercises",
+      "path": "chapter11_representation_geometry/exercises/part1_pca_svd_geometry_controls/11.1_PCA_SVD_and_Geometry_Controls_exercises.ipynb",
+      "sha256": "70f5fc5bc68835e712681464ca8746b2f7e2bf23e3d30536748c7e0662f187c0",
+      "size_bytes": 3925674
+    },
+    {
+      "section": "11.1",
+      "role": "reference",
+      "path": "chapter11_representation_geometry/exercises/part1_pca_svd_geometry_controls/11.1_PCA_SVD_and_Geometry_Controls_solutions.ipynb",
+      "sha256": "b2e2a9752f65a658c51b030fab646594a688db3a760c328d31e8c9e97f1635a2",
+      "size_bytes": 2228962
+    },
+    {
+      "section": "11.2",
+      "role": "exercises",
+      "path": "chapter11_representation_geometry/exercises/part2_cca_svcca_alignment/11.2_CCA_SVCCA_and_Representation_Alignment_exercises.ipynb",
+      "sha256": "23e3fba05cb854dcc9dd01a08ab74168f0c64a6c6c06b3979fc7196a34eb4b4c",
+      "size_bytes": 1494536
+    },
+    {
+      "section": "11.2",
+      "role": "reference",
+      "path": "chapter11_representation_geometry/exercises/part2_cca_svcca_alignment/11.2_CCA_SVCCA_and_Representation_Alignment_solutions.ipynb",
+      "sha256": "e2e1a8c8fd330b6dd12f68454220a8cd3cb10511b5dc0eb1937cc7d6a934b58f",
+      "size_bytes": 836415
+    },
+    {
+      "section": "11.3",
+      "role": "exercises",
+      "path": "chapter11_representation_geometry/exercises/part3_causal_abstraction_das/11.3_Causal_Abstraction_and_Distributed_Alignment_Search_exercises.ipynb",
+      "sha256": "7dd2d9628cf49257181c207f7634c500d33c523d87bd547db0cbc90b94836bc1",
+      "size_bytes": 1495710
+    },
+    {
+      "section": "11.3",
+      "role": "reference",
+      "path": "chapter11_representation_geometry/exercises/part3_causal_abstraction_das/11.3_Causal_Abstraction_and_Distributed_Alignment_Search_solutions.ipynb",
+      "sha256": "7655ffb24e43e432efa08fb315fa21a31a223de1fa11ca99befa8a6570d1b5ab",
+      "size_bytes": 884459
+    },
+    {
+      "section": "11.4",
+      "role": "exercises",
+      "path": "chapter11_representation_geometry/exercises/part4_concept_erasure/11.4_Concept_Erasure_exercises.ipynb",
+      "sha256": "ab6ff48527f76ce347c3632115da6115d5165949fa6093674c935e378e3e1447",
+      "size_bytes": 1757292
+    },
+    {
+      "section": "11.4",
+      "role": "reference",
+      "path": "chapter11_representation_geometry/exercises/part4_concept_erasure/11.4_Concept_Erasure_solutions.ipynb",
+      "sha256": "911618d22c6e1ba0a7f51adc5c83306f5e6dc54e663b97cf98f3594a1cbc112a",
+      "size_bytes": 1049850
+    },
+    {
+      "section": "11.5",
+      "role": "exercises",
+      "path": "chapter11_representation_geometry/exercises/part5_contrast_consistent_search/11.5_Contrast-Consistent_Search_exercises.ipynb",
+      "sha256": "6efa3c369d77ace2c41d0be385adf183d42af30f3747da8f6707c79475f3e1f7",
+      "size_bytes": 2511957
+    },
+    {
+      "section": "11.5",
+      "role": "reference",
+      "path": "chapter11_representation_geometry/exercises/part5_contrast_consistent_search/11.5_Contrast-Consistent_Search_solutions.ipynb",
+      "sha256": "8f6ff99d27a4e9f596d9d63f322d72fcf3b8749135b9855b4460bf419dd0b704",
+      "size_bytes": 1464041
+    },
+    {
+      "section": "12.1",
+      "role": "exercises",
+      "path": "chapter12_vlm_interpretability/exercises/part1_clip_siglip/12.1_CLIP_and_SigLIP_from_Scratch_exercises.ipynb",
+      "sha256": "b50ecf7e4b1071b5cc4f6bbc5d7d8b75a638a94c04b4c7896075f68df1216d5b",
+      "size_bytes": 2172506
+    },
+    {
+      "section": "12.1",
+      "role": "reference",
+      "path": "chapter12_vlm_interpretability/exercises/part1_clip_siglip/12.1_CLIP_and_SigLIP_from_Scratch_solutions.ipynb",
+      "sha256": "4f5da14ffa60a047aeafc1aca0c2d5cd0e474e6df29b13f674baeb159eb5eaea",
+      "size_bytes": 2203621
+    },
+    {
+      "section": "12.3",
+      "role": "exercises",
+      "path": "chapter12_vlm_interpretability/exercises/part3_mini_vlm_from_scratch/12.3_Mini_VLM_from_Scratch_exercises.ipynb",
+      "sha256": "757fec8ec719230b2f1043c7e7c0835fe9d8d43af6aece547efeaf1f745daac1",
+      "size_bytes": 6123176
+    },
+    {
+      "section": "12.3",
+      "role": "reference",
+      "path": "chapter12_vlm_interpretability/exercises/part3_mini_vlm_from_scratch/12.3_Mini_VLM_from_Scratch_solutions.ipynb",
+      "sha256": "a7d6170062044e88ae25c0e5794154b0c253a811aed02b780f84534f802cb16f",
+      "size_bytes": 6385316
+    },
+    {
+      "section": "12.5",
+      "role": "exercises",
+      "path": "chapter12_vlm_interpretability/exercises/part5_object_hallucination/12.5_Object_Hallucination_and_Modality_Arbitration_exercises.ipynb",
+      "sha256": "d7ced28aac70741314edb2159371f50d2f9342aa901b57385bd411d8ff88a1c2",
+      "size_bytes": 148514
+    },
+    {
+      "section": "12.5",
+      "role": "reference",
+      "path": "chapter12_vlm_interpretability/exercises/part5_object_hallucination/12.5_Object_Hallucination_and_Modality_Arbitration_solutions.ipynb",
+      "sha256": "11732cccc5f1d78fe4dac9cc9f134eb5b9dbd1aa805716bcbcec0c616d330e02",
+      "size_bytes": 387444
+    },
+    {
+      "section": "13.1",
+      "role": "exercises",
+      "path": "chapter13_image_generation_interpretability/exercises/part1_diffusion_cross_attention/13.1_Diffusion_Models_and_Cross-Attention_Attribution_exercises.ipynb",
+      "sha256": "6169168f6ec1c07c89b78480551545c68227ae63f73dc69ad5230c69b2edae78",
+      "size_bytes": 119124
+    },
+    {
+      "section": "13.1",
+      "role": "reference",
+      "path": "chapter13_image_generation_interpretability/exercises/part1_diffusion_cross_attention/13.1_Diffusion_Models_and_Cross-Attention_Attribution_solutions.ipynb",
+      "sha256": "d9e071ff8365ec51af5e49b27d6161d95a4220838e05a7bc1423c4b9cdc17fb2",
+      "size_bytes": 306755
+    },
+    {
+      "section": "13.2",
+      "role": "exercises",
+      "path": "chapter13_image_generation_interpretability/exercises/part2_denoising_time_causal_patching/13.2_Denoising-Time_Causal_Patching_exercises.ipynb",
+      "sha256": "55ae5246aae1603bd894f45aad45a065eb70f021fea92816723e6c2113a7b5b0",
+      "size_bytes": 2372471
+    },
+    {
+      "section": "13.2",
+      "role": "reference",
+      "path": "chapter13_image_generation_interpretability/exercises/part2_denoising_time_causal_patching/13.2_Denoising-Time_Causal_Patching_solutions.ipynb",
+      "sha256": "a1b585423650db88b140b9ac23b05a3e266da57f0186c62554056a8419c5d897",
+      "size_bytes": 2490547
+    },
+    {
+      "section": "14.1",
+      "role": "exercises",
+      "path": "chapter14_jepa_world_models/exercises/part1_ijepa_from_scratch/14.1_I-JEPA_from_Scratch_exercises.ipynb",
+      "sha256": "25033ebf3e907b80f2212e8c2694b11bbb99d6f1237eb7f3c02c89f4634422ce",
+      "size_bytes": 177699
+    },
+    {
+      "section": "14.1",
+      "role": "reference",
+      "path": "chapter14_jepa_world_models/exercises/part1_ijepa_from_scratch/14.1_I-JEPA_from_Scratch_solutions.ipynb",
+      "sha256": "261192f00aafdd28c349538d2e4949653657b34ade2875158b580d2766861c63",
+      "size_bytes": 357587
+    },
+    {
+      "section": "14.2",
+      "role": "exercises",
+      "path": "chapter14_jepa_world_models/exercises/part2_vjepa/14.2_V-JEPA_and_Video_World_Models_exercises.ipynb",
+      "sha256": "436537054c1f195ddb7eb5898aea0827164440b78c720a7d109af7cdeddf0db6",
+      "size_bytes": 311636
+    },
+    {
+      "section": "14.2",
+      "role": "reference",
+      "path": "chapter14_jepa_world_models/exercises/part2_vjepa/14.2_V-JEPA_and_Video_World_Models_solutions.ipynb",
+      "sha256": "1d9a5075a00561f68f061e757bc512b27f2ca5533e94ca1111cede67891ec928",
+      "size_bytes": 634538
+    },
+    {
+      "section": "14.5",
+      "role": "exercises",
+      "path": "chapter14_jepa_world_models/exercises/part5_maze_transformers/14.5_Maze_Transformers_and_World_Models_exercises.ipynb",
+      "sha256": "856ec572dd75b1a68f8f27c5cb68560bdac1559359288bd88105fd27b5f560b6",
+      "size_bytes": 141925
+    },
+    {
+      "section": "14.5",
+      "role": "reference",
+      "path": "chapter14_jepa_world_models/exercises/part5_maze_transformers/14.5_Maze_Transformers_and_World_Models_solutions.ipynb",
+      "sha256": "3a6509be03df7a17b866dac84806296649cd8534386771d164ea61dd3ed8b8af",
+      "size_bytes": 420670
+    },
+    {
+      "section": "15.1",
+      "role": "exercises",
+      "path": "chapter15_peft_misalignment/exercises/part1_lora_dora/15.1_LoRA_and_DoRA_from_Scratch_exercises.ipynb",
+      "sha256": "4e9decb53c5d35a5cb1c13b31b6ce85c3740f423040bc52c4ed8392b6a28e453",
+      "size_bytes": 568820
+    },
+    {
+      "section": "15.1",
+      "role": "reference",
+      "path": "chapter15_peft_misalignment/exercises/part1_lora_dora/15.1_LoRA_and_DoRA_from_Scratch_solutions.ipynb",
+      "sha256": "ebe7f9f7e94dc6f2b65a1a6725be0fbf9068184fcd0f19b635fbdedd4b5831d7",
+      "size_bytes": 218529
+    },
+    {
+      "section": "15.2",
+      "role": "exercises",
+      "path": "chapter15_peft_misalignment/exercises/part2_lora_vs_full_finetuning/15.2_LoRA_vs_Full_Fine-Tuning_exercises.ipynb",
+      "sha256": "d2624631107f66e1ec102a79b05f0408fcd4ed4463600182fd24a5b8a921a4ec",
+      "size_bytes": 611798
+    },
+    {
+      "section": "15.2",
+      "role": "reference",
+      "path": "chapter15_peft_misalignment/exercises/part2_lora_vs_full_finetuning/15.2_LoRA_vs_Full_Fine-Tuning_solutions.ipynb",
+      "sha256": "60d40864fb258501bf96a2104e0f92c2db99e7942b440bb6e48325d54ab1db57",
+      "size_bytes": 619523
+    },
+    {
+      "section": "15.3",
+      "role": "exercises",
+      "path": "chapter15_peft_misalignment/exercises/part3_qlora_from_scratch/15.3_QLoRA_from_Scratch_exercises.ipynb",
+      "sha256": "e0e5a714d6c182bab652b2b6c6854071220741f4e0c85ac56764747706de1089",
+      "size_bytes": 1336023
+    },
+    {
+      "section": "15.3",
+      "role": "reference",
+      "path": "chapter15_peft_misalignment/exercises/part3_qlora_from_scratch/15.3_QLoRA_from_Scratch_solutions.ipynb",
+      "sha256": "0664eda1ece8acce2b8ac60679753b1404d74ddf11ce5ba73290414aa975adbb",
+      "size_bytes": 1358887
+    },
+    {
+      "section": "16.1",
+      "role": "exercises",
+      "path": "chapter16_shapley_attribution_baselines/exercises/part1_exact_shapley/16.1_Exact_Shapley_on_Ground-Truth_Games_exercises.ipynb",
+      "sha256": "800bf0768852af0e28af55cf2512f1f0a6073dd3454a46ea7f5c844acb262756",
+      "size_bytes": 188701
+    },
+    {
+      "section": "16.1",
+      "role": "reference",
+      "path": "chapter16_shapley_attribution_baselines/exercises/part1_exact_shapley/16.1_Exact_Shapley_on_Ground-Truth_Games_solutions.ipynb",
+      "sha256": "4f0187be9370a85e95eb8c1c9193930cdfec53dd2d2415e23e5e154e4f7b10e8",
+      "size_bytes": 184071
+    },
+    {
+      "section": "16.2",
+      "role": "exercises",
+      "path": "chapter16_shapley_attribution_baselines/exercises/part2_kernelshap_partitionshap/16.2_KernelSHAP_and_PartitionSHAP_exercises.ipynb",
+      "sha256": "371af33d0724132e549715c5255d38508fb408848ebb1591a0af94d9419f0e22",
+      "size_bytes": 586699
+    },
+    {
+      "section": "16.2",
+      "role": "reference",
+      "path": "chapter16_shapley_attribution_baselines/exercises/part2_kernelshap_partitionshap/16.2_KernelSHAP_and_PartitionSHAP_solutions.ipynb",
+      "sha256": "ba5e0132633d05e36f4f2828806d66028ca0c379500362580c397b8cc57e34b4",
+      "size_bytes": 422628
+    },
+    {
+      "section": "16.3",
+      "role": "exercises",
+      "path": "chapter16_shapley_attribution_baselines/exercises/part3_model_specific_shap/16.3_TreeSHAP_DeepSHAP_and_GradientSHAP_Practice_exercises.ipynb",
+      "sha256": "5023d8910256a714b3cd81f4592e3d7d4f687b2f79e6b5b5ea544aa0d4aadc6c",
+      "size_bytes": 1297783
+    },
+    {
+      "section": "16.3",
+      "role": "reference",
+      "path": "chapter16_shapley_attribution_baselines/exercises/part3_model_specific_shap/16.3_TreeSHAP_DeepSHAP_and_GradientSHAP_Practice_solutions.ipynb",
+      "sha256": "43b336537f1ae681f184554edd06073c501d2320f94818c28b75543e89f36494",
+      "size_bytes": 6846942
+    },
+    {
+      "section": "16.4",
+      "role": "exercises",
+      "path": "chapter16_shapley_attribution_baselines/exercises/part4_sage/16.4_SAGE_Global_Importance_exercises.ipynb",
+      "sha256": "b71be93e2322c484b9d095e691f51d12b4881bef448daa6edca1778213345aa6",
+      "size_bytes": 1856271
+    },
+    {
+      "section": "16.4",
+      "role": "reference",
+      "path": "chapter16_shapley_attribution_baselines/exercises/part4_sage/16.4_SAGE_Global_Importance_solutions.ipynb",
+      "sha256": "125ad2b524606a3e5eda154bcef581221a59b93cf0431a40f04780a82a4a9a10",
+      "size_bytes": 1852208
+    },
+    {
+      "section": "16.5",
+      "role": "exercises",
+      "path": "chapter16_shapley_attribution_baselines/exercises/part5_shapley_interactions/16.5_Shapley_Interactions_exercises.ipynb",
+      "sha256": "0c5272e1b1c473888b77383f7d61bd7d80e2cab10e9deebb73b8a24e917891dd",
+      "size_bytes": 4754678
+    },
+    {
+      "section": "16.5",
+      "role": "reference",
+      "path": "chapter16_shapley_attribution_baselines/exercises/part5_shapley_interactions/16.5_Shapley_Interactions_solutions.ipynb",
+      "sha256": "3abd1c8fe418ee396b848a6e3923d859ba0ca3d1cea0d685dce63380371d6615",
+      "size_bytes": 4464805
+    },
+    {
+      "section": "16.6",
+      "role": "exercises",
+      "path": "chapter16_shapley_attribution_baselines/exercises/part6_spex_proxyspex/16.6_Sparse_Interaction_Discovery_with_SPEX_and_ProxySPEX_exercises.ipynb",
+      "sha256": "b5cf15832ca6f852bb6f0f03eea2d74bc8bf3f9ef75b1def263077fd1a4114b0",
+      "size_bytes": 933178
+    },
+    {
+      "section": "16.6",
+      "role": "reference",
+      "path": "chapter16_shapley_attribution_baselines/exercises/part6_spex_proxyspex/16.6_Sparse_Interaction_Discovery_with_SPEX_and_ProxySPEX_solutions.ipynb",
+      "sha256": "a54a98da19228b9b398b37a8c6518ccfb0ee4b58960fa2ecbe82fe4097fc8200",
+      "size_bytes": 940548
+    },
+    {
+      "section": "16.7",
+      "role": "exercises",
+      "path": "chapter16_shapley_attribution_baselines/exercises/part7_token_region_shap/16.7_TokenSHAP_and_Region_SHAP_for_LLMs_and_VLMs_exercises.ipynb",
+      "sha256": "d066acb4aaa27f21108d7eb76aa11a9e48a0ed0fe603afab6611fb5486188c69",
+      "size_bytes": 203099
+    },
+    {
+      "section": "16.7",
+      "role": "reference",
+      "path": "chapter16_shapley_attribution_baselines/exercises/part7_token_region_shap/16.7_TokenSHAP_and_Region_SHAP_for_LLMs_and_VLMs_solutions.ipynb",
+      "sha256": "2bad24c5b5552191fc0af356424b6a39c474ddab2757a43408ca116d5fc32e87",
+      "size_bytes": 278405
+    },
+    {
+      "section": "16.8",
+      "role": "exercises",
+      "path": "chapter16_shapley_attribution_baselines/exercises/part8_shap_vs_patching/16.8_SHAP_vs_Activation_Patching_exercises.ipynb",
+      "sha256": "3c75a166fbd7327b571d3c7047104efc6013f2f0fbdf3677b848341e20c8e7a7",
+      "size_bytes": 177434
+    },
+    {
+      "section": "16.8",
+      "role": "reference",
+      "path": "chapter16_shapley_attribution_baselines/exercises/part8_shap_vs_patching/16.8_SHAP_vs_Activation_Patching_solutions.ipynb",
+      "sha256": "77291dbb89440d780b57370ddb41ada6e0bf46d08bc6d9fc7d07e755cdb3c71a",
+      "size_bytes": 596902
+    },
+    {
+      "section": "16.9",
+      "role": "exercises",
+      "path": "chapter16_shapley_attribution_baselines/exercises/part9_data_shapley/16.9_Data_Shapley_in_One_Training_Run_exercises.ipynb",
+      "sha256": "fd77f88df783a1757aa158a528da40ca1a639992c2282b4649c463c441a28a82",
+      "size_bytes": 1492272
+    },
+    {
+      "section": "16.9",
+      "role": "reference",
+      "path": "chapter16_shapley_attribution_baselines/exercises/part9_data_shapley/16.9_Data_Shapley_in_One_Training_Run_solutions.ipynb",
+      "sha256": "7be959dc6d8c227f646e9d43e736523b81e8cc0c60ea4333d898dca0b603e200",
+      "size_bytes": 1581223
+    },
+    {
+      "section": "16.10",
+      "role": "exercises",
+      "path": "chapter16_shapley_attribution_baselines/exercises/part10_influence_tracin/16.10_Influence_Functions_and_TracIn_exercises.ipynb",
+      "sha256": "a07e9f01a0cd020fbb003d5045016e8cd7d27a217b080c5c6e17519a0f26d6e4",
+      "size_bytes": 5625550
+    },
+    {
+      "section": "16.10",
+      "role": "reference",
+      "path": "chapter16_shapley_attribution_baselines/exercises/part10_influence_tracin/16.10_Influence_Functions_and_TracIn_solutions.ipynb",
+      "sha256": "a65fe0b57d71a3de51973d829fa4d604718bb82fc3038e595528236692e2f4ee",
+      "size_bytes": 3360757
+    },
+    {
+      "section": "16.11",
+      "role": "exercises",
+      "path": "chapter16_shapley_attribution_baselines/exercises/part11_datamodels_cartography/16.11_Datamodels_and_Dataset_Cartography_exercises.ipynb",
+      "sha256": "af5f1930367a172c5ed747b968a8079d068a536fe380a519e5ac92d679aac8ee",
+      "size_bytes": 3822513
+    },
+    {
+      "section": "16.11",
+      "role": "reference",
+      "path": "chapter16_shapley_attribution_baselines/exercises/part11_datamodels_cartography/16.11_Datamodels_and_Dataset_Cartography_solutions.ipynb",
+      "sha256": "6956ab48f12069132a6697e00dfb64a868b5a01437f207111b5148e58b745fbd",
+      "size_bytes": 3815920
+    },
+    {
+      "section": "17.1",
+      "role": "exercises",
+      "path": "chapter17_training_dynamics/exercises/part1_checkpoint_archaeology/17.1_Checkpoint_Archaeology_and_Grokking_exercises.ipynb",
+      "sha256": "db25f861e6e1e8ba4bc0b7e7366c4bf0e70c6a926d148bbf58358f8d2d08f3b9",
+      "size_bytes": 200652
+    },
+    {
+      "section": "17.1",
+      "role": "reference",
+      "path": "chapter17_training_dynamics/exercises/part1_checkpoint_archaeology/17.1_Checkpoint_Archaeology_and_Grokking_solutions.ipynb",
+      "sha256": "5340290ef57d72131fcf6d1304ac6d278a63088d2dd9bb6ac9153b933af75c4a",
+      "size_bytes": 192396
+    }
+  ],
+  "authority": [
+    {
+      "path": "mastery_hub/read.py",
+      "sha256": "33c92925a5a046bd4a8386d121885e9e382aec790d5760beb9cb1e6c1d76ca17",
+      "size_bytes": 8809
+    },
+    {
+      "path": "infrastructure/core/config_extension.yaml",
+      "sha256": "357a9c3c45ffe63ac1501774f96008b0da66e9259733aa0ff2cfd0f41b74a8d8",
+      "size_bytes": 79199
+    },
+    {
+      "path": "infrastructure/extension/syllabus.yaml",
+      "sha256": "0731f9675193ac82bcfe67ca8b1634ce2972fc432e99c37a501c0b9187f32d64",
+      "size_bytes": 71876
+    },
+    {
+      "path": "tests/mastery/test_reading_entrypoint.py",
+      "sha256": "0b47d5da288a4a82445432393487411943780381bd39e7541215be23d64ac336",
+      "size_bytes": 9597
+    },
+    {
+      "path": "tests/test_extension_page_links.py",
+      "sha256": "4ff4ffd20bbd17c6066f91ea723db2f0561a7136caea3f02726fb50095976065",
+      "size_bytes": 11877
+    }
+  ]
+}

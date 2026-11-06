@@ -7,7 +7,8 @@ import yaml
 
 from scripts.run_extension_verification_reports import expected_metric_failures, load_solution
 from scripts.verification_fixture_contract import (
-    fixture_paths, native_receipt_blockers, uses_native_receipts, verification_entrypoint,
+    experiment_entrypoint, fixture_paths, native_receipt_blockers,
+    uses_native_receipts, verification_entrypoint,
 )
 
 
@@ -443,7 +444,7 @@ def test_hard_exercise_ladder_registry_tracks_all_hard_sections():
 def test_extension_full_experiment_hooks_are_callable_not_placeholders():
     placeholder_hooks = []
     for exercise_dir in extension_exercise_dirs():
-        solution_path = verification_entrypoint(ROOT, exercise_dir)
+        solution_path = experiment_entrypoint(ROOT, exercise_dir)
         tree = ast.parse(solution_path.read_text(), filename=str(solution_path))
         if solution_path.name == "native_report.py":
             assert {"build_report", "has_native_evidence", "receipt_blockers"} <= {

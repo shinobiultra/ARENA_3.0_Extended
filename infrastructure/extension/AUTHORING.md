@@ -108,6 +108,33 @@ Training loops, long experiments and anything that loads a model go in cells tag
 - Don't import `arena_ext` (the old prototype library); it will be deleted. Copy what you need into the notebook (if
   it's the method) or `utils.py` (if it's plumbing), rewritten readably.
 
+## Prediction learning
+
+When writing or revising a lesson, add its method-specific case to
+`mastery_hub/extension_checkpoints.json` and rebuild the guided workbook with
+`scripts/build_extension_prediction_workbook.py`. Read the
+[integration design](../../docs/mastery/designs/2026-10-15-integrated-prediction-learning.md)
+when authoring a case or a blind challenge variant.
+
+Each case needs a specific forecast before the result, confidence and causal reasoning,
+the question-defining inputs, a controlled experiment using the student's visible method,
+observed controls, a discrepancy explanation, and a forecast for a changed scientific
+condition. Match the question to the actual method and metric; a generic "predict what
+happens" paragraph is insufficient. Keep canonical sources intact and linked with provenance.
+Original ARENA chapters 0–4 remain unchanged; any prediction companions for them are additive.
+
+The standard notebooks deliberately show reference outputs. Their workbook route is
+**guided practice**: seen or unknown exposure stays explicit and earns no unseen score.
+Blind variants must omit the target output and answer-bearing interpretation until commitment;
+an expected-output dropdown or prefilled HTML image still exposes the answer. Preserve
+immediate semantic tests and nonleaking worked examples. Scientific data role, learner exposure,
+evidence class and execution kind are separate fields. Repeatedly monitored evaluation data
+cannot become untouched TEST by changing its label. A new seed alone is replication, not transfer.
+
+Before calling the case engineering-checked, verify its source/reference paths and configuration
+fingerprints, immutable commitment and stale-input rejection, observation provenance, portable
+record round-trip, and changed-case instructions. Learner acceptance remains a separate gate.
+
 ## Building and checking
 
 ```bash
@@ -117,7 +144,18 @@ uv run python infrastructure/extension/build.py 7.1 --execute  # generate + run 
 
 (`.venv/bin/python` works in place of `uv run python`.) `--execute` runs the solutions notebook top to bottom in a
 fresh kernel; on failure it saves `*_solutions.FAILED.ipynb` next to it with the partial outputs. A section is not
-done until `--execute` passes. Then:
+done until `--execute` passes. Without `--execute`, the build keeps the previous execution's outputs as long as the
+code cells haven't changed, so markdown-only edits don't need re-execution.
+
+To execute on the Würzburg cluster instead of the local GPU (while the worker job is running; needs the VPN):
+
+```bash
+infrastructure/extension/cluster/remote_build.sh 7.1   # sync sources, execute on an L40S, copy notebooks + media back
+```
+
+For text expected outputs, write a placeholder `<pre style=...>FILL_SOMETHING</pre>` after the code cell, and after
+an executed build run `uv run python infrastructure/extension/fill_expected.py 7.1 --write` to copy the real printed
+output in (then rebuild without `--execute`). Then:
 
 1. Read every text output in the executed solutions notebook and make sure every number, table and claim in the
    markdown matches it. Rebuild after editing.

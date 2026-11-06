@@ -1,0 +1,50 @@
+{
+  "schema_version": 1,
+  "section": "11.4",
+  "sources": {
+    "page": {
+      "path": "chapter11_representation_geometry/instructions/pages/04_[11.4]_Concept_Erasure.md",
+      "sha256": "f9491ebc45f8d77105a19262dfc664af8db10c3944a0b0a423f90288bd9c2735"
+    },
+    "exercises": {
+      "path": "chapter11_representation_geometry/exercises/part4_concept_erasure/11.4_Concept_Erasure_exercises.ipynb",
+      "sha256": "ab6ff48527f76ce347c3632115da6115d5165949fa6093674c935e378e3e1447"
+    },
+    "reference": {
+      "path": "chapter11_representation_geometry/exercises/part4_concept_erasure/11.4_Concept_Erasure_solutions.ipynb",
+      "sha256": "911618d22c6e1ba0a7f51adc5c83306f5e6dc54e663b97cf98f3594a1cbc112a"
+    }
+  },
+  "replacements": [
+    {
+      "old": "Return the two means, the population covariance of `x`, and its cross-covariance with `z`. Use denominator `n`, center both arrays, and preserve their dtype and device. For our\nbinary example a single signed label column has the same removable span as centered two-column one-hot labels.",
+      "new": "Return the two means, the population covariance of `x`, and its cross-covariance with `z`. Use denominator `n`, center both arrays, and preserve their dtype and device. For our\nbinary example a single signed label column has the same removable span as centered two-column one-hot labels.\n\n**Public return contract — `centered_statistics`.** For `x: [n, d]` and `z: [n, c]`, return tensor keys:\n\n| Key | Shape | Meaning |\n| --- | --- | --- |\n| `mean_x` | `[d]` | Representation mean |\n| `mean_z` | `[c]` | Concept mean |\n| `covariance` | `[d, d]` | Centered population covariance of X |\n| `cross_covariance` | `[d, c]` | Centered population cross-covariance X with Z |",
+      "counts": {
+        "page": 1,
+        "exercises": 1,
+        "reference": 1
+      }
+    },
+    {
+      "old": "Diagonalize a symmetric positive-semidefinite covariance. Return whitening and unwhitening matrices, the numerical rank, eigenvalues and cutoff. By default use `width *\nmachine_epsilon` as the relative eigenvalue cutoff. Reject materially negative or nonsymmetric inputs; tiny numerical negatives may be clipped.",
+      "new": "Diagonalize a symmetric positive-semidefinite covariance. Return whitening and unwhitening matrices, the numerical rank, eigenvalues and cutoff. By default use `width *\nmachine_epsilon` as the relative eigenvalue cutoff. Reject materially negative or nonsymmetric inputs; tiny numerical negatives may be clipped.\n\n**Public return contract — `psd_whitener`.** For covariance width `d`:\n\n| Key | Shape / type | Meaning |\n| --- | --- | --- |\n| `whiten`, `unwhiten` | `[d, d]` tensors | Symmetric maps, zero outside retained support |\n| `rank` | Python `int` | Retained support dimension |\n| `eigenvalues` | `[d]` tensor | Clipped nonnegative eigenvalues in ascending order |\n| `threshold` | Python `float` | Absolute eigenvalue cutoff |\n\nTensor outputs retain the covariance dtype/device.",
+      "counts": {
+        "page": 1,
+        "exercises": 1,
+        "reference": 1
+      }
+    },
+    {
+      "old": "Construct `L` and `R` using your moments and whitening function. Use the same explicitly named SVD cutoff throughout. Return both factors and diagnostics, including the covariance\nsupport rank. The optional spherical covariance mixture is `(1-alpha) * covariance + alpha * trace(covariance)/width * I`.",
+      "new": "Construct `L` and `R` using your moments and whitening function. Use the same explicitly named SVD cutoff throughout. Return both factors and diagnostics, including the covariance\nsupport rank. The optional spherical covariance mixture is `(1-alpha) * covariance + alpha * trace(covariance)/width * I`.\n\n**Public return contract — `fit_leace`.** Let `d` be representation width, `c` concept width and `r` removed rank:\n\n| Key | Shape / type | Meaning |\n| --- | --- | --- |\n| `mean` | `[d]` tensor | Original training mean of X |\n| `left`, `right` | `[d, r]`, `[r, d]` tensors | Thin eraser factors L and R |\n| `rank` | Python `int` | Removed rank `r` |\n| `covariance_rank` | Python `int` | Retained covariance support rank |\n| `covariance_threshold` | Python `float` | Whitening eigenvalue cutoff |\n| `cross_singular_values` | `[min(d, c)]` tensor | All singular values before SVD cutoff |\n| `shrinkage` | numeric scalar | Requested covariance mixture coefficient |\n\nDownstream erasure consumes these exact keys; choosing their names is not part of the algebra exercise.",
+      "counts": {
+        "page": 1,
+        "exercises": 1,
+        "reference": 1
+      }
+    }
+  ],
+  "rationale": [
+    "GV-02: make exact statistics, whitening and LEACE schemas public outside Solution."
+  ]
+}

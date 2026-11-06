@@ -1,0 +1,41 @@
+{
+  "schema_version": 1,
+  "section": "18.1",
+  "sources": {
+    "page": {
+      "path": "chapter18_intrinsic_interpretability/instructions/pages/01_[18.1]_Concept_Bottlenecks_Backpacks_and_Interchange_Intervention_Training.md",
+      "sha256": "bfc1319e2396fc0861704a9678b8c9a034c812331561b2aaa5650572104d0bff"
+    },
+    "exercises": {
+      "path": "chapter18_intrinsic_interpretability/exercises/part1_concept_bottlenecks_backpacks_iit/18.1_Concept_Bottlenecks_Backpacks_and_Interchange_Intervention_Training_exercises.ipynb",
+      "sha256": "78a09adf4ae2628d7afbb8ed4f28736ed4373b34395ea787fd0eed8da75cb847"
+    },
+    "reference": {
+      "path": "chapter18_intrinsic_interpretability/exercises/part1_concept_bottlenecks_backpacks_iit/18.1_Concept_Bottlenecks_Backpacks_and_Interchange_Intervention_Training_solutions.ipynb",
+      "sha256": "c05989afe94e8ac7d5ed9aebebecb8895db2583eeaf73d686a4acc3f4ee6de59"
+    }
+  },
+  "replacements": [
+    {
+      "old": "### Exercise - implement `interchange_agreement`\n\n> ```yaml\n> Difficulty: 🔴🔴⚪⚪⚪\n> Importance: 🔵🔵🔵🔵⚪\n> You should spend up to 10–15 minutes on this exercise.\n> ```\n\nMeasure the fraction of scalar counterfactual values equal within absolute tolerance. This is interchange intervention **value** agreement on a regression calculator, not classification IIA on the paper’s tasks.",
+      "new": "### Exercise - implement `interchange_agreement`\n\n> ```yaml\n> Difficulty: 🔴🔴⚪⚪⚪\n> Importance: 🔵🔵🔵🔵⚪\n> You should spend up to 10–15 minutes on this exercise.\n> ```\n\nMeasure the fraction of scalar counterfactual values equal within absolute tolerance. This is interchange intervention **value** agreement on a regression calculator, not classification IIA on the paper’s tasks.\n\n### Forecast before the first all-pair audit\n\nBefore running the next all-pair fit/audit cell or opening its saved output, predict the agreement fractions for the observation-only, counterfactual-fitted and wrong-subspace readouts over all 16 base/donor pairs. State which base/donor combinations should fail, give a causal reason, and record a subjective confidence (0–1) plus prior exposure. Observation-only training sees `(0,0)` and `(1,1)` with target `2a+b`; the given rotation/alignment stays fixed. Derive the error pattern yourself before the later reflection reveals it. These are public guided fixtures, not an unseen assessment.\n\nOnly the two readout coefficients are fitted: ordinary least squares on observational rows, or on stacked observational plus interchange rows and their abstract targets. Neither the rotation nor patch direction is optimized.",
+      "counts": {
+        "page": 1,
+        "exercises": 1,
+        "reference": 1
+      }
+    },
+    {
+      "old": "### Predict before plotting\nFor all 16 base/donor pairs, predict which rows will fail for the observational readout. Its prediction is `1.5 * donor_a + 1.5 * base_b`; the target is `2 * donor_a + base_b`. The error is therefore `0.5 * (base_b - donor_a)`. Write the agreement fraction and the signs of the two off-diagonal errors.\n\nThe three-panel dashboard below is the section’s primary signature result. Its color scales are shared across the two heatmaps. The third panel checks the Backpack edit formula and shows the wrong-sense control on the same axes.",
+      "new": "### Reflect before plotting\nUse the forecast recorded before the first all-pair printout to explain which rows failed for the observational readout. Its prediction is `1.5 * donor_a + 1.5 * base_b`; the target is `2 * donor_a + base_b`. The error is therefore `0.5 * (base_b - donor_a)`. Compare the observed agreement fraction and signs of the two off-diagonal errors with your earlier forecast; explain any discrepancy.\n\nThe three-panel dashboard below is the section’s primary signature result. Its color scales are shared across the two heatmaps. The third panel checks the Backpack edit formula and shows the wrong-sense control on the same axes.",
+      "counts": {
+        "page": 1,
+        "exercises": 1,
+        "reference": 1
+      }
+    }
+  ],
+  "rationale": [
+    "Place the IIT agreement forecast before the first printed audit and turn the late leaked forecast into reflection; clarify which parameters are fitted."
+  ]
+}

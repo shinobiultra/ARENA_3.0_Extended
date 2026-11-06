@@ -1,0 +1,68 @@
+{
+  "schema_version": 1,
+  "section": "14.4",
+  "sources": {
+    "page": {
+      "path": "chapter14_jepa_world_models/instructions/pages/04_[14.4]_The_JEPA_Family.md",
+      "sha256": "2833e8222b6f0367688832076598a24685f5182ac3dce08607299c9560a72a9a"
+    },
+    "exercises": {
+      "path": "chapter14_jepa_world_models/exercises/part4_jepa_family/14.4_The_JEPA_Family_exercises.ipynb",
+      "sha256": "0661ca3c23373e18853045474cc8898548e22548c2c3201917291ee5b445a8d0"
+    },
+    "reference": {
+      "path": "chapter14_jepa_world_models/exercises/part4_jepa_family/14.4_The_JEPA_Family_solutions.ipynb",
+      "sha256": "2ec596820b15875edc7d86a34fb1818acf3bd75d3cb77d44c7d1ada55afc93f0"
+    }
+  },
+  "replacements": [
+    {
+      "old": "The immediate semantic fixture should print `All tests in test_masked_mean passed!`. The pooled feature is `[3,5]`; the hidden token receives zero gradient.\n\n</details>\n\n<details><summary>Help - why this step?</summary>\n\nImplement the stated operation before continuing. Inspect the fixture if the test fails: it is an independent small example, not a comparison with a hidden solution. The following experiment calls this function, so changing it changes the actual result.\n\n</details>",
+      "new": "The immediate semantic fixture should print `All tests in test_masked_mean passed!`. The pooled feature is `[3,5]`; the hidden token receives zero gradient.\n\n</details>\n\n<details><summary>Help - why this step?</summary>\n\nAn all-hidden context has zero denominator: reject it rather than clamping the count and inventing a feature. For a valid context, multiply by the visibility mask before summing. Check that hidden tokens receive zero gradient and that adding another hidden token cannot dilute the visible mean.\n\n</details>",
+      "counts": {
+        "page": 1,
+        "exercises": 1,
+        "reference": 1
+      }
+    },
+    {
+      "old": "The immediate semantic fixture should print `All tests in test_jepa_mse passed!`. Loss is `2.5`, predictor gradient `[-1,2]`, target gradient absent.\n\n</details>\n\n<details><summary>Help - why this step?</summary>\n\nImplement the stated operation before continuing. Inspect the fixture if the test fails: it is an independent small example, not a comparison with a hidden solution. The following experiment calls this function, so changing it changes the actual result.\n\n</details>",
+      "new": "The immediate semantic fixture should print `All tests in test_jepa_mse passed!`. Loss is `2.5`, predictor gradient `[-1,2]`, target gradient absent.\n\n</details>\n\n<details><summary>Help - why this step?</summary>\n\nIf the target receives a gradient, detach only the target tensor. If the prediction receives no gradient, the detach or no_grad scope is too broad. A constant representation can still minimize this loss, so low MSE alone does not rule out collapse.\n\n</details>",
+      "counts": {
+        "page": 1,
+        "exercises": 1,
+        "reference": 1
+      }
+    },
+    {
+      "old": "The immediate semantic fixture should print `All tests in test_ema_update passed!`. At momentum `.75`, teacher `[2,4]` becomes `[3,3]`.\n\n</details>\n\n<details><summary>Help - why this step?</summary>\n\nImplement the stated operation before continuing. Inspect the fixture if the test fails: it is an independent small example, not a comparison with a hidden solution. The following experiment calls this function, so changing it changes the actual result.\n\n</details>",
+      "new": "The immediate semantic fixture should print `All tests in test_ema_update passed!`. At momentum `.75`, teacher `[2,4]` becomes `[3,3]`.\n\n</details>\n\n<details><summary>Help - why this step?</summary>\n\nAt momentum1 the teacher stays fixed; at momentum0 it copies the student. Apply the assignment under no_grad so the teacher update is not an optimizer path through the student. Stop-gradient in the loss and EMA parameter updates solve different problems.\n\n</details>",
+      "counts": {
+        "page": 1,
+        "exercises": 1,
+        "reference": 1
+      }
+    },
+    {
+      "old": "The immediate semantic fixture should print `All tests in test_normalized_probe_error passed!`. The zero predictor has normalized error one for each centered test factor.\n\n</details>\n\n<details><summary>Help - why this step?</summary>\n\nImplement the stated operation before continuing. Inspect the fixture if the test fails: it is an independent small example, not a comparison with a hidden solution. The following experiment calls this function, so changing it changes the actual result.\n\n</details>",
+      "new": "The immediate semantic fixture should print `All tests in test_normalized_probe_error passed!`. The zero predictor has normalized error one for each centered test factor.\n\n</details>\n\n<details><summary>Help - why this step?</summary>\n\nThe probe can invert a consistent coordinate transformation, including the shuffled-pair fit in this fixture. Perfect factor decoding therefore does not prove that a predicted latent is paired with the right target. Inspect direct latent mismatch alongside the probe score, and normalize each factor by its own variance.\n\n</details>",
+      "counts": {
+        "page": 1,
+        "exercises": 1,
+        "reference": 1
+      }
+    },
+    {
+      "old": "The immediate semantic fixture should print `All tests in test_retrieval_accuracy passed!`. The two-query fixture retrieves indices 1 and 0 with accuracy one.\n\n</details>\n\n<details><summary>Help - why this step?</summary>\n\nImplement the stated operation before continuing. Inspect the fixture if the test fails: it is an independent small example, not a comparison with a hidden solution. The following experiment calls this function, so changing it changes the actual result.\n\n</details>",
+      "new": "The immediate semantic fixture should print `All tests in test_retrieval_accuracy passed!`. The two-query fixture retrieves indices 1 and 0 with accuracy one.\n\n</details>\n\n<details><summary>Help - why this step?</summary>\n\nRows are queries and columns are candidate targets. Sum squared differences only over the final feature axis, then take each row's argmin. Ties select the earliest candidate; duplicating a target can change top-one identity without improving prediction, so inspect the distance matrix as well as accuracy.\n\n</details>",
+      "counts": {
+        "page": 1,
+        "exercises": 1,
+        "reference": 1
+      }
+    }
+  ],
+  "rationale": [
+    "GW-144-01"
+  ]
+}

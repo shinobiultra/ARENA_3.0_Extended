@@ -1,0 +1,379 @@
+{
+  "schema_version": 1,
+  "scope": "canonical_9_3_cpu_toy_and_historical_adjudication",
+  "exercise_notebook": "chapter9_alignment_interpretability/exercises/part3_cot_faithfulness/9.3_Chain-of-Thought_Faithfulness_exercises.ipynb",
+  "source_files": {
+    "chapter9_alignment_interpretability/exercises/part3_cot_faithfulness/9.3_Chain-of-Thought_Faithfulness_exercises.ipynb": {
+      "sha256": "da2558a4d3614bb2be8f166a447a284c9aff741e8af92ce5f01545abf5878440",
+      "bytes": 234895
+    },
+    "chapter9_alignment_interpretability/exercises/part3_cot_faithfulness/9.3_Chain-of-Thought_Faithfulness_solutions.ipynb": {
+      "sha256": "12528ecc4c9dcc09e66a4cb412c384e4c218d3b0c44d1c9282e01f408bfbd5df",
+      "bytes": 238315
+    },
+    "chapter9_alignment_interpretability/exercises/part3_cot_faithfulness/solutions.py": {
+      "sha256": "260544bc66ddba46bb92744df903ae09bf8f2f5875f9132f681c7651bfe0822f",
+      "bytes": 33333
+    },
+    "chapter9_alignment_interpretability/exercises/part3_cot_faithfulness/README.md": {
+      "sha256": "ab1c3f5bfaa65a5313034460779e719fbff359a07166e8a73b15ff859a8663f5",
+      "bytes": 1336
+    },
+    "chapter9_alignment_interpretability/exercises/part3_cot_faithfulness/historical_9_2_artifacts.lock.yml": {
+      "sha256": "fc941ff0a5a51bbca4441b3122edcb3d13746c73164383ead438abedee68957c",
+      "bytes": 4364
+    },
+    "chapter9_alignment_interpretability/exercises/part3_cot_faithfulness/historical_9_2_verification_report.json": {
+      "sha256": "a350d6f440b92664c5318993059e0ee9d34d8ee3a1f9731f87d6ae9e8110e840",
+      "bytes": 21045
+    },
+    "chapter9_alignment_interpretability/exercises/part3_cot_faithfulness/verification_report.schema.json": {
+      "sha256": "ecd833883885077ad5d7a0e239d984d01462255e94266212cf195ab4d4e27b3d",
+      "bytes": 2669
+    },
+    "chapter9_alignment_interpretability/exercises/part3_cot_faithfulness/provided/historical_9_2_solutions.py": {
+      "sha256": "73be5795f8da33b5f678226b6688c5f51911d4bf4e6d4a66c50de0dc42e0add8",
+      "bytes": 42210
+    },
+    "chapter9_alignment_interpretability/exercises/part2_cot_faithfulness/solutions.py": {
+      "sha256": "73be5795f8da33b5f678226b6688c5f51911d4bf4e6d4a66c50de0dc42e0add8",
+      "bytes": 42210
+    },
+    "chapter9_alignment_interpretability/exercises/part2_cot_faithfulness/tests.py": {
+      "sha256": "7eea323a3e543c37af10553c2984e0fc779df867d2d533b9edfb3bbbed0428ec",
+      "bytes": 15280
+    },
+    "chapter9_alignment_interpretability/exercises/part2_cot_faithfulness/utils.py": {
+      "sha256": "25d52c577aa3b594729292f16e052d3e2a597f668916ab3336b6ebbb1e052858",
+      "bytes": 360
+    },
+    "chapter9_alignment_interpretability/exercises/part2_cot_faithfulness/9.2_Chain_of_Thought_Faithfulness_exercises.ipynb": {
+      "sha256": "16d16a57bd59b684488cfef09e53713b49973cffd5a8f855d83e295c1a131244",
+      "bytes": 68245
+    },
+    "infrastructure/chapters/chapter9_alignment_interpretability/master_9_3.py": {
+      "sha256": "92e2df383e9024f02924e3b2947d1fc5020a25c8f9b293d0028e2efe0aefd955",
+      "bytes": 79870
+    }
+  },
+  "plan": {
+    "schema_version": 1,
+    "source_notebook_object_sha256": "df3debf3cc034657a4aab304cde896096f0754406deaf6268a5e28ac45e9caaf",
+    "occurrences": [
+      {
+        "cell": 14,
+        "statement": 0,
+        "name": "make_toy_cot_batch",
+        "stub_source_sha256": "baf054243e124541ab6e4338f5c2614e02ccb3ca9bf1ab31d727ffe609046128",
+        "stub_ast": "FunctionDef(name='make_toy_cot_batch', args=arguments(args=[arg(arg='num_pairs', annotation=Name(id='int', ctx=Load()))], defaults=[Constant(value=12)]), body=[Raise(exc=Call(func=Name(id='NotImplementedError', ctx=Load())))], returns=Name(id='ToyCoTBatch', ctx=Load()))",
+        "interface": {
+          "kind": "FunctionDef",
+          "name": "make_toy_cot_batch",
+          "args": "arguments(args=[arg(arg='num_pairs')], defaults=[Constant(value=12)])",
+          "decorators": [],
+          "type_params": []
+        },
+        "public_answer_interface": {
+          "kind": "FunctionDef",
+          "name": "make_toy_cot_batch",
+          "args": "arguments(args=[arg(arg='num_pairs')], defaults=[Constant(value=12)])",
+          "decorators": [],
+          "type_params": []
+        },
+        "answer_cell": 15,
+        "answer_block": 0,
+        "answer_code": 0,
+        "answer_block_sha256": "6569c1bd5d068a8b21d95fa589a8d4257deda7129bb0a70b56fadeae75669a09",
+        "answer_source": "def make_toy_cot_batch(num_pairs: int=12) -> ToyCoTBatch:\n    \"\"\"Construct an exact toy CoT organism with known answer-carrying states.\"\"\"\n    if num_pairs < 4:\n        raise ValueError('num_pairs must be at least 4.')\n    d_model = 8\n    layers = 4\n    positions = len(TOY_POSITIONS)\n    prompts: list[str] = []\n    conditions: list[CoTCondition] = []\n    hidden_ids: list[int] = []\n    visible_ids: list[int] = []\n    activations = t.zeros((2 * num_pairs, layers, positions, d_model), dtype=t.float32)\n    answer_readout = t.zeros((d_model, 2), dtype=t.float32)\n    answer_readout[0, 0] = -1.0\n    answer_readout[0, 1] = 1.0\n    for i in range(2 * num_pairs):\n        hidden = i % 2\n        condition = PYTHIA_CONDITION_ROWS[i % len(PYTHIA_CONDITION_ROWS)][2]\n        visible = hidden if condition in {'faithful_cot', 'no_cot'} else 1 - hidden\n        sign = -1.0 if hidden == 0 else 1.0\n        visible_sign = -1.0 if visible == 0 else 1.0\n        hidden_ids.append(hidden)\n        visible_ids.append(visible)\n        conditions.append(condition)\n        prompts.append(f'toy {i:02d}: private={chr(65 + hidden)} rationale={chr(65 + visible)} condition={condition}')\n        activations[i, 0, 1, 0] = sign\n        activations[i, 0, 2, 1] = visible_sign\n        activations[i, 1, 1, 0] = 1.5 * sign\n        activations[i, 1, 2, 1] = 1.2 * visible_sign\n        activations[i, 1, 3, 0] = 0.5 * sign\n        activations[i, 2, 3, 0] = 2.0 * sign\n        activations[i, 2, 3, 1] = 0.2 * visible_sign\n        activations[i, 3, 3, 0] = 2.5 * sign\n        activations[i, 3, 3, 1] = 0.2 * visible_sign\n        activations[i, :, :, 2] = t.linspace(-0.2, 0.2, layers)[:, None]\n        activations[i, :, :, 3] = t.linspace(-0.1, 0.1, positions)[None, :]\n    return ToyCoTBatch(activations=activations,\n        hidden_answer_ids=t.tensor(hidden_ids,\n        dtype=t.long),\n        visible_answer_ids=t.tensor(visible_ids,\n        dtype=t.long),\n        condition_ids=tuple(conditions),\n        prompts=tuple(prompts),\n        position_names=TOY_POSITIONS,\n        answer_readout=answer_readout)\n",
+        "answer_source_sha256": "f9209ceb80873f0db6171f47dc51ca8b283de9be2462647f0346deacc2b5b3c1"
+      },
+      {
+        "cell": 19,
+        "statement": 0,
+        "name": "prediction_accuracy",
+        "stub_source_sha256": "72a73b0d911aa9ab027a3570336e0311ad2d52cccb809f7384f25925759a8283",
+        "stub_ast": "FunctionDef(name='prediction_accuracy', args=arguments(args=[arg(arg='logits', annotation=Attribute(value=Name(id='t', ctx=Load()), attr='Tensor', ctx=Load())), arg(arg='target_token_ids', annotation=Attribute(value=Name(id='t', ctx=Load()), attr='Tensor', ctx=Load()))]), body=[Raise(exc=Call(func=Name(id='NotImplementedError', ctx=Load())))], returns=Name(id='float', ctx=Load()))",
+        "interface": {
+          "kind": "FunctionDef",
+          "name": "prediction_accuracy",
+          "args": "arguments(args=[arg(arg='logits'), arg(arg='target_token_ids')])",
+          "decorators": [],
+          "type_params": []
+        },
+        "public_answer_interface": {
+          "kind": "FunctionDef",
+          "name": "prediction_accuracy",
+          "args": "arguments(args=[arg(arg='logits'), arg(arg='target_token_ids')])",
+          "decorators": [],
+          "type_params": []
+        },
+        "answer_cell": 20,
+        "answer_block": 0,
+        "answer_code": 0,
+        "answer_block_sha256": "1231e60b44a86ea8b363214e17e05bbe2699aab90ddbe4d524d2a9ca22a098e8",
+        "answer_source": "def prediction_accuracy(logits: t.Tensor, target_token_ids: t.Tensor) -> float:\n    \"\"\"Return top-1 accuracy for answer logits.\"\"\"\n    if logits.shape[:-1] != target_token_ids.shape:\n        raise ValueError('target_token_ids must match logits leading dimensions.')\n    _require_finite_tensor('logits', logits)\n    _require_binary_ids('target_token_ids', target_token_ids, tuple(logits.shape[:-1]))\n    predictions = logits.argmax(dim=-1)\n    return float(predictions.eq(target_token_ids.long()).float().mean().item())\n",
+        "answer_source_sha256": "0d21989e8ea0533c1689541d7f93dab750ca74809c64213d9d1680613d085649"
+      },
+      {
+        "cell": 19,
+        "statement": 1,
+        "name": "answer_logit_diff",
+        "stub_source_sha256": "084353d917189ab539cf2be55253fe5a082656665e69fdb8b9d1b0ca7b017e03",
+        "stub_ast": "FunctionDef(name='answer_logit_diff', args=arguments(args=[arg(arg='answer_logits', annotation=Attribute(value=Name(id='t', ctx=Load()), attr='Tensor', ctx=Load()))]), body=[Raise(exc=Call(func=Name(id='NotImplementedError', ctx=Load())))], returns=Attribute(value=Name(id='t', ctx=Load()), attr='Tensor', ctx=Load()))",
+        "interface": {
+          "kind": "FunctionDef",
+          "name": "answer_logit_diff",
+          "args": "arguments(args=[arg(arg='answer_logits')])",
+          "decorators": [],
+          "type_params": []
+        },
+        "public_answer_interface": {
+          "kind": "FunctionDef",
+          "name": "answer_logit_diff",
+          "args": "arguments(args=[arg(arg='answer_logits')])",
+          "decorators": [],
+          "type_params": []
+        },
+        "answer_cell": 20,
+        "answer_block": 0,
+        "answer_code": 0,
+        "answer_block_sha256": "1231e60b44a86ea8b363214e17e05bbe2699aab90ddbe4d524d2a9ca22a098e8",
+        "answer_source": "def answer_logit_diff(answer_logits: t.Tensor) -> t.Tensor:\n    \"\"\"Return logit(B) - logit(A) for a final-token answer-logit tensor.\"\"\"\n    if answer_logits.shape[-1] != 2:\n        raise ValueError('answer_logits must end with the two answer logits [A, B].')\n    _require_finite_tensor('answer_logits', answer_logits)\n    return answer_logits[..., 1] - answer_logits[..., 0]\n",
+        "answer_source_sha256": "8c299bb6f0fe975f8fe0c9113c32e3bc0fe7d2080506586b1ada0a668595dfe9"
+      },
+      {
+        "cell": 24,
+        "statement": 0,
+        "name": "fit_mean_difference_probe",
+        "stub_source_sha256": "79a6b16d9965ea5ddca65cdb0b907111b347d1a3d678a19d1a309484c16506eb",
+        "stub_ast": "FunctionDef(name='fit_mean_difference_probe', args=arguments(args=[arg(arg='hidden_states', annotation=Attribute(value=Name(id='t', ctx=Load()), attr='Tensor', ctx=Load())), arg(arg='answer_ids', annotation=Attribute(value=Name(id='t', ctx=Load()), attr='Tensor', ctx=Load()))]), body=[Raise(exc=Call(func=Name(id='NotImplementedError', ctx=Load())))], returns=Name(id='MeanDifferenceProbe', ctx=Load()))",
+        "interface": {
+          "kind": "FunctionDef",
+          "name": "fit_mean_difference_probe",
+          "args": "arguments(args=[arg(arg='hidden_states'), arg(arg='answer_ids')])",
+          "decorators": [],
+          "type_params": []
+        },
+        "public_answer_interface": {
+          "kind": "FunctionDef",
+          "name": "fit_mean_difference_probe",
+          "args": "arguments(args=[arg(arg='hidden_states'), arg(arg='answer_ids')])",
+          "decorators": [],
+          "type_params": []
+        },
+        "answer_cell": 25,
+        "answer_block": 0,
+        "answer_code": 0,
+        "answer_block_sha256": "1ab5d8ce500c4084687747ddb9b360c624800aede33bd7ead7cba3698454f1a5",
+        "answer_source": "def fit_mean_difference_probe(hidden_states: t.Tensor, answer_ids: t.Tensor) -> MeanDifferenceProbe:\n    \"\"\"Fit a closed-form A-vs-B probe from class means.\"\"\"\n    if hidden_states.ndim != 2:\n        raise ValueError('hidden_states must have shape (examples, d_model).')\n    _require_finite_tensor('hidden_states', hidden_states)\n    _require_binary_ids('answer_ids', answer_ids, (hidden_states.shape[0],))\n    answer_ids = answer_ids.long().to(hidden_states.device)\n    class_a = hidden_states[answer_ids.eq(0)].float()\n    class_b = hidden_states[answer_ids.eq(1)].float()\n    if class_a.numel() == 0 or class_b.numel() == 0:\n        raise ValueError('both answer classes must be present.')\n    direction = class_b.mean(dim=0) - class_a.mean(dim=0)\n    norm = direction.norm()\n    if float(norm.item()) <= 0:\n        raise ValueError('class means must define a non-zero direction.')\n    direction = direction / norm\n    scores = hidden_states.float() @ direction\n    threshold = 0.5 * (scores[answer_ids.eq(0)].mean().item() + scores[answer_ids.eq(1)].mean().item())\n    return MeanDifferenceProbe(direction=direction, threshold=float(threshold))\n",
+        "answer_source_sha256": "ed97b06f4995971e36b9b1b993d41cea594f9666fd9f27108c01949549f21d2b"
+      },
+      {
+        "cell": 24,
+        "statement": 1,
+        "name": "probe_logits_from_direction",
+        "stub_source_sha256": "498e42c9e6044a41fb3151f3cfddbee2cffb515258fab26ad614e965f2cb0e26",
+        "stub_ast": "FunctionDef(name='probe_logits_from_direction', args=arguments(args=[arg(arg='hidden_states', annotation=Attribute(value=Name(id='t', ctx=Load()), attr='Tensor', ctx=Load())), arg(arg='probe', annotation=Name(id='MeanDifferenceProbe', ctx=Load()))]), body=[Raise(exc=Call(func=Name(id='NotImplementedError', ctx=Load())))], returns=Attribute(value=Name(id='t', ctx=Load()), attr='Tensor', ctx=Load()))",
+        "interface": {
+          "kind": "FunctionDef",
+          "name": "probe_logits_from_direction",
+          "args": "arguments(args=[arg(arg='hidden_states'), arg(arg='probe')])",
+          "decorators": [],
+          "type_params": []
+        },
+        "public_answer_interface": {
+          "kind": "FunctionDef",
+          "name": "probe_logits_from_direction",
+          "args": "arguments(args=[arg(arg='hidden_states'), arg(arg='probe')])",
+          "decorators": [],
+          "type_params": []
+        },
+        "answer_cell": 25,
+        "answer_block": 0,
+        "answer_code": 0,
+        "answer_block_sha256": "1ab5d8ce500c4084687747ddb9b360c624800aede33bd7ead7cba3698454f1a5",
+        "answer_source": "def probe_logits_from_direction(hidden_states: t.Tensor, probe: MeanDifferenceProbe) -> t.Tensor:\n    \"\"\"Convert hidden states to two answer logits using a mean-difference probe.\"\"\"\n    if hidden_states.shape[-1] != probe.direction.numel():\n        raise ValueError('hidden_states last dimension must match probe direction.')\n    _require_finite_tensor('hidden_states', hidden_states)\n    direction = probe.direction.to(hidden_states.device, dtype=hidden_states.float().dtype)\n    scores = hidden_states.float() @ direction - probe.threshold\n    return t.stack([-scores, scores], dim=-1)\n",
+        "answer_source_sha256": "f2af12cf2cf22c155aea2d875f805ce69c5d8637f5354dd74df2e31f61e703aa"
+      },
+      {
+        "cell": 29,
+        "statement": 0,
+        "name": "layer_position_probe_heatmap",
+        "stub_source_sha256": "a38ab5efb5669abd9257f57d5b7e27021cdc0b6cd192c202932bd8e65c5a2650",
+        "stub_ast": "FunctionDef(name='layer_position_probe_heatmap', args=arguments(args=[arg(arg='train_hidden_states', annotation=Attribute(value=Name(id='t', ctx=Load()), attr='Tensor', ctx=Load())), arg(arg='train_answer_ids', annotation=Attribute(value=Name(id='t', ctx=Load()), attr='Tensor', ctx=Load())), arg(arg='eval_hidden_states', annotation=Attribute(value=Name(id='t', ctx=Load()), attr='Tensor', ctx=Load())), arg(arg='eval_answer_ids', annotation=Attribute(value=Name(id='t', ctx=Load()), attr='Tensor', ctx=Load()))]), body=[Raise(exc=Call(func=Name(id='NotImplementedError', ctx=Load())))], returns=Attribute(value=Name(id='t', ctx=Load()), attr='Tensor', ctx=Load()))",
+        "interface": {
+          "kind": "FunctionDef",
+          "name": "layer_position_probe_heatmap",
+          "args": "arguments(args=[arg(arg='train_hidden_states'), arg(arg='train_answer_ids'), arg(arg='eval_hidden_states'), arg(arg='eval_answer_ids')])",
+          "decorators": [],
+          "type_params": []
+        },
+        "public_answer_interface": {
+          "kind": "FunctionDef",
+          "name": "layer_position_probe_heatmap",
+          "args": "arguments(args=[arg(arg='train_hidden_states'), arg(arg='train_answer_ids'), arg(arg='eval_hidden_states'), arg(arg='eval_answer_ids')])",
+          "decorators": [],
+          "type_params": []
+        },
+        "answer_cell": 30,
+        "answer_block": 0,
+        "answer_code": 0,
+        "answer_block_sha256": "771e098295f2a11f816503b29de9d8f76c96858f31b77620e5bf25e4ff37e463",
+        "answer_source": "def layer_position_probe_heatmap(train_hidden_states: t.Tensor, train_answer_ids: t.Tensor, eval_hidden_states: t.Tensor, eval_answer_ids: t.Tensor) -> t.Tensor:\n    \"\"\"Evaluate a mean-difference hidden-answer probe at every layer and position.\"\"\"\n    if train_hidden_states.ndim != 4 or eval_hidden_states.ndim != 4:\n        raise ValueError('hidden-state grids must have shape (examples, layers, positions, d_model).')\n    if train_hidden_states.shape[1:] != eval_hidden_states.shape[1:]:\n        raise ValueError('train and eval grids must share layer/position/model dimensions.')\n    _require_binary_ids('train_answer_ids', train_answer_ids, (train_hidden_states.shape[0],))\n    _require_binary_ids('eval_answer_ids', eval_answer_ids, (eval_hidden_states.shape[0],))\n    layers, positions = (train_hidden_states.shape[1], train_hidden_states.shape[2])\n    heatmap = t.empty((layers, positions), dtype=t.float32, device=eval_hidden_states.device)\n    for layer in range(layers):\n        for position in range(positions):\n            try:\n                probe = fit_mean_difference_probe(train_hidden_states[:, layer, position, :], train_answer_ids)\n            except ValueError as exc:\n                if 'non-zero direction' not in str(exc):\n                    raise\n                heatmap[layer, position] = 0.5\n                continue\n            logits = probe_logits_from_direction(eval_hidden_states[:, layer, position, :], probe)\n            heatmap[layer, position] = prediction_accuracy(logits, eval_answer_ids)\n    return heatmap\n",
+        "answer_source_sha256": "afdef02113ac2d71fad4958440e75c7831f320858710b78ea159c603ccccca0f"
+      },
+      {
+        "cell": 37,
+        "statement": 0,
+        "name": "replace_position_in_layer_output",
+        "stub_source_sha256": "9eaae94735a5d606074aec4a51525741b731705ce429801a63f89c75bed01235",
+        "stub_ast": "FunctionDef(name='replace_position_in_layer_output', args=arguments(args=[arg(arg='output', annotation=BinOp(left=Attribute(value=Name(id='t', ctx=Load()), attr='Tensor', ctx=Load()), op=BitOr(), right=Subscript(value=Name(id='tuple', ctx=Load()), slice=Tuple(elts=[Name(id='Any', ctx=Load()), Constant(value=Ellipsis)], ctx=Load()), ctx=Load()))), arg(arg='donor_activation', annotation=Attribute(value=Name(id='t', ctx=Load()), attr='Tensor', ctx=Load())), arg(arg='token_position', annotation=Name(id='int', ctx=Load()))]), body=[Raise(exc=Call(func=Name(id='NotImplementedError', ctx=Load())))], returns=BinOp(left=Attribute(value=Name(id='t', ctx=Load()), attr='Tensor', ctx=Load()), op=BitOr(), right=Subscript(value=Name(id='tuple', ctx=Load()), slice=Tuple(elts=[Name(id='Any', ctx=Load()), Constant(value=Ellipsis)], ctx=Load()), ctx=Load())))",
+        "interface": {
+          "kind": "FunctionDef",
+          "name": "replace_position_in_layer_output",
+          "args": "arguments(args=[arg(arg='output'), arg(arg='donor_activation'), arg(arg='token_position')])",
+          "decorators": [],
+          "type_params": []
+        },
+        "public_answer_interface": {
+          "kind": "FunctionDef",
+          "name": "replace_position_in_layer_output",
+          "args": "arguments(args=[arg(arg='output'), arg(arg='donor_activation'), arg(arg='token_position')])",
+          "decorators": [],
+          "type_params": []
+        },
+        "answer_cell": 38,
+        "answer_block": 0,
+        "answer_code": 0,
+        "answer_block_sha256": "85b8f53765671abbd1233fb97eb68512b7a56f47da42d4c636f5e3d1341b7eec",
+        "answer_source": "def replace_position_in_layer_output(output: t.Tensor | tuple[Any, ...], donor_activation: t.Tensor, token_position: int) -> t.Tensor | tuple[Any, ...]:\n    \"\"\"Return a hook output with one residual-stream position replaced.\"\"\"\n    hidden_states = output[0] if isinstance(output, tuple) else output\n    if hidden_states.ndim != 3:\n        raise ValueError('layer output hidden states must have shape (batch, seq, d_model).')\n    position = token_position if token_position >= 0 else hidden_states.shape[1] + token_position\n    if not 0 <= position < hidden_states.shape[1]:\n        raise ValueError('token_position is outside the sequence length.')\n    donor = donor_activation.to(hidden_states.device, dtype=hidden_states.dtype)\n    if donor.ndim == 1:\n        if donor.shape != (hidden_states.shape[-1],):\n            raise ValueError('rank-1 donor_activation must have shape (d_model,).')\n        replacement = donor[None, :].expand(hidden_states.shape[0], -1)\n    elif donor.ndim == 2:\n        if donor.shape != (hidden_states.shape[0], hidden_states.shape[-1]):\n            raise ValueError('rank-2 donor_activation must have shape (batch, d_model).')\n        replacement = donor\n    else:\n        raise ValueError('donor_activation must be rank 1 or rank 2.')\n    patched_hidden = hidden_states.clone()\n    patched_hidden[:, position, :] = replacement\n    if isinstance(output, tuple):\n        return (patched_hidden, *output[1:])\n    return patched_hidden\n",
+        "answer_source_sha256": "7db6de61e95d57811f446901b01b52ad814557c5622ea2a94ca416ea2bd8b7f3"
+      },
+      {
+        "cell": 41,
+        "statement": 1,
+        "name": "toy_forward_patch_answer_logits",
+        "stub_source_sha256": "47e16e2742da01861476dcdef9e4be4f1f304bb4d3d25ba952fa185bdb5b33df",
+        "stub_ast": "FunctionDef(name='toy_forward_patch_answer_logits', args=arguments(args=[arg(arg='batch', annotation=Name(id='ToyCoTBatch', ctx=Load())), arg(arg='target_indices', annotation=Attribute(value=Name(id='t', ctx=Load()), attr='Tensor', ctx=Load())), arg(arg='donor_indices', annotation=Attribute(value=Name(id='t', ctx=Load()), attr='Tensor', ctx=Load()))], kwonlyargs=[arg(arg='layer_index', annotation=Name(id='int', ctx=Load())), arg(arg='position_index', annotation=Name(id='int', ctx=Load()))], kw_defaults=[None, None]), body=[Raise(exc=Call(func=Name(id='NotImplementedError', ctx=Load())))], returns=Attribute(value=Name(id='t', ctx=Load()), attr='Tensor', ctx=Load()))",
+        "interface": {
+          "kind": "FunctionDef",
+          "name": "toy_forward_patch_answer_logits",
+          "args": "arguments(args=[arg(arg='batch'), arg(arg='target_indices'), arg(arg='donor_indices')], kwonlyargs=[arg(arg='layer_index'), arg(arg='position_index')], kw_defaults=[None, None])",
+          "decorators": [],
+          "type_params": []
+        },
+        "public_answer_interface": {
+          "kind": "FunctionDef",
+          "name": "toy_forward_patch_answer_logits",
+          "args": "arguments(args=[arg(arg='batch'), arg(arg='target_indices'), arg(arg='donor_indices')], kwonlyargs=[arg(arg='layer_index'), arg(arg='position_index')], kw_defaults=[None, None])",
+          "decorators": [],
+          "type_params": []
+        },
+        "answer_cell": 42,
+        "answer_block": 0,
+        "answer_code": 0,
+        "answer_block_sha256": "89220604d7d9f806dfbe83a99e174007068072c8a74cbee00bfff891d350c83c",
+        "answer_source": "def toy_forward_patch_answer_logits(batch: ToyCoTBatch, target_indices: t.Tensor, donor_indices: t.Tensor, *, layer_index: int, position_index: int) -> t.Tensor:\n    \"\"\"Exact toy forward patch: only the answer-carrying final stream is causal.\"\"\"\n    if target_indices.shape != donor_indices.shape:\n        raise ValueError('target_indices and donor_indices must have matching shape.')\n    final_position = batch.position_names.index('final_prompt')\n    layer = layer_index if layer_index >= 0 else batch.activations.shape[1] + layer_index\n    patched_final = batch.activations[target_indices, -1, final_position, :].clone()\n    if position_index == final_position and layer >= 2:\n        donor_states = batch.activations[donor_indices, layer, position_index, :]\n        patched_final[:, 0] = donor_states[:, 0]\n    return patched_final @ batch.answer_readout\n",
+        "answer_source_sha256": "faa33b3276f15817f48e904270b8d1282a0486613c1595b64b5145d286a8c839"
+      },
+      {
+        "cell": 46,
+        "statement": 1,
+        "name": "patch_control_summary",
+        "stub_source_sha256": "349f7a77af5c3d610ebe8503260aecf17b9e1c64c3dd2b2f1698a7f53298838b",
+        "stub_ast": "FunctionDef(name='patch_control_summary', args=arguments(args=[arg(arg='patch_effects', annotation=Subscript(value=Name(id='Mapping', ctx=Load()), slice=Tuple(elts=[Name(id='str', ctx=Load()), Attribute(value=Name(id='t', ctx=Load()), attr='Tensor', ctx=Load())], ctx=Load()), ctx=Load())), arg(arg='patch_flips', annotation=Subscript(value=Name(id='Mapping', ctx=Load()), slice=Tuple(elts=[Name(id='str', ctx=Load()), Attribute(value=Name(id='t', ctx=Load()), attr='Tensor', ctx=Load())], ctx=Load()), ctx=Load()))], kwonlyargs=[arg(arg='target_name', annotation=Name(id='str', ctx=Load())), arg(arg='min_target_control_gap', annotation=Name(id='float', ctx=Load()))], kw_defaults=[Constant(value='target_patch'), Constant(value=0.05)]), body=[Raise(exc=Call(func=Name(id='NotImplementedError', ctx=Load())))], returns=Name(id='PatchControlReport', ctx=Load()))",
+        "interface": {
+          "kind": "FunctionDef",
+          "name": "patch_control_summary",
+          "args": "arguments(args=[arg(arg='patch_effects'), arg(arg='patch_flips')], kwonlyargs=[arg(arg='target_name'), arg(arg='min_target_control_gap')], kw_defaults=[Constant(value='target_patch'), Constant(value=0.05)])",
+          "decorators": [],
+          "type_params": []
+        },
+        "public_answer_interface": {
+          "kind": "FunctionDef",
+          "name": "patch_control_summary",
+          "args": "arguments(args=[arg(arg='patch_effects'), arg(arg='patch_flips')], kwonlyargs=[arg(arg='target_name'), arg(arg='min_target_control_gap')], kw_defaults=[Constant(value='target_patch'), Constant(value=0.05)])",
+          "decorators": [],
+          "type_params": []
+        },
+        "answer_cell": 47,
+        "answer_block": 0,
+        "answer_code": 0,
+        "answer_block_sha256": "fd7df99c6de53f2053a5e9bf56c77f47c054e19114b91589abe7a785bd2bf354",
+        "answer_source": "def patch_control_summary(patch_effects: Mapping[str, t.Tensor], patch_flips: Mapping[str, t.Tensor], *, target_name: str='target_patch', min_target_control_gap: float=0.05) -> PatchControlReport:\n    \"\"\"Compare a targeted patch against named controls.\"\"\"\n    if target_name not in patch_effects:\n        raise ValueError(f'patch_effects must contain {target_name!r}.')\n    if set(patch_effects) != set(patch_flips):\n        raise ValueError('patch_effects and patch_flips must use the same condition names.')\n    mean_effects: dict[str, float] = {}\n    flip_rates: dict[str, float] = {}\n    for name, values in patch_effects.items():\n        _require_finite_tensor(f'patch_effects[{name}]', values)\n        _require_finite_tensor(f'patch_flips[{name}]', patch_flips[name])\n        mean_effects[name] = float(values.float().mean().item())\n        flip_rates[name] = float(patch_flips[name].float().mean().item())\n    control_names = [name for name in mean_effects if name != target_name]\n    if not control_names:\n        raise ValueError('at least one control condition is required.')\n    max_control_name = max(control_names, key=lambda name: mean_effects[name])\n    gap = mean_effects[target_name] - mean_effects[max_control_name]\n    return PatchControlReport(mean_effects=mean_effects,\n        flip_rates=flip_rates,\n        target_name=target_name,\n        max_control_name=max_control_name,\n        target_control_gap=float(gap),\n        target_beats_controls=bool(gap >= min_target_control_gap))\n",
+        "answer_source_sha256": "eb5b1ad50888a81121e1dc5ec13169304cdd8fa4f13c9a4807e0c490a621a925"
+      },
+      {
+        "cell": 55,
+        "statement": 1,
+        "name": "adjudicate_pythia_result",
+        "stub_source_sha256": "89115af66e3f072021a9913f806b25ce8e1251895927877c7923588c2f4ef8d0",
+        "stub_ast": "FunctionDef(name='adjudicate_pythia_result', args=arguments(args=[arg(arg='result', annotation=Subscript(value=Name(id='Mapping', ctx=Load()), slice=Tuple(elts=[Name(id='str', ctx=Load()), Name(id='Any', ctx=Load())], ctx=Load()), ctx=Load()))]), body=[Raise(exc=Call(func=Name(id='NotImplementedError', ctx=Load())))], returns=Name(id='RealModelVerdict', ctx=Load()))",
+        "interface": {
+          "kind": "FunctionDef",
+          "name": "adjudicate_pythia_result",
+          "args": "arguments(args=[arg(arg='result')])",
+          "decorators": [],
+          "type_params": []
+        },
+        "public_answer_interface": {
+          "kind": "FunctionDef",
+          "name": "adjudicate_pythia_result",
+          "args": "arguments(args=[arg(arg='result')])",
+          "decorators": [],
+          "type_params": []
+        },
+        "answer_cell": 56,
+        "answer_block": 0,
+        "answer_code": 0,
+        "answer_block_sha256": "627c67e7101fb343e7b6779b25ab105f58aa630d6ece6b08544737855240064c",
+        "answer_source": "def adjudicate_pythia_result(result: Mapping[str, Any]) -> RealModelVerdict:\n    \"\"\"Apply predeclared probe, intervention, and baseline claim boundaries.\"\"\"\n    required = {'heldout_prompt_count', 'hidden_answer_accuracy', 'label_shuffled_probe_accuracy', 'detector_recall', 'text_only_recall', 'patch_control_means'}\n    missing = required - set(result)\n    if missing:\n        raise ValueError(f'result is missing required fields: {sorted(missing)}')\n    means = result['patch_control_means']\n    if 'target_patch' not in means:\n        raise ValueError(\"patch_control_means must contain 'target_patch'.\")\n    control_names = [name for name in means if name != 'target_patch']\n    if not control_names:\n        raise ValueError('at least one named patch control is required.')\n    strongest_control = max(control_names, key=lambda name: float(means[name]))\n    target_control_gap = float(means['target_patch']) - float(means[strongest_control])\n    detector_advantage = float(result['detector_recall']) - float(result['text_only_recall'])\n    probe_passes = int(result['heldout_prompt_count']) >= 20 and float(result['hidden_answer_accuracy']) >= 0.7 and (float(result['label_shuffled_probe_accuracy']) <= 0.65)\n    claim_supported = probe_passes and target_control_gap > 0.05 and (detector_advantage > 0)\n    negative_result = not claim_supported and target_control_gap <= 0.01 and (detector_advantage <= 0) and (strongest_control == 'random_donor')\n    return RealModelVerdict(claim_supported=bool(claim_supported), negative_result=bool(negative_result), strongest_control=strongest_control, target_control_gap=target_control_gap, detector_advantage=detector_advantage)\n",
+        "answer_source_sha256": "a51a44cec0091f9fafa70a7d396843ce65ce5296cfd48566eba1309a85e4a1c1"
+      }
+    ]
+  },
+  "policy": {
+    "reviewed_body_imports": [
+      "collections",
+      "copy",
+      "functools",
+      "itertools",
+      "math",
+      "numpy",
+      "operator",
+      "statistics",
+      "torch",
+      "torch.nn",
+      "torch.nn.functional",
+      "typing"
+    ],
+    "authorship": "not_inferred",
+    "reference_preparation": "exposed_public_reference_practice",
+    "native_execution_requested": false,
+    "fresh_pythia_measurements": false,
+    "scientific_acceptance": false,
+    "source_checks_execute_no_method_or_kernel": true,
+    "unsupported_answer_names": [
+      "__import__",
+      "_load_pythia70m_on_cuda",
+      "eval",
+      "exec",
+      "globals",
+      "locals",
+      "reference_solutions",
+      "run_full_experiment",
+      "run_gpu_test",
+      "run_pythia_cot_faithfulness_preflight",
+      "tests"
+    ],
+    "figure_relative_path": "chapter9_alignment_interpretability/instructions/assets/cot_faithfulness_toy_ground_truth.png"
+  },
+  "runtime_source_files": [
+    "chapter9_alignment_interpretability/exercises/part3_cot_faithfulness/9.3_Chain-of-Thought_Faithfulness_exercises.ipynb",
+    "chapter9_alignment_interpretability/exercises/part3_cot_faithfulness/solutions.py",
+    "chapter9_alignment_interpretability/exercises/part2_cot_faithfulness/solutions.py",
+    "chapter9_alignment_interpretability/exercises/part2_cot_faithfulness/tests.py",
+    "chapter9_alignment_interpretability/exercises/part2_cot_faithfulness/utils.py",
+    "chapter9_alignment_interpretability/exercises/part2_cot_faithfulness/9.2_Chain_of_Thought_Faithfulness_exercises.ipynb"
+  ]
+}

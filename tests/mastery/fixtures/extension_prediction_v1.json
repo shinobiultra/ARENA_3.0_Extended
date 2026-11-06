@@ -1,0 +1,149 @@
+{
+  "schema": "arena-extension-guided-practice",
+  "schema_version": 1,
+  "record_id": "66842aff0c234327b5a9ed5e1e8f8794",
+  "case": {
+    "section": "0.6",
+    "title": "Four attractive claims and their matched controls (Practice)",
+    "master_path": "infrastructure/chapters/chapter0_fundamentals/master_0_6.py",
+    "question": "Does the original four-detector audit reject every injected bogus claim after comparing leaked accuracy, selected effects, memorizing-probe accuracy and claimed direction effect with their prescribed controls? Commit the conjunction before opening the retained figure.",
+    "prediction_type": "binary",
+    "forecast_items": [],
+    "config_fields": {
+      "source_identity": "chapter0_fundamentals/exercises/part6_fake_interpretability_results/0.6_How_to_Know_When_an_Interpretability_Result_Is_Fake_solutions.ipynb sha256 8227cf62352b68223b08c74d0ea9439c566088d4e0652c1b59e361ea72f0fb57; chapter0_fundamentals/exercises/part6_fake_interpretability_results/0.6_How_to_Know_When_an_Interpretability_Result_Is_Fake_exercises.ipynb sha256 49e107fb244d8d221e91c7ce3e316680890ddc5360f9feaf630a87b49dc6e3b2",
+      "model_and_data": "Original GT-0 designed fixtures: six alternating labels with leaked and anti-correlated feature columns;15 fixed effects with last3 selected;copied six training labels and held-out all-zero guesses;specific3D behavior/claimed directions and fixed5-vector control bank. No trained probe or language model.",
+      "method_and_thresholds": "Preserve all function defaults:leak accuracy>=.95,gap>=.5;selected/population mean>=3 and selected mean>=5*median;train>=.95,heldout<=.6,gap>=.35;normalized absolute claimed projection minus random p95>=.25. Aggregate passes iff all four failure flags true. No permutation calibration,selectivity training or dormant-subspace patching implementation.",
+      "execution_and_exposure": "Source/AST/JSON/import-trap engineering only. No target computation,environment diagnostic,tensor,model,data/cache,network,download,GPU,training or cluster execution. All figures and answers are historical exposed guided practice; human learner walkthrough Q001 remains deferred.",
+      "preservation": "Complete original notebook objects/IDs/metadata/outputs remain as labelled historical appendix:22 exercises+10 solutions cells;full inline implementations now visible. Reports/schema/locks unchanged.",
+      "runtime_boundary": "Raw import binds metadata dataclasses and definitions only; numerical/runtime callbacks require explicit initialize_runtime(). Original CUDA callbacks retain original gates and failures. No callback is established usable before initialization.",
+      "practice_projection": "Q008 human-authorized blank active exercise outputs/counts. Foundation duplicated historical appendix is read-only exact source; full original sourcebooks/helpers and intact combined referencepairs remain directly linked. Historical solutions unchanged; no fresh scientific or learner acceptance."
+    },
+    "controls": [
+      "Anti-correlated shifted feature",
+      "Representative selection",
+      "Generalizing probe positive control",
+      "Weak and behavior-aligned strong directions",
+      "Fixed normalized direction-control p95"
+    ],
+    "method_functions": [
+      "binary_accuracy",
+      "label_leakage_report",
+      "cherry_pick_report",
+      "probe_overfit_report",
+      "random_direction_control_report",
+      "fake_result_audit_report"
+    ],
+    "exercise_path": "chapter0_fundamentals/exercises/part6_fake_interpretability_results_practice/0.6_How_to_Know_When_an_Interpretability_Result_Is_Fake_Practice_exercises.ipynb",
+    "solutions_path": "chapter0_fundamentals/exercises/part6_fake_interpretability_results_practice/0.6_How_to_Know_When_an_Interpretability_Result_Is_Fake_Practice_solutions.ipynb",
+    "evidence_class": "analytic_toy",
+    "evidence_detail": "Original four-control signature SVG and exact designed fixtures. Static migration preserves every original object and makes methods visible without producing any fresh result. No real-model mechanism claim.",
+    "data_role": "historical",
+    "known_limitations": [
+      "Public expected results and source are exposed guided practice,with no blind/unseen assessment credit.",
+      "No scientific methods or original tests were executed during source preparation.",
+      "Deterministic designed tensors and fixed5-direction control bank do not establish calibrated inference or language-model steering.",
+      "The anti-correlated leakage control is not shuffled-label independence;the copied-label probe is not learned.",
+      "Syllabus real-model/selectivity,permutation/multiple-comparison and dormant-subspace-patching studies remain unimplemented.",
+      "Original numerical edge policies are preserved;human learner walkthrough remains deferred."
+    ],
+    "status": "guided_practice",
+    "experiment": "Commit forecast,confidence,reasoning and prior exposure. Inspect each original core detector and immediate positive/negative tests,then reveal the original four-row signature. Record original control outcomes and separate a passing diagnostic audit from accepting an attractive interpretability claim. No rerun is authorized by this worksheet.",
+    "observation_prompt": "Record each attractive metric,its paired control,the failure flag and exact source identity. Explain why representative selection,generalizing probes and strong aligned directions must not be falsely rejected.",
+    "transfer": "Changed condition:swap original leaked_feature_index0 andshifted_feature_index1 while keeping all tensors and thresholds fixed. Before reading the visible function,predict whether the original detects_leakage predicate can remain true. This is exposed guided source reasoning,no new target computation.",
+    "transfer_prediction_type": "binary"
+  },
+  "config": {
+    "files": {
+      "infrastructure/chapters/chapter0_fundamentals/master_0_6.py": "f392724397dd092a015738071865bb30f17ab0b304d8b915f97541a097f8faae",
+      "chapter0_fundamentals/exercises/part6_fake_interpretability_results_practice/0.6_How_to_Know_When_an_Interpretability_Result_Is_Fake_Practice_exercises.ipynb": "5edd862c1a0bab3cc4579abb5e252f3878c7163284bccd373043bee7b48e3b19",
+      "chapter0_fundamentals/exercises/part6_fake_interpretability_results_practice/0.6_How_to_Know_When_an_Interpretability_Result_Is_Fake_Practice_solutions.ipynb": "1be06619a711c0fd1348a1efa2bbb2907939b6f4401955b83fb2b5d292364945"
+    },
+    "inputs": {
+      "source_identity": "legacy fixture input",
+      "model_and_data": "legacy fixture input",
+      "method_and_thresholds": "legacy fixture input",
+      "execution_and_exposure": "legacy fixture input",
+      "preservation": "legacy fixture input",
+      "runtime_boundary": "legacy fixture input",
+      "practice_projection": "legacy fixture input"
+    },
+    "workbook_helper_sha256": "fe0e58e0577b1c348537ab7f33cee9aca4d6c2ae24b5c8562822fb0424cb8659"
+  },
+  "prediction": true,
+  "confidence": 0.7,
+  "reasoning": "Legacy fixture causal reason.",
+  "config_fingerprint": "73ef1d248796b639956a46257fb899e5584e8ab87b39b2c47bbd46c1afb21c56",
+  "prior_exposure": "unknown",
+  "assessment": "guided_practice",
+  "status": "completed",
+  "observation": {
+    "value": true,
+    "controls": {
+      "Anti-correlated shifted feature": 0,
+      "Representative selection": 0,
+      "Generalizing probe positive control": 0,
+      "Weak and behavior-aligned strong directions": 0,
+      "Fixed normalized direction-control p95": 0
+    },
+    "source_kind": "historical_reference",
+    "source_receipt": "Legacy fixture only.",
+    "verification": "learner_reported"
+  },
+  "reflection": "Legacy fixture reflection.",
+  "transfer": {
+    "question": "Changed condition:swap original leaked_feature_index0 andshifted_feature_index1 while keeping all tensors and thresholds fixed. Before reading the visible function,predict whether the original detects_leakage predicate can remain true. This is exposed guided source reasoning,no new target computation.",
+    "changed_condition": "Changed fixture.",
+    "prediction": true,
+    "confidence": 0.6,
+    "reasoning": "Legacy fixture transfer.",
+    "status": "forecast_only"
+  },
+  "history": [
+    {
+      "stage": "committed",
+      "payload": {
+        "prediction": true,
+        "confidence": 0.7,
+        "reasoning": "Legacy fixture causal reason.",
+        "config_fingerprint": "73ef1d248796b639956a46257fb899e5584e8ab87b39b2c47bbd46c1afb21c56"
+      },
+      "previous": null,
+      "seal": "82019cb9505b5b5d0fe16c742fc309e56f9bec4cd8dd4209a638f5fe82be315c"
+    },
+    {
+      "stage": "observed",
+      "payload": {
+        "value": true,
+        "controls": {
+          "Anti-correlated shifted feature": 0,
+          "Representative selection": 0,
+          "Generalizing probe positive control": 0,
+          "Weak and behavior-aligned strong directions": 0,
+          "Fixed normalized direction-control p95": 0
+        },
+        "source_kind": "historical_reference",
+        "source_receipt": "Legacy fixture only.",
+        "verification": "learner_reported"
+      },
+      "previous": "82019cb9505b5b5d0fe16c742fc309e56f9bec4cd8dd4209a638f5fe82be315c",
+      "seal": "77e66ec180778f8024cd5ebb704ad0e067dfc638a184448ddca68caaae005a5e"
+    },
+    {
+      "stage": "completed",
+      "payload": {
+        "reflection": "Legacy fixture reflection.",
+        "transfer": {
+          "question": "Changed condition:swap original leaked_feature_index0 andshifted_feature_index1 while keeping all tensors and thresholds fixed. Before reading the visible function,predict whether the original detects_leakage predicate can remain true. This is exposed guided source reasoning,no new target computation.",
+          "changed_condition": "Changed fixture.",
+          "prediction": true,
+          "confidence": 0.6,
+          "reasoning": "Legacy fixture transfer.",
+          "status": "forecast_only"
+        }
+      },
+      "previous": "77e66ec180778f8024cd5ebb704ad0e067dfc638a184448ddca68caaae005a5e",
+      "seal": "fd9f18ad754ca4ba036984cbe40ff5c421c95b14a8c6ea10a46765827d739bd8"
+    }
+  ],
+  "seal": "4426a228a201d42250abef9a329da5c86f5888f6070339f3ea2a400ee8f119f4"
+}

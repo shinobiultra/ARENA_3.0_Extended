@@ -1,0 +1,41 @@
+{
+  "schema_version": 1,
+  "section": "7.1",
+  "sources": {
+    "page": {
+      "path": "chapter7_activation_to_language/instructions/pages/01_[7.1]_Logit_Lens_Tuned_Lens_and_Patchscopes.md",
+      "sha256": "6e2f86a8183f414a794fe597e8e027e236211e5e6b77f8f5f391b536bd8c85bf"
+    },
+    "exercises": {
+      "path": "chapter7_activation_to_language/exercises/part1_lenses_patchscopes/7.1_Logit_Lens_Tuned_Lens_and_Patchscopes_exercises.ipynb",
+      "sha256": "8660ad73a33415d0a68b6417536209d5d90378b7e589c0de792ae93a9236ebb1"
+    },
+    "reference": {
+      "path": "chapter7_activation_to_language/exercises/part1_lenses_patchscopes/7.1_Logit_Lens_Tuned_Lens_and_Patchscopes_solutions.ipynb",
+      "sha256": "05bff1b721738d951f223e0e85df0f87baa5d0340cbaebcb84cc14efec4fe28f"
+    }
+  },
+  "replacements": [
+    {
+      "old": "**Target layer 0 is special.**",
+      "new": "**Qualification of the cutoff claim.** This intervention changes both source/target representation compatibility and the amount of downstream computation. The grid supports successful decoding for particular source/target pairs; it does not by itself locate the native recall computation or establish that each excluded block is necessary. The stronger interpretation in the preceding historical explanation is a hypothesis. A matched donor/target intervention and native block ablations would help distinguish compatibility from remaining computation. Predict which pattern would distinguish those explanations before trying either.\n\n**Target layer 0 is special.**",
+      "counts": {
+        "page": 1,
+        "exercises": 1,
+        "reference": 1
+      }
+    },
+    {
+      "old": "The target-layer cutoff tells us which blocks the recall computation needs.",
+      "new": "The target-layer cutoff shows where this donor vector can be decoded in this inspection prompt; compatibility and remaining computation are confounded, so it does not independently establish native block necessity.",
+      "counts": {
+        "page": 1,
+        "exercises": 1,
+        "reference": 1
+      }
+    }
+  ],
+  "rationale": [
+    "LC-7.1-01: qualify historical Patchscope localization and necessity claims at both interpretation and summary; no native evidence added."
+  ]
+}

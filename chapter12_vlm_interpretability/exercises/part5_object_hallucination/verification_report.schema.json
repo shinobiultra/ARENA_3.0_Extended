@@ -1,0 +1,159 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ARENA 12.5 object hallucination verification report",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "notebook_id": {"const": "12_5_object_hallucination_arbitration"},
+    "date_run": {"type": "string", "format": "date-time"},
+    "git_commit": {"type": "string", "minLength": 1},
+    "report_inputs": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {"const": 1},
+        "algorithm": {"const": "sha256"},
+        "combined_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "files": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "path": {"type": "string", "minLength": 1},
+              "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+              "size_bytes": {"type": "integer", "minimum": 1}
+            },
+            "required": ["path", "sha256", "size_bytes"]
+          }
+        }
+      },
+      "required": ["schema_version", "algorithm", "combined_sha256", "files"]
+    },
+    "gt_tier": {"const": "GT-0"},
+    "evidence_level": {"const": "executed_pixel_prompt_ground_truth_plus_unexecuted_pinned_real_vlm"},
+    "claim_scope": {"type": "string", "minLength": 120},
+    "gpu_name": {"type": "string", "minLength": 1},
+    "peak_vram_gb": {"type": "number", "minimum": 0, "maximum": 24},
+    "wall_clock_seconds": {"type": "number", "minimum": 0},
+    "models": {
+      "type": "array",
+      "minItems": 2,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {"type": "string", "minLength": 1},
+          "revision": {"type": "string", "minLength": 1},
+          "status": {"enum": ["executed_cpu", "not_run", "accepted_cuda", "rejected_cuda"]}
+        },
+        "required": ["id", "revision", "status"]
+      }
+    },
+    "datasets": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {"type": "string"},
+          "status": {"type": "string"},
+          "example_count": {"const": 192},
+          "development_examples": {"const": 64},
+          "validation_examples": {"const": 64},
+          "test_examples": {"const": 64},
+          "validation_pairs": {"const": 8},
+          "test_pairs": {"const": 8}
+        },
+        "required": ["id", "status", "example_count", "development_examples", "validation_examples", "test_examples", "validation_pairs", "test_pairs"]
+      }
+    },
+    "tests_passed": {"type": "boolean"},
+    "metrics": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "cpu_smoke": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "notebook_id": {"const": "12_5_object_hallucination_arbitration"},
+            "organism": {"const": "pixel_prompt_ground_truth_vlm_v2"},
+            "example_count": {"const": 192},
+            "validation_pair_count": {"const": 8},
+            "test_pair_count": {"const": 8},
+            "selected_layer": {"const": 0},
+            "joint_accuracy": {"const": 0.75},
+            "conflict_accuracy": {"const": 0.0},
+            "hallucination_rate": {"const": 0.25},
+            "image_question_accuracy": {"const": 1.0},
+            "text_only_accuracy": {"const": 0.5},
+            "shuffled_images_accuracy": {"type": "number", "minimum": 0, "maximum": 0.5},
+            "object_patch_directional_effect": {"const": 8.0},
+            "object_patch_flip_fraction": {"const": 1.0},
+            "background_patch_absolute_effect": {"const": 0.0},
+            "random_patch_absolute_effect": {"const": 0.0},
+            "full_visual_directional_effect": {"const": 8.0},
+            "accepted": {"const": true}
+          },
+          "required": [
+            "notebook_id", "organism", "example_count", "validation_pair_count",
+            "test_pair_count", "selected_layer", "joint_accuracy", "conflict_accuracy",
+            "hallucination_rate", "image_question_accuracy", "text_only_accuracy",
+            "shuffled_images_accuracy", "object_patch_directional_effect",
+            "object_patch_flip_fraction", "background_patch_absolute_effect",
+            "random_patch_absolute_effect", "full_visual_directional_effect", "accepted"
+          ]
+        },
+        "gpu_evidence": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "category": {"const": "cuda_section_metric"},
+            "status": {"enum": ["not_run", "accepted", "rejected"]},
+            "uses_cuda": {"type": "boolean"},
+            "section_specific_metric_keys": {"type": "array", "minItems": 5, "items": {"type": "string"}}
+          },
+          "required": ["category", "status", "uses_cuda", "section_specific_metric_keys"]
+        }
+      },
+      "required": ["cpu_smoke", "gpu_evidence"]
+    },
+    "baselines": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "declared_controls": {"type": "array", "minItems": 4, "items": {"type": "string"}},
+        "expected_metrics": {"type": "object"}
+      },
+      "required": ["declared_controls", "expected_metrics"]
+    },
+    "negative_controls": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "cpu_status": {"const": "passed"},
+        "real_vlm_status": {"enum": ["not_run", "passed", "failed"]}
+      },
+      "required": ["cpu_status", "real_vlm_status"]
+    },
+    "ood_tests": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {"natural_images": {"const": "out_of_scope"}},
+      "required": ["natural_images"]
+    },
+    "known_failures": {"type": "array", "items": {"type": "string", "minLength": 1}},
+    "safety_notes": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}},
+    "accepted": {"type": "boolean"}
+  },
+  "required": [
+    "notebook_id", "date_run", "git_commit", "report_inputs", "gt_tier",
+    "evidence_level", "claim_scope", "gpu_name", "peak_vram_gb",
+    "wall_clock_seconds", "models", "datasets", "tests_passed", "metrics",
+    "baselines", "negative_controls", "ood_tests", "known_failures",
+    "safety_notes", "accepted"
+  ]
+}

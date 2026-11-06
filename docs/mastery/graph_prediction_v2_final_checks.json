@@ -1,0 +1,55 @@
+{
+  "checks": [
+    {
+      "name": "generation",
+      "argv": [
+        "/home/bitwise/Documents/ARENA_3.0_Extended/.venv/bin/python",
+        "scripts/build_graph_prediction_notebook.py"
+      ],
+      "exit_code": 0,
+      "cpu_seconds": 0.609771,
+      "log": "docs/mastery/graph_prediction_v2_final_generation.txt",
+      "log_sha256": "34057c5ac120d82929e35e9cf4eaf13b5acc4d14b73389469fefd481d0936a6d"
+    },
+    {
+      "name": "pytest",
+      "argv": [
+        "/home/bitwise/Documents/ARENA_3.0_Extended/.venv/bin/python",
+        "-m",
+        "pytest",
+        "-c",
+        "/dev/null",
+        "--rootdir",
+        "/tmp/arena-graph-blind-build-20261020-v2",
+        "--noconftest",
+        "-p",
+        "no:cacheprovider",
+        "tests/mastery/test_graph_prediction.py",
+        "-q"
+      ],
+      "exit_code": 0,
+      "cpu_seconds": 2.825075,
+      "log": "docs/mastery/graph_prediction_v2_final_pytest.txt",
+      "log_sha256": "81b35be90a6d71bf6bfe8fe5835e4c0ff8faac6960c5decd9292235a15645536"
+    },
+    {
+      "name": "generator_check",
+      "argv": [
+        "/home/bitwise/Documents/ARENA_3.0_Extended/.venv/bin/python",
+        "scripts/build_graph_prediction_notebook.py",
+        "--check"
+      ],
+      "exit_code": 0,
+      "cpu_seconds": 0.6347229999999997,
+      "log": "docs/mastery/graph_prediction_v2_final_generator_check.txt",
+      "log_sha256": "34057c5ac120d82929e35e9cf4eaf13b5acc4d14b73389469fefd481d0936a6d"
+    }
+  ],
+  "total_child_cpu_seconds": 4.0695689999999995,
+  "target_CASE_unchanged": true,
+  "taught_REFERENCE_METHODS_unchanged": true,
+  "target_attempts": 0,
+  "source_compilation": "passed; all lesson/generator/test source and blank code cells",
+  "all_output_execution_fields_empty": true,
+  "final_seal": false
+}

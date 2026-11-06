@@ -1,0 +1,49 @@
+{
+  "notebook_id": "8_4_circuit_tracing_with_attribution_graphs",
+  "metrics": {
+    "accepted": true,
+    "tests_passed": true,
+    "full_metric_min": 1.9,
+    "path_only_metric_min": 1.7,
+    "path_removed_metric_max": 0.3,
+    "faithfulness_min": 0.85,
+    "completeness_min": 0.95,
+    "minimality_min": 0.85,
+    "same_size_random_metric_max": 0.3,
+    "reversed_edge_metric_max": 0.0,
+    "random_margin_min": 1.0,
+    "reversed_margin_min": 1.0,
+    "top_path_survives_test": true,
+    "same_size_random_fails": true,
+    "reversed_edges_fail": true,
+    "top_path": [
+      "feature:country=France",
+      "head:subject-router",
+      "mlp:relation-lookup",
+      "feature:capital=Paris",
+      "logit:Paris-vs-Rome"
+    ],
+    "num_default_graph_edges": 4,
+    "ig_steps": 16,
+    "threshold": 0.25
+  },
+  "baselines": {
+    "required": true,
+    "same_size_random_graph": true,
+    "reversed_edge_graph": true,
+    "path_removed_graph": true
+  },
+  "negative_controls": {
+    "required_where_applicable": true
+  },
+  "ood_tests": {
+    "required_where_applicable": false
+  },
+  "gpu_preflight": {
+    "required_for_release": true,
+    "not_run_by_this_cpu_salvage": true,
+    "model_name": "gelu-1l",
+    "hook_name": "blocks.0.hook_resid_post",
+    "claim_scope": "residual-position EAP mechanics preflight only"
+  }
+}

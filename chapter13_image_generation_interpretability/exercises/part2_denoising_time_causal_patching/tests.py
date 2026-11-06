@@ -25,20 +25,49 @@ def test_diffusion_schedule_has_exact_endpoint_and_valid_noise(
     make_diffusion_schedule: Callable | None = None,
     q_sample: Callable | None = None,
 ):
-    solutions = _solutions()
-    make_diffusion_schedule = make_diffusion_schedule or solutions.make_diffusion_schedule
-    q_sample = q_sample or solutions.q_sample
+    if make_diffusion_schedule is None or q_sample is None:
+        solutions = _solutions()
+        make_diffusion_schedule = make_diffusion_schedule or solutions.make_diffusion_schedule
+        q_sample = q_sample or solutions.q_sample
     schedule = make_diffusion_schedule(n_steps=4, beta_start=0.1, beta_end=0.4)
     assert schedule.betas.shape == (5,), (
         "A four-step schedule needs the exact clean endpoint plus four noisy endpoints."
     )
     t.testing.assert_close(schedule.alpha_bars[0], t.tensor(1.0))
+    expected_betas = t.tensor([0.0, 0.1, 0.2, 0.3, 0.4])
+    expected_alpha_bars = t.tensor([1.0, 0.9, 0.72, 0.504, 0.3024])
+    t.testing.assert_close(schedule.betas, expected_betas)
+    t.testing.assert_close(schedule.alphas, 1.0 - expected_betas)
+    t.testing.assert_close(schedule.alpha_bars, expected_alpha_bars)
     assert bool((schedule.alpha_bars[1:] < schedule.alpha_bars[:-1]).all()), (
         "Retained signal must decrease monotonically as forward-noising time increases."
     )
     clean = t.arange(24, dtype=t.float32).reshape(2, 3, 2, 2)
     noise = -t.ones_like(clean)
     t.testing.assert_close(q_sample(clean, t.zeros(2, dtype=t.long), noise, schedule), clean)
+    # Hand-multiplied cumulative products, independent of the submitted schedule.
+    # Distinct nonzero timesteps expose ignoring noise and sharing one time across B.
+    mixed_times = t.tensor([1, 3])
+    signal = t.tensor([0.9, 0.504]).reshape(2, 1, 1, 1)
+    expected = signal.sqrt() * clean + (1.0 - signal).sqrt() * noise
+    t.testing.assert_close(q_sample(clean, mixed_times, noise, schedule), expected)
+    t.testing.assert_close(
+        q_sample(clean, mixed_times, -noise, schedule),
+        signal.sqrt() * clean - (1.0 - signal).sqrt() * noise,
+    )
+    endpoint_times = t.tensor([0, 4])
+    endpoint_signal = t.tensor([1.0, 0.3024]).reshape(2, 1, 1, 1)
+    t.testing.assert_close(
+        q_sample(clean, endpoint_times, noise, schedule),
+        endpoint_signal.sqrt() * clean + (1.0 - endpoint_signal).sqrt() * noise,
+    )
+    with pytest.raises(ValueError, match="identical shapes"):
+        q_sample(clean, mixed_times, noise[:, :, :1], schedule)
+    with pytest.raises(ValueError, match="shape"):
+        q_sample(clean, mixed_times[:, None], noise, schedule)
+    for invalid_times in (t.tensor([-1, 1]), t.tensor([1, 5])):
+        with pytest.raises(ValueError, match="outside"):
+            q_sample(clean, invalid_times, noise, schedule)
     print("All tests in `test_diffusion_schedule_has_exact_endpoint_and_valid_noise` passed!")
 
 

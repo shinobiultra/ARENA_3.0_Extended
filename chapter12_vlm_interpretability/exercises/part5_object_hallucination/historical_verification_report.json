@@ -1,0 +1,210 @@
+{
+  "accepted": false,
+  "baselines": {
+    "declared_controls": [
+      "full_color_shape_factorial",
+      "label_balanced_stated_priors",
+      "prompt_identical_pixel_counterfactuals",
+      "validation_only_layer_selection",
+      "untouched_test_reporting",
+      "image_question_only_baseline",
+      "text_only_baseline",
+      "shuffled_image_negative_control",
+      "object_region_patch",
+      "geometry_excluded_background_patch",
+      "distinct_nonoverlapping_same_size_random_patch",
+      "full_visual_positive_control"
+    ],
+    "expected_metrics": {
+      "cpu_background_patch_absolute_effect": 0.0,
+      "cpu_conflict_accuracy": 0.0,
+      "cpu_hallucination_rate": 0.25,
+      "cpu_image_question_accuracy": 1.0,
+      "cpu_joint_accuracy": 0.75,
+      "cpu_object_patch_directional_effect": 8.0,
+      "cpu_object_patch_flip_fraction": 1.0,
+      "cpu_random_patch_absolute_effect": 0.0,
+      "cpu_selected_layer": 0,
+      "cpu_shuffled_images_accuracy_max": 0.5,
+      "cpu_text_only_accuracy": 0.5,
+      "real_conflict_accuracy_min": 0.25,
+      "real_hallucination_rate_max": 0.6,
+      "real_image_question_accuracy_min": 0.6,
+      "real_joint_accuracy_min": 0.55,
+      "real_object_directional_effect_min": 0.1,
+      "real_object_flip_fraction_min": 0.25,
+      "real_peak_vram_gb_max": 24,
+      "real_test_example_count_min": 32,
+      "real_test_pair_count_min": 8,
+      "real_text_only_accuracy_max": 0.75,
+      "real_validation_pair_count_min": 8,
+      "real_wall_clock_seconds_max": 2400
+    }
+  },
+  "claim_scope": "On a controlled full-factorial rendered benchmark, an explicit analytic organism derives object evidence from pixels and the query from prompt tokens without receiving answer labels, and prompt-identical activation replacement isolates target-region causal effects against two disjoint geometry-matched controls. No real-Qwen mechanism claim is accepted. The optional neutral-prior visual counterfactual preflight cannot establish hallucination repair or four-stage diagnosis even if its own consistency, behavior, and intervention gates pass.",
+  "datasets": [
+    {
+      "development_examples": 64,
+      "example_count": 192,
+      "id": "arena_factorial_shape_arbitration_v2",
+      "status": "generated_and_executed_cpu",
+      "test_examples": 64,
+      "test_pairs": 8,
+      "validation_examples": 64,
+      "validation_pairs": 8
+    }
+  ],
+  "date_run": "2026-09-05T00:13:37.888148+00:00",
+  "evidence_level": "executed_pixel_prompt_ground_truth_plus_unexecuted_pinned_real_vlm",
+  "git_commit": "8eab192b",
+  "gpu_name": "NOT_RUN_CPU_ONLY_TASK",
+  "gt_tier": "GT-0",
+  "known_failures": [
+    "Pinned Qwen visual-counterfactual preflight was not run; intervention on actual hallucinations and four-stage failure diagnosis remain unimplemented."
+  ],
+  "metrics": {
+    "cpu_smoke": {
+      "accepted": true,
+      "background_patch_absolute_effect": 0.0,
+      "conflict_accuracy": 0.0,
+      "example_count": 192,
+      "full_visual_directional_effect": 8.0,
+      "hallucination_rate": 0.25,
+      "image_question_accuracy": 1.0,
+      "joint_accuracy": 0.75,
+      "notebook_id": "12_5_object_hallucination_arbitration",
+      "object_patch_directional_effect": 8.0,
+      "object_patch_flip_fraction": 1.0,
+      "organism": "pixel_prompt_ground_truth_vlm_v2",
+      "random_patch_absolute_effect": 0.0,
+      "selected_layer": 0,
+      "shuffled_images_accuracy": 0.484375,
+      "test_pair_count": 8,
+      "text_only_accuracy": 0.5,
+      "validation_pair_count": 8
+    },
+    "gpu_evidence": {
+      "category": "cuda_section_metric",
+      "section_specific_metric_keys": [
+        "joint_accuracy",
+        "conflict_accuracy",
+        "hallucination_rate",
+        "object_patch_directional_effect_mean",
+        "object_patch_flip_fraction"
+      ],
+      "status": "not_run",
+      "uses_cuda": false
+    }
+  },
+  "models": [
+    {
+      "id": "arena_pixel_prompt_ground_truth_vlm_v2",
+      "revision": "section_source_sha256",
+      "status": "executed_cpu"
+    },
+    {
+      "id": "Qwen/Qwen2.5-VL-3B-Instruct",
+      "revision": "66285546d2b821cf421d4f5eb2576359d3770cd3",
+      "status": "not_run"
+    }
+  ],
+  "negative_controls": {
+    "cpu_status": "passed",
+    "real_vlm_status": "not_run"
+  },
+  "notebook_id": "12_5_object_hallucination_arbitration",
+  "ood_tests": {
+    "natural_images": "out_of_scope"
+  },
+  "peak_vram_gb": 0.0,
+  "report_inputs": {
+    "algorithm": "sha256",
+    "combined_sha256": "88a80173ee90db53a9af12c95faa3ebd8a5a1cb71bbc36b9ea2c7b632973d43a",
+    "files": [
+      {
+        "path": "chapter12_vlm_interpretability/exercises/part2_object_hallucination_arbitration/12.5_Object_Hallucination_and_Modality_Arbitration_exercises.ipynb",
+        "sha256": "2a47e9b6a68fb88da4d808cec4e6395386912d5dbb2b9478c587b6b6f2d45e20",
+        "size_bytes": 127469
+      },
+      {
+        "path": "chapter12_vlm_interpretability/exercises/part2_object_hallucination_arbitration/12.5_Object_Hallucination_and_Modality_Arbitration_solutions.ipynb",
+        "sha256": "b7ad354ca4c66885b9ba0e2a8ba84e23c93a79eb5ad8e899b7f7f3ccda2abd93",
+        "size_bytes": 366399
+      },
+      {
+        "path": "chapter12_vlm_interpretability/exercises/part2_object_hallucination_arbitration/README.md",
+        "sha256": "fd99265eca4e29ee8c61925b12e88bb02691d6c880ce1fe1683e1aef16bd79c0",
+        "size_bytes": 3084
+      },
+      {
+        "path": "chapter12_vlm_interpretability/exercises/part2_object_hallucination_arbitration/artifacts.lock.yml",
+        "sha256": "4e495e322f8696eeace0c9730037606f15536675b06782217fbe6028f50e5ef6",
+        "size_bytes": 3076
+      },
+      {
+        "path": "chapter12_vlm_interpretability/exercises/part2_object_hallucination_arbitration/build_notebooks.py",
+        "sha256": "1fd3ffdf73be41f11414c9dd35c538217ce47c7a1db907b91bdedc56e9d6d17c",
+        "size_bytes": 35380
+      },
+      {
+        "path": "chapter12_vlm_interpretability/exercises/part2_object_hallucination_arbitration/expected_outputs/README.md",
+        "sha256": "78690d444bf3a2137890d1fd5815faf76f0c25afd01d294d0e05a0bae59935e2",
+        "size_bytes": 1564
+      },
+      {
+        "path": "chapter12_vlm_interpretability/exercises/part2_object_hallucination_arbitration/expected_outputs/reference_metrics.json",
+        "sha256": "a6c175066bf61869234e2ae7cd16efdf317b613055f30aa842e1063a122254a8",
+        "size_bytes": 2300
+      },
+      {
+        "path": "chapter12_vlm_interpretability/exercises/part2_object_hallucination_arbitration/expected_outputs/smoke_test.json",
+        "sha256": "5337d5a9dff716dd87b5ee3e46195b6319501d2a277bd676b52b9f02671b7919",
+        "size_bytes": 621
+      },
+      {
+        "path": "chapter12_vlm_interpretability/exercises/part2_object_hallucination_arbitration/solutions.py",
+        "sha256": "f9208cb983f4c083ae279dd6ff6cc27e62a35f474337dd8c288f310714d3d7d3",
+        "size_bytes": 69618
+      },
+      {
+        "path": "chapter12_vlm_interpretability/exercises/part2_object_hallucination_arbitration/tests.py",
+        "sha256": "e8a134b35e297566e632afe79617a42cceddd8d0515a26f7347b1c601313e48a",
+        "size_bytes": 23571
+      },
+      {
+        "path": "chapter12_vlm_interpretability/exercises/part2_object_hallucination_arbitration/verification_report.schema.json",
+        "sha256": "d0c41201a7bdc896c043ae763b4d948637e3980df65e86ab56b03cd20013d67b",
+        "size_bytes": 6498
+      },
+      {
+        "path": "chapter12_vlm_interpretability/instructions/assets/vlm_hallucination_cold_open.png",
+        "sha256": "b02a7794ba587506a011728e7df8d018c7d48c88badb19e081e2fc6c1b5424b3",
+        "size_bytes": 36812
+      },
+      {
+        "path": "chapter12_vlm_interpretability/instructions/assets/vlm_hallucination_layer_interventions.png",
+        "sha256": "1c9e3f868e8b4c9ccf8c309c9bf6165faebfb247ea9bdc924115a6b8be90c92a",
+        "size_bytes": 49881
+      },
+      {
+        "path": "chapter12_vlm_interpretability/instructions/assets/vlm_hallucination_signature.png",
+        "sha256": "369a3aa951a86956985f7e3fc7176939e79de93bd1dff974a9f30da148467270",
+        "size_bytes": 201051
+      },
+      {
+        "path": "chapter12_vlm_interpretability/instructions/pages/05_[12.5]_Object_Hallucination_and_Modality_Arbitration.md",
+        "sha256": "f8e7425efa3c39b06bb5a276e8b2ea665adf86b71b8f65d8560b67f0f9db2300",
+        "size_bytes": 46496
+      }
+    ],
+    "schema_version": 1
+  },
+  "safety_notes": [
+    "Images are deterministic course-generated colored shapes.",
+    "No private data, gated model, unsafe prompt, mock model, or fallback path is used.",
+    "The real-model path is pinned and raises when CUDA is unavailable.",
+    "The checked-in report is deliberately unaccepted for Qwen until the parent CUDA run."
+  ],
+  "tests_passed": true,
+  "wall_clock_seconds": 1.735717585999737
+}
