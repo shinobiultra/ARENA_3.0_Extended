@@ -1,0 +1,39 @@
+== 1. Two independent Gaussian noise matrices, n = 1024 items (19.1 hook)
+ width d  CKA (biased)  d/(d+n)  CKA (debiased)  mutual kNN k=10
+      16         0.016    0.015          0.0006           0.0083
+      64         0.059    0.059          0.0006           0.0102
+     256         0.200    0.200          0.0009           0.0090
+    1024         0.501    0.500          0.0022           0.0125
+    4096         0.800    0.800         -0.0007           0.0086
+   16384         0.941    0.941         -0.0013           0.0113
+chance level for mutual kNN = k/(n-1) = 0.0098
+
+== 2. A rotated copy (19.1 part 1): same relations, different coordinates
+CKA 1.000 | mutual kNN 1.000 | retrieval@1 without a map 0.000 (chance 0.0020) | after Procrustes fit on 512 train pairs 1.000
+control, shuffled rows: CKA 0.009, mutual kNN 0.011
+
+== 3. Local/global x structure/metric toy (19.1 part 3), 8 clusters x 128 points, 32-d
+variant                                   CKA  mutual kNN  MST edge overlap
+(a) same neighbours, new layout         0.778       0.756             0.993
+(b) same layout, new neighbours         0.972       0.070             0.023
+rotated copy (reference)                1.000       1.000             1.000
+
+== 4. Max over layer pairs, then a permutation null (19.1 part 2), n = 512, width 256, k = 10
+ signal  layers  raw max m_NN  null-of-max 95%  p (right null)  1-pair null 95%  p (wrong null)
+    0.0       1        0.0178           0.0238           0.771           0.0244           0.761
+    0.0       4        0.0225           0.0271           0.711           0.0236           0.169
+    0.0      12        0.0236           0.0287           0.940           0.0238           0.070
+   0.35       1        0.5061           0.0231           0.005           0.0234           0.005
+   0.35       4        0.5008           0.0248           0.005           0.0232           0.005
+   0.35      12        0.4992           0.0270           0.005           0.0233           0.005
+
+== 5. Finite world (19.3): spectral embedding of a shared positive-pair kernel
+1-D embedding (top non-constant eigenvector); residual 0 = the observers agree up to sign
+world                   eigengap   eps=0.0 eps=0.0001 eps=0.001 eps=0.003
+tilt 0.5 (wide gap)       0.1071     0.000     0.004     0.047     0.237
+tilt 0.05 (narrow gap)    0.0107     0.000     0.004     0.213     1.320
+tilt 0 (tied)             0.0000     0.000     0.766     0.769     0.737
+lossy observer B, tilt 0.5, state 0 merged with state 1 (same group A): residual 0.000
+lossy observer B, tilt 0.5, state 0 merged with state 12 (group C, across the kept AB|CD split): residual 0.557
+
+figure: prh_toy_probe.png
