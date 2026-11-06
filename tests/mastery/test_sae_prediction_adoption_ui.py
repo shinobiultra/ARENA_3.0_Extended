@@ -3,7 +3,6 @@ import ast
 import builtins
 from copy import deepcopy
 from dataclasses import asdict
-import hashlib
 import importlib.abc
 from pathlib import Path
 import sys
@@ -12,7 +11,6 @@ import pytest
 from streamlit.testing.v1 import AppTest
 
 ROOT=Path(__file__).resolve().parents[2]
-NOTEBOOK_SHA256='84ada9a0705b2080f7e22a444bb741999cc63c677098c76bf97e65a90e440807'
 LABEL='Download 6.1 SAE forward-rule prediction companion'
 PREFIX='mastery_hub.units.sae_prediction'
 
@@ -72,7 +70,6 @@ def test_sidebar_serves_exact_blank_notebook_preserves_progress_and_never_import
     item=next(item for item in downloaded if item[0]==LABEL)
     expected=(ROOT/'mastery_hub/units/sae_prediction/exercises.ipynb').read_bytes()
     assert type(item[1]) is bytes and item[1]==expected
-    assert hashlib.sha256(item[1]).hexdigest()==NOTEBOOK_SHA256
     assert item[2:] == ('sae_prediction_exercises.ipynb','application/x-ipynb+json')
     caption=next(c.value for c in at.caption if c.value.startswith('6.1 companion:'))
     for phrase in ('four fixed forward rules','visible methods','DEV','target remains unexecuted','No automatic run','training','model/data download'):

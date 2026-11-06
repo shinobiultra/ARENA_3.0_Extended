@@ -113,11 +113,7 @@ def test_render_displays_adopted_content_and_exact_download_bytes_without_method
     reader.render(ui, ROOT)
     row = next(r for r in reader.inventory(ROOT) if r["number"] == "7.1")
     from infrastructure.extension.render_media import inline_page_media
-    from infrastructure.extension.teaching_editions import load_edition, apply_page
     text = row["page"].read_bytes().decode("utf-8")
-    edition = load_edition(ROOT, row)
-    if edition is not None:
-        text = apply_page(edition, text)
     expected = inline_page_media(text, row["page"]).split("=== NEW CHAPTER ===")[3]
     assert expected in ui.text
     assert any("[7.1] Logit Lens, Tuned Lens and Patchscopes" in text for text in ui.text)

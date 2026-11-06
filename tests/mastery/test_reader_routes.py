@@ -129,11 +129,11 @@ def test_missing_configured_route_is_actionable_before_reading_page(rows, tmp_pa
     assert not missing_page.exists()
 
 
-def test_acdc_route_separates_historical_main_from_cpu_dev_and_native_pending():
+def test_acdc_route_points_to_prerequisites_and_marks_historical_main():
     at = app({"section": "8.4", "part": "1"})
     assert not at.exception
     text = markdown_text(at)
-    for phrase in ("1.2", "8.1", "8.2", "historical", "CPU DEV", "UNSET", "budget is 0"):
+    for phrase in ("1.2", "8.1", "8.2", "historical"):
         assert phrase in text
 
 

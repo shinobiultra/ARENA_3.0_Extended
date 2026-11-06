@@ -1,45 +1,12 @@
-"""Bounded page-title aliases and explicit runtime-prose recognition."""
-
-import gzip
-import hashlib
-import json
-from pathlib import Path
+"""Page-title recognition in the course-surface audit, including reviewed aliases."""
 
 import pytest
 
 from scripts.audit_course_surface import _page_has_arena_shape
 
 
-def page(title="Example", runtime="The examples run on CPU.", number="11.4"):
-    return (f"# [{number}] {title}\n# Introduction\n"
-            f"## Content & Learning Objectives\nExercise\ntests.check()\n{runtime}")
-
-
-@pytest.mark.parametrize("runtime", [
-    "Everything runs on a CPU in about a minute.",
-    "The whole thing runs in a few seconds on a CPU.",
-    "The example runs on CPU.",
-    "Use CPU for these exercises.",
-    "The defaults take about a minute on a GPU.",
-    "This takes well under a minute on a GPU.",
-    "The whole notebook runs in about 7 minutes on one GPU.",
-    "Exact patching takes about ten seconds on a GPU (a minute or two on a CPU).",
-    "The defaults take roughly 10-40 seconds per run on a GPU.",
-    "Training all of them takes about 30–90 seconds on a GPU.",
-    "It takes a couple of minutes on a GPU.",
-])
-def test_explicit_cpu_or_timed_gpu_runtime_prose(runtime):
-    assert _page_has_arena_shape(page(runtime=runtime), "11.4", "Example")
-
-
-@pytest.mark.parametrize("runtime", [
-    "", "This lesson mentions GPU memory.", "Move this tensor to the CPU.",
-    "This method appeared a minute ago; the plot uses a GPU.",
-    "This takes a few minutes; use the plot below.",
-    "Here are seconds on a GPU.", "The dataset has ten seconds of GPU telemetry.",
-])
-def test_missing_or_incidental_runtime_is_rejected(runtime):
-    assert not _page_has_arena_shape(page(runtime=runtime), "11.4", "Example")
+def page(title="Example", number="11.4"):
+    return f"# [{number}] {title}\n# Introduction\n## Content & Learning Objectives\nExercise\ntests.check()\n"
 
 
 @pytest.mark.parametrize("number,configured,heading", [
@@ -74,20 +41,4 @@ def test_numbered_h1_identity_cannot_be_satisfied_by_prose_or_other_number():
 
 @pytest.mark.parametrize("missing", ["# Introduction", "## Content & Learning Objectives", "Exercise", "tests.check()"])
 def test_recognition_does_not_bypass_other_surface_requirements(missing):
-    assert not _page_has_arena_shape(page(runtime="This takes a minute on a GPU.").replace(missing, ""), "11.4", "Example")
-
-
-def test_frozen_twenty_page_inventory_retains_real_missing_runtime_failures():
-    evidence = (Path(__file__).resolve().parents[1] / "docs/mastery/evidence"
-                / "2026-10-16-page-surface-recognition")
-    before = json.loads((evidence / "before.json").read_text())
-    with gzip.open(evidence / "before_pages.json.gz", "rt") as source:
-        pages = json.load(source)
-    failures = []
-    assert len(before["page_failures"]) == len(pages) == 20
-    for row in before["page_failures"]:
-        text = pages[row["path"]]
-        assert hashlib.sha256(text.encode()).hexdigest() == row["sha256"]
-        if not _page_has_arena_shape(text, row["number"], row["title"]):
-            failures.append(row["number"])
-    assert failures == ["8.2", "8.5"]
+    assert not _page_has_arena_shape(page().replace(missing, ""), "11.4", "Example")

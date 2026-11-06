@@ -6,6 +6,7 @@
 #SBATCH --job-name=arena-worker
 #SBATCH --account=computervision
 #SBATCH --partition=gpu_computervision
+#SBATCH --qos=normal
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
 #SBATCH --gres=gpu:2

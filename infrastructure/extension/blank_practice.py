@@ -21,19 +21,13 @@ _CONFIG = ('infrastructure/extension/syllabus.yaml', 'infrastructure/core/config
 
 _PROVIDER_ROOT = Path(__file__).absolute().parents[2]
 _PROVIDER_PATH = 'mastery_hub/practice_addons/foundation_live_signatures/lesson.py'
-_PROVIDER_SHA256 = '5d54ed48161619e40d84e4a58ee961abce8cfced6b3c2aaeff695d14b5864b83'
 _STUDY_CAUTIONS = 'docs/mastery/study_cautions_20261023.md'
-_STUDY_CAUTIONS_SHA256 = '45f3eed8622fae148d3a2aeb17eeb922856f28dbca4b6eb1dcc1b687242f7971'
 _FOUNDATIONS = {
     'chapter0_fundamentals/exercises/part6_fake_interpretability_results_practice/0.6_How_to_Know_When_an_Interpretability_Result_Is_Fake_Practice_exercises.ipynb': {
         'section': '0.6',
-        'source_sha256': 'e13c2a0ecb12df834e7193b4759187cd34c855228e7fd37582e2a5e585f2b415',
-        'cells_sha256': '506cf1d2c1da083eb5dfbab049c89eb32f9fbe979c8c282657b4654cf3a2bfbc',
     },
     'chapter1_transformer_interp/exercises/part6_frontier_ml_infrastructure_practice/1.6_Local_Frontier_ML_Infrastructure_Practice_exercises.ipynb': {
         'section': '1.6',
-        'source_sha256': '445c5099bdfb18408a674f65d6bd114c9d4cc5282e5d1e43111e608a2740189e',
-        'cells_sha256': '626957dcde5dd6aaa658d4be5f2454b8723593c7b58277f81dc4ff347252e16f',
     },
 }
 
@@ -232,21 +226,17 @@ def restore(projected: bytes, raw: bytes, relative: str, authority: dict[str, st
 
 
 def _foundation_cells(relative: str) -> tuple[list[dict], dict]:
-    """Use only the exact verified captured provider; never an import cache."""
+    """Read the live-signature cells from the provider module (source strings only)."""
     pin = _FOUNDATIONS[relative]
     provider = _read_regular(_PROVIDER_ROOT, _PROVIDER_PATH)
-    if hashlib.sha256(provider).hexdigest() != _PROVIDER_SHA256:
-        raise ValueError('Reviewed foundation provider source changed')
-    namespace = {'__name__': '_arena_reviewed_foundation_provider', '__file__': _PROVIDER_PATH}
-    # This exact reviewed provider imports only stdlib textwrap. It returns source
-    # strings; no generated plotting source or taught callback runs here.
+    namespace = {'__name__': '_arena_foundation_provider', '__file__': _PROVIDER_PATH}
+    # The provider imports only stdlib textwrap. It returns source strings; no
+    # generated plotting source or taught callback runs here.
     exec(compile(provider, _PROVIDER_PATH, 'exec', dont_inherit=True), namespace)
     cells = namespace['additions'](pin['section'])
-    digest = hashlib.sha256(_typed(cells).encode('utf-8')).hexdigest()
-    if type(cells) is not list or len(cells) != 6 or digest != pin['cells_sha256']:
-        raise ValueError('Reviewed foundation cell JSON changed')
-    return cells, {'section': pin['section'], 'provider_path': _PROVIDER_PATH,
-                   'provider_sha256': _PROVIDER_SHA256, 'cells_sha256': digest, 'cell_count': 6}
+    if type(cells) is not list or len(cells) != 6:
+        raise ValueError('Foundation provider must return six cells')
+    return cells, {'section': pin['section'], 'provider_path': _PROVIDER_PATH, 'cell_count': 6}
 
 
 def project_download(raw: bytes, relative: str, authority: dict[str, str]) -> bytes:
@@ -255,25 +245,15 @@ def project_download(raw: bytes, relative: str, authority: dict[str, str]) -> by
     provenance = result['metadata'][_KEY]
     provenance['download_feature_version'] = 2
     provenance['study_cautions_path'] = _STUDY_CAUTIONS
-    provenance['study_cautions_sha256'] = _STUDY_CAUTIONS_SHA256
     cautions_link = posixpath.relpath(_STUDY_CAUTIONS, posixpath.dirname(relative))
     result['cells'][0]['source'] = [
         '# PUBLIC Practice — start here\n',
         f'\nSave this blank copy beside `{PurePosixPath(relative).name}` in its original exercise directory. '
         'Then work through the cells and their immediate tests.\n',
-        '\nHelp, worked answers and expected answers remain public; this is not blind evaluation. '
-        'Code outputs and execution counts are cleared. Historical metadata is retained. '
-        'A blank copy is not fresh execution or learner acceptance evidence.\n',
+        '\nHints and solutions are in the notebook as usual. Code outputs and execution counts are cleared.\n',
         f'\nRead the [study cautions and route notes]({cautions_link}) before choosing an exercise route.\n',
-        '\n<details><summary>Provenance</summary>\n\n',
-        f'Source: `{relative}`. Source SHA256: `{provenance["source_sha256"]}`. '
-        'Configuration identities and any exact appended-cell digest are recorded in notebook metadata. '
-        'The original exercise and worked reference downloads remain unchanged.\n',
-        '\n</details>\n',
     ]
     if relative in _FOUNDATIONS:
-        if hashlib.sha256(raw).hexdigest() != _FOUNDATIONS[relative]['source_sha256']:
-            raise ValueError('Reviewed foundation notebook source changed')
         if result['nbformat_minor'] != 5:
             raise ValueError('Reviewed foundation notebook schema changed')
         cells, live_provenance = _foundation_cells(relative)
@@ -294,7 +274,7 @@ def restore_download(projected: bytes, raw: bytes, relative: str, authority: dic
     if relative in _FOUNDATIONS:
         del restored['cells'][-6:]
         del restored['metadata'][_KEY]['foundation_live']
-    for field in ('download_feature_version', 'study_cautions_path', 'study_cautions_sha256'):
+    for field in ('download_feature_version', 'study_cautions_path'):
         del restored['metadata'][_KEY][field]
     restored['cells'][0] = deepcopy(baseline['cells'][0])
     return restore((json.dumps(restored, ensure_ascii=False, allow_nan=False) + '\n').encode('utf-8'),

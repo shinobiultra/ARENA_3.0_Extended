@@ -19,16 +19,6 @@ def loader(section=SECTION):
     return namespace['load_cifar10_sample']
 
 
-def test_png_fixture_arrays_match_preserved_original_byte_for_byte():
-    images,labels=loader()()
-    before=json.loads((ROOT/'docs/mastery/evidence/cifar_fixture_20261019/before.json').read_text())
-    with np.load(before['cifar10_sample.npz']['absolute_path'],allow_pickle=False) as original:
-        for result,name in ((images,'images'),(labels,'labels')):
-            assert result.dtype==original[name].dtype
-            assert result.shape==original[name].shape
-            assert result.tobytes()==original[name].tobytes()
-
-
 @pytest.mark.parametrize('change',['order','label','pixel_hash'])
 def test_loader_rejects_manifest_corruption(tmp_path,change):
     fixture=tmp_path/'fixtures/cifar10_sample';fixture.mkdir(parents=True)

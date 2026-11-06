@@ -70,13 +70,11 @@ Every extension section keeps the ARENA rhythm: motivation, implementation
 tasks, visible tests, expected outputs, solution code, baselines, negative
 controls, VRAM-aware reports, and a narrow claim scope.
 
-The local release checks are:
+The local checks are:
 
 ```bash
 uv run pytest -q
-BNB_CUDA_VERSION=130 uv run python scripts/run_extension_verification_reports.py --max-vram-gb 24
-uv run python scripts/audit_report_evidence_contracts.py
-uv run python scripts/audit_hard_exercise_ladders.py
+uv run python scripts/ci_quality_gate.py --mode hosted-cpu
 ```
 """
 

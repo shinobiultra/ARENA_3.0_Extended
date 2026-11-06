@@ -59,9 +59,8 @@ def test_notebook_exact_and_blank(generator):
         assert any(source in ''.join(c['source']) for c in book['cells'] if c['cell_type'] == 'markdown')
     assert any(generator.TRANSFER == ''.join(c['source']) for c in book['cells'])
 
-def test_source_pins_and_decisions(generator):
+def test_protocol_decisions_are_declared(generator):
     protocol = json.loads((FOLDER/'protocol.json').read_text())
-    generator.verify_sources(SOURCE_ROOT, protocol)
     assert protocol['parity_tolerances'] is None
     assert protocol['actual_model_budget'] == 0
     assert protocol['existing_protocol'] == dict(discovery_n=64, discovery_seed=0, heldout_n=64, heldout_seed=1, tau=.01, random_n=20, random_seed=4)
@@ -69,22 +68,11 @@ def test_source_pins_and_decisions(generator):
     assert protocol['decisions'][3]['status'] == 'UNSET_future_adoption_required'
     assert protocol['decisions'][5]['status'] == 'DEV_only_actual_model_budget_zero'
 
-def test_default_import_inert(monkeypatch):
-    import builtins
-    seen=[]
-    original = builtins.__import__
-    def guarded(name, *args, **kwargs):
-        seen.append(name)
-        assert name.split('.')[0] not in {'torch','einops','transformer_lens','numpy','matplotlib'}
-        return original(name,*args,**kwargs)
-    monkeypatch.setattr(builtins,'__import__',guarded)
-    monkeypatch.setattr(Path,'write_bytes',lambda *a,**k: pytest.fail('import wrote bytes'))
-    monkeypatch.setattr(Path,'write_text',lambda *a,**k: pytest.fail('import wrote text'))
-    spec=importlib.util.spec_from_file_location('inert_acdc_generator',FOLDER/'generate.py')
-    module=importlib.util.module_from_spec(spec); spec.loader.exec_module(module)
-    assert not hasattr(module,'own_circuit_logits')
-    assert not hasattr(module,'t')
-    assert 'torch' not in seen
+def staged_protocol(folder, sources=None):
+    """Copy the protocol with the lesson-file pins replaced, so generator behaviour is tested alone."""
+    protocol = json.loads((FOLDER/'protocol.json').read_text())
+    protocol['sources'] = sources or {}
+    (folder/'protocol.json').write_text(json.dumps(protocol))
 
 def test_graph_indices_without_tensors(source_namespace):
     ns=source_namespace
@@ -209,7 +197,7 @@ def marker_prepared(ns,sender):
 @pytest.mark.parametrize('mutation',['forecast','metadata','outputs','execution_count','format'])
 def test_no_clobber_edited_learner(tmp_path,generator,mutation):
     folder=tmp_path/'practice'; folder.mkdir()
-    shutil.copyfile(FOLDER/'protocol.json',folder/'protocol.json')
+    staged_protocol(folder)
     assert generator.generate(folder,SOURCE_ROOT)=='created'
     target=folder/'exercises.ipynb'; book=json.loads(target.read_bytes())
     if mutation=='forecast': book['cells'][1]['source'].append('My forecast: ...\n')
@@ -225,23 +213,24 @@ def test_no_clobber_edited_learner(tmp_path,generator,mutation):
 
 def test_exact_noop_check_missing_and_bad_pin(tmp_path,generator):
     folder=tmp_path/'practice'; folder.mkdir()
-    shutil.copyfile(FOLDER/'protocol.json',folder/'protocol.json')
-    with pytest.raises(ValueError,match='missing'): generator.generate(folder,SOURCE_ROOT,True)
+    pinned = tmp_path/'root'; pinned.mkdir(); (pinned/'x.txt').write_bytes(b'x')
+    staged_protocol(folder, {'x.txt': {'sha256': hashlib.sha256(b'x').hexdigest(), 'size_bytes': 1}})
+    with pytest.raises(ValueError,match='missing'): generator.generate(folder,pinned,True)
     assert not (folder/'exercises.ipynb').exists()
-    assert generator.generate(folder,SOURCE_ROOT)=='created'
+    assert generator.generate(folder,pinned)=='created'
     path=folder/'exercises.ipynb'; stat=path.stat().st_mtime_ns
-    assert generator.generate(folder,SOURCE_ROOT)=='unchanged'
-    assert generator.generate(folder,SOURCE_ROOT,True)=='unchanged'
+    assert generator.generate(folder,pinned)=='unchanged'
+    assert generator.generate(folder,pinned,True)=='unchanged'
     assert path.stat().st_mtime_ns==stat
     protocol=json.loads((folder/'protocol.json').read_text())
-    next(iter(protocol['sources'].values()))['sha256']='0'*64
+    protocol['sources']['x.txt']['sha256']='0'*64
     (folder/'protocol.json').write_text(json.dumps(protocol))
     path.unlink()
-    with pytest.raises(ValueError,match='pinned original'): generator.generate(folder,SOURCE_ROOT)
+    with pytest.raises(ValueError,match='pinned original'): generator.generate(folder,pinned)
     assert not path.exists()
 
 def test_symlink_and_late_collision_refused(tmp_path,generator,monkeypatch):
-    folder=tmp_path/'practice'; folder.mkdir(); shutil.copyfile(FOLDER/'protocol.json',folder/'protocol.json')
+    folder=tmp_path/'practice'; folder.mkdir(); staged_protocol(folder)
     other=tmp_path/'learner'; other.write_text('keep')
     target=folder/'exercises.ipynb'; target.symlink_to(other)
     with pytest.raises(ValueError,match='symlink'): generator.generate(folder,SOURCE_ROOT)

@@ -74,15 +74,10 @@ To inspect the current access state without downloading weights:
 uv run python scripts/prepare_gated_gemma_family_artifacts.py
 ```
 
-The strict release gate is:
-
-```bash
-uv run python scripts/audit_extension_completion_strict.py
-```
-
-It intentionally fails if Gemma 3 base activations, EmbeddingGemma, or the base
-FunctionGemma checkpoint are unavailable. In the current validated environment,
-those required Gemma-family artifacts are authenticated and ready.
+Lessons that need Gemma 3 base activations, EmbeddingGemma, or the base
+FunctionGemma checkpoint fail their fresh-kernel run if those gated artifacts
+are unavailable. In the current validated environment they are authenticated
+and ready.
 
 DiffusionGemma is prepared separately because the required 24GB local path is
 the quantized NVIDIA NVFP4 checkpoint, while the Google BF16 checkpoint is much

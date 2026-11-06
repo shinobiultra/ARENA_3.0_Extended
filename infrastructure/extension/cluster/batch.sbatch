@@ -10,6 +10,7 @@
 #SBATCH --job-name=arena-ext
 #SBATCH --account=computervision
 #SBATCH --partition=gpu_computervision
+#SBATCH --qos=normal
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=32

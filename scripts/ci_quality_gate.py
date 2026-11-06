@@ -1,15 +1,15 @@
-"""Run the extension's real CI quality gates.
+"""Run the extension's CI quality gates.
 
-This wrapper intentionally calls existing audits and tests. It does not create
-extra mock smoke tests; the hosted lane is limited to checks that can run from
-committed metadata without model downloads, while the GPU lane reruns real CUDA
-verification reports.
+The hosted lane runs cheap checks that need no model downloads: the
+chapters 0-4 preservation audit, the merged-config check, the course-surface,
+artifact-hygiene and no-minified audits, and the batch-exit test. Fresh-kernel
+lesson runs stay out of CI; they happen on the laptop or the Julia worker
+(`infrastructure/extension/build.py <section> --execute`).
 """
 
 from __future__ import annotations
 
 import argparse
-import os
 import subprocess
 import sys
 from pathlib import Path
@@ -20,36 +20,27 @@ ROOT = Path(__file__).resolve().parents[1]
 HOSTED_CPU_PYTEST_TARGETS = [
     "tests/test_original_arena_preservation_audit.py",
     "tests/test_course_surface_audit.py",
-    "tests/test_hard_exercise_ladder_audit.py",
-    "tests/test_report_evidence_contract_audit.py",
     "tests/test_extension_artifact_hygiene.py",
     "tests/test_no_minified_files_audit.py",
-    "tests/test_extension_verification_assets.py",
     "tests/test_build_merged_config.py",
-    "tests/test_arena_style_depth_audit.py",
-    "tests/test_roadmap_final_completeness.py",
-    "tests/test_strict_completion_audit.py",
+    "tests/test_extension_batch_exit.py",
 ]
 
-# A separate learner-delivery lane. Full scientific/release gates above remain
-# unchanged; these checks never run protected prediction targets or model jobs.
+# The study reader lane checks the learner app without running lesson code.
 STUDY_DELIVERY_TARGETS = [
     "tests/mastery/test_reader_routes.py",
     "tests/mastery/test_reading_entrypoint.py",
-    "tests/mastery/test_teaching_delivery_errors.py",
     "tests/mastery/test_blank_practice_foundation_integration.py",
-    "tests/mastery/test_study_edition_notice.py",
     "tests/mastery/test_extension_prediction_workbook.py",
     "tests/mastery/test_app.py",
     "tests/mastery/test_app_workspace.py",
     "tests/mastery/test_empirical_protocol.py",
-    "tests/test_teaching_editions.py",
 ]
 
 
-def run(command: list[str], *, env: dict[str, str] | None = None) -> None:
+def run(command: list[str]) -> None:
     print("+", " ".join(command), flush=True)
-    subprocess.run(command, cwd=ROOT, env=env, check=True)
+    subprocess.run(command, cwd=ROOT, check=True)
 
 
 def python_command(script: str, *args: str) -> list[str]:
@@ -67,17 +58,8 @@ def run_hosted_cpu() -> None:
     run(python_command("scripts/build_merged_config.py", "--check"))
     run(python_command("scripts/audit_original_arena_preservation.py"))
     run(python_command("scripts/audit_course_surface.py"))
-    run(python_command("scripts/audit_arena_style_depth.py"))
-    run(python_command("scripts/audit_hard_exercise_ladders.py"))
-    run(python_command("scripts/audit_report_evidence_contracts.py"))
     run(python_command("scripts/audit_extension_artifact_hygiene.py"))
     run(python_command("scripts/audit_no_minified_files.py"))
-    run(
-        python_command(
-            "scripts/audit_gpu_verification_reports.py",
-            "--require-cuda-section-metrics",
-        )
-    )
 
 
 def run_local_unit() -> None:
@@ -102,55 +84,12 @@ def run_study_delivery() -> None:
     run(python_command("scripts/audit_original_arena_preservation.py"))
 
 
-def run_gpu(section_filters: list[str]) -> None:
-    env = os.environ.copy()
-    env.setdefault("BNB_CUDA_VERSION", "130")
-    run(["nvidia-smi"], env=env)
-    run(
-        [
-            sys.executable,
-            "-c",
-            (
-                "import torch; "
-                "assert torch.cuda.is_available(); "
-                "print(torch.__version__, torch.version.cuda, torch.cuda.get_device_name(0))"
-            ),
-        ],
-        env=env,
-    )
-    report_command = python_command("scripts/run_extension_verification_reports.py")
-    for section in section_filters:
-        report_command.extend(["--section", section])
-    report_command.extend(["--max-vram-gb", "24"])
-    run(report_command, env=env)
-    run(
-        python_command(
-            "scripts/audit_gpu_verification_reports.py",
-            "--require-cuda-section-metrics",
-        ),
-        env=env,
-    )
-    run(python_command("scripts/audit_report_evidence_contracts.py"), env=env)
-
-
-def run_release() -> None:
-    run_gpu([])
-    run(python_command("scripts/audit_roadmap_final_completeness.py"))
-    run(python_command("scripts/audit_extension_completion_strict.py"))
-
-
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument(
         "--mode",
-        choices=("hosted-cpu", "study-delivery", "local-unit", "gpu", "release"),
+        choices=("hosted-cpu", "study-delivery", "local-unit"),
         default="hosted-cpu",
-    )
-    parser.add_argument(
-        "--section",
-        action="append",
-        default=[],
-        help="Extension section number to regenerate in --mode gpu; omit for all sections.",
     )
     args = parser.parse_args()
 
@@ -158,12 +97,8 @@ def main() -> None:
         run_hosted_cpu()
     elif args.mode == "study-delivery":
         run_study_delivery()
-    elif args.mode == "local-unit":
-        run_local_unit()
-    elif args.mode == "gpu":
-        run_gpu(args.section)
     else:
-        run_release()
+        run_local_unit()
 
 
 if __name__ == "__main__":

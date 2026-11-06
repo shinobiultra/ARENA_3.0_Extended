@@ -1,4 +1,4 @@
-"""Independent gradient/game checks and strict numeric evidence rejection checks.
+"""Independent gradient/game checks of the 16.9 in-run data Shapley lesson code.
 
 The maintained lesson is 16.9. The retired 16.7 publication report is not imported.
 """
@@ -18,7 +18,6 @@ finally:
     torch.set_default_dtype(_caller_dtype)
     torch.set_num_threads(_caller_threads)
 from chapter16_shapley_attribution_baselines.exercises.part9_data_shapley import tests as checks
-from arena_ext import legacy_shapley_evidence as evidence
 
 
 @pytest.fixture(autouse=True)
@@ -190,71 +189,3 @@ def test_taylor_self_cross_and_complete_trajectory():
     # All-masked training is still inert via the maintained sgd_train interface.
     unchanged = methods.sgd_train(params, x, y, schedule, 0.1, keep=torch.zeros(4))
     torch.testing.assert_close(checks._flat(unchanged), checks._flat(params), atol=0, rtol=0)
-
-
-def _numeric_payload():
-    tensor = {'tensor': True, 'dtype': 'torch.float64', 'shape': [2], 'values': [1., 2.]}
-    return {
-        'digit_runs': {seed: {'run': {'wall_seconds': 1.}} for seed in ('16701', '16702', '16703')},
-        'timing_rows': [{'seconds': 1.} for _ in range(14)],
-        'training_times': [{'seconds': 1.} for _ in range(6)],
-        'actual': tensor,
-    }
-
-
-def _timing_paths():
-    return frozenset(
-        [('digit_runs', seed, 'run', 'wall_seconds') for seed in ('16701', '16702', '16703')]
-        + [('timing_rows', i, 'seconds') for i in range(14)]
-        + [('training_times', i, 'seconds') for i in range(6)]
-    )
-
-
-def test_numeric_comparison_rejects_changes_and_unknown_timing_fields():
-    payload = _numeric_payload()
-    fresh = copy.deepcopy(payload)
-    fresh['timing_rows'][0]['seconds'] = 2.
-    counts, excluded = evidence.compare(payload, fresh, timing_paths=_timing_paths())
-    assert counts['tensor_elements'] == 2 and len(excluded) == 23
-    fresh['actual']['values'][0] += 1e-12
-    with pytest.raises(ValueError, match='Tensor changed'):
-        evidence.compare(payload, fresh, timing_paths=_timing_paths())
-    fresh = copy.deepcopy(payload)
-    fresh['other_wall_seconds'] = 2.
-    with pytest.raises(ValueError, match='Keys/order changed'):
-        evidence.compare(payload, fresh, timing_paths=_timing_paths())
-    fresh = copy.deepcopy(payload)
-    fresh['actual']['dtype'] = 'torch.float32'
-    with pytest.raises(ValueError, match='Tensor changed'):
-        evidence.compare(payload, fresh, timing_paths=_timing_paths())
-
-
-@pytest.mark.parametrize('value, message', [
-    ({'tensor': True, 'dtype': 'torch.float64', 'shape': [3], 'values': [1., 2.]}, 'shape'),
-    ({'tensor': True, 'dtype': 'torch.float64', 'shape': [1], 'values': [float('nan')]}, 'Nonfinite'),
-])
-def test_invalid_tensor_shape_and_nonfinite_rejected(value, message):
-    with pytest.raises(ValueError, match=message):
-        evidence.array(value)
-
-
-@pytest.mark.parametrize('mutation', ['unknown_timing_change', 'zero_timing', 'missing_timing', 'dtype_missing', 'nonfinite_scalar', 'scalar_type'])
-def test_evidence_rejects_unlisted_drift(mutation):
-    payload = _numeric_payload()
-    payload['wall_seconds'] = 1.0  # deliberately outside the timing allowlist
-    payload['scalar'] = 1
-    fresh = copy.deepcopy(payload)
-    if mutation == 'unknown_timing_change':
-        fresh['wall_seconds'] = 2.0
-    elif mutation == 'zero_timing':
-        fresh['timing_rows'][0]['seconds'] = 0.0
-    elif mutation == 'missing_timing':
-        fresh['timing_rows'].pop()
-    elif mutation == 'dtype_missing':
-        del fresh['actual']['dtype']
-    elif mutation == 'nonfinite_scalar':
-        fresh['scalar'] = float('inf')
-    else:
-        fresh['scalar'] = True
-    with pytest.raises(ValueError):
-        evidence.compare(payload, fresh, timing_paths=_timing_paths())

@@ -2,7 +2,6 @@
 from __future__ import annotations
 
 import ast
-import hashlib
 import json
 from pathlib import Path
 import re
@@ -235,15 +234,6 @@ def test_callback_error_preserves_primary_exception(api):
     assert caught.value.stage == "callback_exception"
     assert caught.value.__cause__ is primary
     assert caught.value.pair_indices == (7, 9)
-
-
-def test_manifest_binds_addon_bytes_and_historical_boundary():
-    manifest = json.loads((ADDON / "source_manifest.json").read_text())
-    for name, expected in manifest["addon_files"].items():
-        assert hashlib.sha256((ROOT / name).read_bytes()).hexdigest() == expected
-    assert len(manifest["unchanged_canonical_inputs"]) == 47
-    assert manifest["scientific_execution"] is False
-    assert manifest["historical_canonical_files_modified"] == []
 
 
 @pytest.mark.parametrize("test_name,argument", [

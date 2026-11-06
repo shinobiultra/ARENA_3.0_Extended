@@ -1,5 +1,7 @@
 # Verification Quality Policy
 
+> **Superseded on 2026-11-06.** Verification reports, report-evidence audits and the GPU CI lane were retired. Lessons are checked by the completion check (shinobiultra/ARENA_3.0_Extended issue 249): a fresh-kernel run, focused tests, the chapters 0-4 preservation audit and the user's walkthrough. See `docs/ci_gates.md`. This page is kept as history.
+
 The extension should not become a pile of fake tests. The roadmap requires
 verification blocks, but those blocks need a clear scope.
 

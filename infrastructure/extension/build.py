@@ -62,14 +62,7 @@ class ExtensionMasterFile(MasterFileData):
     """The original converter, with links pointing at this fork."""
 
     def master_py_to_ipynb(self, overwrite: bool = False, ignore_errors: bool = False) -> None:
-        """Validate extension master compatibility in memory before its only write."""
-        from scripts.practice16_execution_checkpoint import preflight_practice16_publication
-
-        preflight_practice16_publication(
-            root=ROOT, master_path=self.master_py_path,
-            identity={"section": self.colab_name.split("_", 1)[0], "chapter": self.chapter_dir.name,
-                      "exercise_dir": self.exercise_dir_name, "page": self.streamlit_page_name},
-        )
+        """Write the saved master notebook through the schema normaliser."""
         from conversion.converters import _cells_to_notebook_data
 
         from infrastructure.extension.master_notebook_schema import canonical_master_notebook
@@ -81,30 +74,6 @@ class ExtensionMasterFile(MasterFileData):
             _cells_to_notebook_data(self.cells), master_basename=self.master_py_path.name
         )
         self.master_path.write_text(content, encoding="utf-8")
-
-    def create_arena_files(self, verbose: bool = False) -> None:
-        """Apply only an exact reviewed preservation recipe before any file write."""
-        from scripts.practice16_execution_checkpoint import restore_practice16_notebooks as restore_notebooks
-
-        super().create_arena_files(verbose)
-        restored = restore_notebooks(
-            master_path=self.master_py_path,
-            identity={"section": self.colab_name.split("_", 1)[0],
-                      "chapter": self.chapter_dir.name,
-                      "exercise_dir": self.exercise_dir_name,
-                      "page": self.streamlit_page_name},
-            raw_notebooks={"exercises": self.colab_ex_cells, "solutions": self.colab_soln_cells},
-            raw_modules={name: value if isinstance(value, str) else "".join(value)
-                         for name, value in self.solutions_py_files.items()},
-            existing_notebooks={kind: path.read_text() if path.exists() else None
-                                for kind in ("exercises", "solutions")
-                                for path in [self.exercises_dir / f"{self.colab_name}_{kind}.ipynb"]},
-            root=ROOT,
-        )
-        self.source_preservation_applied = restored is not None
-        if restored is not None:
-            self.colab_ex_cells = restored["exercises"]
-            self.colab_soln_cells = restored["solutions"]
 
     def get_page_links(self) -> tuple[list[str], list[str]]:
         rel = f"{self.chapter_dir.name}/exercises/{self.exercise_dir_name}/{self.colab_name}"
@@ -175,13 +144,6 @@ def generate(section: str, config: dict) -> ExtensionMasterFile:
         raise ValueError(f"{section} is an original ARENA section; build it with infrastructure/core/main.py")
     mapping = config["conversion_map"][section]
     master_py = find_master(section)
-    from scripts.practice16_execution_checkpoint import preflight_practice16_publication
-
-    preflight_practice16_publication(
-        root=ROOT, master_path=master_py,
-        identity={"section": section, "chapter": config["chapter_names"][chapter_num],
-                  "exercise_dir": mapping["exercise_dir"], "page": mapping["streamlit_page"]},
-    )
     master_ipynb = master_py.with_suffix(".ipynb")
     if not master_ipynb.exists():
         master_ipynb.write_text('{"cells": [], "metadata": {}, "nbformat": 4, "nbformat_minor": 5}')
@@ -359,19 +321,37 @@ def code_sources(nb: nbformat.NotebookNode) -> list[str]:
     return [cell.source for cell in nb.cells if cell.cell_type == "code"]
 
 
+def same_code(old: str, new: str) -> bool:
+    """Whether two code cells run the same program: equal Python syntax trees.
+
+    Blank lines, line endings and comments don't change what a cell computes, so a
+    reformatted cell keeps its outputs. Anything else (including string contents)
+    counts as a change. Cells that aren't plain Python (magics) must match textually.
+    """
+    if old == new:
+        return True
+    import ast
+
+    old, new = (source.replace("\r\n", "\n").replace("\r", "\n") for source in (old, new))
+    try:
+        return ast.dump(ast.parse(old)) == ast.dump(ast.parse(new))
+    except SyntaxError:
+        return [line.rstrip() for line in old.split("\n")] == [line.rstrip() for line in new.split("\n")]
+
+
 def carry_over_outputs(previous: nbformat.NotebookNode | None, solutions: Path) -> bool:
     """
-    If the freshly generated solutions notebook has exactly the same code cells as the previously executed one,
+    If the freshly generated solutions notebook runs the same code cells as the previously executed one,
     copy the previous outputs across (so a markdown-only edit doesn't need re-execution). Returns True if it did.
     """
     if previous is None or not any(cell.get("outputs") for cell in previous.cells if cell.cell_type == "code"):
         return False
     fresh = nbformat.read(solutions, as_version=4)
-    if code_sources(fresh) != code_sources(previous):
+    old_sources, new_sources = code_sources(previous), code_sources(fresh)
+    if len(old_sources) != len(new_sources) or not all(map(same_code, old_sources, new_sources, strict=True)):
         return False
-    # Widget views reference a notebook-level state graph, and retained execution
-    # receipts describe these exact code cells. Keep that state with the outputs.
-    # Generated teaching metadata wins conflicts except for runtime identity.
+    # Widget views reference a notebook-level state graph; keep it with the outputs.
+    # Generated metadata wins conflicts except for runtime identity.
     from copy import deepcopy
 
     fresh.metadata = nbformat.from_dict({**deepcopy(previous.metadata), **fresh.metadata})
@@ -385,90 +365,6 @@ def carry_over_outputs(previous: nbformat.NotebookNode | None, solutions: Path) 
             cell["outputs"], cell["execution_count"] = old.get("outputs", []), old.get("execution_count")
             cell.metadata = nbformat.from_dict({**deepcopy(old.metadata), **cell.metadata})
     nbformat.write(fresh, solutions)
-    return True
-
-
-def carry_over_exercise_provenance(previous: nbformat.NotebookNode | None, exercises: Path) -> bool:
-    """Keep allowlisted teaching/provenance metadata for identical student sources.
-
-    Generated values win every conflict, including nested metadata. Only explicit
-    reference/migration provenance, arena teaching markers, Jupyter visibility and
-    tags may carry. Learner answers, trust, timing, execution metadata, cell source,
-    outputs and execution counts never carry. Migration's nested source snapshots
-    use the same metadata allowlist rather than retaining arbitrary old state.
-    """
-    if previous is None:
-        return False
-    fresh = nbformat.read(exercises, as_version=4)
-    if code_sources(previous) != code_sources(fresh):
-        return False
-    from copy import deepcopy
-
-    def select(values, keys):
-        return {key: deepcopy(values[key]) for key in keys if key in values}
-
-    def arena(values):
-        return select(values, ('section', 'status', 'original_chapters_modified',
-                               'exercise_functions', 'calling_cell', 'provided_code', 'solution_for'))
-
-    def cell_metadata(values):
-        selected = {}
-        if 'arena' in values:
-            selected['arena'] = arena(values['arena'])
-        if 'jupyter' in values:
-            selected['jupyter'] = select(values['jupyter'], ('source_hidden', 'outputs_hidden'))
-        if 'tags' in values:
-            selected['tags'] = deepcopy(values['tags'])
-        return selected
-
-    def source_metadata(values):
-        selected = cell_metadata(values)
-        for key, fields in (
-            ('kernelspec', ('display_name', 'language', 'name')),
-            ('language_info', ('name', 'version', 'pygments_lexer')),
-        ):
-            if key in values:
-                selected[key] = select(values[key], fields)
-        return selected
-
-    def notebook_metadata(values):
-        selected = source_metadata(values)
-        if 'fresh_reference' in values:
-            selected['fresh_reference'] = select(values['fresh_reference'], (
-                'executed_solution_result', 'kind', 'publication_receipt', 'section'))
-        if 'migration' in values:
-            migration = values['migration']
-            selected['migration'] = select(migration, ('execution_kind', 'fresh_execution', 'status'))
-            if 'source_notebook_metadata' in migration:
-                selected['migration']['source_notebook_metadata'] = {
-                    name: source_metadata(metadata)
-                    for name, metadata in migration['source_notebook_metadata'].items()}
-            if 'original_all_cell_metadata' in migration:
-                selected['migration']['original_all_cell_metadata'] = [
-                    {**select(row, ('legacy_cell', 'id', 'cell_type')),
-                     'metadata': cell_metadata(row.get('metadata', {}))}
-                    for row in migration['original_all_cell_metadata']]
-            if 'source_cell_metadata' in migration:
-                selected['migration']['source_cell_metadata'] = {
-                    name: [{**select(row, ('id', 'cell_type')),
-                            'metadata': cell_metadata(row.get('metadata', {}))} for row in cells]
-                    for name, cells in migration['source_cell_metadata'].items()}
-        return selected
-
-    def merge_generated(old, generated):
-        merged = deepcopy(old)
-        for key, value in generated.items():
-            merged[key] = (merge_generated(merged[key], value)
-                           if isinstance(merged.get(key), dict) and isinstance(value, dict)
-                           else deepcopy(value))
-        return merged
-
-    fresh.metadata = nbformat.from_dict(merge_generated(notebook_metadata(previous.metadata), fresh.metadata))
-    old_code = [cell for cell in previous.cells if cell.cell_type == 'code']
-    new_code = [cell for cell in fresh.cells if cell.cell_type == 'code']
-    for old, new in zip(old_code, new_code, strict=True):
-        new.metadata = nbformat.from_dict(merge_generated(cell_metadata(old.metadata), new.metadata))
-    nbformat.write(fresh, exercises)
     return True
 
 
@@ -504,14 +400,11 @@ def main() -> None:
         colab_name = mapping["streamlit_page"].split("_[")[-1].replace("]", "")
         previous_path = chapter_dir / "exercises" / mapping["exercise_dir"] / f"{colab_name}_solutions.ipynb"
         previous = nbformat.read(previous_path, as_version=4) if previous_path.exists() else None
-        previous_exercises_path = previous_path.with_name(previous_path.name.replace("_solutions.ipynb", "_exercises.ipynb"))
-        previous_exercises = nbformat.read(previous_exercises_path, as_version=4) if previous_exercises_path.exists() else None
         master = generate(section, config)
         solutions = master.exercises_dir / f"{master.colab_name}_solutions.ipynb"
         exercises = master.exercises_dir / f"{master.colab_name}_exercises.ipynb"
         media_dir = master.exercises_dir / "media"
-        if not args.execute and not master.source_preservation_applied:
-            carry_over_exercise_provenance(previous_exercises, exercises)
+        if not args.execute:
             if carry_over_outputs(previous, solutions):
                 print("Code cells unchanged: kept the previous execution's outputs.")
             elif previous is not None:
@@ -524,8 +417,7 @@ def main() -> None:
             nbformat.write(executed, solutions)
             solutions.with_name(solutions.stem + ".FAILED.ipynb").unlink(missing_ok=True)
             print(f"Executed solutions notebook in {seconds:.0f}s; saved {len(saved)} figure(s) to media/")
-        if args.execute or not master.source_preservation_applied:
-            inline_media(exercises, media_dir)
+        inline_media(exercises, media_dir)
         rewrite_page_media(master)
         print(summarise(master))
 

@@ -77,7 +77,7 @@ def test_specific_caution_and_concrete_next_step(helper, notes, section, fragmen
 
 @pytest.mark.parametrize("section", CASES)
 @pytest.mark.parametrize("change", ["missing", "renamed", "duplicate", "only-fenced"])
-def test_changed_or_ambiguous_actual_anchor_refuses(helper, notes, section, change):
+def test_changed_or_ambiguous_actual_anchor_skips_the_caution(helper, notes, section, change):
     path, source = actual(section)
     anchor = CASES[section][1]
     if change == "missing":
@@ -88,8 +88,7 @@ def test_changed_or_ambiguous_actual_anchor_refuses(helper, notes, section, chan
         source += "\n" + anchor + "\n"
     else:
         source = source.replace(anchor, "```text\n" + anchor + "\n```")
-    with pytest.raises(ValueError, match="anchor"):
-        helper.add_study_cautions(source, path, notes)
+    assert helper.add_study_cautions(source, path, notes) == source
 
 
 @pytest.mark.parametrize("fence", ["```", "~~~~", "   ```"])

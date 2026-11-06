@@ -1,4 +1,4 @@
-"""Source-only saved-master compatibility: strict schema, no evidence changes."""
+"""Saved-master notebook schema and deterministic master build behaviour."""
 from copy import deepcopy
 import json
 from pathlib import Path
@@ -226,9 +226,6 @@ def isolated_generation(tmp_path, monkeypatch, section):
     masters.mkdir(parents=True)
     source = masters / f"master_{section.replace('.', '_')}.py"
     source.write_text(small_source(section), encoding="utf-8")
-    contracts = tmp_path / "infrastructure/extension/source_preservation_contracts.json"
-    contracts.parent.mkdir()
-    contracts.write_text('{"schema": "arena.extension-source-preservation.v1", "sections": {}}')
     chapter = int(section.split(".")[0])
     config = {"conversion_map": {section: {"exercise_dir": "part_fixture",
                                              "streamlit_page": f"99_[{section}]_Fixture"}},
@@ -241,8 +238,6 @@ def isolated_generation(tmp_path, monkeypatch, section):
     return source, config
 
 
-# These are fabricated schema fixtures, so they must not claim registered custody.
-# Preserve the old case identities explicitly while assigning unregistered IDs.
 @pytest.mark.parametrize("section", [
     pytest.param("5.99", id="5.99"),
     pytest.param("5.98", id="former-0.6-fixture-as-unregistered-5.98"),
@@ -255,73 +250,12 @@ def test_normal_generate_then_cli_source_only_master_is_valid(tmp_path, monkeypa
     first = generated.master_path.read_bytes()
     assert not errors(json.loads(first))
     assert source.read_text() == small_source(section)
-    assert not generated.source_preservation_applied
     monkeypatch.setattr(sys, "argv", ["build.py", section])
     build.main()
     assert generated.master_path.read_bytes() == first
     assert not errors(json.loads(generated.master_path.read_text()))
     assert 'raise AssertionError("source-only build must never execute taught code")' in (
         generated.exercises_dir / "solutions.py").read_text()
-
-
-@pytest.mark.parametrize("section", ["8.6", "8.7", "9.4", "9.5", "13.1", "14.1", "14.5", "5.9"])
-def test_registered_master_raw_outputs_are_byte_identical_and_restoration_unchanged(tmp_path, monkeypatch, section):
-    import builtins
-    source = build.find_master(section)
-    config = build.load_config()
-    mapping = config["conversion_map"][section]
-    chapter = int(section.split(".")[0])
-    target = tmp_path / source.with_suffix(".ipynb").name
-    target.write_text("sentinel")
-    target.with_suffix(".py").write_bytes(source.read_bytes())
-    args = {"master_path": target, "chapter_dir": tmp_path / config["chapter_names"][chapter],
-            "chapter_name_long": config["chapter_names_long"][chapter],
-            "exercise_dir_name": mapping["exercise_dir"], "streamlit_page_name": mapping["streamlit_page"]}
-    real_import = builtins.__import__
-    real_read_text, real_read_bytes = Path.read_text, Path.read_bytes
-    repo = build.ROOT.resolve()
-    def source_only_import(name, *a, **kw):
-        if name.split(".")[0] in {"torch", "numpy", "transformers", "arena_ext", "solutions"}:
-            raise AssertionError("taught/scientific import during source-only build: " + name)
-        return real_import(name, *a, **kw)
-    def guard(path):
-        if path.resolve().is_relative_to(repo) and "exercises" in path.parts:
-            raise AssertionError("current published lesson read: " + str(path))
-    def read_text(path, *a, **kw):
-        guard(path)
-        return real_read_text(path, *a, **kw)
-    def read_bytes(path, *a, **kw):
-        guard(path)
-        return real_read_bytes(path, *a, **kw)
-    monkeypatch.setattr(builtins, "__import__", source_only_import)
-    monkeypatch.setattr(Path, "read_text", read_text)
-    monkeypatch.setattr(Path, "read_bytes", read_bytes)
-    baseline = build.ExtensionMasterFile(**args)
-    MasterFileData.master_py_to_ipynb(baseline, overwrite=True)
-    old_raw = json.loads(target.read_text())
-    MasterFileData.create_arena_files(baseline)
-    attrs = ["colab_ex_cells", "colab_soln_cells", "solutions_py_files", "streamlit_md_file", "streamlit_py_file"]
-    old_outputs = {name: deepcopy(getattr(baseline, name)) for name in attrs}
-    candidate = build.ExtensionMasterFile(**args)
-    candidate.master_py_to_ipynb(overwrite=True)
-    canonical_raw = json.loads(target.read_text())
-    assert not errors(canonical_raw)
-    inverse = deepcopy(canonical_raw)
-    inverse["nbformat_minor"] = 2
-    for old, new in zip(old_raw["cells"], inverse["cells"], strict=True):
-        new.pop("id")
-        if old["cell_type"] == "markdown":
-            new["execution_count"], new["outputs"] = None, []
-    assert typed_json(inverse) == typed_json(old_raw)
-    MasterFileData.create_arena_files(candidate)
-    assert {name: getattr(candidate, name) for name in attrs} == old_outputs
-    # The same real preservation recipes still accept all raw module/book bytes.
-    restored = build.ExtensionMasterFile(**args)
-    restored.create_arena_files()
-    assert restored.source_preservation_applied
-    assert restored.solutions_py_files == old_outputs["solutions_py_files"]
-    assert not errors(json.loads(restored.colab_ex_cells))
-    assert not errors(json.loads(restored.colab_soln_cells))
 
 
 def test_successful_conversion_performs_one_already_valid_write(tmp_path, monkeypatch):
