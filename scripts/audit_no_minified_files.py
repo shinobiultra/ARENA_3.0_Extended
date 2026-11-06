@@ -1,8 +1,9 @@
-"""Reject unreadable generated extension sources.
+"""Reject unreadable (minified) lines in learner-facing extension chapter files.
 
-ARENA is teaching material, so reviewability is part of correctness. This audit
-is deliberately scoped to extension-owned release payloads; original upstream
-ARENA files can keep their historical formatting.
+ARENA is teaching material, so readability is part of correctness. The audit
+covers the extension chapters' pages, notebooks and Python files (chapters
+5-18 and the 0.6 and 1.6 lessons); tooling, tests and docs are out of scope,
+and original upstream ARENA files keep their own formatting.
 """
 
 from __future__ import annotations
@@ -221,11 +222,17 @@ def _frozen_protocol_has_readable_mirror(path: Path) -> bool:
         return False
 
 
+def learner_chapter_files() -> list[Path]:
+    """Extension files that live in chapter folders (pages, notebooks, lesson code)."""
+    return [path for path in iter_extension_files()
+            if _display_path(path).startswith("chapter")]
+
+
 def minified_file_blockers(files: list[Path] | None = None) -> list[str]:
     """Return blockers for extension-owned source files with unreadable lines."""
 
     blockers: list[str] = []
-    source_files = files if files is not None else iter_extension_files()
+    source_files = files if files is not None else learner_chapter_files()
     for path in source_files:
         if path.suffix not in {".py", ".md", ".ipynb"}:
             continue

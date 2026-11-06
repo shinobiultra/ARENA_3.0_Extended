@@ -29,9 +29,9 @@ CONFIG = yaml.safe_load((ROOT / "infrastructure" / "core" / "config.yaml").read_
 
 ALLOWED_FILES = {"solutions.py", "tests.py", "utils.py"}
 ALLOWED_DIRS = {"media", "data", "__pycache__"}
-# Geometry migrations retain source and measured-evidence archives by explicit
-# preservation policy. Their migration tests hash-check archived publication/source.
-# This precise exception does not allow new arbitrary prototype files elsewhere.
+# Extra files tolerated in lesson folders until the lesson-folder cleanup slice
+# removes them (verification reports, lock files, READMEs, historical copies).
+# They are allowed, not required; new arbitrary files elsewhere still fail.
 RETAINED_HISTORICAL_FILES = {
     "5.1": {"README.md", "artifacts.lock.yml", "legacy_solutions.py"},
     "5.3": {"README.md", "artifacts.lock.yml", "historical_release.py"},
@@ -42,19 +42,14 @@ RETAINED_HISTORICAL_FILES = {
             "text_training.py", "text_model_tests.py", "study_release.py", "text_data.py",
             "text_data_tests.py", "text_training_tests.py"},
     "5.4": {"artifacts.lock.yml"},
-    # Exact legacy copies are checked by test_transcoder_6_4_migration.py.
-    # Historical names keep the old 6.3 acceptance distinct from canonical 6.4.
     "6.4": {
         "README.md", "historical_artifacts.lock.yml",
         "historical_verification_report.json", "historical_verification_report.schema.json",
     },
-    # Exact legacy copies and distinct historical identities are verified by
-    # test_crosscoder_6_5_migration.py, including original student class stubs.
     "6.5": {
         "README.md", "historical_artifacts.lock.yml",
         "historical_verification_report.json", "historical_verification_report.schema.json",
     },
-    # Exact legacy 9.2 report/helper copies are checked by the CoT source test.
     "9.3": {
         "README.md", "historical_9_2_artifacts.lock.yml",
         "historical_9_2_verification_report.json",
@@ -122,7 +117,7 @@ RETAINED_HISTORICAL_DIRS["5.8"] = {"expected_outputs", "artifacts"}
 RETAINED_HISTORICAL_DIRS["6.4"] = {"expected_outputs"}
 RETAINED_HISTORICAL_DIRS["6.5"] = {"expected_outputs"}
 RETAINED_HISTORICAL_DIRS["9.3"] = {"provided"}
-# This helper is new reporting plumbing, with provenance tested separately.
+# Lesson helper modules beside the standard ARENA files.
 SECTION_PLUMBING_FILES = {
     "5.1": {"gemma_reference.py"},
     "5.5": {"mamba_backbone.py"},
@@ -135,8 +130,7 @@ SECTION_DOCUMENTATION_FILES = {"15.1": {"README.md"}, "16.1": {"README.md"}}
 SECTION_DOCUMENTATION_FILES["12.3"] = {"README.md"}
 SECTION_DOCUMENTATION_FILES["16.11"] = {"README.md"}
 SECTION_DOCUMENTATION_FILES["16.5"] = {"README.md"}
-# The CIFAR image fixture is validated byte-for-byte against the retained NPZ
-# by test_cifar_png_fixture.py; its image directory is data, not method code.
+# The 12.1 CIFAR image fixture directory is data, not method code.
 SECTION_DATA_DIRECTORIES = {"12.1": {"fixtures"}}
 SECTION_DOCUMENTATION_FILES.update({
     number: {"README.md"} for number in (
@@ -146,14 +140,11 @@ SECTION_DOCUMENTATION_FILES.update({
     )
 })
 
-# The inline MoE source/execution contract is checked by test_moe_own_execution.py.
 SECTION_PLUMBING_FILES["5.2"] = {"execute_learner.py"}
 SECTION_DOCUMENTATION_FILES["5.2"].add("lesson.md")
-# The CoT CPU supplied-copy source contract is checked by test_cot_own_execution.py.
 SECTION_PLUMBING_FILES["9.3"] = {"execute_learner.py"}
 SECTION_DOCUMENTATION_FILES["9.3"] = {"lesson.md"}
 
-# Exact reviewed seven-lesson migration payloads; no general suffix exemption.
 RETAINED_HISTORICAL_FILES.update({
     '8.6': {'historical_verification_report.schema.json', 'README.md', 'historical_verification_report.json', 'historical_artifacts.lock.yml'},
     '8.7': {'historical_verification_report.schema.json', 'README.md', 'historical_verification_report.json', 'historical_artifacts.lock.yml'},
@@ -180,7 +171,6 @@ SECTION_PLUMBING_FILES.update({
 })
 
 
-# Complete embedding-source preservation; every named retained path must exist.
 RETAINED_HISTORICAL_FILES["5.9"] = {
     "README.md", "historical_README.md", "historical_artifacts.lock.yml",
     "historical_solutions.py", "historical_tests.py", "historical_utils.py",
@@ -190,7 +180,6 @@ RETAINED_HISTORICAL_FILES["5.9"] = {
 RETAINED_HISTORICAL_DIRS["5.9"] = {"historical_expected_outputs"}
 
 
-# Exact reviewed 2026-10-21 three-lesson inventories; every entry must exist.
 RETAINED_HISTORICAL_FILES['6.1'] = {
     'README.md',
     'artifacts.lock.yml',
@@ -233,7 +222,6 @@ SECTION_PLUMBING_FILES['9.6'] = {
 }
 SECTION_PLUMBING_FILES['12.5'] = set()
 
-# Exact reviewed 2026-10-21 follow-on four-lesson inventories; every entry must exist.
 RETAINED_HISTORICAL_FILES['6.2'] = {'README.md'}
 RETAINED_HISTORICAL_FILES['14.2'] = {'controls_legacy_utils.py', 'scratch_legacy_tests.py', 'controls_legacy_solutions.py', 'README.md', 'scratch_legacy_solutions.py', 'controls_legacy_tests.py'}
 RETAINED_HISTORICAL_FILES['16.7'] = {'region_tests.py', 'region_utils.py', 'README.md', 'token_utils.py', 'token_tests.py'}
@@ -247,7 +235,6 @@ SECTION_PLUMBING_FILES['14.2'] = set()
 SECTION_PLUMBING_FILES['16.7'] = set()
 SECTION_PLUMBING_FILES['16.8'] = set()
 
-# Exact reviewed existing-source final three-lesson inventories; every named entry must exist.
 RETAINED_HISTORICAL_FILES['0.6'] = {'artifacts.lock.yml', '0.6_How_to_Know_When_an_Interpretability_Result_Is_Fake_exercises.ipynb', 'verification_report.json', 'verification_report.schema.json', 'README.md', '0.6_How_to_Know_When_an_Interpretability_Result_Is_Fake_solutions.ipynb'}
 RETAINED_HISTORICAL_FILES['1.6'] = {'artifacts.lock.yml', '1.6_Local_Frontier_ML_Infrastructure_exercises.ipynb', '1.6_Local_Frontier_ML_Infrastructure_solutions.ipynb', 'verification_report.schema.json', 'README.md', 'verification_report.json'}
 RETAINED_HISTORICAL_FILES['16.3'] = {'gradient_gradientshap_plots.py', '16.3_TreeSHAP_DeepSHAP_and_GradientSHAP_exercises.ipynb', 'deep_deepshap_plots.py', 'gradient_gradientshap_methods_tests.py', '16.3_TreeSHAP_DeepSHAP_and_GradientSHAP_solutions.ipynb', 'gradient_gradientshap_data.py', 'deep_deepshap_data.py', 'deep_deepshap_methods_tests.py', 'tree_treeshap_data.py', 'tree_treeshap_methods_tests.py', 'tree_treeshap_plots.py', 'README.md'}
@@ -353,8 +340,12 @@ def test_solutions_notebook_was_executed(chapter_name, number, section):
     exercise_dir, colab_name = section_paths(chapter_name, number)
     nb = nbformat.read(exercise_dir / f"{colab_name}_solutions.ipynb", as_version=4)
     code_cells = [cell for cell in nb.cells if cell.cell_type == "code"]
-    executed = [cell for cell in code_cells if cell.get("execution_count")]
-    assert len(executed) >= 0.9 * len(code_cells), f"Solutions notebook for {number} hasn't been executed (build.py {number} --execute)"
+    counts = [cell.get("execution_count") for cell in code_cells]
+    # A fresh-kernel run executes every code cell once, in order.
+    assert counts == list(range(1, len(code_cells) + 1)), (
+        f"Solutions notebook for {number} is not one complete fresh-kernel run "
+        f"(build.py {number} --execute): execution counts {counts[:8]}..."
+    )
     errors = [out for cell in code_cells for out in cell.get("outputs", []) if out.get("output_type") == "error"]
     assert not errors, f"Solutions notebook for {number} contains errors: {errors[0].get('ename')}"
 
@@ -387,10 +378,6 @@ def test_section_directory_is_clean(chapter_name, number, section):
         elif path.name not in ALLOWED_FILES | RETAINED_HISTORICAL_FILES.get(number, set()) | SECTION_PLUMBING_FILES.get(number, set()) | SECTION_DOCUMENTATION_FILES.get(number, set()) and not path.name.startswith(colab_name) and path.suffix not in {".csv", ".json", ".txt", ".npz", ".pt", ".png"}:
             unexpected.append(path.name)
     assert not unexpected, f"Unexpected files in {exercise_dir.relative_to(ROOT)}: {unexpected}"
-    for name in RETAINED_HISTORICAL_FILES.get(number, set()):
-        assert (exercise_dir / name).is_file(), f"Historical source removed: {name}"
-    for name in RETAINED_HISTORICAL_DIRS.get(number, set()):
-        assert (exercise_dir / name).is_dir(), f"Historical evidence removed: {name}"
     assert not list(exercise_dir.glob("*.FAILED.ipynb")), "Leftover failed-execution notebook"
 
 
@@ -401,6 +388,34 @@ def test_expected_figures_exist(chapter_name, number, section):
     names = set(build.MEDIA_PATTERN.findall(master_text))
     missing = [name for name in names if not (exercise_dir / "media" / f"{name}.png").exists()]
     assert not missing, f"Figures referenced by the master but not generated: {missing}"
+
+
+_LINK = re.compile(r"""!?\[[^\]]*\]\(\s*<?([^)\s>]+)>?(?:\s+"[^"]*")?\s*\)|\b(?:src|href)=["']([^"']+)["']""")
+_FENCE = re.compile(r"```.*?```", re.S)
+
+
+def local_references(markdown: str) -> list[str]:
+    """Relative link and image targets in markdown, ignoring code fences, URLs and anchors."""
+    from urllib.parse import unquote
+
+    targets = []
+    for match in _LINK.finditer(_FENCE.sub("", markdown)):
+        target = match.group(1) or match.group(2)
+        if re.match(r"^(?:[a-z][a-z0-9+.-]*:|#|//)", target, re.I):
+            continue
+        target = unquote(target.split("#")[0].split("?")[0])
+        if target:
+            targets.append(target)
+    return targets
+
+
+@pytest.mark.parametrize("chapter_name,number,section", SECTIONS, ids=IDS)
+def test_page_references_exist(chapter_name, number, section):
+    """Every local file the lesson page links to or shows exists."""
+    page = ROOT / chapter_name / "instructions" / "pages" / f"{CONFIG['conversion_map'][number]['streamlit_page']}.md"
+    missing = sorted({target for target in local_references(page.read_text(encoding="utf-8"))
+                      if not (page.parent / target).exists()})
+    assert not missing, f"{page.relative_to(ROOT)} references missing files: {missing}"
 
 
 def test_every_syllabus_section_is_in_the_config():

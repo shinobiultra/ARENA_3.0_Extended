@@ -3,7 +3,6 @@ from __future__ import annotations
 
 from html import escape
 from pathlib import Path
-import json
 import re
 import shlex
 import sys
@@ -93,13 +92,9 @@ def inventory(root: Path, *, configuration_bytes: dict[str, bytes] | None = None
     return rows
 
 
-def parts(page: Path, *, with_media: bool = False, edition: dict | None = None) -> list[str]:
-    """Keep every original part in order, optionally applying the adopted renderer."""
+def parts(page: Path, *, with_media: bool = False) -> list[str]:
+    """Split a lesson page into its parts, in order."""
     text = page.read_bytes().decode("utf-8")
-    if edition is not None:
-        from infrastructure.extension.teaching_editions import apply_page
-
-        text = apply_page(edition, text)
     if with_media:
         from infrastructure.extension.render_media import inline_page_media
 
@@ -211,22 +206,6 @@ def restore_blank_practice(projected: bytes, source: bytes, relative: str, autho
     return restore_download(projected, source, relative, authority)
 
 
-def study_edition_notice(number: str, root: Path) -> str | None:
-    """Label the new CPU study references separately from native qualification."""
-    path = Path(root) / "mastery_hub/study_editions.json"
-    if not path.is_file():
-        return None
-    data = json.loads(path.read_text())
-    edition = data.get("sections", {}).get(number)
-    if edition is None:
-        return None
-    checked = edition.get("reference_state") == "cpu_reference_checked"
-    reference = "CPU worked reference executed" if checked else "CPU worked-reference check pending"
-    return (f"**Study edition — {reference}.** This lesson uses a small teaching organism; "
-            "pretrained/native validation and learner acceptance remain pending. "
-            "Use this checkout's local downloads: the published Colab links may precede this unpublished edition.")
-
-
 def render(st, root: Path = ROOT) -> None:
     rows = inventory(root)
     st.set_page_config(page_title="ARENA Extended — Study", layout="wide")
@@ -271,25 +250,7 @@ def render(st, root: Path = ROOT) -> None:
         state[lesson_key] = route_lesson
     lesson = st.sidebar.selectbox("Lesson", available, format_func=lambda row: f"[{row['number']}] {row['title']}", key=lesson_key)
     st.markdown(f"## [{lesson['number']}] {lesson['title']}")
-    from infrastructure.extension.teaching_editions import load_edition, project_notebook
-
-    try:
-        teaching = load_edition(root, lesson)
-    except ValueError as exc:
-        st.info(f"This teaching revision needs regeneration: {exc}. The preserved source files remain in the checkout; please report this exact lesson and message.")
-        return
-    edition_note = study_edition_notice(lesson["number"], root)
-    if edition_note:
-        st.markdown(edition_note)
-    if lesson["number"] == "8.4":
-        st.markdown(
-            "**ACDC route:** prerequisites are original ARENA **1.2**, then **8.1** activation patching "
-            "and **8.2** attribution patching. The main lesson retains historical reference outputs. "
-            "Use the own-method guided public Practice below for the **CPU DEV** callback exercises "
-            "and controls. Its native GPT-2 signature remains pending: parity tolerance is **UNSET** "
-            "and actual-model budget is 0. Historical plots are separate from an own-method result."
-        )
-    elif lesson["number"] == "12.3":
+    if lesson["number"] == "12.3":
         st.markdown(
             "**Before the optional Step 5 Qwen bridge:** download the **Mini VLM memory handoff** "
             "below and follow its operational steps. The historical notebook keeps earlier models "
@@ -299,22 +260,11 @@ def render(st, root: Path = ROOT) -> None:
     try:
         blank_bytes, blank_name = blank_practice_download(root, lesson["number"])
         study_name = blank_name
-        if teaching is not None:
-            study_name = lesson["exercises"].name.replace("_exercises.ipynb", "_Study_Practice_exercises.ipynb")
-            revised_blank = project_notebook(teaching, lesson["exercises"].read_bytes(), "exercises", base_bytes=blank_bytes)
-            revised_reference = project_notebook(teaching, lesson["reference"].read_bytes(), "reference")
-        page_parts = parts(lesson["page"], with_media=True, edition=teaching)
+        page_parts = parts(lesson["page"], with_media=True)
     except ValueError as exc:
-        st.info(f"This lesson's study copy needs regeneration: {exc}. Please report section {lesson['number']} and this message. Its preserved source files remain in the checkout.")
+        st.info(f"This lesson's study copy could not be prepared: {exc}. Please report section {lesson['number']} and this message.")
         return
-    st.markdown("Start with blank Practice. The published exercises and worked reference below retain their original saved outputs.")
-    if teaching is not None:
-        st.markdown("**Revised teaching edition:** explanations and exercise contracts are corrected beside the relevant steps. Start with **Study Practice** below. Worked results retain their recorded provenance; this revision does not add native validation or learner acceptance.")
-        st.download_button("Download revised Study Practice", revised_blank,
-                           file_name=study_name, mime="application/x-ipynb+json")
-        reference_name = lesson["reference"].name.replace("_solutions.ipynb", "_Study_Reference_solutions.ipynb")
-        st.download_button("Download revised worked reference", revised_reference,
-                           file_name=reference_name, mime="application/x-ipynb+json")
+    st.markdown("Start with blank Practice. The exercises and worked reference below include their saved outputs.")
     st.download_button("Download blank Practice exercises", blank_bytes,
                        file_name=blank_name, mime="application/x-ipynb+json")
     st.markdown("Blank copies are PUBLIC Practice: help, worked answers and expected answers remain public. "

@@ -55,29 +55,3 @@ def test_changed_code_cannot_inherit_widget_state_or_execution(tmp_path):
     before = path.read_bytes()
     assert not build.carry_over_outputs(executed_notebook(), path)
     assert path.read_bytes() == before
-
-
-def test_restored_widget_states_match_archives_and_resolve_view_dependencies():
-    import json
-    import tarfile
-
-    receipt = json.loads((ROOT / 'docs/mastery/evidence/widget_state_repair_20261016/receipt.json').read_text())
-    for record in receipt.values():
-        with tarfile.open(ROOT / record['archive']) as tar:
-            old = json.loads(tar.extractfile(record['archive_member']).read())
-        current = nbformat.read(ROOT / record['destination'], as_version=4)
-        assert current.metadata.widgets == old['metadata']['widgets']
-        states = current.metadata.widgets['application/vnd.jupyter.widget-state+json']['state']
-        assert set(record['view_ids']).issubset(states)
-
-        def references(value):
-            if isinstance(value, str) and value.startswith('IPY_MODEL_'):
-                yield value.removeprefix('IPY_MODEL_')
-            elif isinstance(value, dict):
-                for item in value.values():
-                    yield from references(item)
-            elif isinstance(value, list):
-                for item in value:
-                    yield from references(item)
-
-        assert set(references(states)).issubset(states)

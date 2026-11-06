@@ -1,8 +1,8 @@
 # CI Gates
 
-The extension uses real repository gates, split by cost and hardware. These
-commands are wrappers around the same scripts used locally; they do not add
-mock tests or placeholder smoke checks.
+CI runs cheap checks that need no model downloads. Lessons themselves are
+checked by the completion check (shinobiultra/ARENA_3.0_Extended issue 249),
+outside CI.
 
 ## Hosted CPU
 
@@ -12,41 +12,30 @@ Runs on every push and pull request:
 .venv/bin/python scripts/ci_quality_gate.py --mode hosted-cpu
 ```
 
-This lane checks whitespace, selected metadata-only pytest tests, original
-ARENA preservation, course surface, ARENA-style depth, hard-exercise ladders,
-report evidence contracts, artifact hygiene, and static GPU-report evidence.
-It intentionally does not download model weights or regenerate CUDA reports.
+It checks whitespace, that original ARENA chapters 0-4 are byte-identical to the
+pinned base (`scripts/audit_original_arena_preservation.py`), the merged config,
+the course surface (chapter scaffold, config entries, page shape), artifact
+hygiene (no raw weights or archives, nothing over 5 MB, prompt data contracts,
+`.gitignore`), unreadable long lines in chapter files, and the batch runner's
+exit codes.
 
-## Self-Hosted GPU
-
-Runs manually on a self-hosted runner labelled `self-hosted`, `linux`, `x64`,
-and `gpu`:
-
-```bash
-.venv/bin/python scripts/ci_quality_gate.py --mode gpu
-```
-
-For a single changed section:
+## Study reader
 
 ```bash
-.venv/bin/python scripts/ci_quality_gate.py --mode gpu --section 8.5
+.venv/bin/python scripts/ci_quality_gate.py --mode study-delivery
 ```
 
-This lane requires a real NVIDIA CUDA device, verifies PyTorch CUDA availability
-with `nvidia-smi`, regenerates extension verification reports through
-`scripts/run_extension_verification_reports.py`, and then reruns the strict GPU
-and report-evidence audits.
+Checks the mastery-hub reader and prediction notebooks without running lesson code.
 
-## Release
+## Lessons: the completion check
 
-The release lane runs the full GPU gate and then the final roadmap/strict
-completion audits:
+A lesson is finished after a fresh-kernel run, its focused tests, the
+preservation audit above and the user's walkthrough:
 
 ```bash
-.venv/bin/python scripts/ci_quality_gate.py --mode release
+uv run python infrastructure/extension/build.py 7.1 --execute    # fresh-kernel run
+uv run python infrastructure/extension/focused_tests.py 7.1      # focused tests, CPU
 ```
 
-It is expected to fail if a documented gated artifact is missing, if a CUDA
-report cannot be regenerated, or if the final roadmap/strict-completion audits
-find any remaining blocker. Do not bypass those failures with public stand-ins
-or placeholder reports.
+Single lessons run on the laptop GPU; batches run on the Julia worker
+(`infrastructure/extension/cluster/`) at normal QOS. Fresh-kernel runs stay out of CI.

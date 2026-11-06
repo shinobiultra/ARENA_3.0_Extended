@@ -61,9 +61,8 @@ def _anchor_end(text: str, anchor: str) -> int:
         elif content == anchor:
             offsets.append(offset + len(anchor))
         offset += len(line)
-    if len(offsets) != 1:
-        raise ValueError(f"Study-caution anchor {anchor!r} expected once outside code fences; found {len(offsets)}")
-    return offsets[0]
+    # Lessons are editable: a moved or removed anchor drops the caution instead of breaking the page.
+    return offsets[0] if len(offsets) == 1 else None
 
 
 def add_study_cautions(text: str, markdown_path: Path, notes_text: str) -> str:
@@ -73,6 +72,8 @@ def add_study_cautions(text: str, markdown_path: Path, notes_text: str) -> str:
         return text
     note_id, anchor = target
     offset = _anchor_end(text, anchor)
+    if offset is None:
+        return text
     start = f"<!-- study-caution-source:{note_id}:start -->"
     end = f"<!-- study-caution-source:{note_id}:end -->"
     if notes_text.count(start) != 1 or notes_text.count(end) != 1:

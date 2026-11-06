@@ -1,6 +1,5 @@
 """Inert actual-download contracts. No notebook execution or model imports."""
 from pathlib import Path
-import hashlib
 import importlib.util
 import json
 import os
@@ -59,7 +58,7 @@ def test_all86_native_blank_download(reader, row):
     assert n['nbformat']==source['nbformat'] and n['nbformat_minor']==source['nbformat_minor']
     assert all(c['outputs']==[] and c['execution_count'] is None for c in n['cells'] if c['cell_type']=='code')
     assert len(n['cells'])==len(source['cells'])+1+(6 if row['number'] in ('0.6','1.6') else 0)
-    note=''.join(n['cells'][0]['source']); assert all(x in note for x in ['PUBLIC Practice','not blind','beside','expected answers','SHA256'])
+    note=''.join(n['cells'][0]['source']); assert all(x in note for x in ['PUBLIC Practice','beside','Hints and solutions'])
     assert row['exercises'].read_bytes()==before
     restored=reader.restore_blank_practice(data,before,row['exercises'].relative_to(ROOT).as_posix(),reader.blank_config_identity(ROOT))
     assert json.dumps(restored,sort_keys=True)==json.dumps(source,sort_keys=True)
@@ -165,27 +164,29 @@ def test_configured_symlink_rejected_before_read(projection,tmp_path):
     with pytest.raises(ValueError,match='symlink'):projection.config_identity(tmp_path)
 
 
-def test_real_inputs_stay_read_only_and_18_42_split(reader,monkeypatch):
-    pins=json.loads(Path(__file__).with_name('blank_practice_source_pins.json').read_text())['notebooks']
+def test_real_inputs_stay_read_only_and_round_trip(reader,monkeypatch):
     original_open=Path.open
     def readonly(path,mode='r',*args,**kwargs):
         assert not any(x in mode for x in ('w','a','x','+')), 'Projection attempted a file write'
         return original_open(path,mode,*args,**kwargs)
     monkeypatch.setattr(Path,'open',readonly)
-    blank=nonblank=0
-    pinned_paths = {pin['path'] for pin in pins}
-    original_rows = [row for row in ROWS if row['exercises'].relative_to(ROOT).as_posix() in pinned_paths]
-    assert len(ROWS) == 86 and len(original_rows) == 60
-    for row in original_rows:
-        source=row['exercises'].read_bytes();n=json.loads(source)
-        old=any(c.get('outputs') or c.get('execution_count') is not None for c in n['cells'] if c['cell_type']=='code')
-        nonblank+=old;blank+=not old
+    assert ROWS
+    for row in ROWS:
+        source=row['exercises'].read_bytes()
         raw,_=reader.blank_practice_download(ROOT,row['number'])
         reader.restore_blank_practice(raw,source,row['exercises'].relative_to(ROOT).as_posix(),reader.blank_config_identity(ROOT))
-    assert (blank,nonblank)==(18,42)
-    for pin in pins:
-        raw=(ROOT/pin['path']).read_bytes()
-        assert len(raw)==pin['size_bytes'] and hashlib.sha256(raw).hexdigest()==pin['sha256']
+
+
+@pytest.mark.parametrize('section,appended',[('0.6',6),('1.6',6),('5.1',0),('7.1',0),('12.3',0)])
+def test_foundation_downloads_append_live_signature_cells_and_others_do_not(reader,section,appended):
+    row=next(r for r in ROWS if r['number']==section)
+    source=json.loads(row['exercises'].read_bytes())
+    data,_=reader.blank_practice_download(ROOT,section);n=json.loads(data)
+    assert len(n['cells'])==len(source['cells'])+1+appended
+    provider=load(ROOT/'mastery_hub/practice_addons/foundation_live_signatures/lesson.py','foundation_provider')
+    if appended:
+        assert [c['source'] for c in n['cells'][-appended:]]==[c['source'] for c in provider.additions(section)]
+    assert all(c['outputs']==[] and c['execution_count'] is None for c in n['cells'] if c['cell_type']=='code')
 
 
 def test_source_symlink_never_read_and_no_historical_fallback(reader,tmp_path,monkeypatch):

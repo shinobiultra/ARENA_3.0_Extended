@@ -32,7 +32,7 @@ Keep the excellent original resources as the source material. Add an original, i
 | [Mastery Hub design](docs/superpowers/specs/2026-10-14-alchemy-mastery-hub-design.md) | Learning experience, scientific safeguards, curriculum map, and release boundaries. |
 | [Mastery Hub implementation plan](docs/superpowers/plans/2026-10-14-alchemy-mastery-hub.md) | Ordered engineering tasks, exact file targets, interfaces, tests, and acceptance gates. |
 
-The new plan supplements, rather than replaces, `Extension-Roadmap.md`. The current master-file rewrite is tracked in [the extension syllabus](infrastructure/extension/syllabus.yaml). The [older readiness registry](docs/arena_style_rewrite_status.yml) predates this migration; its historical labels do not certify the current checkout. This document does not promote existing lessons.
+The new plan supplements, rather than replaces, `Extension-Roadmap.md`. The current master-file rewrite is tracked in [the extension syllabus](infrastructure/extension/syllabus.yaml). This document does not promote existing lessons.
 
 ## Across the extension
 

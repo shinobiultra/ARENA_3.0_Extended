@@ -1,9 +1,10 @@
-"""Audit extension artifacts for raw weights, unsafe prompt payloads, and drift.
+"""Audit extension files for raw weights, oversized files and unsafe prompt data.
 
-The roadmap allows generated GT-0/GT-3 fixtures, but not committed model
-weights, private data, unsafe prompt payloads, or oversized local caches. This
-gate is scoped to extension-owned paths so legacy ARENA assets are not
-retroactively reclassified.
+Lessons ship small files only: no committed model weights or archives, nothing
+over 5 MB, prompt fixtures that follow their data contract, and a .gitignore
+that keeps caches and weights out. Only files git sees (tracked, or untracked
+and not ignored) under extension-owned paths are checked, so legacy ARENA
+assets and local ignored caches are not reclassified.
 """
 
 from __future__ import annotations
@@ -11,7 +12,6 @@ from __future__ import annotations
 import importlib.util
 import subprocess
 import sys
-import tarfile
 from pathlib import Path
 from typing import Iterable
 
@@ -34,8 +34,6 @@ _DATA_CONTRACTS_SPEC.loader.exec_module(_DATA_CONTRACTS_MODULE)
 load_jsonl_records = _DATA_CONTRACTS_MODULE.load_jsonl_records
 validate_dataset_manifest = _DATA_CONTRACTS_MODULE.validate_dataset_manifest
 validate_prompt_records = _DATA_CONTRACTS_MODULE.validate_prompt_records
-
-from scripts.evidence_bundles import validate_json_data, validate_review_bundle
 
 
 CONFIG_PATH = ROOT / "infrastructure/core/config.yaml"
@@ -64,28 +62,6 @@ REQUIRED_TRACKED_FIXTURE_PATHS = (
     "data/generated/refusal_proxy_prompts_v1/prompt_schema.json",
     "data/generated/refusal_proxy_prompts_v1/prompts.jsonl",
 )
-RELEASE_PAYLOAD_TOP_LEVEL_PATHS = (
-    ".github/workflows/extension-quality.yml",
-    ".python-version",
-    "Extension-Roadmap.md",
-    "requirements-ci-cpu.txt",
-    "requirements-legacy-rl.txt",
-    "requirements-original.txt",
-    "uv.lock",
-)
-IGNORED_UNTRACKED_PARTS = {
-    ".arena_artifacts",
-    ".cache",
-    ".direnv",
-    ".ipynb_checkpoints",
-    ".mypy_cache",
-    ".pytest_cache",
-    ".ruff_cache",
-    ".venv",
-    "__pycache__",
-    "dictionaries",
-    "external",
-}
 ALLOWED_BINARY_ARTIFACTS = {
     "chapter16_shapley_attribution_baselines/exercises/"
     "part8_shapley_mechinterp_agreement/artifacts/deletion_curves.png",
@@ -102,12 +78,12 @@ STATIC_EXTENSION_ROOTS = (
     "tests",
     "data/generated",
     "chapter0_fundamentals/exercises/part6_fake_interpretability_results",
-    "chapter0_fundamentals/instructions/pages/"
-    "06_[0.6]_How_to_Know_When_an_Interpretability_Result_Is_Fake.md",
+    "chapter0_fundamentals/exercises/part6_fake_interpretability_results_practice",
     "chapter1_transformer_interp/exercises/part6_frontier_ml_infrastructure",
-    "chapter1_transformer_interp/instructions/pages/"
-    "40_[1.6]_Local_Frontier_ML_Infrastructure.md",
+    "chapter1_transformer_interp/exercises/part6_frontier_ml_infrastructure_practice",
 )
+# Extension pages that live inside original chapters.
+EXTENSION_PAGE_MARKERS = ("_[0.6]_", "_[1.6]_")
 
 
 def load_config(path: Path = CONFIG_PATH) -> dict:
@@ -132,20 +108,6 @@ def extension_root_paths(config: dict | None = None) -> list[Path]:
     return roots
 
 
-def release_payload_pathspecs(config: dict | None = None) -> list[str]:
-    """Return repo-relative pathspecs that must not remain untracked."""
-
-    paths = [_display_path(path) for path in extension_root_paths(config)]
-    paths.extend(RELEASE_PAYLOAD_TOP_LEVEL_PATHS)
-    deduped: list[str] = []
-    seen: set[str] = set()
-    for path in paths:
-        if path not in seen:
-            deduped.append(path)
-            seen.add(path)
-    return deduped
-
-
 def _is_allowed_artifact(path: Path) -> bool:
     try:
         relative = path.relative_to(ROOT).as_posix()
@@ -161,18 +123,32 @@ def _display_path(path: Path) -> str:
         return str(path)
 
 
+def _git_visible_files() -> list[str]:
+    result = subprocess.run(
+        ["git", "ls-files", "--cached", "--others", "--exclude-standard", "-z"],
+        cwd=ROOT, check=True, capture_output=True,
+    )
+    return [path for path in result.stdout.decode().split("\0") if path]
+
+
 def iter_extension_files(roots: Iterable[Path] | None = None) -> list[Path]:
+    """Extension-owned files that git sees (tracked, or untracked and not ignored).
+
+    With the default roots, extension pages inside chapters 0 and 1 are included too.
+    """
+    include_pages = roots is None
     roots = list(roots or extension_root_paths())
+    prefixes = tuple(_display_path(root).rstrip("/") + "/" for root in roots)
     files: list[Path] = []
-    for root in roots:
-        if root.is_file():
-            files.append(root)
-            continue
-        for path in root.rglob("*"):
-            if any(part in {"__pycache__", ".pytest_cache"} for part in path.parts):
-                continue
-            if path.is_file():
-                files.append(path)
+    for relative in _git_visible_files():
+        in_root = relative.startswith(prefixes) or relative + "/" in prefixes
+        extension_page = (include_pages
+                          and relative.startswith(("chapter0_fundamentals/instructions/pages/",
+                                                   "chapter1_transformer_interp/instructions/pages/"))
+                          and any(marker in relative for marker in EXTENSION_PAGE_MARKERS))
+        path = ROOT / relative
+        if (in_root or extension_page) and path.is_file():
+            files.append(path)
     return sorted(set(files))
 
 
@@ -182,12 +158,6 @@ def forbidden_artifact_blockers(files: Iterable[Path]) -> list[str]:
         name = path.name.lower()
         relative = _display_path(path)
         if _is_allowed_artifact(path):
-            continue
-        if name.endswith(".tar.gz") and path.is_file():
-            try:
-                validate_review_bundle(path)
-            except (ValueError, TypeError, KeyError, OSError, EOFError, tarfile.TarError) as error:
-                blockers.append(f"invalid evidence review bundle: {relative}: {error}")
             continue
         if any(name.endswith(suffix) for suffix in FORBIDDEN_ARTIFACT_SUFFIXES):
             blockers.append(f"raw artifact forbidden in extension path: {relative}")
@@ -202,15 +172,6 @@ def large_file_blockers(files: Iterable[Path]) -> list[str]:
         size = path.stat().st_size
         if size > MAX_EXTENSION_FILE_BYTES:
             relative = _display_path(path)
-            validator = (validate_review_bundle if path.name.lower().endswith(".tar.gz")
-                         else validate_json_data if path.name.lower().endswith(".json.gz") else None)
-            if validator is not None:
-                try:
-                    validator(path)
-                except (ValueError, TypeError, KeyError, OSError, EOFError, tarfile.TarError):
-                    pass
-                else:
-                    continue
             blockers.append(f"oversized extension file: {relative} ({size} bytes)")
     return blockers
 
@@ -303,49 +264,6 @@ def ignored_fixture_blockers(paths: Iterable[str] = REQUIRED_TRACKED_FIXTURE_PAT
     return blockers
 
 
-def _is_ignored_untracked_payload(relative: str) -> bool:
-    path = Path(relative)
-    return (
-        any(part in IGNORED_UNTRACKED_PARTS for part in path.parts)
-        or path.suffix == ".pyc"
-    )
-
-
-def untracked_extension_payload_blockers(
-    untracked_paths: Iterable[str] | None = None,
-) -> list[str]:
-    """Fail when release-owned extension files exist only as untracked files."""
-
-    if untracked_paths is None:
-        result = subprocess.run(
-            [
-                "git",
-                "ls-files",
-                "--others",
-                "--exclude-standard",
-                "--",
-                *release_payload_pathspecs(),
-            ],
-            cwd=ROOT,
-            check=False,
-            text=True,
-            capture_output=True,
-        )
-        if result.returncode != 0:
-            return [
-                "git ls-files failed while checking untracked payload: "
-                f"{result.stderr.strip()}"
-            ]
-        untracked_paths = result.stdout.splitlines()
-
-    blockers = []
-    for relative in sorted(set(untracked_paths)):
-        if not relative or _is_ignored_untracked_payload(relative):
-            continue
-        blockers.append(f"required extension payload is untracked: {relative}")
-    return blockers
-
-
 def required_gitignore_blockers() -> list[str]:
     required_patterns = {
         ".venv",
@@ -372,7 +290,6 @@ def artifact_hygiene_blockers() -> list[str]:
         + large_file_blockers(files)
         + prompt_artifact_blockers(files)
         + ignored_fixture_blockers()
-        + untracked_extension_payload_blockers()
         + required_gitignore_blockers()
     )
 

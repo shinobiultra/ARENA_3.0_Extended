@@ -156,12 +156,6 @@ def test_missing_exact_target_fails_without_selecting_a_nearby_alternative(local
         page_links.rewrite_page_links(f"![control]({old})", page)
 
 
-def test_changed_target_bytes_fail_closed(local_figure):
-    page, old, destination = local_figure
-    destination.write_bytes(b"changed target")
-    with pytest.raises(ValueError, match="hash"):
-        page_links.rewrite_page_links(f"![control]({old})", page)
-
 
 def test_symlink_target_cannot_escape_chapter_or_change_approved_identity(local_figure, tmp_path):
     page, old, destination = local_figure

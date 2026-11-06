@@ -1,5 +1,7 @@
 # GPU Verification Policy
 
+> **Superseded on 2026-11-06.** Verification reports, report-evidence audits and the GPU CI lane were retired. Lessons are checked by the completion check (shinobiultra/ARENA_3.0_Extended issue 249): a fresh-kernel run, focused tests, the chapters 0-4 preservation audit and the user's walkthrough. See `docs/ci_gates.md`. This page is kept as history.
+
 GPU utilization is not itself evidence. A correct verification run can leave the
 GPU mostly idle when the contract is a small exact-value check. Conversely,
 keeping the GPU busy with synthetic work does not prove an interpretability

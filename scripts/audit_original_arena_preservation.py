@@ -1,8 +1,11 @@
-"""Audit that the original ARENA course surface remains append-only.
+"""Audit that original ARENA chapters 0-4 are unchanged.
 
-The roadmap allows compatibility patches and additive extension sections, but
-it explicitly says the original ARENA material should be preserved. This script
-checks the current git working tree against that contract.
+Every file that the pinned original ARENA commit ships under chapters 0-4, and
+under their master-file folders, must still exist with identical bytes. New
+files beside them (the 0.6 and 1.6 extension lessons) are fine. The original
+entries in `infrastructure/core/config.yaml` must be unchanged (the config is
+append-only), and `requirements-original.txt` must equal the original
+`requirements.txt`.
 """
 
 from __future__ import annotations
@@ -19,176 +22,26 @@ ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-COMPATIBILITY_PATCH_RATIONALES = {
-    ".agents/skills/arena-3-salvage/SKILL.md": "local Codex skill enforcing ARENA learner-surface salvage rules",
-    ".agents/skills/arena-3-salvage/references/arena_notebook_contract.md": "skill-local copy of the learner-surface contract",
-    ".agents/skills/arena-3-salvage/references/section_rewrite_blueprints.md": "skill-local section rewrite blueprints for salvage work",
-    ".agents/skills/arena-3-salvage/scripts/audit_learner_surface.py": "skill-local learner-surface audit helper",
-    ".github/workflows/extension-quality.yml": "real CI gates for extension audits and GPU reports",
-    ".gitignore": "cache, model-weight, and generated-artifact hygiene for the extension",
-    ".python-version": "uv-managed Python version pin for the CUDA 13 environment",
-    "AGENTS.md": "repo-local agent instructions for ARENA-style salvage without changing original lessons",
-    "Extension-Roadmap.md": "user-authored extension specification",
-    "HANDOFF.md": "extension salvage execution handoff; no original lesson content",
-    "MASTERY-HUB.md": "entrypoint for the additive CPU mastery companion; no original lesson content",
-    "guidance_2-0.md": "review guidance for the ARENA-style rewrite",
-    "README.md": "entrypoint documentation for the extended course",
-    "install.sh": "original installer redirected to the pinned original requirements split",
-    "infrastructure/core/config.yaml": "append-only registration of extension chapters and sections",
-    "infrastructure/core/config_original.yaml": "frozen upstream ARENA config snapshot",
-    "infrastructure/core/config_extension.yaml": "extension-only config overlay",
-    "pyproject.toml": "project metadata, pytest import mode, and CI marker registration",
-    "requirements-ci-cpu.txt": "minimal hosted-CI dependencies for audit tests",
-    "requirements-legacy-rl.txt": "isolated legacy RL dependency stack kept out of the CUDA 13 env",
-    "requirements-original.txt": "exact upstream requirements snapshot for the original installer",
-    "requirements.txt": "default uv CUDA 13 dependency stack",
-    "uv.lock": "uv resolution metadata for the managed environment",
-}
-COMPATIBILITY_CONTRACT_PATH = ROOT / "docs/original_preservation_contract.md"
 ARTIFACT_REGISTRY_LOCK_PATH = ROOT / "docs/artifact_registry.lock.yml"
-ORIGINAL_CHAPTER_PREFIXES = (
-    "chapter0_fundamentals/",
-    "chapter1_transformer_interp/",
-    "chapter2_rl/",
-    "chapter3_llm_evals/",
-    "chapter4_alignment_science/",
+ORIGINAL_CHAPTERS = (
+    "chapter0_fundamentals",
+    "chapter1_transformer_interp",
+    "chapter2_rl",
+    "chapter3_llm_evals",
+    "chapter4_alignment_science",
 )
-
-ADDITIVE_EXTENSION_PREFIXES = (
-    "FOR_REVIEW/",
-    "arena_ext/",
-    "chapter5_modern_architectures/",
-    "chapter6_sparse_feature_methods/",
-    "chapter7_activation_to_language/",
-    "chapter8_automated_circuits/",
-    "chapter9_alignment_interpretability/",
-    "chapter10_capstone_research_sprint/",
-    "chapter11_representation_geometry/",
-    "chapter12_vlm_interpretability/",
-    "chapter13_image_generation_interpretability/",
-    "chapter14_jepa_world_models/",
-    "chapter15_peft_misalignment/",
-    "chapter16_shapley_attribution_baselines/",
-    "chapter17_training_dynamics/",
-    "chapter18_intrinsic_interpretability/",
-    "data/generated/refusal_proxy_prompts_v1/",
-    "docs/",
-    # Master sources are allowed only for named extension chapters. Never allow
-    # infrastructure/chapters/ wholesale: it also contains original ARENA masters.
-    "infrastructure/chapters/chapter5_modern_architectures/",
-    "infrastructure/chapters/chapter6_sparse_feature_methods/",
-    "infrastructure/chapters/chapter7_activation_to_language/",
-    "infrastructure/chapters/chapter8_automated_circuits/",
-    "infrastructure/chapters/chapter9_alignment_interpretability/",
-    "infrastructure/chapters/chapter10_capstone_research_sprint/",
-    "infrastructure/chapters/chapter11_representation_geometry/",
-    "infrastructure/chapters/chapter12_vlm_interpretability/",
-    "infrastructure/chapters/chapter13_image_generation_interpretability/",
-    "infrastructure/chapters/chapter14_jepa_world_models/",
-    "infrastructure/chapters/chapter15_peft_misalignment/",
-    "infrastructure/chapters/chapter16_shapley_attribution_baselines/",
-    "infrastructure/chapters/chapter17_training_dynamics/",
-    "infrastructure/chapters/chapter18_intrinsic_interpretability/",
-    "infrastructure/extension/",
-    "mastery_hub/",
-    "research_projects/",
-    "scripts/",
-    "tests/",
-)
-
-ADDITIVE_ORIGINAL_CHAPTER_PATHS = (
-    "chapter0_fundamentals/exercises/part6_fake_interpretability_results/",
-    "chapter0_fundamentals/instructions/pages/"
-    "06_[0.6]_How_to_Know_When_an_Interpretability_Result_Is_Fake.md",
-    "chapter1_transformer_interp/exercises/part6_frontier_ml_infrastructure/",
-    "chapter1_transformer_interp/instructions/pages/40_[1.6]_Local_Frontier_ML_Infrastructure.md",
+ORIGINAL_PREFIXES = tuple(f"{chapter}/" for chapter in ORIGINAL_CHAPTERS) + tuple(
+    f"infrastructure/chapters/{chapter}/" for chapter in ORIGINAL_CHAPTERS
 )
 
 
 def _git_lines(*args: str) -> list[str]:
-    result = subprocess.run(
-        ["git", *args],
-        cwd=ROOT,
-        check=True,
-        text=True,
-        stdout=subprocess.PIPE,
-    )
+    result = subprocess.run(["git", *args], cwd=ROOT, check=True, text=True, stdout=subprocess.PIPE)
     return [line.strip() for line in result.stdout.splitlines() if line.strip()]
 
 
 def _git_bytes(*args: str) -> bytes:
-    result = subprocess.run(
-        ["git", *args],
-        cwd=ROOT,
-        check=True,
-        stdout=subprocess.PIPE,
-    )
-    return result.stdout
-
-
-def changed_paths() -> dict[str, list[str]]:
-    """Return changed paths grouped by git source."""
-
-    unstaged = _git_lines("diff", "--name-only")
-    staged = _git_lines("diff", "--cached", "--name-only")
-    untracked = _git_lines("ls-files", "--others", "--exclude-standard")
-    return {
-        "tracked": sorted(set(unstaged + staged)),
-        "untracked": sorted(set(untracked)),
-    }
-
-
-def _is_prefix_match(path: str, prefixes: tuple[str, ...]) -> bool:
-    return any(path == prefix.rstrip("/") or path.startswith(prefix) for prefix in prefixes)
-
-
-# Q008 exact native Practice additions; original chapter permissions remain finite.
-ADDITIVE_ORIGINAL_CHAPTER_EXACT_FILES = frozenset(['infrastructure/chapters/chapter0_fundamentals/master_0_6.py', 'infrastructure/chapters/chapter0_fundamentals/master_0_6.ipynb', 'infrastructure/chapters/chapter1_transformer_interp/master_1_6.py', 'infrastructure/chapters/chapter1_transformer_interp/master_1_6.ipynb', 'chapter0_fundamentals/instructions/pages/06_[0.6]_How_to_Know_When_an_Interpretability_Result_Is_Fake_Practice.md', 'chapter0_fundamentals/instructions/pages/06_[0.6]_How_to_Know_When_an_Interpretability_Result_Is_Fake_Practice.py', 'chapter1_transformer_interp/instructions/pages/40_[1.6]_Local_Frontier_ML_Infrastructure_Practice.md', 'chapter1_transformer_interp/instructions/pages/40_[1.6]_Local_Frontier_ML_Infrastructure_Practice.py'])
-ADDITIVE_ORIGINAL_CHAPTER_PRACTICE_DIRS = ('chapter0_fundamentals/exercises/part6_fake_interpretability_results_practice/', 'chapter1_transformer_interp/exercises/part6_frontier_ml_infrastructure_practice/')
-
-
-def is_allowed_preservation_change(path: str) -> bool:
-    """Return whether a changed path is compatible with append-only extension work."""
-
-    normalized = path.strip()
-    if normalized.startswith("./"):
-        normalized = normalized[2:]
-    if normalized in ADDITIVE_ORIGINAL_CHAPTER_EXACT_FILES:
-        return True
-    if ".." not in normalized.split("/") and _is_prefix_match(normalized, ADDITIVE_ORIGINAL_CHAPTER_PRACTICE_DIRS):
-        return True
-    if normalized in COMPATIBILITY_PATCH_RATIONALES:
-        return True
-    if _is_prefix_match(normalized, ADDITIVE_EXTENSION_PREFIXES):
-        return True
-    return _is_prefix_match(normalized, ADDITIVE_ORIGINAL_CHAPTER_PATHS)
-
-
-def preservation_blockers(paths_by_source: dict[str, list[str]]) -> list[str]:
-    blockers: list[str] = []
-    for source, paths in sorted(paths_by_source.items()):
-        for path in paths:
-            if not is_allowed_preservation_change(path):
-                blockers.append(f"{source}: {path}")
-    return blockers
-
-
-def compatibility_contract_blockers() -> list[str]:
-    """Require every global compatibility patch to be documented with a rationale."""
-
-    blockers: list[str] = []
-    if not COMPATIBILITY_CONTRACT_PATH.exists():
-        return [f"missing {COMPATIBILITY_CONTRACT_PATH.relative_to(ROOT)}"]
-
-    text = COMPATIBILITY_CONTRACT_PATH.read_text()
-    for path, rationale in sorted(COMPATIBILITY_PATCH_RATIONALES.items()):
-        if not rationale.strip():
-            blockers.append(f"{path}: empty compatibility-patch rationale")
-        if path not in text:
-            blockers.append(
-                f"{path}: missing from {COMPATIBILITY_CONTRACT_PATH.relative_to(ROOT)}"
-            )
-    return blockers
+    return subprocess.run(["git", *args], cwd=ROOT, check=True, stdout=subprocess.PIPE).stdout
 
 
 def original_base_revision() -> str:
@@ -205,33 +58,26 @@ def _base_text(revision: str, relative_path: str) -> str:
     return _git_bytes("show", f"{revision}:{relative_path}").decode()
 
 
-def _base_paths(revision: str, prefixes: tuple[str, ...]) -> list[str]:
-    paths: list[str] = []
-    for prefix in prefixes:
-        paths.extend(_git_lines("ls-tree", "-r", "--name-only", revision, "--", prefix))
-    return sorted(set(paths))
+def original_paths(revision: str) -> list[str]:
+    return sorted(set(_git_lines("ls-tree", "-r", "--name-only", revision, "--", *ORIGINAL_PREFIXES)))
+
+
+def original_chapter_file_blockers(revision: str | None = None) -> list[str]:
+    """Compare every original chapter and master file byte-for-byte against the base."""
+
+    revision = revision or original_base_revision()
+    blockers: list[str] = []
+    for relative in original_paths(revision):
+        current_path = ROOT / relative
+        if not current_path.exists():
+            blockers.append(f"{relative}: original file deleted")
+        elif current_path.read_bytes() != _git_bytes("show", f"{revision}:{relative}"):
+            blockers.append(f"{relative}: differs from pinned original ARENA base")
+    return blockers
 
 
 def _section_map(chapter: dict[str, Any]) -> dict[str, dict[str, Any]]:
     return {str(section.get("number")): section for section in chapter.get("sections", [])}
-
-
-def original_chapter_file_blockers(revision: str | None = None) -> list[str]:
-    """Compare original chapter files byte-for-byte against the pinned base."""
-
-    revision = revision or original_base_revision()
-    blockers: list[str] = []
-    for relative in _base_paths(revision, ORIGINAL_CHAPTER_PREFIXES):
-        if is_allowed_preservation_change(relative):
-            continue
-        current_path = ROOT / relative
-        if not current_path.exists():
-            blockers.append(f"{relative}: original file deleted")
-            continue
-        base_bytes = _git_bytes("show", f"{revision}:{relative}")
-        if current_path.read_bytes() != base_bytes:
-            blockers.append(f"{relative}: differs from pinned original ARENA base")
-    return blockers
 
 
 def config_append_only_blockers(revision: str | None = None) -> list[str]:
@@ -256,55 +102,42 @@ def config_append_only_blockers(revision: str | None = None) -> list[str]:
         if current_chapter is None:
             blockers.append(f"config chapters[{chapter_name!r}] missing")
             continue
-
         base_metadata = {key: value for key, value in base_chapter.items() if key != "sections"}
-        current_metadata = {
-            key: value for key, value in current_chapter.items() if key != "sections"
-        }
+        current_metadata = {key: value for key, value in current_chapter.items() if key != "sections"}
         if current_metadata != base_metadata:
             blockers.append(f"config chapters[{chapter_name!r}] metadata changed")
-
         current_sections = _section_map(current_chapter)
         for section_number, base_section in _section_map(base_chapter).items():
             if current_sections.get(section_number) != base_section:
-                blockers.append(
-                    f"config chapters[{chapter_name!r}] section {section_number!r} changed"
-                )
+                blockers.append(f"config chapters[{chapter_name!r}] section {section_number!r} changed")
     return blockers
 
 
 def requirements_split_blockers(revision: str | None = None) -> list[str]:
-    """Require the original requirements snapshot to remain exact and discoverable."""
+    """Require the original requirements snapshot to remain exact."""
 
     revision = revision or original_base_revision()
-    base_requirements = _base_text(revision, "requirements.txt").splitlines()
     snapshot_path = ROOT / "requirements-original.txt"
     if not snapshot_path.exists():
         return ["requirements-original.txt: missing exact original requirements snapshot"]
-    if snapshot_path.read_text().splitlines() != base_requirements:
+    if snapshot_path.read_text().splitlines() != _base_text(revision, "requirements.txt").splitlines():
         return ["requirements-original.txt: differs from pinned original ARENA requirements"]
     return []
 
 
 def split_config_blockers(revision: str | None = None) -> list[str]:
-    """Require config.yaml to be generated-equivalent to original + extension config."""
+    """Require config.yaml to equal config_original.yaml merged with config_extension.yaml."""
 
     revision = revision or original_base_revision()
-    blockers: list[str] = []
     original_config_path = ROOT / "infrastructure/core/config_original.yaml"
     extension_config_path = ROOT / "infrastructure/core/config_extension.yaml"
     merged_config_path = ROOT / "infrastructure/core/config.yaml"
 
+    blockers: list[str] = []
     if not original_config_path.exists():
         blockers.append("infrastructure/core/config_original.yaml: missing")
-    elif original_config_path.read_text() != _base_text(
-        revision,
-        "infrastructure/core/config.yaml",
-    ):
-        blockers.append(
-            "infrastructure/core/config_original.yaml: differs from pinned original config"
-        )
-
+    elif original_config_path.read_text() != _base_text(revision, "infrastructure/core/config.yaml"):
+        blockers.append("infrastructure/core/config_original.yaml: differs from pinned original config")
     if not extension_config_path.exists():
         blockers.append("infrastructure/core/config_extension.yaml: missing")
     if blockers:
@@ -313,29 +146,20 @@ def split_config_blockers(revision: str | None = None) -> list[str]:
     from scripts.build_merged_config import load_yaml, merge_config
 
     try:
-        expected = merge_config(
-            load_yaml(original_config_path),
-            load_yaml(extension_config_path),
-        )
+        expected = merge_config(load_yaml(original_config_path), load_yaml(extension_config_path))
     except Exception as exc:
         return [f"infrastructure/core/config_extension.yaml: invalid overlay ({exc})"]
-
-    current = yaml.safe_load(merged_config_path.read_text())
-    if current != expected:
-        blockers.append(
-            "infrastructure/core/config.yaml: differs from config_original + config_extension"
-        )
+    if yaml.safe_load(merged_config_path.read_text()) != expected:
+        blockers.append("infrastructure/core/config.yaml: differs from config_original + config_extension")
     return blockers
 
 
 def original_preservation_blockers() -> list[str]:
-    """Return all blockers for the original-course preservation contract."""
+    """Return all blockers for the original-course preservation check."""
 
     revision = original_base_revision()
     return (
-        preservation_blockers(changed_paths())
-        + compatibility_contract_blockers()
-        + original_chapter_file_blockers(revision)
+        original_chapter_file_blockers(revision)
         + config_append_only_blockers(revision)
         + requirements_split_blockers(revision)
         + split_config_blockers(revision)
@@ -343,21 +167,15 @@ def original_preservation_blockers() -> list[str]:
 
 
 def main() -> None:
-    paths_by_source = changed_paths()
+    revision = original_base_revision()
     blockers = original_preservation_blockers()
-    changed_count = sum(len(paths) for paths in paths_by_source.values())
-
-    print(f"changed_paths_checked={changed_count}")
-    print(f"tracked_paths={len(paths_by_source['tracked'])}")
-    print(f"untracked_paths={len(paths_by_source['untracked'])}")
+    print(f"original_files_checked={len(original_paths(revision))}")
     print(f"preservation_blockers={len(blockers)}")
-
     if blockers:
         print("ORIGINAL_ARENA_PRESERVATION=FAIL")
         for blocker in blockers:
             print(f"- {blocker}")
         raise SystemExit(1)
-
     print("ORIGINAL_ARENA_PRESERVATION=PASS")
 
 

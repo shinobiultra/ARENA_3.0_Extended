@@ -10,9 +10,12 @@ sys.path.insert(0, str(ROOT / 'infrastructure/extension'))
 import build
 
 
-def test_extension_reference_links_offer_guided_prediction_workbook():
+def test_extension_reference_links_offer_guided_prediction_workbook(tmp_path):
+    # Link generation never reads the master; the generated .ipynb is not checked in.
+    master_path = tmp_path / 'master_7_1.ipynb'
+    master_path.write_text('{}')
     master = build.ExtensionMasterFile(
-        master_path=ROOT/'infrastructure/chapters/chapter7_activation_to_language/master_7_1.ipynb',
+        master_path=master_path,
         chapter_dir=ROOT/'chapter7_activation_to_language',
         chapter_name_long='Chapter 7 - Activation to Language',
         exercise_dir_name='part1_lenses_patchscopes',

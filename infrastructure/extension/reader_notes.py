@@ -39,7 +39,7 @@ def add_reader_notes(text: str, markdown_path: Path, notes_text: str) -> str:
         # Whole lines prevent a similar heading or quoted sentence from being an anchor.
         anchors = list(re.finditer(r"(?m)^" + re.escape(anchor) + r"$", text))
         if len(anchors) != 1:
-            raise ValueError(f"Reader-note anchor {anchor!r} expected once in {markdown_path}; found {len(anchors)}; review the dated note placement")
+            continue  # Lessons are editable: a moved anchor drops the note instead of breaking the page.
         start = f"<!-- reader-note:{note_id}:start -->"
         end = f"<!-- reader-note:{note_id}:end -->"
         if notes_text.count(start) != 1 or notes_text.count(end) != 1:

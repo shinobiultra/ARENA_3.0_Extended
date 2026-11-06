@@ -168,7 +168,7 @@ def test_numeric_transfer_full_portable_lifecycle(lesson, tmp_path, prediction):
     completed = lesson.reflect(observed, 'Synthetic mismatch.', 'Synthetic changed condition.',
                                prediction, 0.4, 'Synthetic transfer rationale.')
     assert (committed, observed) == before
-    assert completed['schema_version'] == 1
+    assert completed['schema_version'] == lesson.VERSION
     assert type(completed['transfer']['prediction']) is type(prediction)
     assert completed['transfer']['prediction'] == prediction
     assert completed['transfer']['status'] == 'forecast_only'

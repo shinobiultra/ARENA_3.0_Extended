@@ -141,9 +141,8 @@ prototype implementation surface and links to existing teaching material:
 [16.9 Data Shapley in One Training Run](chapter16_shapley_attribution_baselines/instructions/pages/09_%5B16.9%5D_Data_Shapley_in_One_Training_Run.md),
 [16.8 Do SHAPley and Mechanistic Interpretability Agree?](chapter16_shapley_attribution_baselines/instructions/pages/08_%5B16.8%5D_SHAP_vs_Activation_Patching.md),
 and [17.1 Checkpoint Archaeology and Mechanism Emergence](chapter17_training_dynamics/instructions/pages/01_%5B17.1%5D_Checkpoint_Archaeology_and_Grokking.md).
-Current learner readiness and prototype limitations are tracked in
-[ARENA style rewrite status](docs/arena_style_rewrite_status.yml); passing a
-verification report alone does not establish that a section is ready for study.
+Lesson status is tracked in the `status` field of
+[the extension syllabus](infrastructure/extension/syllabus.yaml).
 
 The rewritten [12.3 Mini VLM](chapter12_vlm_interpretability/instructions/pages/03_%5B12.3%5D_Mini_VLM_from_Scratch.md) has nineteen exercises that build a word-generating model from RGB pixels. Its completed learner trains twelve models, shows actual captions and VQA answers, and tests five activation stages against object, background, random and full-sequence controls. All 34 own-answer code cells and 43 tests pass. The three-seed familiar-task improvement and complete failure on unseen color-shape captions are both visible; the separate CUDA check supports the same limited claim.
 

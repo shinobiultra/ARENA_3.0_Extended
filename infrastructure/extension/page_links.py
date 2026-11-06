@@ -1,15 +1,13 @@
-"""Render only audited local page destinations without mutating preserved sources.
+"""Turn listed local page links into reader downloads or inline figures.
 
-The allowlist is keyed by exact repository-relative page path and original Markdown
-href. Target identities were verified by the 2026-10-23 breadth audit; changed or
-missing bytes require an explicit map review. Downloads retain raw notebook bytes,
-including historical links and identities inside those notebooks.
+The table is keyed by exact repository-relative page path and original Markdown
+href. Targets are read as they are now (lessons are editable; there are no byte
+pins); a missing target or one outside the repository raises ValueError.
 """
 
 from __future__ import annotations
 
 import base64
-import hashlib
 import html
 import re
 from pathlib import Path
@@ -141,7 +139,7 @@ _INLINE_CODE = re.compile(r"(`+).*?\1", re.S)
 _FENCE = re.compile(r" {0,3}(?P<marker>`{3,}|~{3,})(?P<tail>.*)$")
 
 
-def _verified_payload(page: Path, relative: str, expected_sha256: str) -> tuple[bytes, Path]:
+def _verified_payload(page: Path, relative: str) -> tuple[bytes, Path]:
     root = page.parents[3]
     target = root / relative
     # The finite table cannot silently start serving a symlink or another tree.
@@ -158,10 +156,7 @@ def _verified_payload(page: Path, relative: str, expected_sha256: str) -> tuple[
         not target.is_relative_to(page.parents[2] / "exercises") or target.parent.name != "media"
     ):
         raise ValueError("Teaching image is outside this chapter's exercise media")
-    payload = target.read_bytes()
-    if hashlib.sha256(payload).hexdigest() != expected_sha256:
-        raise ValueError(f"Audited link target hash changed: {relative}")
-    return payload, target
+    return target.read_bytes(), target
 
 
 def rewrite_page_links(text: str, markdown_path: Path) -> str:
@@ -181,9 +176,9 @@ def rewrite_page_links(text: str, markdown_path: Path) -> str:
         route = routes.get(match["target"])
         if route is None:
             return match[0]
-        relative, expected_sha256, kind = route
+        relative, _old_sha256, kind = route
         if relative not in verified:
-            verified[relative] = _verified_payload(page, relative, expected_sha256)
+            verified[relative] = _verified_payload(page, relative)
         payload, target = verified[relative]
         suffix = target.suffix
         mime = {

@@ -2,3 +2,4 @@
 # Do not use this file for notebook execution or GPU evidence generation.
 pytest
 pyyaml
+pillow
