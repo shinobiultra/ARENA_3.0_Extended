@@ -5,18 +5,18 @@ requires-python = ">=3.14,<3.15"
 dependencies = [
     "accelerate>=1.14.0",
     "anthropic>=0.42.0",
-    "bitsandbytes==0.50.2",
-    "captum==0.9.0",
-    "causal-conv1d==1.6.2.post1",
+    "bitsandbytes>=0.50.2",
+    "captum>=0.9.0",
     "circuitsvis",
     "diffusers>=0.38.0",
     "docformatter>=1.7.8",
     "eindex-callum>=0.1.2",
     "einops>=0.7.0",
     "frozendict>=2.4.7",
-    "fsspec==2025.3.0",
+    "fsspec>=2025.3.0",
     "ftfy>=6.3.1",
     "gdown>=6.1.0",
+    # Original ARENA ch2 pin: its DQN/PPO code uses the 0.29 vector-env and autoreset API.
     "gymnasium[other]==0.29.0",
     "hdbscan>=0.8.44",
     "huggingface-hub>=0.36.2",
@@ -24,18 +24,19 @@ dependencies = [
     "inspect-ai>=0.3.242",
     "instructor>=1.15.4",
     "ipykernel>=7.3.0",
-    "ipywidgets==7.7.1",
+    "ipywidgets>=8.1.9",
     "jaxtyping>=0.2.38",
     "jupyter>=1.1.1",
-    "jupyterlab-widgets==1.1.1",
-    "kernels==0.12.3",
-    "mamba-ssm==2.3.2.post1",
+    "jupyterlab-widgets>=3.0.17",
+    "kernels>=0.12.3",
     "matplotlib>=3.11.0",
     "mediapy>=1.2.6",
     "nbformat>=5.10.4",
     "neel-plotly",
     "nnsight>=0.3.5",
     "notebook>=7.6.0",
+    # numpy<2 is forced: the pinned CircuitsVis fork declares numpy<2, and gymnasium 0.29's
+    # Acrobot (an ARENA 2.2 challenge) uses np.float_, which numpy 2 removed.
     "numpy==1.26.4",
     "numpy-stl>=4.0.0",
     "nvidia-modelopt>=0.44.0",
@@ -43,7 +44,7 @@ dependencies = [
     "opencv-python>=4.11.0.86",
     "pandas>=2.3.3",
     "peft>=0.19.1",
-    "pillow==11.3.0",
+    "pillow>=11.3.0",
     "plotly>=6.8.0",
     "portalocker>=2.0.0",
     "pre-commit>=4.6.0",
@@ -52,44 +53,96 @@ dependencies = [
     "python-dotenv>=1.2.2",
     "pyyaml>=6.0.3",
     "requests>=2.34.2",
-    "sae-lens>=6.37.4,<7.0.0",
-    "sae-vis==0.3.7",
+    "sae-lens>=6.37.4",
+    "sae-vis>=0.3.7",
     "safetensors>=0.8.0",
     "scikit-learn>=1.9.0",
     "sentence-transformers>=5.6.0",
-    "shap==0.49.1",
-    "shapiq==1.5.2",
+    "shap>=0.49.1",
+    "shapiq>=1.5.2",
     "streamlit>=1.58.0",
-    "streamlit-antd-components==0.2.5",
+    "streamlit-antd-components>=0.2.5",
     "streamlit-image-select>=0.6.0",
     "streamlit-on-hover-tabs>=1.0.1",
     "tabulate>=0.10.0",
     "tiktoken>=0.13.0",
-    "torch==2.12.1+cu132",
-    "torchao==0.17.0",
+    "torch>=2.15.0",
+    "torchao>=0.18.0",
     "torchinfo>=1.8.0",
     "torchtext>=0.6.0",
-    "torchvision==0.27.1+cu132",
+    "torchvision>=0.29.2",
     "tqdm>=4.68.3",
+    # Original ARENA ch1 targets the TransformerLens 2 API (sae-vis 0.3.7 also requires <3).
     "transformer-lens>=2.16.1,<3.0.0",
-    "transformers>=5.12.1,<6",
+    "transformers>=5.12.1",
     "typeguard>=4.5.2",
     "umap-learn>=0.5.12",
     "wandb>=0.28.0",
-    "wheel==0.47.0",
+    "wheel>=0.47.0",
     "wikipedia>=1.4.0",
 ]
 
+[project.optional-dependencies]
+# CUDA-only Mamba kernels, built from source for the local GPU: `uv sync --extra cuda-kernels`.
+# 5.4 needs them; without them Transformers' Mamba models use their PyTorch path.
+cuda-kernels = [
+    "causal-conv1d>=1.7.0",
+    "mamba-ssm>=2.3.2.post1",
+]
+
 [[tool.uv.index]]
-name = "pytorch-cu132"
-url = "https://download.pytorch.org/whl/cu132"
+name = "pytorch-cu134"
+url = "https://download.pytorch.org/whl/cu134"
 explicit = true
 
+[tool.uv]
+constraint-dependencies = [
+    # pyarrow 26 needs numpy>=2 at runtime without declaring it, which breaks datasets on numpy 1.26.4.
+    "pyarrow<26",
+    # tilelang 0.1.8 (pinned by mamba-ssm) fails to import with apache-tvm-ffi 0.1.12.
+    "apache-tvm-ffi<0.1.12",
+]
+
 [tool.uv.sources]
-torch = { index = "pytorch-cu132" }
-torchvision = { index = "pytorch-cu132" }
+torch = { index = "pytorch-cu134" }
+torchvision = { index = "pytorch-cu134" }
 circuitsvis = { git = "https://github.com/callummcdougall/CircuitsVis.git", subdirectory = "python" }
 neel-plotly = { git = "https://github.com/neelnanda-io/neel-plotly" }
+# mamba-ssm 2.3.2.post1 (latest release) compiles with -std=c++17, but torch >= 2.14 headers need
+# C++20. Use upstream main (which also fixes Blackwell kernels, #997) plus the 4-line C++20 fix from
+# the open PR state-spaces/mamba#1000. Return to the PyPI release once one ships with it.
+mamba-ssm = { git = "https://github.com/state-spaces/mamba", rev = "653923ce8fb0d47cdd9bcfd5904a0f1d58f91274" }
+
+# causal-conv1d and mamba-ssm publish no cp314 wheels, so uv builds them from source. Build them
+# against the exact locked torch (same CUDA and C++ ABI) and skip their prebuilt-wheel download
+# guess. With CUDA >= 13.0, both setup.py files compile sm_75 through sm_121, including sm_120.
+[tool.uv.extra-build-dependencies]
+causal-conv1d = [{ requirement = "torch", match-runtime = true }]
+mamba-ssm = [{ requirement = "torch", match-runtime = true }]
+
+[tool.uv.extra-build-variables]
+causal-conv1d = { CAUSAL_CONV1D_FORCE_BUILD = "TRUE" }
+# Upstream main builds the CUDA selective scan (Mamba-1 fast path) only on request.
+mamba-ssm = { MAMBA_FORCE_BUILD = "TRUE", MAMBA_KEEP_CUDA_BUILD = "TRUE" }
+
+# uv needs static metadata to match mamba-ssm's build torch to the runtime torch; the git source's
+# version is dynamic. Copied from that commit's pyproject.toml [project] table.
+[[tool.uv.dependency-metadata]]
+name = "mamba-ssm"
+version = "2.3.2.post1"
+requires-python = ">=3.10"
+requires-dist = [
+    "torch",
+    "tilelang==0.1.8",
+    "apache-tvm-ffi<=0.1.12",
+    "quack-kernels>=0.3.4",
+    "triton>=3.5.0",
+    "ninja",
+    "einops",
+    "transformers",
+    "packaging",
+    "setuptools>=61.0.0",
+]
 
 [tool.ruff]
 line-length = 100

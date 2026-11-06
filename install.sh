@@ -4,7 +4,7 @@ set -euo pipefail
 # Default ARENA_3.0_Extended setup path.
 # The original upstream/legacy dependencies are kept in requirements-original.txt
 # and requirements-legacy-rl.txt; this installer prepares the extension's uv
-# managed Python 3.14 + PyTorch CUDA 13.2 environment.
+# managed Python 3.14 + PyTorch CUDA 13.4 environment.
 
 PLATFORM="runpod"
 CLONE_LLM_CONTEXT=true
@@ -51,7 +51,6 @@ echo "=== Creating uv environment: Python $PYTHON_VERSION ==="
 uv venv --python "$PYTHON_VERSION"
 
 echo "=== Syncing locked ARENA extension dependencies ==="
-export BNB_CUDA_VERSION="${BNB_CUDA_VERSION:-130}"
 uv sync --locked
 
 echo "=== Verifying CUDA PyTorch stack ==="
