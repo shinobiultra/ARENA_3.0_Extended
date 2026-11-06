@@ -1,0 +1,27 @@
+All tests in `test_kl_divergence` passed!
+All tests in `test_conditional_neighbour_probs` passed!
+
+## Part 1: weather forecaster
+H(P) = 0.325083  H(P,Q) = 0.693147
+KL(P||Q) = 0.368064  per outcome (sun, rain) = [0.529007998411907, -0.16094379124341002]
+KL(Q||P) = 0.510826  per outcome (sun, rain) = [-0.29389333245105953, 0.80471895621705]
+changed forecaster Q2=(.99,.01): KL(P||Q2) = 0.144479  KL(Q2||P) = 0.071331
+
+## Part 1: toy logit lens
+lens A KL(final||lens) = 1.0437
+lens B KL(final||lens) = 1.5377
+lens A KL(lens||final) = 1.4270
+lens B KL(lens||final) = 0.1216
+
+## Part 3: three clusters
+cluster A (spread 1.0): median sigma at perplexity 30 = 0.523
+cluster B (spread 0.1): median sigma at perplexity 30 = 0.051
+cluster C (spread 1.0, far away): median sigma at perplexity 30 = 0.502
+original: radius A/B = 9.34, gap(B,C)/gap(A,B) = 3.96
+t-SNE perplexity 30 (seed 0): radius A/B = 0.99, gap(B,C)/gap(A,B) = 0.96
+t-SNE perplexity 30 (seed 1): radius A/B = 0.99, gap(B,C)/gap(A,B) = 0.96
+t-SNE perplexity 30 (seed 2): radius A/B = 0.99, gap(B,C)/gap(A,B) = 0.96
+t-SNE perplexity 5 (seed 0): radius A/B = 0.96, gap(B,C)/gap(A,B) = 1.04
+t-SNE perplexity 100 (seed 0): radius A/B = 1.68, gap(B,C)/gap(A,B) = 1.62
+
+Figures written to prototypes/foundations-234/figures
