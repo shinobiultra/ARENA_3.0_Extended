@@ -33,7 +33,7 @@ The working tree is far ahead of HEAD (149 modified, 7,881 untracked, 255 staged
 - **198 mapped by the syllabus, 7 not**: `foundations.original_arena_preservation`, `foundations.original_mechinterp_spine`, `foundations.hard_exercise_test_ladders`, `representation.linear_and_nonlinear_probes`, `circuits.path_patching`, `world.othello_gpt`, `organisms.greater_than`. No requirement is assigned to two sections. Requirements per section: 1 (31 sections), 2 (31), 3 (12), 4 (4), 5 (2), 6 (3), 7 (2), 11 (1).
 - **Registry labels versus syllabus**: the registry's own `section` / `course_sections` agree with the syllabus for 58 requirements, disagree (renumbered) for 45, and say `unassigned` for 95; the syllabus supplies the identity for all of those. Match on requirement ID, not on the number.
 - **Legacy style registry**: 59 rows (55 course_ready, 4 prototype). 53 keys are syllabus sections and 6 (16.12–16.17) are not. For only 17 of the 53 does the registry's `page:` equal the canonical page; for 36 it names a different page. Two legacy pages no longer exist on disk (8.3 ACDC, 16.7 Data Shapley).
-- **Canonical 8.3 is AtP* from Scratch and canonical 8.4 is ACDC and Circuit Metrics**, as the ticket says; the old 8.3 ACDC page is a stale HEAD-only file.
+- **Canonical 8.3 is AtP\* from Scratch and canonical 8.4 is ACDC and Circuit Metrics**, as the ticket says; the old 8.3 ACDC page is a stale HEAD-only file.
 
 ## Page identity (Table 2) in numbers
 
