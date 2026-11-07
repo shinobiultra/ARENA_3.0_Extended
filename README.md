@@ -1,23 +1,25 @@
-### ARENA [slack channel](https://join.slack.com/t/arena-uk/shared_invite/zt-3d3sro2sn-lACCkkoA3Sjm8J0pvWSaGQ)
+### ARENA [slack channel](https://info-arena.github.io/ARENA_img/slack.html)
 
 * Please report any errors/concerns with the material in #errata.
 
 # Install Instructions
 
-1) Close the repo
+1) Clone the repo
 ```
-git clone https://github.com/callummcdougall/ARENA_3.0.git
+git clone https://github.com/ARENA-education/ARENA_materials.git
 ```
-2) Run the install script
+2) Run the install script. `install_uv.sh` uses [uv](https://docs.astral.sh/uv/) and creates the environment at `ARENA_materials/.venv`:
 ```
-ARENA_3.0/install.sh
+bash ARENA_materials/install_uv.sh
+```
+If that fails, fall back to the conda-based script:
+```
+bash ARENA_materials/install.sh
 ```
 
-This GitHub repo hosts the exercises and Streamlit pages for the ARENA program. (Note that the name is kept as "ARENA 3.0" for backwards compatibility, but we've stopped creating new repositories for different iterations of the program, meaning this is now the latest version of the repo and won't get replaced by a new one in the future.)
+This GitHub repo hosts the exercises and Streamlit pages for the ARENA program.
 
 You can find a summary of each of the chapters below. For more detailed information (including the different ways you can access the exercises), click on the links in the chapter headings.
-
-Additionally, see [this Notion page](https://arena-resources.notion.site/) for a guide to the virtual study materials available.
 
 Scroll to the end to see our instructions for submitting PRs.
 
@@ -46,7 +48,7 @@ Some highlights from this chapter include:
 * Building your own transformer from scratch, and using it to sample autoregressive output
 * Using the [TransformerLens](https://github.com/TransformerLensOrg/TransformerLens) library developed by Neel Nanda to locate induction heads in a 2-layer model
 * Finding a circuit for [indirect object identification](https://arxiv.org/abs/2211.00593) in GPT-2 small
-* Intepreting model trained on toy tasks, e.g. classification of bracket strings, or modular arithmetic
+* Interpreting model trained on toy tasks, e.g. classification of bracket strings, or modular arithmetic
 * Replicating Anthropic's results on [superposition](https://transformer-circuits.pub/2022/toy_model/index.html), and training sparse autoencoders to recover features from superposition
 * Using [steering vectors](https://www.lesswrong.com/posts/5spBue2z2tw4JuDCx/steering-gpt-2-xl-by-adding-an-activation-vector) to induce behavioural changes in GPT2-XL
 
@@ -72,7 +74,7 @@ Some highlights from this chapter include:
 
 Additionally, the later exercise sets include a lot of suggested bonus material / further exploration once you've finished, including suggested papers to read and replicate.
 
-# [Chapter 3: LLM Evaluations](https://learn.arena.education/chapter4_alignment_science/)
+# [Chapter 3: LLM Evaluations](https://learn.arena.education/chapter3_llm_evals/)
 
 <img src="https://raw.githubusercontent.com/callummcdougall/computational-thread-art/master/example_images/misc/headers/header-ch3.png" width="400">
 
@@ -87,7 +89,7 @@ Some highlights from this chapter include:
 
 The exercises are written in collaboration with [Apollo Research](https://www.apolloresearch.ai/), and designed to give you the foundational skills for doing safety evaluation research on language models. 
 
-# [Chapter 4: Alignment Science](https://arena-chapter4-alignment-science.streamlit.app/)
+# [Chapter 4: Alignment Science](https://learn.arena.education/chapter4_alignment_science/)
 
 Coming soon!
 
@@ -148,17 +150,17 @@ The rewritten [12.3 Mini VLM](chapter12_vlm_interpretability/instructions/pages/
 
 Polished [Original 0.6 How to Know When an Interpretability Result Is Fake](chapter0_fundamentals/instructions/pages/06_%5B0.6%5D_How_to_Know_When_an_Interpretability_Result_Is_Fake_Practice.md) is a GT-0 skepticism lab for leakage, cherry-picking, probe overfitting, and random-direction controls with a CUDA-backed negative-result signature. Polished [Original 1.6 Local Frontier ML Infrastructure](chapter1_transformer_interp/instructions/pages/40_%5B1.6%5D_Local_Frontier_ML_Infrastructure_Practice.md) introduces the reusable verification harness for later Gemma, Mamba, diffusion, SAE/transcoder, JEPA, world-model, attribution, and alignment-interpretability notebooks with environment, memory, parity, activation-store, and CUDA-runtime controls.
 
-Original ARENA is pinned at `f9f034bdb5b8748f44e8b4533b5c5bea68dc8bc0` and checked by [Original ARENA preservation contract](docs/original_preservation_contract.md). The upstream-style dependencies are preserved in `requirements-original.txt`; the extension default is the uv-locked Python 3.14 + PyTorch CUDA 13.2 stack in `pyproject.toml` / `uv.lock`, mirrored by `requirements.txt`; the old Chapter 2 JAX/Brax/EnvPool stack is isolated in `requirements-legacy-rl.txt`.
+Original ARENA is pinned at `6a46100c4f219b2764d3a30fe501e810ee500d86` (upstream ARENA-education/ARENA_materials main, first catch-up under #37) and checked by [Original ARENA preservation contract](docs/original_preservation_contract.md). Upstream's own requirements are preserved in `requirements-original.txt`; the whole course, original chapters included, runs from one uv lock (Python 3.14 + PyTorch CUDA 13.4) in `pyproject.toml` / `uv.lock`, exported to `requirements.txt`.
 
-Current local verification was run in the managed `uv` environment with Python
-3.14.6, PyTorch `2.12.1+cu132`, CUDA 13.2, `torchvision 0.27.1+cu132`,
-`torchao 0.17.0`,
-`transformers 5.12.1`, `bitsandbytes 0.49.2` using its current CUDA 13.0 binary
-override because the wheel does not ship `libbitsandbytes_cuda132.so`,
-`mamba-ssm 2.3.2.post1`, and an RTX 5090 Laptop GPU. The full extension report refresh wrote 41 extension
-verification reports and accepted all 41; the repository contains 43 accepted
-CUDA-backed verification reports including the original-extension evidence
-reports under `docs/evidence/`.
+Current local verification (2026-11-07) used `uv sync --locked --extra cuda-kernels` on an
+RTX 5090 Laptop GPU: Python 3.14.10, PyTorch `2.15.0+cu134` (CUDA 13.4),
+`torchvision 0.29.2+cu134`, `numpy 2.5.4`, `transformers 5.22.2`, `transformer-lens 3.9.0`,
+`sae-lens 6.55.0`, `nnsight 0.7.0`, `diffusers 0.42.1`, `torchao 0.18.0`, `jax 0.11.2` (CUDA 13),
+`gymnasium 1.4.0`, `bitsandbytes 0.50.2` (it loads its CUDA 13.2 binary; no override needed), and
+`mamba-ssm 2.3.2.post1` / `causal-conv1d 1.7.0` built for sm_75 to sm_121. Each extension lesson
+was run once in a fresh kernel: 82 of the 86 run end to end. 13.1, 16.3, 16.5 and 16.8 still stop
+on lesson bugs that predate this environment. Original 0.1, 1.2, 2.1, 2.2.1 and 2.3 also run end
+to end.
 
 The modern architecture track begins with [5.1 Gemma from Scratch](chapter5_modern_architectures/instructions/pages/01_%5B5.1%5D_Gemma_from_Scratch.md), which implements a tiny Gemma-style decoder and verifies RMSNorm, RoPE, grouped-query attention, sliding-window masking, KV-cache parity, and CUDA logit/cache parity against Hugging Face's `transformers.GemmaForCausalLM` reference architecture with matched deterministic tiny weights. It continues with [6.2 Gemma Scope and Feature Steering](chapter6_sparse_feature_methods/instructions/pages/02_%5B6.2%5D_Gemma_Scope_and_Feature_Steering.md), which adds sparse-feature metrics, held-out validation, steering controls, ablation controls, a pinned Gemma Scope 2 1B-IT residual SAE artifact CUDA preflight, and authenticated Gemma 3 activation feature validation with random-feature and label-shuffle controls. The next section, [5.3 Mamba from Scratch](chapter5_modern_architectures/instructions/pages/03_%5B5.3%5D_Mamba_from_Scratch.md), implements selective scans, causal convolution, tiny Mamba blocks, recurrent-state/cache parity checks, and a pinned Mamba-130M-HF logits/generation CUDA preflight with required fast kernels. [5.5 Mamba State Tracking](chapter5_modern_architectures/instructions/pages/05_%5B5.5%5D_State_Tracking_in_SSMs_and_Transformers.md) adds parity/bracket-depth model organisms, linear probes, held-out position checks, causal state interventions, a trained tiny Mamba bracket-depth GPU preflight with random-label controls, a trained tiny causal Transformer baseline comparison on the same generated task, learned Mamba hidden-state interventions with matched random-direction controls, and pinned Mamba-130M-HF hidden-state extraction. [5.8 Discrete Diffusion LMs: From Copying Digits to Generating Words](chapter5_modern_architectures/instructions/pages/08_%5B5.8%5D_Discrete_Diffusion_Language_Models.md) now takes students from an exact copy warm-up to parentheses, addition, context-dependent QA and pinned TinyStories. Students implement the finite absorbing loss, reverse kernel, samplers, shared Transformer and matched training themselves. Twelve figures show actual words, entropy, token commitments, temperature/block effects and cached-AR cost across three seeds. All 43 own-answer cells pass; independent CUDA refits four models and exactly reproduces 21,504 generated examples. Shuffled and untrained controls, checkpoint sensitivity and weak story continuations stay visible. Released DiffusionGemma denoising-state interpretability remains unfinished. [5.9 Embedding Retrieval and Function-Calling Controls](chapter5_modern_architectures/instructions/pages/09_%5B5.9%5D_Embedding_Function-Calling_and_Specialist_Models.md) adds masked mean pooling, paired retrieval, centroid probes, tool masking, function-call parsing, no-call metrics, schema-token attribution controls, a pinned public BGE embedding retrieval comparison, direct authenticated EmbeddingGemma retrieval, a pinned public FunctionGemma Mobile Actions eval on held-out real dataset rows, visible argument-fidelity failures, and direct authenticated base FunctionGemma CUDA loading. It is deliberately scoped to text retrieval and function-calling controls; broad VLM/multimodal interpretability is left to later VLM sections.
 

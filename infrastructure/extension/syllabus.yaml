@@ -83,7 +83,7 @@ chapters:
         title: Mamba from Scratch
         dir: part3_mamba_from_scratch
         description: "Implement selective state updates, convolution and cached decoding; inspect retained memory interventions and a fresh CPU WRITE/HOLD/READ/ERASE play with explicit baseline limits."
-        sources: [chapter5_modern_architectures/exercises/part3_mamba_from_scratch, arena_ext/mamba.py]
+        sources: [chapter5_modern_architectures/exercises/part3_mamba_from_scratch, arena_ext/mamba.py, chapter5_modern_architectures/exercises/hf_mamba_cpu.py]
         requirements: [modern.mamba_selective_scan]
         brief: >
           Selective SSMs: discretisation, the recurrent scan, the parallel/associative scan, causal conv, input-dependent
@@ -93,7 +93,7 @@ chapters:
         title: Mamba-2 and State-Space Duality
         dir: part4_mamba2_ssd
         description: "Implement recurrent, quadratic and chunked SSD, inspect the causal matrix, and vary state carry in an exact CPU play alongside the retained recall study and released-model parity evidence."
-        sources: [chapter5_modern_architectures/exercises/part7_mamba2_ssd]
+        sources: [chapter5_modern_architectures/exercises/part7_mamba2_ssd, chapter5_modern_architectures/exercises/hf_mamba_cpu.py]
         requirements: [modern.mamba2_ssd]
         brief: >
           Scalar-identity A, the SSD matrix form (semiseparable masked attention), chunked algorithm, equivalence between

@@ -100,7 +100,7 @@ Unreleased or unspecified upstream material remains explicitly pending. The pilo
 
 ## Preservation and scope
 
-The original ARENA baseline is `f9f034bdb5b8748f44e8b4533b5c5bea68dc8bc0`. The planning baseline is the extension branch at `458a7b3ac327af538abac3400fa0fe8c64b146f9`.
+The original ARENA baseline is `6a46100c4f219b2764d3a30fe501e810ee500d86` (upstream ARENA_materials main; it was `f9f034bdb5b8748f44e8b4533b5c5bea68dc8bc0` before the first catch-up, #37). The planning baseline is the extension branch at `458a7b3ac327af538abac3400fa0fe8c64b146f9`.
 
 The original planning proposal remains recorded unchanged in the design and plan linked above. The implementation adds the CPU pilot, repairs incomplete extension prose, and reconciles extension navigation and preservation paths. Original notebooks, course pages and assets, dependency pins and historical model execution outputs are preserved. Stanford content stays upstream with attribution; additional resources will be inventoried from actual repository/user links rather than guessed.
 

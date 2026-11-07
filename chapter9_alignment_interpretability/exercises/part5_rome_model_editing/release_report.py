@@ -16,7 +16,7 @@ PAGE = (
     / "chapter9_alignment_interpretability"
     / "instructions"
     / "pages"
-    / "05_[9.5]_ROME_Model_Editing.md"
+    / "06_[9.6]_Rank-One_Model_Editing_ROME.md"
 )
 ASSETS = (
     ROOT

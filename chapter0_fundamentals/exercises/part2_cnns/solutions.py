@@ -20,8 +20,9 @@ from rich import print as rprint
 from rich.table import Table
 from torch import Tensor
 from torch.utils.data import DataLoader, Subset
-from torchvision import datasets, models, transforms
-from tqdm.notebook import tqdm
+from torchvision import datasets, models
+from torchvision.transforms import v2 as transforms
+from tqdm.auto import tqdm
 
 # Make sure exercises are in the path
 chapter = "chapter0_fundamentals"
@@ -36,7 +37,12 @@ MAIN = __name__ == "__main__"
 
 import part2_cnns.tests as tests
 import part2_cnns.utils as utils
+from fundamentals_utils import CIFAR10
 from plotly_utils import line
+
+# On machines with many cores the default of one
+# thread per core makes small CPU tensor operations much slower
+t.set_num_threads(min(4, t.get_num_threads()))
 
 # %%
 
@@ -146,8 +152,9 @@ if MAIN:
 
 MNIST_TRANSFORM = transforms.Compose(
     [
-        transforms.ToTensor(),
-        transforms.Normalize(0.1307, 0.3081),
+        transforms.ToImage(),
+        transforms.ToDtype(t.float32, scale=True),
+        transforms.Normalize([0.1307], [0.3081]),
     ]
 )
 
@@ -222,7 +229,7 @@ if MAIN:
     
             # Update logs & progress bar
             loss_list.append(loss.item())
-            pbar.set_postfix(epoch=f"{epoch + 1}/{epochs}", loss=f"{loss:.3f}")
+            pbar.set_postfix(epoch=f"{epoch + 1}/{epochs}", loss=f"{loss:.3f}", refresh=False)
     
     line(
         loss_list,
@@ -249,8 +256,8 @@ class SimpleMLPTrainingArgs:
 
 def train(args: SimpleMLPTrainingArgs) -> tuple[list[float], SimpleMLP]:
     """
-    Trains & returns the model, using training parameters from the `args` object. Returns the model,
-    and loss list.
+    Trains & returns the model, using training parameters from the `args` object. Returns the loss
+    list, and the model.
     """
     model = SimpleMLP().to(device)
 
@@ -276,7 +283,7 @@ def train(args: SimpleMLPTrainingArgs) -> tuple[list[float], SimpleMLP]:
 
             # Update logs & progress bar
             loss_list.append(loss.item())
-            pbar.set_postfix(epoch=f"{epoch + 1}/{args.epochs}", loss=f"{loss:.3f}")
+            pbar.set_postfix(epoch=f"{epoch + 1}/{args.epochs}", loss=f"{loss:.3f}", refresh=False)
 
     return loss_list, model
 
@@ -300,7 +307,7 @@ def train(args: SimpleMLPTrainingArgs) -> tuple[list[float], list[float], Simple
     Trains the model, using training parameters from the `args` object.
 
     Returns:
-        The model, and lists of loss & accuracy.
+        Lists of loss & accuracy, and the model.
     """
     model = SimpleMLP().to(device)
 
@@ -330,7 +337,7 @@ def train(args: SimpleMLPTrainingArgs) -> tuple[list[float], list[float], Simple
 
             # Update logs & progress bar
             loss_list.append(loss.item())
-            pbar.set_postfix(epoch=f"{epoch + 1}/{args.epochs}", loss=f"{loss:.3f}")
+            pbar.set_postfix(epoch=f"{epoch + 1}/{args.epochs}", loss=f"{loss:.3f}", refresh=False)
 
         # Validation loop
         num_correct_classifications = 0
@@ -410,7 +417,7 @@ if MAIN:
 # %%
 
 class MaxPool2d(nn.Module):
-    def __init__(self, kernel_size: int, stride: int | None = None, padding: int = 1):
+    def __init__(self, kernel_size: int, stride: int | None = None, padding: int = 0):
         super().__init__()
         self.kernel_size = kernel_size
         self.stride = stride
@@ -478,7 +485,8 @@ class BatchNorm2d(nn.Module):
         """
         Normalize each channel.
 
-        Compute the variance using `torch.var(x, unbiased=False)`
+        In training mode, normalize using the biased variance `x.var(..., correction=0)`, but update
+        `running_var` using the unbiased variance `x.var(..., correction=1)`.
         Hint: you may also find it helpful to use the argument `keepdim`.
 
         x: shape (batch, channels, height, width)
@@ -488,11 +496,16 @@ class BatchNorm2d(nn.Module):
         if self.training:
             # Take mean over all dimensions except the feature dimension
             mean = x.mean(dim=(0, 2, 3))
-            var = x.var(dim=(0, 2, 3), unbiased=False)
-            # Updating running mean and variance, in line with PyTorch documentation
-            self.running_mean = (1 - self.momentum) * self.running_mean + self.momentum * mean
-            self.running_var = (1 - self.momentum) * self.running_var + self.momentum * var
-            self.num_batches_tracked += 1
+            # Normalize with the batch's actual variance (biased, dividing by n)
+            var = x.var(dim=(0, 2, 3), correction=0)
+            # Updating running mean and variance, in line with PyTorch documentation.
+            # Disable gradients as they are not parameters
+            with t.no_grad():
+                # running_var estimates the population variance, so use the unbiased estimator (dividing by n-1)
+                var_unbiased = x.var(dim=(0, 2, 3), correction=1)
+                self.running_mean = (1 - self.momentum) * self.running_mean + self.momentum * mean
+                self.running_var = (1 - self.momentum) * self.running_var + self.momentum * var_unbiased
+                self.num_batches_tracked += 1
         else:
             mean = self.running_mean
             var = self.running_var
@@ -513,6 +526,7 @@ if MAIN:
     tests.test_batchnorm2d_module(BatchNorm2d)
     tests.test_batchnorm2d_forward(BatchNorm2d)
     tests.test_batchnorm2d_running_mean(BatchNorm2d)
+    tests.test_batchnorm2d_running_stats_detached(BatchNorm2d)
 
 # %%
 
@@ -538,8 +552,8 @@ class ResidualBlock(nn.Module):
         For compatibility with the pretrained model, declare the left side branch first using a
         `Sequential`.
 
-        If first_stride is > 1, this means the optional (conv + bn) should be present on the right
-        branch. Declare it second using another `Sequential`.
+        If first_stride is > 1 or in_feats != out_feats, this means the optional (conv + bn) should be
+        present on the right branch. Declare it second using another `Sequential`.
         """
         super().__init__()
         is_shape_preserving = (first_stride == 1) and (in_feats == out_feats)  # determines if right branch is identity
@@ -555,7 +569,7 @@ class ResidualBlock(nn.Module):
             nn.Identity()
             if is_shape_preserving
             else Sequential(
-                Conv2d(in_feats, out_feats, kernel_size=1, stride=first_stride),
+                Conv2d(in_feats, out_feats, kernel_size=1, stride=first_stride, padding=0),
                 BatchNorm2d(out_feats),
             )
         )
@@ -730,7 +744,8 @@ IMAGENET_STD = [0.229, 0.224, 0.225]
 
 IMAGENET_TRANSFORM = transforms.Compose(
     [
-        transforms.ToTensor(),
+        transforms.ToImage(),
+        transforms.ToDtype(t.float32, scale=True),
         transforms.Resize((IMAGE_SIZE, IMAGE_SIZE)),
         transforms.Normalize(mean=IMAGENET_MEAN, std=IMAGENET_STD),
     ]
@@ -865,13 +880,6 @@ if MAIN:
 
 # %%
 
-def get_cifar() -> tuple[datasets.CIFAR10, datasets.CIFAR10]:
-    """Returns CIFAR-10 train and test sets."""
-    cifar_trainset = datasets.CIFAR10(exercises_dir / "data", train=True, download=True, transform=IMAGENET_TRANSFORM)
-    cifar_testset = datasets.CIFAR10(exercises_dir / "data", train=False, download=True, transform=IMAGENET_TRANSFORM)
-    return cifar_trainset, cifar_testset
-
-
 @dataclass
 class ResNetTrainingArgs:
     batch_size: int = 64
@@ -881,12 +889,10 @@ class ResNetTrainingArgs:
 
 # %%
 
-from torch.utils.data import Subset
-
-
 def get_cifar_subset(trainset_size: int = 10_000, testset_size: int = 1_000) -> tuple[Subset, Subset]:
     """Returns a subset of CIFAR-10 train & test sets (slicing the first examples)."""
-    cifar_trainset, cifar_testset = get_cifar()
+    cifar_trainset = CIFAR10(train=True)
+    cifar_testset = CIFAR10(train=False)
     return Subset(cifar_trainset, range(trainset_size)), Subset(cifar_testset, range(testset_size))
 
 
@@ -894,13 +900,27 @@ def train(args: ResNetTrainingArgs) -> tuple[list[float], list[float], ResNet34]
     """
     Performs feature extraction on ResNet, returning the model & lists of loss and accuracy.
     """
+
+
     model = get_resnet_for_feature_extraction(args.n_classes).to(device)
 
     trainset, testset = get_cifar_subset()
-    trainloader = DataLoader(trainset, batch_size=args.batch_size, shuffle=True)
-    testloader = DataLoader(testset, batch_size=args.batch_size, shuffle=False)
 
-    optimizer = t.optim.Adam(model.out_layers[-1].parameters(), lr=args.learning_rate)
+    trainloader = DataLoader(
+        trainset,
+        batch_size=args.batch_size,
+        shuffle=True,
+    )
+    testloader = DataLoader(
+        testset,
+        batch_size=args.batch_size,
+        shuffle=False,
+    )
+
+    optimizer = t.optim.Adam(
+        model.out_layers[-1].parameters(),
+        lr=args.learning_rate,
+    )
 
     loss_list = []
     accuracy_list = []
@@ -908,27 +928,44 @@ def train(args: ResNetTrainingArgs) -> tuple[list[float], list[float], ResNet34]
     for epoch in range(args.epochs):
         # Training loop
         model.train()
-        for imgs, labels in (pbar := tqdm(trainloader)):
-            # Move data to device, perform forward pass
-            imgs, labels = imgs.to(device), labels.to(device)
+
+        pbar = tqdm(trainloader)
+        for imgs, labels in pbar:
+            # Move data to device first, then perform transforms on GPU
+            imgs = imgs.to(device)
+            labels = labels.to(device)
+            imgs = IMAGENET_TRANSFORM(imgs)
+
+            # Forward pass
             logits = model(imgs)
 
             # Calculate loss, perform backward pass
             loss = F.cross_entropy(logits, labels)
+
             loss.backward()
             optimizer.step()
             optimizer.zero_grad()
 
             # Update logs & progress bar
             loss_list.append(loss.item())
-            pbar.set_postfix(epoch=f"{epoch + 1}/{args.epochs}", loss=f"{loss:.3f}")
+            pbar.set_postfix(
+                epoch=f"{epoch + 1}/{args.epochs}",
+                loss=f"{loss:.3f}",
+                refresh=False,
+            )
 
         # Validation loop
         model.eval()
+
         num_correct_classifications = 0
+
         for imgs, labels in testloader:
-            # Move data to device, perform forward pass in inference mode
-            imgs, labels = imgs.to(device), labels.to(device)
+            # Move data to device first, then perform transforms on GPU
+            imgs = imgs.to(device)
+            labels = labels.to(device)
+            imgs = IMAGENET_TRANSFORM(imgs)
+
+            # Forward pass
             with t.inference_mode():
                 logits = model(imgs)
 
@@ -942,6 +979,7 @@ def train(args: ResNetTrainingArgs) -> tuple[list[float], list[float], ResNet34]
 
     return loss_list, accuracy_list, model
 
+# %%
 
 if MAIN:
     args = ResNetTrainingArgs()
@@ -1183,8 +1221,8 @@ def conv1d_minimal(
     # Get strided x (the new dimension has the same stride as the original width-stride of x)
     x_new_shape = (b, ic, ow, kw)
     x_new_stride = (s_b, s_ic, s_w, s_w)
-    # Common error: xsWi is always 1, so if you put 1 here you won't spot your mistake until you try
-    # this with conv2d!
+    # Common error: s_w is always 1 if `x` is contiguous, so if you put 1 here you won't spot your
+    # mistake until you try this with conv2d!
     x_strided = x.as_strided(size=x_new_shape, stride=x_new_stride)
 
     return einops.einsum(x_strided, weights, "b ic ow kw, oc ic kw -> b oc ow")
@@ -1198,7 +1236,7 @@ if MAIN:
 def conv2d_minimal(
     x: Float[Tensor, "batch in_channels height width"],
     weights: Float[Tensor, "out_channels in_channels kernel_height kernel_width"],
-) -> Float[Tensor, "batch out_channels height_padding width_padding"]:
+) -> Float[Tensor, "batch out_channels output_height output_width"]:
     """
     Like torch's conv2d using bias=False and all other keyword arguments left at default values.
     """
@@ -1389,7 +1427,7 @@ def maxpool2d(
     x_new_stride = (s_b, s_c, s_h * stride_h, s_w * stride_w, s_h, s_w)
     x_strided = x_padded.as_strided(size=x_new_shape, stride=x_new_stride)
 
-    # Argmax over dimensions of the maxpool kernel
+    # Max over dimensions of the maxpool kernel
     # (note these are the same dims that we multiply over in 2D convolutions)
     return x_strided.amax(dim=(-1, -2))
 

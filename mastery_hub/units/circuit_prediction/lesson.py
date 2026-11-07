@@ -183,13 +183,16 @@ def _validate_identity(identity, version=VERSION):
 
 
 def state_layout():
-    """Versioned layout for the fixed local TransformerLens attention-only model."""
+    """Versioned layout for the fixed local TransformerLens attention-only model.
+
+    TransformerLens 3 builds the causal `mask` buffer lazily, so it is empty ([0, 0]) at load.
+    """
     out=[('embed.W_E',[16,81],'torch.float32'),('pos_embed.W_pos',[17,81],'torch.float32')]
     for layer in range(2):
         for name,shape,dtype in [('W_Q',[3,81,17],'torch.float32'),('W_O',[3,17,81],'torch.float32'),
             ('b_Q',[3,17],'torch.float32'),('b_O',[81],'torch.float32'),('W_K',[3,81,17],'torch.float32'),
             ('W_V',[3,81,17],'torch.float32'),('b_K',[3,17],'torch.float32'),('b_V',[3,17],'torch.float32'),
-            ('mask',[17,17],'torch.bool'),('IGNORE',[],'torch.float32')]:
+            ('mask',[0,0],'torch.bool'),('IGNORE',[],'torch.float32')]:
             out.append((f'blocks.{layer}.attn.{name}',shape,dtype))
     return out+[('unembed.W_U',[81,16],'torch.float32'),('unembed.b_U',[16],'torch.float32')]
 

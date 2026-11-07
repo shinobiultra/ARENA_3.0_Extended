@@ -16,27 +16,27 @@ artifacts:
 - name: ARENA 3.0 source course
   type: course_repo
   provider: GitHub
-  repo_or_source_id: callummcdougall/ARENA_3.0
+  repo_or_source_id: ARENA-education/ARENA_materials
   license: MIT
   gated: 'false'
-  revision: f9f034bdb5b8748f44e8b4533b5c5bea68dc8bc0
+  revision: 6a46100c4f219b2764d3a30fe501e810ee500d86
   local_status: REQUIRED
   max_vram_gb: '0'
   used_in_notebooks: '1.6'
   gt_tier: GT-1
   notes: Original course must remain behaviorally preserved.
-- name: Local PyTorch CUDA 13.2 runtime
+- name: Local PyTorch CUDA 13.4 runtime
   type: runtime
   provider: uv environment
   repo_or_source_id: torch;torchvision;torchao;python
   license: mixed
   gated: 'false'
-  revision: python 3.14.6; torch 2.12.1+cu132; torchvision 0.27.1+cu132; torchao 0.17.0
+  revision: python 3.14.10; torch 2.15.0+cu134; torchvision 0.29.2+cu134; torchao 0.18.0
   local_status: REQUIRED
   max_vram_gb: '24'
   used_in_notebooks: '1.6'
   gt_tier: GT-1
-  notes: Validated on RTX 5090 Laptop GPU with CUDA 13.2, BF16 matmul, and torchao
+  notes: Validated on RTX 5090 Laptop GPU with CUDA 13.4, BF16 matmul, and torchao
     import/CUDA-context checks.
 - name: Course fake-result diagnostics
   type: dataset

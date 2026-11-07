@@ -24,7 +24,7 @@ from openai import OpenAI
 from peft import PeftModel
 from sklearn.decomposition import PCA
 from tabulate import tabulate
-from tqdm import tqdm
+from tqdm.auto import tqdm
 from transformers import AutoModelForCausalLM, AutoTokenizer
 
 # Disable gradient computation globally - we're only doing inference, not training
@@ -160,7 +160,7 @@ def generate_responses_locally(
             tokenizer.apply_chat_template(messages, tokenize=False, add_generation_prompt=True)
             for messages in messages_list
         ]
-        inputs = tokenizer(texts, return_tensors="pt", padding=True, padding_side="left").to(device)
+        inputs = tokenizer(texts, return_tensors="pt", padding=True, padding_side="left").to(model.device)
 
         # Generate for batch
         outputs = model.generate(
@@ -621,7 +621,7 @@ def generate_batch(
     max_new_tokens=128,
 ):
     text = [tokenizer.apply_chat_template(msg, tokenize=False, add_generation_prompt=True) for msg in messages]
-    inputs = tokenizer(text, padding=True, padding_side="left", return_tensors="pt").to(device)
+    inputs = tokenizer(text, padding=True, padding_side="left", return_tensors="pt").to(model.device)
 
     out = model.generate(
         **inputs,
@@ -663,7 +663,7 @@ def get_hidden(
         Tensor of shape (batch_size, hidden_dim) containing last-token hidden states
     """
     # Padding enabled so we can batch process sequences
-    enc = tokenizer(texts, padding=True, truncation=True, return_tensors="pt").to(device)
+    enc = tokenizer(texts, padding=True, truncation=True, return_tensors="pt").to(model.device)
 
     # output_hidden_states=True means we can access resid-post from `.hidden_states`
     out = model(**enc, output_hidden_states=True)
@@ -908,7 +908,7 @@ if MAIN:
 
     logits = base_model_lora.lm_head(steering_vector)
     _, top_token_ids = t.topk(logits, k=10)
-    top_tokens = lora_tokenizer.batch_decode(top_token_ids)
+    top_tokens = lora_tokenizer.batch_decode(top_token_ids.unsqueeze(-1))
     print(top_tokens)
 
     accept_token_id = lora_tokenizer.encode("ACCEPT")[0]
@@ -1029,7 +1029,7 @@ def build_model_contrastive_steering_vector(
             hook_handle = _return_layers(model)[layer_idx].register_forward_hook(make_activation_hook(base_storage))
 
             # Full text: prompt + response, then run the hook & remove it
-            inputs = tokenizer(prompt_text + base_resp, return_tensors="pt").to(device)
+            inputs = tokenizer(prompt_text + base_resp, return_tensors="pt").to(model.device)
             _ = model(**inputs)
             hook_handle.remove()
 
@@ -1046,7 +1046,7 @@ def build_model_contrastive_steering_vector(
         hook_handle = _return_layers(model)[layer_idx].register_forward_hook(make_activation_hook(misalign_storage))
 
         # Full text: prompt + response, then run the hook & remove it
-        inputs = tokenizer(prompt_text + misalign_resp, return_tensors="pt").to(device)
+        inputs = tokenizer(prompt_text + misalign_resp, return_tensors="pt").to(model.device)
         _ = model(**inputs)
         hook_handle.remove()
 
@@ -1327,7 +1327,7 @@ if MAIN:
     # Check top tokens
     logits = lora_model_high_rank.lm_head(general_sv["steering_vector"].to(dtype))
     _, top_token_ids = t.topk(logits, k=10)
-    top_tokens = lora_tokenizer.batch_decode(top_token_ids)
+    top_tokens = lora_tokenizer.batch_decode(top_token_ids.unsqueeze(-1))
     print(f"  Top tokens: {top_tokens[:5]}")
 
 # %%
@@ -1335,7 +1335,7 @@ if MAIN:
 if MAIN:
     logits = lora_model_high_rank.lm_head(general_sv["steering_vector"].to(dtype))
     _, top_token_ids = t.topk(logits, k=10)
-    top_tokens = lora_tokenizer.batch_decode(top_token_ids)
+    top_tokens = lora_tokenizer.batch_decode(top_token_ids.unsqueeze(-1))
 
     print("Top 10 tokens predicted by EM steering vector:")
     for i, token in enumerate(top_tokens):
@@ -1413,7 +1413,7 @@ def compute_response_kl(
     prompt_len: int,
 ) -> float:
     """
-    Compute mean KL divergence on response tokens only (averaged per-prompt, then across prompts).
+    Compute mean KL(base || other) on response tokens only (averaged per-prompt, then across prompts).
 
     Args:
         other_logits: Logits from the intervened model, shape [batch, full_seq_len, vocab_size]
@@ -1462,12 +1462,12 @@ def compare_steering_vectors_kl(
     Returns:
         Tuple of (kl_results, lora_reference_kl) where:
         - kl_results: dict mapping name -> list of KL values (one per coefficient)
-        - lora_reference_kl: average KL(LoRA || base) across prompts
+        - lora_reference_kl: average KL(base || LoRA) across prompts
     """
     # Step 1: Generate base model rollouts for all prompts (batched)
     messages_list = [[{"role": "user", "content": prompt}] for prompt in prompts]
     texts = [tokenizer.apply_chat_template(msgs, tokenize=False, add_generation_prompt=True) for msgs in messages_list]
-    gen_inputs = tokenizer(texts, return_tensors="pt", padding=True, padding_side="left").to(device)
+    gen_inputs = tokenizer(texts, return_tensors="pt", padding=True, padding_side="left").to(model.device)
     prompt_len = gen_inputs["input_ids"].shape[1]
 
     with model.disable_adapter():

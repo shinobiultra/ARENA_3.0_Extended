@@ -660,6 +660,11 @@ def load_pinned_mamba_130m_cpu(
 
     from transformers import MambaForCausalLM
 
+    from hf_mamba_cpu import route_cpu_mamba_ops_to_torch
+
+    # Transformers sends Mamba's ops to the CUDA-only causal-conv1d and mamba-ssm kernels
+    # whenever they are installed. Route CPU tensors to its own PyTorch implementation.
+    route_cpu_mamba_ops_to_torch()
     official = MambaForCausalLM.from_pretrained(
         REAL_MAMBA_MODEL_ID,
         revision=REAL_MAMBA_REVISION,

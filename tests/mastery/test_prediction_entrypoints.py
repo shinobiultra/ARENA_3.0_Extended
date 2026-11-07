@@ -11,9 +11,11 @@ import build
 
 
 def test_extension_page_links_carry_colab_links_and_no_practice_banner(tmp_path):
-    # Link generation never reads the master; the generated .ipynb is not checked in.
+    # Link generation never reads the master; the generated .ipynb is not checked in. Upstream's
+    # MasterFile requires the source-of-truth master .py beside it.
     master_path = tmp_path / 'master_7_1.ipynb'
     master_path.write_text('{}')
+    master_path.with_suffix('.py').write_text('')
     master = build.ExtensionMasterFile(
         master_path=master_path,
         chapter_dir=ROOT/'chapter7_activation_to_language',

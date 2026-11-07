@@ -5,7 +5,7 @@ Rows with `pin_before_use` must be resolved before a graded real-model run.
 
 | name | type | provider | repo_or_source_id | license | gated | revision | local_status | max_vram_gb | used_in_notebooks | gt_tier | notes |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| ARENA 3.0 source course | course_repo | GitHub | callummcdougall/ARENA_3.0 | MIT | false | f9f034bdb5b8748f44e8b4533b5c5bea68dc8bc0 | REQUIRED | 0 | 1.6 | GT-1 | Original course must remain behaviorally preserved. |
+| ARENA 3.0 source course | course_repo | GitHub | ARENA-education/ARENA_materials | MIT | false | 6a46100c4f219b2764d3a30fe501e810ee500d86 | REQUIRED | 0 | 1.6 | GT-1 | Original course must remain behaviorally preserved. |
 | Local PyTorch CUDA 13.2 runtime | runtime | uv environment | torch;torchvision;torchao;python | mixed | false | python 3.14.6; torch 2.12.1+cu132; torchvision 0.27.1+cu132; torchao 0.17.0 | REQUIRED | 24 | 1.6 | GT-1 | Validated on RTX 5090 Laptop GPU with CUDA 13.2, BF16 matmul, and torchao import/CUDA-context checks. |
 | Course fake-result diagnostics | dataset | generated | course_generated_fake_result_diagnostics_v1 | course_generated | false | seed_0 | GENERATED_BY_COURSE | 0 | 0.6 | GT-0 | Deterministic leakage, cherry-pick, probe-overfit, and random-direction controls. |
 | TransformerLens | tooling | Python | TransformerLensOrg/TransformerLens | MIT | false | 2.18.0 | REQUIRED | 24 | 1.6;7.1;7.2;7.3;7.4;7.5;8.1;8.2;8.3;8.4 | GT-1 | Hook and cache interface for transformer model organisms. |

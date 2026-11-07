@@ -20,7 +20,7 @@ ROOT = REPO_ROOT
 SECTION = Path(__file__).resolve().parent
 INSTRUCTION_PAGE = (
     ROOT / "chapter9_alignment_interpretability" / "instructions" / "pages"
-    / "05_[9.5]_ROME_Model_Editing.md"
+    / "06_[9.6]_Rank-One_Model_Editing_ROME.md"
 )
 EXERCISE_NOTEBOOK = SECTION / "9.5_ROME_Model_Editing_exercises.ipynb"
 SOLUTION_NOTEBOOK = SECTION / "9.5_ROME_Model_Editing_solutions.ipynb"

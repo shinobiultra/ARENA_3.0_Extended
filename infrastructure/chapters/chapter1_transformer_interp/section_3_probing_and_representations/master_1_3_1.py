@@ -6,7 +6,7 @@
 # This overrides print for Section 3 onward - output goes to both console and file.
 _builtin_print = print
 _output_file = open(
-    "/root/ARENA_3.0/infrastructure/chapters/chapter1_transformer_interp/section_3_probing_and_representations/master_1_3_1_output.txt",
+    "/root/ARENA_materials/infrastructure/chapters/chapter1_transformer_interp/section_3_probing_and_representations/master_1_3_1_output.txt",
     "a",
 )
 
@@ -186,7 +186,7 @@ git clone https://github.com/saprmarks/geometry-of-truth.git
 git clone https://github.com/ApolloResearch/deception-detection.git
 ```
 
-`Llama-2-13b-hf` is a gated model, so you'll need a HuggingFace access token (as well as requesting access [here](https://huggingface.co/meta-llama/Llama-2-13b-hf)). When you've got access and made a HuggingFace token, create a `.env` file in your `chapter1_transformer_interp/exercises` directory with:
+`Llama-2-13b-hf` and is a gated model, so you'll need a HuggingFace access token (as well as requesting access [here](https://huggingface.co/meta-llama/Llama-2-13b-hf), you might also want to request access to [Llama-3.1-8b-Instruct](https://huggingface.co/meta-llama/Llama-3.1-8B-Instruct) and [Llama-3.3-70b-Instruct](https://huggingface.co/meta-llama/Llama-3.3-70B-Instruct) while you're at it, since you'll need those models later in the exercises). When you've got access and made a HuggingFace token with read access, create a `.env` file in your `chapter1_transformer_interp/exercises` directory with:
 
 ```
 HF_TOKEN=hf_your_token_here
@@ -216,14 +216,14 @@ from pathlib import Path
 IN_COLAB = "google.colab" in sys.modules
 
 chapter = "chapter1_transformer_interp"
-repo = "ARENA_3.0"
+repo = "ARENA_materials"
 branch = "main"
 
 # # Install dependencies
 # try:
 #     import transformer_lens
 # except:
-#     %pip install "openai==1.56.1" einops datasets jaxtyping "sae-lens>=4.0.0,<5.0.0" openai tabulate umap-learn hdbscan eindex-callum git+https://github.com/callummcdougall/CircuitsVis.git#subdirectory=python git+https://github.com/callummcdougall/sae_vis.git@callum/v3 transformer_lens==2.17.0
+#     %pip install "openai>=1.56.2,<4" einops datasets jaxtyping "sae-lens>=6.51.3,<7.0.0" openai tabulate umap-learn hdbscan git+https://github.com/ARENA-education/eindex.git git+https://github.com/ARENA-education/CircuitsVis.git@arena-tl4.1#subdirectory=python git+https://github.com/ARENA-education/sae_vis.git@v0.3.7+arena.2 "transformer_lens>=3.9,<4"
 
 # # Get root directory, handling 3 different cases: (1) Colab, (2) notebook not in ARENA repo, (3) notebook in ARENA repo
 root = (
@@ -240,7 +240,7 @@ root = (
 #         %pip install jupyter ipython --upgrade
 
 #     if not os.path.exists(f"{root}/{chapter}"):
-#         !wget -P {root} https://github.com/callummcdougall/ARENA_3.0/archive/refs/heads/{branch}.zip
+#         !wget -P {root} https://github.com/ARENA-education/ARENA_materials/archive/refs/heads/{branch}.zip
 #         !unzip {root}/{branch}.zip '{repo}-{branch}/{chapter}/exercises/*' -d {root}
 #         !mv {root}/{repo}-{branch}/{chapter} {root}/{chapter}
 #         !rm {root}/{branch}.zip
@@ -286,7 +286,7 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import roc_auc_score, roc_curve
 from sklearn.preprocessing import StandardScaler
 from torch import Tensor
-from tqdm import tqdm
+from tqdm.auto import tqdm
 from transformers import AutoModelForCausalLM, AutoTokenizer, BitsAndBytesConfig
 
 device = t.device("cuda" if t.cuda.is_available() else "cpu")
@@ -412,6 +412,8 @@ r'''
 r'''
 ## Extracting activations
 
+Note - unlike the earlier sections of this chapter, which used TransformerLens (`HookedTransformer`, `run_with_cache`, hook names like `blocks.{layer}.hook_resid_post`), here we work directly with a HuggingFace `transformers` model (`AutoModelForCausalLM`). This is the most widely used library for running open-weight models, but it isn't built around interpretability, so there's no activation cache or named hook points. Instead, we'll get activations by passing `output_hidden_states=True` to the forward pass (as described below), and later on we'll intervene on activations by registering standard PyTorch forward hooks on the decoder layers, e.g. `model.model.layers[layer].register_forward_hook(hook_fn)`.
+
 Our first task is to extract hidden state activations from the model. For the Geometry of Truth approach, we extract the **last-token** activation at each specified layer. For declarative statements like "The city of Paris is in France.", the model's representation of whether the statement is true or false is concentrated at the final token position.
 
 Note - the Geometry of Truth paper probes specifically at the **end-of-sentence punctuation** token (the period / full stop). The datasets are designed so that every statement ends with a period, meaning the last token is always the period. This is important because the model's truth representation builds up over the sentence and is concentrated at the final punctuation mark.
@@ -440,6 +442,7 @@ Implement a function that extracts the last-token hidden state from specified la
 2. Run the forward pass with `output_hidden_states=True`
 3. For each sequence, find the index of the last non-padding token using `attention_mask`
 4. Extract the hidden state at that position for each requested layer
+5. Move the extracted activations to CPU and cast them to float32 (`.cpu().float()`) before concatenating across batches - this frees up GPU memory, and the later exercises need float32 CPU tensors: the model runs in bfloat16, which `t.linalg.eigh` and `t.linalg.pinv` (used by `get_pca_components` and `MMProbe`) don't support, and the labels and plotting code are on the CPU
 
 <details>
 <summary>Hint - handling padding</summary>
@@ -476,7 +479,7 @@ def extract_activations(
         batch_size: Number of statements to process at once.
 
     Returns:
-        Dictionary mapping layer index to tensor of activations, shape [n_statements, d_model].
+        Dictionary mapping layer index to tensor of activations (on CPU, float32), shape [n_statements, d_model].
     """
     # EXERCISE
     # raise NotImplementedError()
@@ -661,7 +664,7 @@ if MAIN and FLAG_RUN_SECTION_1:
 
     for i, name in enumerate(DATASET_NAMES):
         acts = activations[name]
-        labs = labels_dict[name]
+        label_text = labels_dict[name]
         prompts = statements_dict[name]
         pcs = get_pca_components(acts, k=2)
         X_centered = acts - acts.mean(dim=0)
@@ -672,7 +675,7 @@ if MAIN and FLAG_RUN_SECTION_1:
         pc_var = t.tensor(projected).var(dim=0)
         pct_explained = (pc_var / total_var * 100).tolist()
 
-        colors = ["blue" if l == 1 else "red" for l in labs.tolist()]
+        colors = ["blue" if l == 1 else "red" for l in label_text.tolist()]
         fig.add_trace(
             go.Scatter(
                 x=projected[:, 0],
@@ -708,7 +711,7 @@ if MAIN and FLAG_RUN_SECTION_1:
     )
     fig.show()
     # FILTERS: ~
-    # fig.write_html(section_dir / "13102.html")
+    # fig.write_html(section_dir / "13102.html", include_plotlyjs="cdn")
     # END FILTERS
 # END HIDE
 
@@ -870,7 +873,7 @@ if MAIN and FLAG_RUN_SECTION_1:
     )
     fig.show()
     # FILTERS: ~
-    # fig.write_html(section_dir / "13104.html")
+    # fig.write_html(section_dir / "13104.html", include_plotlyjs="cdn")
     # END FILTERS
 
     best_layer = all_layers[int(np.argmax(sweep_results["test_acc"]))]
@@ -975,10 +978,13 @@ r'''
 Implement the Mass-Mean (difference-of-means) probe as a PyTorch `nn.Module`. The key components:
 
 * `direction`: the vector `mean(true_acts) - mean(false_acts)`, stored as a non-trainable parameter
+* `bias`: the vector `0.5 * (mean(true_acts) + mean(false_acts))`, for centering around midpoint
 * `covariance`: the pooled within-class covariance matrix (for optional IID-corrected evaluation)
-* `forward(x, iid=False)`: returns `sigmoid(x @ direction)`, or `sigmoid(x @ inv_cov @ direction)` if `iid=True`
+* `forward(x, iid=False)`: returns `sigmoid((x - bias) @ direction)`, or `sigmoid((x - bias) @ inv_cov @ direction)` if `iid=True`
 * `pred(x, iid=False)`: returns binary predictions (round the probabilities)
 * `from_data(acts, labels)`: class method that constructs a probe from data
+
+Note: The GoT codebase centers each dataset's activations before probing (`collect_acts(center=True)`), which makes a biasless probe valid there. This notebook probes raw activations, so the midpoint bias must be explicit - without it, the score includes the dataset's offset along the direction, costing ~20 points of accuracy.
 '''
 
 # ! CELL TYPE: code
@@ -991,14 +997,19 @@ class MMProbe(t.nn.Module):
         direction: Float[Tensor, " d_model"],
         covariance: Float[Tensor, "d_model d_model"] | None = None,
         atol: float = 1e-3,
+        bias: Float[Tensor, " d_model"] | None = None,
     ):
         super().__init__()
         # EXERCISE
-        # # Store direction and precompute inverse covariance
+        # # Store direction and bias and precompute inverse covariance
         # raise NotImplementedError()
         # END EXERCISE
         # SOLUTION
         self.direction = t.nn.Parameter(direction, requires_grad=False)
+        if bias is not None:
+            self.bias = t.nn.Parameter(bias, requires_grad=False)
+        else:
+            self.bias = None
         if covariance is not None:
             self.inv = t.nn.Parameter(t.linalg.pinv(covariance, hermitian=True, atol=atol), requires_grad=False)
         else:
@@ -1010,6 +1021,8 @@ class MMProbe(t.nn.Module):
         # raise NotImplementedError()
         # END EXERCISE
         # SOLUTION
+        if self.bias is not None:
+            x = x - self.bias
         if iid and self.inv is not None:
             return t.sigmoid(x @ self.inv @ self.direction)
         else:
@@ -1024,6 +1037,7 @@ class MMProbe(t.nn.Module):
         acts: Float[Tensor, "n d_model"],
         labels: Float[Tensor, " n"],
         device: str = "cpu",
+        bias: bool = True,
     ) -> "MMProbe":
         # EXERCISE
         # raise NotImplementedError()
@@ -1039,7 +1053,8 @@ class MMProbe(t.nn.Module):
         centered = t.cat([pos_acts - pos_mean, neg_acts - neg_mean], dim=0)
         covariance = centered.t() @ centered / acts.shape[0]
 
-        return MMProbe(direction, covariance=covariance).to(device)
+        mu_mean = 0.5 * (pos_mean + neg_mean) if bias else None
+        return MMProbe(direction, covariance=covariance, bias=mu_mean).to(device)
         # END SOLUTION
 
 
@@ -1054,7 +1069,7 @@ if MAIN and FLAG_RUN_SECTION_2:
     # Test accuracy
     test_preds = mm_probe.pred(test_acts["cities"])
     test_acc = (test_preds == test_labels["cities"]).float().mean().item()
-    assert test_acc > 0.7, "Expected at least 70% accuracy"
+    assert test_acc > 0.9, "Expected at least 90% accuracy"
 
     print("MMProbe on cities:")
     print(f"  Train accuracy: {train_acc:.3f}")
@@ -1069,8 +1084,8 @@ if MAIN and FLAG_RUN_SECTION_2:
 
 r'''
 <pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace">MMProbe on cities:
-  Train accuracy: 0.751
-  Test accuracy:  0.743
+  Train accuracy: 0.976
+  Test accuracy:  0.953
   Direction norm: 9.776
   Direction (first 5): [0.04566267877817154, 0.2775959372520447, -0.09119868278503418, 0.09136010706424713, -0.14157512784004211]</pre>
 '''
@@ -1238,7 +1253,7 @@ if MAIN and FLAG_RUN_SECTION_2:
     )
     fig.show()
     # FILTERS: ~
-    # fig.write_html(section_dir / "13106.html")
+    # fig.write_html(section_dir / "13106.html", include_plotlyjs="cdn")
     # END FILTERS
 
 # END HIDE
@@ -1274,9 +1289,9 @@ r'''
 > Cross-dataset generalization is the real test of whether your probe has found a universal truth direction.
 > ```
 
-Train MM and LR probes on each of the 3 curated datasets and evaluate each probe on all 3 datasets, producing 3×3 accuracy matrices. If the model has a unified truth direction, off-diagonal entries should be high. The Geometry of Truth paper reports strong cross-generalization for LR probes at 13B scale, and even stronger at 70B:
+Train MM and LR probes on each of the 3 curated datasets and evaluate each probe on all 3 datasets, producing 3×3 accuracy matrices. If the model has a unified truth direction, off-diagonal entries should be high. The Geometry of Truth paper reports that probes generalize better for larger models, and that generalization across datasets is high for LLaMA-2-13B and 70B (Section 5):
 
-> *"The LR probes transfer almost perfectly: probes trained on any one of our three datasets achieve near-ceiling accuracy on the other two."*
+> *"for LLaMA-2-13B and 70B, generalization is generally high; for example, no matter which probing technique is used, we find that probes trained on larger than + smaller than get > 95% accuracy on sp en trans."*
 
 Do your results agree? You should also compute pairwise cosine similarities between probe directions trained on different datasets to check whether they point in a similar direction.
 '''
@@ -1356,7 +1371,7 @@ if MAIN and FLAG_RUN_SECTION_2:
     fig.update_layout(title="Cross-dataset Generalization (Test Accuracy)", height=400, width=800)
     fig.show()
     # FILTERS: ~
-    # fig.write_html(section_dir / "13107.html")
+    # fig.write_html(section_dir / "13107.html", include_plotlyjs="cdn")
     # END FILTERS
 
     # Cosine similarity between probe directions
@@ -1393,7 +1408,7 @@ r'''
 
 If the model has a single "truth direction" that is shared across domains, then probes trained on *any* dataset should achieve high accuracy on *all* datasets (high off-diagonal entries). If instead the model represents truth in domain-specific ways, you'll see high diagonal (in-distribution) but low off-diagonal (out-of-distribution) accuracy.
 
-The Geometry of Truth paper reports that LR probes generalize almost perfectly at 13B+ scale, which suggests a largely unified truth representation. However, at smaller model scales or for very different domains, you may see more variation.
+The Geometry of Truth paper reports that LR probes generalize well at 13B scale, and best for larger models such as LLaMA-2-70B (*"probes generalize better for larger models"*), which suggests a largely unified truth representation. However, at smaller model scales or for very different domains, you may see more variation.
 
 As a further test, try evaluating your cities probe on the `likely` dataset from the geometry-of-truth repo, which contains nonfactual text with likely or unlikely continuations (code snippets, random text). If the truth probe also separates this dataset, the probe may detect *text probability* rather than *factual truth*. The paper predicts (and confirms) that a well-trained truth probe should **not** separate `likely`, because truth and likelihood are distinct features.
 </details>
@@ -1619,7 +1634,7 @@ if MAIN and FLAG_RUN_SECTION_3:
     )
     fig.show()
     # FILTERS: ~
-    # fig.write_html(section_dir / "13112.html")
+    # fig.write_html(section_dir / "13112.html", include_plotlyjs="cdn")
     # END FILTERS
 # END HIDE
 
@@ -1909,7 +1924,7 @@ if MAIN and FLAG_RUN_SECTION_3:
     fig.add_hline(y=0, line_dash="dash", line_color="gray")
     fig.show()
     # FILTERS: ~
-    # fig.write_html(section_dir / "13114.html")
+    # fig.write_html(section_dir / "13114.html", include_plotlyjs="cdn")
     # END FILTERS
 # END HIDE
 
@@ -2022,7 +2037,7 @@ if MAIN and FLAG_RUN_SECTION_3:
     )
     fig.show()
     # FILTERS: ~
-    # fig.write_html(section_dir / "13116.html")
+    # fig.write_html(section_dir / "13116.html", include_plotlyjs="cdn")
     # END FILTERS
 # END HIDE
 
@@ -2525,7 +2540,7 @@ if MAIN and FLAG_RUN_SECTION_4:
     )
     fig.show()
     # FILTERS: ~
-    # fig.write_html(section_dir / "13119.html")
+    # fig.write_html(section_dir / "13119.html", include_plotlyjs="cdn")
     # END FILTERS
 
     # Histogram of LR scores on test set
@@ -2548,7 +2563,7 @@ if MAIN and FLAG_RUN_SECTION_4:
     )
     fig.show()
     # FILTERS: ~
-    # fig.write_html(section_dir / "13120.html")
+    # fig.write_html(section_dir / "13120.html", include_plotlyjs="cdn")
     # END FILTERS
 
 # END HIDE
@@ -2651,7 +2666,7 @@ if MAIN and FLAG_RUN_SECTION_4:
     tests.test_deception_steering_hook(DeceptionSteeringHook)
 
 if MAIN and FLAG_RUN_SECTION_4:
-    mms_normed = mm_probe.direction / (mm_probe.direction.norm() + 1e-8)
+    mm_direction = mm_probe.direction
 
     print("=== Causal Steering with Deception Probe Direction ===\n")
 
@@ -2677,7 +2692,7 @@ if MAIN and FLAG_RUN_SECTION_4:
     print(f"[Baseline] {baseline_text2.strip()}\n")
 
     for coef in [-0.3, -0.1, 0.1, 0.3]:
-        hook = DeceptionSteeringHook(mms_normed, mid_layer, coef, apply_to_all_tokens=True)
+        hook = DeceptionSteeringHook(mm_direction, mid_layer, coef, apply_to_all_tokens=True)
         hook.enable(instruct_model)
         try:
             with t.no_grad():
@@ -3155,7 +3170,7 @@ if MAIN and FLAG_RUN_SECTION_4_70B:
     fig.show()
 
     # FILTERS: ~
-    # fig.write_html(section_dir / "13125.html")
+    # fig.write_html(section_dir / "13125.html", include_plotlyjs="cdn")
     # END FILTERS
 # END HIDE
 
@@ -3825,7 +3840,7 @@ if MAIN and FLAG_RUN_SECTION_5:
     )
     fig.show()
     # FILTERS: ~
-    fig.write_html(section_dir / "13128.html")
+    fig.write_html(section_dir / "13128.html", include_plotlyjs="cdn")
     # END FILTERS
 # END HIDE
 
@@ -4009,7 +4024,7 @@ if MAIN and FLAG_RUN_SECTION_5:
         )
         bar_fig.show()
         # FILTERS: ~
-        bar_fig.write_html(section_dir / f"13130_bar_{ex}.html")
+        bar_fig.write_html(section_dir / f"13130_bar_{ex}.html", include_plotlyjs="cdn")
         # END FILTERS
 # END HIDE
 

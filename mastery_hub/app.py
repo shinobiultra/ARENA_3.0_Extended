@@ -397,10 +397,10 @@ def main():
                     st.markdown('[Open optimizer companion](#optimizer-lab)')
                     for original in unit['original_paths']:
                         kind = 'tree' if (ROOT / original).is_dir() else 'blob'
-                        original_url = f'https://github.com/callummcdougall/ARENA_3.0/{kind}/f9f034bdb5b8748f44e8b4533b5c5bea68dc8bc0/{quote(original)}'
+                        original_url = f'https://github.com/ARENA-education/ARENA_materials/{kind}/6a46100c4f219b2764d3a30fe501e810ee500d86/{quote(original)}'
                         st.markdown(f'[Original foundation: {original}]({original_url})')
             st.caption('The app runs the optimizer pilot. Extension prediction notebooks are available above; the other Alchemy companions remain planned.')
-            st.markdown('[Original ARENA](https://github.com/callummcdougall/ARENA_3.0) · [Extension](https://github.com/shinobiultra/ARENA_3.0_Extended)')
+            st.markdown('[Original ARENA](https://github.com/ARENA-education/ARENA_materials) · [Extension](https://github.com/shinobiultra/ARENA_3.0_Extended)')
         timer_renderer = show_study_timer()
         with st.expander('Local progress and privacy'):
             st.caption(f'Private progress: {default_data_dir()}')

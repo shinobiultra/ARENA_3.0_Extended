@@ -3,47 +3,62 @@ name = "arena-3-extended"
 version = "0.1.0"
 requires-python = ">=3.14,<3.15"
 dependencies = [
+    # One lock for the whole course (#37 P17): upstream ARENA's requirements.txt ranges bind here
+    # unless a cap's stated reason doesn't apply; extension-only packages use >= floors (#23 RT3).
     "accelerate>=1.14.0",
+    "ale-py>=0.10",
     "anthropic>=0.42.0",
-    "bitsandbytes==0.50.2",
-    "captum==0.9.0",
-    "causal-conv1d==1.6.2.post1",
+    "anywidget>=0.11.0",
+    "bitsandbytes>=0.50.2",
+    # Upstream pin: brax only declares jax>=0.4.6, with no upper bound.
+    "brax==0.14.2",
+    "captum>=0.9.0",
     "circuitsvis",
+    "datasets>=3.6.0",
     "diffusers>=0.38.0",
     "docformatter>=1.7.8",
-    "eindex-callum>=0.1.2",
+    "eindex-callum",
     "einops>=0.7.0",
+    # Upstream pin: vectorised Atari emulators for the 2.3 Atari bonus.
+    "envpool==1.2.5",
+    "flask>=3.1.3",
     "frozendict>=2.4.7",
-    "fsspec==2025.3.0",
+    "fsspec>=2025.3.0",
     "ftfy>=6.3.1",
     "gdown>=6.1.0",
-    "gymnasium[other]==0.29.0",
+    # Upstream: only [atari,other] (the classic-control extra would pull pygame-ce over pygame).
+    "gymnasium[atari,other]>=1.2,<2",
     "hdbscan>=0.8.44",
     "huggingface-hub>=0.36.2",
     "imageio-ffmpeg>=0.6.0",
     "inspect-ai>=0.3.242",
     "instructor>=1.15.4",
     "ipykernel>=7.3.0",
+    # Upstream pins (no stated reason; they bind under #37 P17).
     "ipywidgets==7.7.1",
+    # Upstream pin: jax 0.11.2 runs the Brax MuJoCo envs on the GPU next to torch (both CUDA 13).
+    "jax[cuda13]==0.11.2",
     "jaxtyping>=0.2.38",
     "jupyter>=1.1.1",
     "jupyterlab-widgets==1.1.1",
-    "kernels==0.12.3",
-    "mamba-ssm==2.3.2.post1",
+    "kernels>=0.12.3",
+    "liger-kernel>=0.8.5",
+    "liveplot",
     "matplotlib>=3.11.0",
     "mediapy>=1.2.6",
+    "mujoco>=3.3",
     "nbformat>=5.10.4",
     "neel-plotly",
-    "nnsight>=0.3.5",
+    "nnsight>=0.7,<0.8",
     "notebook>=7.6.0",
-    "numpy==1.26.4",
+    "numpy>=2.0",
     "numpy-stl>=4.0.0",
     "nvidia-modelopt>=0.44.0",
-    "openai>=1.56.2",
+    "openai>=1.56.2,<4",
     "opencv-python>=4.11.0.86",
     "pandas>=2.3.3",
     "peft>=0.19.1",
-    "pillow==11.3.0",
+    "pillow>=11.3.0",
     "plotly>=6.8.0",
     "portalocker>=2.0.0",
     "pre-commit>=4.6.0",
@@ -52,44 +67,103 @@ dependencies = [
     "python-dotenv>=1.2.2",
     "pyyaml>=6.0.3",
     "requests>=2.34.2",
-    "sae-lens>=6.37.4,<7.0.0",
-    "sae-vis==0.3.7",
+    "sae-lens>=6.51.3,<7.0.0",
+    "sae-vis",
     "safetensors>=0.8.0",
     "scikit-learn>=1.9.0",
     "sentence-transformers>=5.6.0",
+    # 16.3 compares the learner's TreeSHAP/DeepSHAP/GradientSHAP with the shap 0.49.1 source, by hash.
     "shap==0.49.1",
-    "shapiq==1.5.2",
+    "shapiq>=1.5.2",
     "streamlit>=1.58.0",
     "streamlit-antd-components==0.2.5",
     "streamlit-image-select>=0.6.0",
     "streamlit-on-hover-tabs>=1.0.1",
     "tabulate>=0.10.0",
     "tiktoken>=0.13.0",
-    "torch==2.12.1+cu132",
-    "torchao==0.17.0",
+    # Upstream caps torch<2.15 only to stop a silent move to a new CUDA major; 2.15 cu134 is still
+    # CUDA 13 (driver 580+), so that reason does not apply (#37 P17).
+    "torch>=2.15.0",
+    "torchao>=0.18.0",
+    "torchaudio>=2.11",
     "torchinfo>=1.8.0",
-    "torchtext>=0.6.0",
-    "torchvision==0.27.1+cu132",
+    "torchmetrics[image]>=1.9.0",
+    "torchvision>=0.29.2",
     "tqdm>=4.68.3",
-    "transformer-lens>=2.16.1,<3.0.0",
+    # Upstream: TransformerLens 3.9 keeps HookedTransformer (deprecated for TransformerBridge).
+    "transformer-lens>=3.9,<4",
     "transformers>=5.12.1,<6",
     "typeguard>=4.5.2",
     "umap-learn>=0.5.12",
     "wandb>=0.28.0",
-    "wheel==0.47.0",
+    "wheel>=0.47.0",
     "wikipedia>=1.4.0",
 ]
 
+[project.optional-dependencies]
+# CUDA-only Mamba kernels, built from source for the local GPU: `uv sync --extra cuda-kernels`.
+# 5.4 needs them; without them Transformers' Mamba models use their PyTorch path.
+cuda-kernels = [
+    "causal-conv1d>=1.7.0",
+    "mamba-ssm>=2.3.2.post1",
+]
+
 [[tool.uv.index]]
-name = "pytorch-cu132"
-url = "https://download.pytorch.org/whl/cu132"
+name = "pytorch-cu134"
+url = "https://download.pytorch.org/whl/cu134"
 explicit = true
 
+[tool.uv]
+constraint-dependencies = [
+    # tilelang 0.1.8 (pinned by mamba-ssm) fails to import with apache-tvm-ffi 0.1.12.
+    "apache-tvm-ffi<0.1.12",
+]
+
 [tool.uv.sources]
-torch = { index = "pytorch-cu132" }
-torchvision = { index = "pytorch-cu132" }
-circuitsvis = { git = "https://github.com/callummcdougall/CircuitsVis.git", subdirectory = "python" }
+torch = { index = "pytorch-cu134" }
+torchvision = { index = "pytorch-cu134" }
+# ARENA forks (upstream ARENA's requirements.txt): sae-vis 0.3.7 on PyPI pins transformer-lens<3,
+# jaxtyping<0.3 and datasets<4; Callum's CircuitsVis pins numpy<2.
+circuitsvis = { git = "https://github.com/ARENA-education/CircuitsVis.git", tag = "arena-tl4.1", subdirectory = "python" }
+sae-vis = { git = "https://github.com/ARENA-education/sae_vis.git", tag = "v0.3.7+arena.2" }
+eindex-callum = { git = "https://github.com/ARENA-education/eindex.git" }
+liveplot = { git = "https://github.com/ARENA-education/liveplot.git" }
 neel-plotly = { git = "https://github.com/neelnanda-io/neel-plotly" }
+# mamba-ssm 2.3.2.post1 (latest release) compiles with -std=c++17, but torch >= 2.14 headers need
+# C++20. Use upstream main (which also fixes Blackwell kernels, #997) plus the 4-line C++20 fix from
+# the open PR state-spaces/mamba#1000. Return to the PyPI release once one ships with it.
+mamba-ssm = { git = "https://github.com/state-spaces/mamba", rev = "653923ce8fb0d47cdd9bcfd5904a0f1d58f91274" }
+
+# causal-conv1d and mamba-ssm publish no cp314 wheels, so uv builds them from source. Build them
+# against the exact locked torch (same CUDA and C++ ABI) and skip their prebuilt-wheel download
+# guess. With CUDA >= 13.0, both setup.py files compile sm_75 through sm_121, including sm_120.
+[tool.uv.extra-build-dependencies]
+causal-conv1d = [{ requirement = "torch", match-runtime = true }]
+mamba-ssm = [{ requirement = "torch", match-runtime = true }]
+
+[tool.uv.extra-build-variables]
+causal-conv1d = { CAUSAL_CONV1D_FORCE_BUILD = "TRUE" }
+# Upstream main builds the CUDA selective scan (Mamba-1 fast path) only on request.
+mamba-ssm = { MAMBA_FORCE_BUILD = "TRUE", MAMBA_KEEP_CUDA_BUILD = "TRUE" }
+
+# uv needs static metadata to match mamba-ssm's build torch to the runtime torch; the git source's
+# version is dynamic. Copied from that commit's pyproject.toml [project] table.
+[[tool.uv.dependency-metadata]]
+name = "mamba-ssm"
+version = "2.3.2.post1"
+requires-python = ">=3.10"
+requires-dist = [
+    "torch",
+    "tilelang==0.1.8",
+    "apache-tvm-ffi<=0.1.12",
+    "quack-kernels>=0.3.4",
+    "triton>=3.5.0",
+    "ninja",
+    "einops",
+    "transformers",
+    "packaging",
+    "setuptools>=61.0.0",
+]
 
 [tool.ruff]
 line-length = 100
@@ -97,6 +171,14 @@ line-length = 100
 [tool.ruff.lint]
 ignore = ["E722", "E731", "F722", "E402", "E741"]
 extend-select = ["I"]
+
+[tool.ruff.format]
+# Markdown cells in infrastructure/chapters/*/master_*.py are wrapped in r'''...''',
+# so the """ docstrings inside them need no escaping. Ruff's default quote-style
+# ("double") rewrites each wrapper it safely can to r"""...""" while leaving the rest
+# as r'''  -- an inconsistent mix that forces \'\'\' escapes back into the masters.
+# "preserve" leaves existing quotes exactly as written.
+quote-style = "preserve"
 
 [tool.pytest.ini_options]
 pythonpath = ["."]

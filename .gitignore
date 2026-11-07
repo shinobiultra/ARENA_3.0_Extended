@@ -38,6 +38,7 @@ logs/
 
 # Media Files
 *videos
+iframe_figures
 chapter1_transformer_interp/instructions/media/media
 talk-animation*
 
@@ -142,3 +143,19 @@ infrastructure/chapters/chapter1_transformer_interp/master_1_6.ipynb
 
 # Local custody evidence (6.7 GB of run archives); kept on the laptop disk only.
 docs/mastery/evidence/
+
+# Trained LoRA adapters saved by [2.4.2] RLVR (loaded by its playground)
+chapter2_rl/exercises/part42_rlvr/adapters/
+
+# 5.8 writes its learner run (trained weights, generations) here on every fresh-kernel run.
+chapter5_modern_architectures/exercises/part8_diffusion_language_models/artifacts/learner_text_run/
+# Chapter 11 lessons write their runs (activations, fitted models, figures) next to the lesson;
+# 11.4 alone writes ~14 GB per fresh-kernel run. 16.5 writes figures/ the same way.
+chapter11_representation_geometry/exercises/part1_pca_svd_geometry_controls/geometry_outputs/
+chapter11_representation_geometry/exercises/part1_pca_svd_geometry_controls/experiments/
+chapter11_representation_geometry/exercises/part2_cca_svcca_alignment/alignment_outputs/
+chapter11_representation_geometry/exercises/part2_cca_svcca_alignment/actual_alignment_study/
+chapter11_representation_geometry/exercises/part3_causal_abstraction_das/das_outputs/
+chapter11_representation_geometry/exercises/part4_concept_erasure/erasure_outputs/
+chapter11_representation_geometry/exercises/part5_contrast_consistent_search/ccs_outputs/
+chapter16_shapley_attribution_baselines/exercises/part5_shapley_interactions/figures/
