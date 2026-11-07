@@ -53,6 +53,11 @@ def markdown_text(at):
     return unescape("\n".join(element.value for element in at.markdown))
 
 
+def _param(at, key: str) -> str:
+    """One query parameter as a string (Streamlit's AppTest returned a list before 1.67)."""
+    value = at.query_params[key]
+    return value[-1] if isinstance(value, list) else value
+
 def test_reader_starts_at_bookmark_and_manual_selectors_update_resume():
     at = app({"section": "12.3", "part": "2"})
     assert not at.exception
@@ -67,17 +72,17 @@ def test_reader_starts_at_bookmark_and_manual_selectors_update_resume():
     assert 'target="_self"' in text
     at.selectbox[2].select_index(2).run()
     assert not at.exception
-    assert at.query_params["section"] == ["12.3"]
-    assert at.query_params["part"] == ["3"]
+    assert _param(at, "section") == "12.3"
+    assert _param(at, "part") == "3"
     at.selectbox[1].select_index(0).run()
     assert not at.exception
     assert at.selectbox[1].value["number"] == "12.1"
-    assert at.query_params["section"] == ["12.1"]
-    assert at.query_params["part"] == ["1"]
+    assert _param(at, "section") == "12.1"
+    assert _param(at, "part") == "1"
     at.selectbox[0].select("chapter7_activation_to_language").run()
     assert not at.exception
     assert at.selectbox[1].value["number"] == "7.1"
-    assert at.query_params["section"] == ["7.1"]
+    assert _param(at, "section") == "7.1"
     at.run()
     assert at.selectbox[0].value == "chapter7_activation_to_language"
     assert at.selectbox[1].value["number"] == "7.1"

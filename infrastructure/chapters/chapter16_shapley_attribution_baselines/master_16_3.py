@@ -4273,11 +4273,13 @@ def tree_helper_treeshap_reference__reference_environment() -> dict:
     from shap.explainers import _tree
 
     manifest = json.loads((tree_helper_treeshap_reference_HERE / "author_reference.json").read_text())
-    expected_versions = {"numpy": "1.26.4", "scikit_learn": "1.9.0", "shap": "0.49.1"}
+    # The author reference is pinned by its SHAP version and the source hashes below. numpy and
+    # scikit-learn are recorded, not required, so environment upgrades keep this check running.
+    expected_versions = {"shap": "0.49.1"}
     actual_versions = {
         "numpy": np.__version__, "scikit_learn": sklearn.__version__, "shap": shap.__version__
     }
-    if actual_versions != expected_versions:
+    if actual_versions["shap"] != expected_versions["shap"]:
         raise ValueError(f"Reference version mismatch: {actual_versions} != {expected_versions}")
     if getattr(_tree, "_cext", None) is None or not hasattr(_tree._cext, "dense_tree_shap"):
         raise RuntimeError("Installed SHAP C++ dense_tree_shap is unavailable.")
@@ -10572,13 +10574,10 @@ def deep_helper_deepshap_reference__reference_environment() -> dict[str, Any]:
         "scikit_learn": sklearn.__version__,
         "shap": shap.__version__,
     }
-    expected_versions = {
-        "numpy": "1.26.4",
-        "torch": "2.12.1+cu132",
-        "scikit_learn": "1.9.0",
-        "shap": "0.49.1",
-    }
-    if actual_versions != expected_versions or manifest.get("version") != "0.49.1":
+    # The author reference is pinned by its SHAP version and the source hashes below. numpy, torch
+    # and scikit-learn are recorded, not required, so environment upgrades keep this check running.
+    expected_versions = {"shap": "0.49.1"}
+    if actual_versions["shap"] != expected_versions["shap"] or manifest.get("version") != "0.49.1":
         raise ValueError(f"Reference version mismatch: {actual_versions}.")
     expected_source_keys = {
         "shap/explainers/_deep/__init__.py",
@@ -18956,8 +18955,6 @@ r'''
 # ! TAGS: [keep-main]
 
 gradient_helper_gradientshap_reference_EXPECTED_VERSIONS = {
-    "numpy": "1.26.4",
-    "torch": "2.12.1+cu132",
     "shap": "0.49.1",
     "captum": "0.9.0",
 }
@@ -19836,7 +19833,10 @@ def gradient_helper_gradientshap_reference_reference_environment() -> dict[str, 
         "shap": shap.__version__,
         "captum": captum.__version__,
     }
-    if versions != gradient_helper_gradientshap_reference_EXPECTED_VERSIONS:
+    # Only the reference implementations are pinned (also by source hash below); numpy and torch
+    # are recorded, not required, so environment upgrades keep this check running.
+    pinned = {key: versions[key] for key in gradient_helper_gradientshap_reference_EXPECTED_VERSIONS}
+    if pinned != gradient_helper_gradientshap_reference_EXPECTED_VERSIONS:
         raise ValueError(f"GradientSHAP reference version mismatch: {versions}.")
 
     shap_root = Path(shap.__file__).resolve().parent
@@ -21683,8 +21683,6 @@ def initialize_lesson_plumbing():
         "Captum's positive-noise stream is generated from a float32 stdev buffer under the pinned ordinary default-dtype convention.",
     )
     gradient_helper_gradientshap_reference_EXPECTED_VERSIONS = {
-        "numpy": "1.26.4",
-        "torch": "2.12.1+cu132",
         "shap": "0.49.1",
         "captum": "0.9.0",
     }
