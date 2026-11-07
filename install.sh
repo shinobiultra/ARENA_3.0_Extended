@@ -2,9 +2,8 @@
 set -euo pipefail
 
 # Default ARENA_3.0_Extended setup path.
-# The original upstream/legacy dependencies are kept in requirements-original.txt
-# and requirements-legacy-rl.txt; this installer prepares the extension's uv
-# managed Python 3.14 + PyTorch CUDA 13.4 environment.
+# Upstream ARENA's own requirements are kept in requirements-original.txt; this installer
+# syncs the one uv lock for the whole course (Python 3.14 + PyTorch CUDA 13.4).
 
 PLATFORM="runpod"
 CLONE_LLM_CONTEXT=true

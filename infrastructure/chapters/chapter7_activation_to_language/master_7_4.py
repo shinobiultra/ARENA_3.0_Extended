@@ -78,7 +78,7 @@ of these issues concretely. By the end you'll have:
 - compared the text bottleneck against honest baselines (a bag of words of the input sentence, PCA with the same number of dimensions, random text), and produced the section's signature picture: **reconstruction quality versus behaviour**, where the bag of words of the input reconstructs 70% of the variance but gets the verb wrong most of the time the subject and object disagree, while the best reconstruction from a two-word description like `plural past` explains only 17% of the variance and gets the verb right 99% of the time.
 
 This section assumes you're comfortable with TransformerLens hooks and activation patching ([1.2] Intro to Mech Interp, and the Patchscopes part of [7.1]). Part 3️⃣ uses a policy
-gradient with a KL penalty to a reference policy; you've seen both in [2.3] PPO and [2.4] RLHF, but we re-derive everything we need.
+gradient with a KL penalty to a reference policy; you've seen both in [2.3] PPO and [2.4.1] RLHF, but we re-derive everything we need.
 '''
 
 # ! CELL TYPE: markdown

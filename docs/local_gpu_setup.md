@@ -18,41 +18,34 @@ Required exercises should fit in the green or yellow tier. Red-tier work should 
 
 ## Verified local stack
 
-This checkout has been verified on 2026-06-28 with:
+This checkout has been verified on 2026-11-07 with:
 
 ```text
-Python: 3.14.6
-PyTorch: 2.12.1+cu132
-torchvision: 0.27.1+cu132
-CUDA build: 13.2
+Python: 3.14.10
+PyTorch: 2.15.0+cu134
+torchvision: 0.29.2+cu134
+CUDA build: 13.4 (driver 615.78)
 GPU: NVIDIA GeForce RTX 5090 Laptop GPU
 VRAM: 23.46 GiB
 ```
 
-Install the locked uv environment with:
+One uv lock covers the whole course, original chapters included (#37). Install it with:
 
 ```bash
-export BNB_CUDA_VERSION=130
-uv venv --python 3.14
 uv sync --locked
 ```
 
-`pyproject.toml` pins `torch==2.12.1+cu132` and
-`torchvision==0.27.1+cu132` to the explicit PyTorch CUDA 13.2 wheel index
-`https://download.pytorch.org/whl/cu132`; `uv.lock` records the full extension
-dependency set.
-
-`bitsandbytes==0.49.2` currently ships a CUDA 13.0 binary but not a CUDA 13.2
-binary. On this machine the CUDA 13.0 binary runs against the CUDA 13.2 PyTorch
-stack by setting:
+On a machine with the CUDA toolkit (`nvcc`), add the CUDA-only Mamba kernels that 5.4 needs:
 
 ```bash
-export BNB_CUDA_VERSION=130
+uv sync --locked --extra cuda-kernels
 ```
 
-The current `requirements.txt` keeps older CUDA12/JAX/Brax/Atari dependencies
-out of the default Python 3.14 environment. Use `requirements-legacy-rl.txt`
-only for a separate legacy Chapter 2 RL environment.
+That builds `causal-conv1d` and `mamba-ssm` from source for sm_75 through sm_121 (about ten
+minutes). `pyproject.toml` takes `torch` and `torchvision` from the PyTorch CUDA 13.4 wheel index
+`https://download.pytorch.org/whl/cu134`; `bitsandbytes` picks its closest CUDA 13 binary by
+itself, so no `BNB_CUDA_VERSION` override is needed. The Chapter 2 JAX/Brax/EnvPool/Atari stack
+(`jax[cuda13]`) shares the same CUDA 13 libraries as torch and is part of the lock.
 
 ## Required gated artifacts
 

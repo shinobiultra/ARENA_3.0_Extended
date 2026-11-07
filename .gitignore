@@ -38,6 +38,7 @@ logs/
 
 # Media Files
 *videos
+iframe_figures
 chapter1_transformer_interp/instructions/media/media
 talk-animation*
 
@@ -142,3 +143,6 @@ infrastructure/chapters/chapter1_transformer_interp/master_1_6.ipynb
 
 # Local custody evidence (6.7 GB of run archives); kept on the laptop disk only.
 docs/mastery/evidence/
+
+# Trained LoRA adapters saved by [2.4.2] RLVR (loaded by its playground)
+chapter2_rl/exercises/part42_rlvr/adapters/

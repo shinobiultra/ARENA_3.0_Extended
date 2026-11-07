@@ -3,44 +3,58 @@ name = "arena-3-extended"
 version = "0.1.0"
 requires-python = ">=3.14,<3.15"
 dependencies = [
+    # One lock for the whole course (#37 P17): upstream ARENA's requirements.txt ranges bind here
+    # unless a cap's stated reason doesn't apply; extension-only packages use >= floors (#23 RT3).
     "accelerate>=1.14.0",
+    "ale-py>=0.10",
     "anthropic>=0.42.0",
+    "anywidget>=0.11.0",
     "bitsandbytes>=0.50.2",
+    # Upstream pin: brax only declares jax>=0.4.6, with no upper bound.
+    "brax==0.14.2",
     "captum>=0.9.0",
     "circuitsvis",
+    "datasets>=3.6.0",
     "diffusers>=0.38.0",
     "docformatter>=1.7.8",
-    "eindex-callum>=0.1.2",
+    "eindex-callum",
     "einops>=0.7.0",
+    # Upstream pin: vectorised Atari emulators for the 2.3 Atari bonus.
+    "envpool==1.2.5",
+    "flask>=3.1.3",
     "frozendict>=2.4.7",
     "fsspec>=2025.3.0",
     "ftfy>=6.3.1",
     "gdown>=6.1.0",
-    # Original ARENA ch2 pin: its DQN/PPO code uses the 0.29 vector-env and autoreset API.
-    "gymnasium[other]==0.29.0",
+    # Upstream: only [atari,other] (the classic-control extra would pull pygame-ce over pygame).
+    "gymnasium[atari,other]>=1.2,<2",
     "hdbscan>=0.8.44",
     "huggingface-hub>=0.36.2",
     "imageio-ffmpeg>=0.6.0",
     "inspect-ai>=0.3.242",
     "instructor>=1.15.4",
     "ipykernel>=7.3.0",
-    "ipywidgets>=8.1.9",
+    # Upstream pins (no stated reason; they bind under #37 P17).
+    "ipywidgets==7.7.1",
+    # Upstream pin: jax 0.11.2 runs the Brax MuJoCo envs on the GPU next to torch (both CUDA 13).
+    "jax[cuda13]==0.11.2",
     "jaxtyping>=0.2.38",
     "jupyter>=1.1.1",
-    "jupyterlab-widgets>=3.0.17",
+    "jupyterlab-widgets==1.1.1",
     "kernels>=0.12.3",
+    "liger-kernel>=0.8.5",
+    "liveplot",
     "matplotlib>=3.11.0",
     "mediapy>=1.2.6",
+    "mujoco>=3.3",
     "nbformat>=5.10.4",
     "neel-plotly",
-    "nnsight>=0.3.5",
+    "nnsight>=0.7,<0.8",
     "notebook>=7.6.0",
-    # numpy<2 is forced: the pinned CircuitsVis fork declares numpy<2, and gymnasium 0.29's
-    # Acrobot (an ARENA 2.2 challenge) uses np.float_, which numpy 2 removed.
-    "numpy==1.26.4",
+    "numpy>=2.0",
     "numpy-stl>=4.0.0",
     "nvidia-modelopt>=0.44.0",
-    "openai>=1.56.2",
+    "openai>=1.56.2,<4",
     "opencv-python>=4.11.0.86",
     "pandas>=2.3.3",
     "peft>=0.19.1",
@@ -53,28 +67,32 @@ dependencies = [
     "python-dotenv>=1.2.2",
     "pyyaml>=6.0.3",
     "requests>=2.34.2",
-    "sae-lens>=6.37.4",
-    "sae-vis>=0.3.7",
+    "sae-lens>=6.51.3,<7.0.0",
+    "sae-vis",
     "safetensors>=0.8.0",
     "scikit-learn>=1.9.0",
     "sentence-transformers>=5.6.0",
-    "shap>=0.49.1",
+    # 16.3 compares the learner's TreeSHAP/DeepSHAP/GradientSHAP with the shap 0.49.1 source, by hash.
+    "shap==0.49.1",
     "shapiq>=1.5.2",
     "streamlit>=1.58.0",
-    "streamlit-antd-components>=0.2.5",
+    "streamlit-antd-components==0.2.5",
     "streamlit-image-select>=0.6.0",
     "streamlit-on-hover-tabs>=1.0.1",
     "tabulate>=0.10.0",
     "tiktoken>=0.13.0",
+    # Upstream caps torch<2.15 only to stop a silent move to a new CUDA major; 2.15 cu134 is still
+    # CUDA 13 (driver 580+), so that reason does not apply (#37 P17).
     "torch>=2.15.0",
     "torchao>=0.18.0",
+    "torchaudio>=2.11",
     "torchinfo>=1.8.0",
-    "torchtext>=0.6.0",
+    "torchmetrics[image]>=1.9.0",
     "torchvision>=0.29.2",
     "tqdm>=4.68.3",
-    # Original ARENA ch1 targets the TransformerLens 2 API (sae-vis 0.3.7 also requires <3).
-    "transformer-lens>=2.16.1,<3.0.0",
-    "transformers>=5.12.1",
+    # Upstream: TransformerLens 3.9 keeps HookedTransformer (deprecated for TransformerBridge).
+    "transformer-lens>=3.9,<4",
+    "transformers>=5.12.1,<6",
     "typeguard>=4.5.2",
     "umap-learn>=0.5.12",
     "wandb>=0.28.0",
@@ -97,8 +115,6 @@ explicit = true
 
 [tool.uv]
 constraint-dependencies = [
-    # pyarrow 26 needs numpy>=2 at runtime without declaring it, which breaks datasets on numpy 1.26.4.
-    "pyarrow<26",
     # tilelang 0.1.8 (pinned by mamba-ssm) fails to import with apache-tvm-ffi 0.1.12.
     "apache-tvm-ffi<0.1.12",
 ]
@@ -106,7 +122,12 @@ constraint-dependencies = [
 [tool.uv.sources]
 torch = { index = "pytorch-cu134" }
 torchvision = { index = "pytorch-cu134" }
-circuitsvis = { git = "https://github.com/callummcdougall/CircuitsVis.git", subdirectory = "python" }
+# ARENA forks (upstream ARENA's requirements.txt): sae-vis 0.3.7 on PyPI pins transformer-lens<3,
+# jaxtyping<0.3 and datasets<4; Callum's CircuitsVis pins numpy<2.
+circuitsvis = { git = "https://github.com/ARENA-education/CircuitsVis.git", tag = "arena-tl4.1", subdirectory = "python" }
+sae-vis = { git = "https://github.com/ARENA-education/sae_vis.git", tag = "v0.3.7+arena.2" }
+eindex-callum = { git = "https://github.com/ARENA-education/eindex.git" }
+liveplot = { git = "https://github.com/ARENA-education/liveplot.git" }
 neel-plotly = { git = "https://github.com/neelnanda-io/neel-plotly" }
 # mamba-ssm 2.3.2.post1 (latest release) compiles with -std=c++17, but torch >= 2.14 headers need
 # C++20. Use upstream main (which also fixes Blackwell kernels, #997) plus the 4-line C++20 fix from
@@ -150,6 +171,14 @@ line-length = 100
 [tool.ruff.lint]
 ignore = ["E722", "E731", "F722", "E402", "E741"]
 extend-select = ["I"]
+
+[tool.ruff.format]
+# Markdown cells in infrastructure/chapters/*/master_*.py are wrapped in r'''...''',
+# so the """ docstrings inside them need no escaping. Ruff's default quote-style
+# ("double") rewrites each wrapper it safely can to r"""...""" while leaving the rest
+# as r'''  -- an inconsistent mix that forces \'\'\' escapes back into the masters.
+# "preserve" leaves existing quotes exactly as written.
+quote-style = "preserve"
 
 [tool.pytest.ini_options]
 pythonpath = ["."]

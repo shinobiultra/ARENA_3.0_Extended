@@ -10,7 +10,7 @@ from infrastructure.extension.home import render_chapter_home
 INTRO = (
     "## TLDR (if you're in a hurry!)\n"
     '\n'
-    '**Prerequisites:** [0.5] VAEs & GANs; 12.1 helps.\n'
+    '**Prerequisites:** [0.5.1] VAEs and [0.5.2] GANs; 12.1 helps.\n'
     '\n'
     '- **13.1 Diffusion Models and Cross-Attention** first (it builds a small diffusion model, then looks inside Stable Diffusion).\n'
     '- **13.2 Denoising-Time Causal Patching** asks *when* during generation each decision is made.\n'
