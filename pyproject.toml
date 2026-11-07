@@ -9,6 +9,9 @@ dependencies = [
     "ale-py>=0.10",
     "anthropic>=0.42.0",
     "anywidget>=0.11.0",
+    # Closes ipykernel event pipes of finished foreign threads; without it a long first-time
+    # hf_xet download hangs the notebook. See infrastructure/extension/ipykernel_pipe_fix.
+    "arena-ipykernel-fix",
     "bitsandbytes>=0.50.2",
     # Upstream pin: brax only declares jax>=0.4.6, with no upper bound.
     "brax==0.14.2",
@@ -122,6 +125,7 @@ constraint-dependencies = [
 [tool.uv.sources]
 torch = { index = "pytorch-cu134" }
 torchvision = { index = "pytorch-cu134" }
+arena-ipykernel-fix = { path = "infrastructure/extension/ipykernel_pipe_fix" }
 # ARENA forks (upstream ARENA's requirements.txt): sae-vis 0.3.7 on PyPI pins transformer-lens<3,
 # jaxtyping<0.3 and datasets<4; Callum's CircuitsVis pins numpy<2.
 circuitsvis = { git = "https://github.com/ARENA-education/CircuitsVis.git", tag = "arena-tl4.1", subdirectory = "python" }

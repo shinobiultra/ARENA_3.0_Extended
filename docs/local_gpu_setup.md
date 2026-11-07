@@ -47,6 +47,27 @@ minutes). `pyproject.toml` takes `torch` and `torchvision` from the PyTorch CUDA
 itself, so no `BNB_CUDA_VERSION` override is needed. The Chapter 2 JAX/Brax/EnvPool/Atari stack
 (`jax[cuda13]`) shares the same CUDA 13 libraries as torch and is part of the lock.
 
+### Large downloads inside notebooks
+
+With stock ipykernel on Python ≥ 3.13, a first-time Hugging Face download of a few GB hangs
+the kernel. 11.1 (Mistral-7B, 14.5 GB) and 13.1 (SD-1.5, 2.1 GB) hit this on a clean cache.
+hf_xet reports download progress from Rust threads, and ipykernel never closes the zmq socket
+it opens for each of those progress updates. After a few minutes the kernel runs out of
+sockets.
+
+The lock installs [`arena-ipykernel-fix`](../infrastructure/extension/ipykernel_pipe_fix/README.md)
+to prevent this. Every kernel started from `.venv` loads it, whether VS Code, JupyterLab,
+Jupyter Notebook or `build.py --execute` launched it. For kernels from other environments,
+see its README.
+
+Large downloads are still easier to watch and resume from a terminal. You can fetch a model
+before opening its lesson; for 11.1:
+
+```bash
+uv run hf download mistralai/Mistral-7B-v0.1 --revision 27d67f1b5f57dc0953326b2601d68371d40ea8da \
+  --include "*.json" --include "*.safetensors" --include "tokenizer.model"
+```
+
 ## Required gated artifacts
 
 Some roadmap targets are Google Gemma-family artifacts with manual Hugging Face

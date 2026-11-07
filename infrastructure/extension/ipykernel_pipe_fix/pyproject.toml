@@ -1,0 +1,20 @@
+[project]
+name = "arena-ipykernel-fix"
+version = "0.1.0"
+description = "Close ipykernel event pipes of finished foreign threads (hf_xet download progress)."
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = []
+
+[build-system]
+requires = ["uv_build>=0.13.7,<0.14"]
+build-backend = "uv_build"
+
+[tool.uv.build-backend]
+module-name = "arena_ipykernel_fix"
+# kernel_config/etc/ipython/ipython_kernel_config.py -> <venv>/etc/ipython/ipython_kernel_config.py
+data = { data = "kernel_config" }
+
+[tool.uv]
+# Reinstall on `uv sync` whenever the module or the kernel config changes.
+cache-keys = [{ file = "pyproject.toml" }, { file = "src/**/*.py" }, { file = "kernel_config/**/*.py" }]
