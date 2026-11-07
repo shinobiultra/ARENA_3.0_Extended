@@ -91,8 +91,17 @@ def hessian(config: QuadraticConfig) -> NDArray[np.float64]:
     As with any float64 matrix, extreme condition numbers can lose the smaller
     eigenvalue on materialization. Simulation uses the supplied eigensystem.
     """
+    # Closed form of R diag(a, 1) R.T: the off-diagonal (a - 1) c s is exactly zero for an
+    # isotropic Hessian, whatever rounding the BLAS matmul kernel would add.
     rotation = _rotation(config)
-    normalized = rotation @ np.diag([config.lambda_min / config.lambda_max, 1.0]) @ rotation.T
+    cosine, sine = rotation[0, 0], rotation[1, 0]
+    ratio = config.lambda_min / config.lambda_max
+    off_diagonal = (ratio - 1.0) * cosine * sine
+    normalized = np.array(
+        [[ratio * cosine * cosine + sine * sine, off_diagonal],
+         [off_diagonal, ratio * sine * sine + cosine * cosine]],
+        dtype=np.float64,
+    )
     # Roundoff in orthogonal products can otherwise exceed float64 max for a
     # representable isotropic Hessian at the largest supported curvature.
     return np.clip(normalized, -1.0, 1.0) * config.lambda_max
