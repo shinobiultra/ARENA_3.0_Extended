@@ -906,6 +906,8 @@ def generate_same_seed_prompt_interventions(
 ) -> dict[str, object]:
     """Run the three prompt conditions with identical initial noise."""
 
+    from diffusers.models.attention_processor import AttnProcessor2_0
+
     images: dict[str, object] = {}
     for condition, spec in build_same_seed_prompt_interventions(case).items():
         generator = t.Generator(device=device).manual_seed(int(spec["seed"]))
@@ -919,7 +921,8 @@ def generate_same_seed_prompt_interventions(
             generator=generator,
         ).images[0]
         if condition == "original":
-            pipe.unet.set_default_attn_processor()
+            # Stop capturing: put back diffusers' standard attention processor for the edits.
+            pipe.unet.set_attn_processor(AttnProcessor2_0())
     return images
 
 

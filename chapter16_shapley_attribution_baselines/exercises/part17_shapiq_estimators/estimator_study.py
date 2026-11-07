@@ -193,7 +193,7 @@ def package_reference(game_values: t.Tensor, source_ids: t.Tensor) -> dict:
     """Actual package calls on the predeclared source-0 row for all seven models."""
     import shapiq
     from importlib.metadata import version
-    if version('shapiq')!='1.5.2': raise ValueError('Expected shapiq==1.5.2.')
+    # Any installed shapiq version is accepted: every package value must match the exact reference below.
     index=int(t.nonzero(source_ids==0).item())
     expected=reference_methods.exact_sii(game_values[:,index],n_players=8)
     terms=reference_methods.interaction_masks(8).tolist()

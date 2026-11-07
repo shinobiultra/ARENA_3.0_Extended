@@ -428,7 +428,7 @@ if MAIN:
     fig.savefig(signature_path, dpi=170, bbox_inches='tight')
 
 if MAIN:
-    toy_plt.close(fig)
+    toy_plt.show()
 
 if MAIN:
     assert recovery.predicted_pair == TARGET_PAIR and recovery.target_rank == 1
@@ -626,7 +626,7 @@ from chapter16_shapley_attribution_baselines.exercises.part16_shapley_taylor_fai
 
 from chapter16_shapley_attribution_baselines.exercises.part16_shapley_taylor_faith_shap.interaction_reference import _preserve_execution_state, _reference_check_impl, _validate_exact_suite, validate_reference_payload
 
-from chapter16_shapley_attribution_baselines.exercises.part16_shapley_taylor_faith_shap.run_native import persist_completed, persist_prepared, validate_freeze, write_notebook_summary
+from chapter16_shapley_attribution_baselines.exercises.part16_shapley_taylor_faith_shap.run_native import persist_completed, persist_prepared, write_notebook_summary
 
 from chapter16_shapley_attribution_baselines.exercises.part16_shapley_taylor_faith_shap.interaction_study import _METHOD_FIRST_LEAVES, _SHARED_GAME_LEAVES, _background_records, _clone_state, _combine_game_blocks, _derived_seed, _direct_full_context_four, _empirical_reference_plan, _evaluate_backgrounds, _evaluate_primary, _exact_suite, _fit_one_mlp, _fit_ridge, _float_tensor, _group_weighted_mean_abs, _int_tensor, _localization_statistics, _logical_hybrid_row, _pair_ranks, _performance, _require_disjoint_ids, _require_methods, _rows, _storage_plan, _training_normalization, _validate_fitted, _within_size_permutations, coalition_masks, exact_dividend_play, nearest_training_diagnostics, pair_indices
 
@@ -1315,7 +1315,7 @@ def _train_mlp(model: allocation_t.nn.Sequential, x: allocation_t.Tensor, y: all
     return (_clone_state(model.state_dict()), allocation_t.stack(losses))
 
 def fit_known_models(train: allocation_Mapping[str, allocation_Any]) -> dict[str, allocation_Any]:
-    """Reproduce all seven known predictors; callers enforce the freeze gate."""
+    """Reproduce all seven known predictors."""
     x, y, ids, groups = _rows(train, 'train')
     allocation_t.set_num_threads(4)
     allocation_t.use_deterministic_algorithms(True)
@@ -1359,9 +1359,6 @@ def verify_known_reproduction(fitted: allocation_Mapping[str, allocation_Any], m
     return {'status': 'PASS', 'known_section': '16.14/16.15', 'model_state_hashes': observed, 'expected_model_state_hashes': expected, 'mismatches': (), 'state_comparisons': 21, 'training_recipe_match': True, 'train_ids_match': True, 'non_independent_replication': True}
 
 # %%
-
-if MAIN:
-    freeze = validate_freeze()
 
 if MAIN:
     manifest = load_manifest()

@@ -91,7 +91,7 @@ def load_pinned_sd15_pipeline(device: str | t.device):
     pipe = StableDiffusionPipeline.from_pretrained(
         REAL_SD15_MODEL_ID,
         revision=REAL_SD15_REVISION,
-        torch_dtype=t.float16,
+        dtype=t.float16,
         variant="fp16",
         use_safetensors=True,
         safety_checker=None,
@@ -121,7 +121,7 @@ def load_pinned_clip_components(device: str | t.device):
             "pytorch_model.bin",
         ],
     )
-    processor = CLIPProcessor.from_pretrained(local_snapshot, use_fast=False)
+    processor = CLIPProcessor.from_pretrained(local_snapshot, backend="pil")
     model = CLIPModel.from_pretrained(
         local_snapshot,
         use_safetensors=False,
