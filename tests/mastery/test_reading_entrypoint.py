@@ -144,9 +144,9 @@ def test_absent_chapter_has_explicit_status_and_no_download(reader, monkeypatch)
 
 SUPPLEMENT_PATHS = {
     "6.5": ["mastery_hub/practice_addons/crosscoder_metric_repair/exercises.ipynb", "mastery_hub/practice_addons/crosscoder_metric_repair/solutions.ipynb", "mastery_hub/practice_addons/crosscoder_metric_repair/README.md"],
-    "7.1": ["docs/mastery/pilot_reader_notes_20261023.md", "mastery_hub/units/pilot_practice/7_1_exercises.ipynb"],
+    "7.1": ["mastery_hub/units/pilot_practice/7_1_exercises.ipynb"],
     "9.1": ["mastery_hub/units/pilot_practice/9_1_exercises.ipynb"],
-    "12.3": ["docs/mastery/pilot_reader_notes_20261023.md", "mastery_hub/practice_addons/mini_vlm_checked_recovery/exercises.ipynb", "mastery_hub/practice_addons/mini_vlm_memory_handoff/README.md"],
+    "12.3": ["mastery_hub/practice_addons/mini_vlm_checked_recovery/exercises.ipynb", "mastery_hub/practice_addons/mini_vlm_memory_handoff/README.md"],
     "8.4": ["mastery_hub/units/acdc_own_method/exercises.ipynb", "mastery_hub/units/acdc_own_method/README.md"],
     "0.6": [
         "chapter0_fundamentals/exercises/part6_fake_interpretability_results/0.6_How_to_Know_When_an_Interpretability_Result_Is_Fake_exercises.ipynb",
