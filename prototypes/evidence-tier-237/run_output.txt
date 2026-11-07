@@ -1,0 +1,39 @@
+==========================================================================================
+A. CONTEXTUAL RETRIEVAL TOY (planted: every result here is true by construction)
+==========================================================================================
+bank: 18000 contextual text vectors from 3000 phrases; 9000 content-token vectors kept
+
+query (k=5)                    local  broad/token  broad/phrase  top-1 cos
+object patches                  0.86         1.00          1.00       0.45
+background patches              0.00         0.90          0.97       0.39
+norm-matched random             0.04         0.14          0.61       0.21
+object, shuffled metadata       0.16         0.39          0.76       0.45
+
+static embedding lens, object patches: local 1.00  (same planted content, one candidate per word: the toy cannot say which lens is better)
+
+broad-rubric pass rate against k (candidates shown per query):
+  random / token   k=1:0.10  k=2:0.12  k=3:0.12  k=5:0.14  k=10:0.15  k=20:0.18
+  random / phrase  k=1:0.27  k=2:0.38  k=3:0.51  k=5:0.61  k=10:0.82  k=20:0.96
+  object / token   k=1:1.00  k=2:1.00  k=3:1.00  k=5:1.00  k=10:1.00  k=20:1.00
+
+unit checks passed: stable ties, positive-scale invariance (zero-vector policy: clip norm, rank arbitrary)
+
+==========================================================================================
+B. WEIGHT-EDIT TOY (planted: a solver that usually loops instead of answering)
+==========================================================================================
+projector-sign identity: editing along -u gives the identical matrix (u u^T is unchanged). PASS
+diff: 21 of 411 parameters changed (5.1%), singular values of [dW|db]: 6.12, then max 0.0e+00 (rank 1); loop bias 6.0 -> 0.0
+
+condition                     answered  accuracy  acc|answered
+base                              0.17      0.11          0.61
+edit (remove loop dir)            1.00      0.49          0.49
+signed counterfactual -dW         0.01      0.00          0.62
+wrong row (class 3)               0.15      0.08          0.53
+permuted units + edit             1.00      0.49          0.49
+random edit, same support     0.39±0.23  0.19±0.11      0.51±0.09   (mean±sd, 20 seeds, same norm)
+random edit, random rank-1    0.39±0.19  0.14±0.08      0.37±0.13   (mean±sd, 20 seeds, same norm)
+decoding only (ban loop)          1.00      0.49          0.49   <- no weight changed
+
+permutation: outputs identical (max diff < 1e-12), yet 220 of 220 entries of W2 moved: a coordinate-based reading changes.
+
+saved /home/bitwise/Documents/ARENA_3.0_Extended/.claude/worktrees/great-dirac-eb833c/prototypes/evidence-tier-237/evidence_tier_toy.png

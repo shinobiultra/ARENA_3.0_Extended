@@ -1,0 +1,32 @@
+bank: 36000 contextual vectors per layer (600 stories x 60 positions)
+queries: 3600 tokens from 60 held-out stories; layers 0..11
+bigram floor (most common follower of the current token in the bank): next-token match 0.24
+
+layer  logit->next  embed->cur  ctx->cur  ctx->next  rand q cos  rand pair cos  top-1 cos  shuffled->cur  centred->cur
+    0         0.00        1.00      0.94       0.18        0.09           0.61       0.98          0.011          0.94
+    1         0.05        0.05      0.94       0.23        0.08           0.72       0.98          0.015          0.94
+    2         0.03        0.05      0.94       0.24        0.08           0.69       0.98          0.015          0.94
+    3         0.04        0.03      0.94       0.26        0.09           0.66       0.98          0.013          0.94
+    4         0.06        0.02      0.94       0.26        0.09           0.62       0.97          0.015          0.94
+    5         0.06        0.02      0.94       0.27        0.09           0.58       0.96          0.014          0.93
+    6         0.08        0.03      0.93       0.28        0.10           0.56       0.95          0.014          0.93
+    7         0.10        0.03      0.92       0.28        0.10           0.54       0.94          0.015          0.92
+    8         0.13        0.03      0.91       0.29        0.10           0.53       0.93          0.015          0.91
+    9         0.19        0.04      0.89       0.30        0.10           0.55       0.93          0.017          0.89
+   10         0.30        0.04      0.87       0.31        0.10           0.58       0.93          0.015          0.87
+   11         0.36        0.05      0.84       0.33        0.08           0.69       0.94          0.014          0.84
+
+next-token floor: always predicting the bank's most common next token = 0.08
+
+cross-layer current-token recovery, best bank layer per query layer:
+  q0->b0 (0.94 vs same-layer 0.94)  q1->b1 (0.94 vs same-layer 0.94)  q2->b2 (0.94 vs same-layer 0.94)  q3->b3 (0.94 vs same-layer 0.94)  q4->b1 (0.94 vs same-layer 0.94)  q5->b3 (0.94 vs same-layer 0.93)  q6->b3 (0.94 vs same-layer 0.92)  q7->b3 (0.93 vs same-layer 0.91)  q8->b3 (0.93 vs same-layer 0.90)  q9->b4 (0.91 vs same-layer 0.88)  q10->b8 (0.88 vs same-layer 0.86)  q11->b10 (0.83 vs same-layer 0.83)
+
+examples at layer 6 (query in context | logit-lens top-3 | nearest bank token in its context):
+  ...' school, hopping along with a[ skip]' | 'jack', '-', ' ahead' | ...' a happy goat who loved to[ skip]' (cos 0.84)
+  ...' sad and miserable. \n[\n]' | 'Then', 'The', 'If' | ...' He was obedient. \n[\n]' (cos 0.99)
+  ...' 8, 9!" From the[ top]' | 'most', 'board', ' view' | ...' the colourful sky and reaching the[ top]' (cos 0.87)
+  ...' the mountain. It was very[ difficult]' | ' to', ' time', ' enough' | ...' picture together, but it was[ difficult]' (cos 0.95)
+  ...'Bobby was very[ excited]' | ' about', 'ly', ' to' | ...'Molly was very[ excited]' (cos 0.99)
+  ...' books and papers all around her[ room]' | ',', ' room', '.' | ...' Timmy looked all around his[ room]' (cos 0.96)
+
+saved gpt2_contextual_lens_probe.png; wall time 33 s on CPU
