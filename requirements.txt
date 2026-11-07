@@ -3,6 +3,8 @@
 --index-url https://pypi.org/simple
 --extra-index-url https://download.pytorch.org/whl/cu134
 
+./infrastructure/extension/ipykernel_pipe_fix
+    # via arena-3-extended
 absl-py==2.5.1
     # via
     #   brax

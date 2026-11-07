@@ -71,7 +71,8 @@ else
 fi
 rm -f "$INSTALL_MARKER"
 echo "=== Installing Python dependencies from $REPO_DIR/requirements.txt ==="
-uv pip install --python "$VENV_DIR/bin/python" -r "$REPO_DIR/requirements.txt"
+# From the repo root: requirements.txt names the local arena-ipykernel-fix package by a relative path.
+(cd "$REPO_DIR" && uv pip install --python "$VENV_DIR/bin/python" -r requirements.txt)
 touch "$INSTALL_MARKER"
 # Register the venv as a Jupyter kernel named "arena-env", so it shows up under that name in any Jupyter
 "$VENV_DIR/bin/python" -m ipykernel install --user --name "$KERNEL_NAME" --display-name "$KERNEL_NAME"
