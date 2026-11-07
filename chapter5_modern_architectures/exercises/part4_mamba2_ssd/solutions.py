@@ -1541,6 +1541,11 @@ def _load_released_state_dict() -> dict[str, t.Tensor]:
 def _released_hf_config():
     from transformers import Mamba2Config as HFMamba2Config
 
+    from hf_mamba_cpu import route_cpu_mamba_ops_to_torch
+
+    # Transformers sends Mamba2's ops to the CUDA-only causal-conv1d and mamba-ssm kernels
+    # whenever they are installed. Route CPU tensors to its own PyTorch implementation.
+    route_cpu_mamba_ops_to_torch()
     return HFMamba2Config(
         vocab_size=50288,
         hidden_size=768,

@@ -14,7 +14,10 @@ import torch as t
 
 transformers = pytest.importorskip("transformers")
 
-from arena_ext.hf_mamba_cpu import device_dispatch, route_cpu_mamba_ops_to_torch
+from chapter5_modern_architectures.exercises.hf_mamba_cpu import (
+    device_dispatch,
+    route_cpu_mamba_ops_to_torch,
+)
 
 
 def _tiny_models():

@@ -177,8 +177,6 @@ root_dir = next(p for p in [Path.cwd(), *Path.cwd().parents] if (p / chapter).ex
 root_dir = Path(__file__).resolve().parents[3]
 # END FILTERS
 exercises_dir = root_dir / chapter / "exercises"
-if str(root_dir) not in sys.path:
-    sys.path.append(str(root_dir))
 if str(exercises_dir) not in sys.path:
     sys.path.append(str(exercises_dir))
 
@@ -3870,7 +3868,7 @@ def _load_released_state_dict() -> dict[str, t.Tensor]:
 def _released_hf_config():
     from transformers import Mamba2Config as HFMamba2Config
 
-    from arena_ext.hf_mamba_cpu import route_cpu_mamba_ops_to_torch
+    from hf_mamba_cpu import route_cpu_mamba_ops_to_torch
 
     # Transformers sends Mamba2's ops to the CUDA-only causal-conv1d and mamba-ssm kernels
     # whenever they are installed. Route CPU tensors to its own PyTorch implementation.
@@ -4172,7 +4170,7 @@ def _load_released_state_dict() -> dict[str, t.Tensor]:
 def _released_hf_config():
     from transformers import Mamba2Config as HFMamba2Config
 
-    from arena_ext.hf_mamba_cpu import route_cpu_mamba_ops_to_torch
+    from hf_mamba_cpu import route_cpu_mamba_ops_to_torch
 
     # Transformers sends Mamba2's ops to the CUDA-only causal-conv1d and mamba-ssm kernels
     # whenever they are installed. Route CPU tensors to its own PyTorch implementation.

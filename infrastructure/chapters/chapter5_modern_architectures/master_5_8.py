@@ -4301,7 +4301,7 @@ r'''
 
 This final cell displays the committed, real local generation artifact for the pinned NVIDIA NVFP4 checkpoint. It proves one released-checkpoint prompt generated on the RTX 5090 Laptop GPU. It does not prove denoising-step activation access, diffusion patching, quality parity, throughput, or BF16 loading on 24 GB.
 
-The isolated vLLM runtime uses its own torch/CUDA stack because the available vLLM build is incompatible with the main `torch 2.12.1+cu132` environment.
+The isolated vLLM runtime uses its own torch/CUDA stack because the available vLLM build needs `torch 2.11.0+cu130`, not the course's `torch 2.15.0+cu134`.
 '''
 
 # ! CELL TYPE: code

@@ -2114,7 +2114,7 @@ def load_pinned_mamba_130m_cpu(
 
     from transformers import MambaForCausalLM
 
-    from arena_ext.hf_mamba_cpu import route_cpu_mamba_ops_to_torch
+    from hf_mamba_cpu import route_cpu_mamba_ops_to_torch
 
     # Transformers sends Mamba's ops to the CUDA-only causal-conv1d and mamba-ssm kernels
     # whenever they are installed. Route CPU tensors to its own PyTorch implementation.
@@ -2295,7 +2295,7 @@ def load_pinned_mamba_130m_cpu(
 
     from transformers import MambaForCausalLM
 
-    from arena_ext.hf_mamba_cpu import route_cpu_mamba_ops_to_torch
+    from hf_mamba_cpu import route_cpu_mamba_ops_to_torch
 
     # Transformers sends Mamba's ops to the CUDA-only causal-conv1d and mamba-ssm kernels
     # whenever they are installed. Route CPU tensors to its own PyTorch implementation.

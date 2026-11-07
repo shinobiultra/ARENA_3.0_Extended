@@ -423,7 +423,7 @@ def test_section_local_release_report_generation_inputs_are_strict():
         "artifacts.lock.yml",
         "verification_report.schema.json",
         "9.5_ROME_Model_Editing_solutions.ipynb",
-        "05_[9.5]_ROME_Model_Editing.md",
+        "06_[9.6]_Rank-One_Model_Editing_ROME.md",
         "rome_model_editing_signature.png",
     ):
         assert any(path.endswith(required) for path in paths)
