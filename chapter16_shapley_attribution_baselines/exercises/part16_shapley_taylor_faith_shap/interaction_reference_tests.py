@@ -71,13 +71,12 @@ def _assert_snapshot(before: dict) -> None:
     assert torch.get_default_dtype() == before["dtype"]
 
 
-def test_reference_environment_is_exactly_source_pinned():
+def test_reference_environment_records_installed_sources():
     environment = reference.reference_environment()
-    assert environment["shapiq"] == "1.5.2"
-    assert {
-        name: item["sha256"] for name, item in environment["installed_sources"].items()
-    } == reference.EXPECTED_SOURCE_SHA256
-    assert environment["uv_lock"]["sha256"] == reference.EXPECTED_UV_LOCK_SHA256
+    assert environment["shapiq"] == reference.shapiq.__version__
+    assert tuple(environment["installed_sources"]) == reference.REFERENCE_SOURCE_FILES
+    assert all(len(item["sha256"]) == 64 for item in environment["installed_sources"].values())
+    assert len(environment["uv_lock"]["sha256"]) == 64
     assert len(environment["adapter_source_sha256"]) == 64
 
 

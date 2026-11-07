@@ -594,6 +594,8 @@ if MAIN:
     tree_section_dir = tree_exercises_dir / tree_section
 if MAIN:
     refresh_tree_default_methods()
+    if str(tree_root_dir) not in sys.path:
+        sys.path.append(str(tree_root_dir))
     if str(tree_exercises_dir) not in sys.path:
         sys.path.append(str(tree_exercises_dir))
 
@@ -2122,7 +2124,7 @@ def tree_helper_treeshap_reference__compiled_reference(model, all_x, background,
         path_explainer.shap_values(all_x, approximate=False, check_additivity=True),
         dtype=np.float64,
     )
-    base_path = np.full(len(all_x), float(path_explainer.expected_value))
+    base_path = np.full(len(all_x), np.asarray(path_explainer.expected_value, dtype=np.float64).item())
 
     raw = shap.TreeExplainer(
         model,
@@ -2141,7 +2143,7 @@ def tree_helper_treeshap_reference__compiled_reference(model, all_x, background,
         # additivity guard raises; the strict residual is checked and returned below.
         raw.shap_values(all_x, approximate=False, check_additivity=False), dtype=np.float64
     )
-    base_raw = np.full(len(all_x), float(raw.expected_value))
+    base_raw = np.full(len(all_x), np.asarray(raw.expected_value, dtype=np.float64).item())
 
     corrected, nearest_model, threshold_audit = tree_helper_treeshap_reference__threshold_copies(
         raw, model, all_source_x
@@ -2152,9 +2154,9 @@ def tree_helper_treeshap_reference__compiled_reference(model, all_x, background,
         corrected.shap_values(all_x, approximate=False, check_additivity=True),
         dtype=np.float64,
     )
-    base_corrected = np.full(len(all_x), float(corrected.expected_value))
+    base_corrected = np.full(len(all_x), np.asarray(corrected.expected_value, dtype=np.float64).item())
     nearest_prediction = nearest_model.model.predict(all_x)
-    nearest_base = np.full(len(all_x), float(nearest_model.expected_value))
+    nearest_base = np.full(len(all_x), np.asarray(nearest_model.expected_value, dtype=np.float64).item())
     raw_rounding_error = tree_helper_treeshap_reference__require_close(
         "unmodified C++ totals against nearest-float32 threshold model",
         nearest_base + phi_raw.sum(axis=1),
@@ -2205,14 +2207,6 @@ if MAIN:
     from pathlib import Path
 
 if MAIN:
-    tree_helper_treeshap_reference_CACHE = Path.home() / ".cache" / "arena_extended" / "treeshap"
-
-# %%
-
-if MAIN:
-    from pathlib import Path
-
-if MAIN:
     tree_helper_treeshap_reference_HERE = tree_root_dir / 'chapter16_shapley_attribution_baselines' / "exercises" / 'part13_treeshap'
 
 # %%
@@ -2251,31 +2245,17 @@ def tree_helper_treeshap_reference__reference_environment() -> dict:
     if getattr(_tree, "_cext", None) is None or not hasattr(_tree._cext, "dense_tree_shap"):
         raise RuntimeError("Installed SHAP C++ dense_tree_shap is unavailable.")
 
-    source_paths = {
-        "explainers/pytree.py": tree_helper_treeshap_reference_CACHE / "explainers" / "pytree.py",
-        "explainers/_tree.py": tree_helper_treeshap_reference_CACHE / "explainers" / "_tree.py",
-        "cext/tree_shap.h": tree_helper_treeshap_reference_CACHE / "cext" / "tree_shap.h",
-    }
-    source_hashes = {}
-    for name, path in source_paths.items():
-        digest = tree_helper_treeshap_reference__sha256(path)
-        if digest != manifest["sources"][name]:
-            raise ValueError(f"Cached reference checksum mismatch for {name}.")
-        source_hashes[name] = digest
+    # The installed SHAP source is pinned below. The author's cached source copies and paper PDF
+    # are not needed to run the lesson, so they are not checked here.
     installed_tree_hash = tree_helper_treeshap_reference__sha256(Path(_tree.__file__))
     if installed_tree_hash != manifest["sources"]["explainers/_tree.py"]:
         raise ValueError("Installed SHAP TreeExplainer Python source is not the pinned source.")
-    paper_hash = tree_helper_treeshap_reference__sha256(tree_helper_treeshap_reference_CACHE / "treeshap_2018.pdf")
-    if paper_hash != manifest["paper_pdf_sha256"]:
-        raise ValueError("Cached TreeSHAP article checksum mismatch.")
     addendum_hash = tree_helper_treeshap_reference__sha256(tree_helper_treeshap_reference_HERE / "reference_boundary_addendum.md")
     if addendum_hash != tree_helper_treeshap_reference_ADDENDUM_SHA256:
         raise ValueError("The post-freeze threshold addendum changed.")
     return {
         "versions": actual_versions,
-        "cached_source_sha256": source_hashes,
         "installed_tree_source_sha256": installed_tree_hash,
-        "paper_pdf_sha256": paper_hash,
         "boundary_addendum_sha256": addendum_hash,
         "cext_module": str(Path(_tree._cext.__file__).resolve()),
     }
@@ -2946,6 +2926,8 @@ if MAIN:
 if MAIN:
     deep_section_dir = deep_exercises_dir / deep_section
 if MAIN:
+    if str(deep_root_dir) not in sys.path:
+        sys.path.append(str(deep_root_dir))
     if str(deep_exercises_dir) not in sys.path:
         sys.path.append(str(deep_exercises_dir))
 
@@ -5840,7 +5822,7 @@ if MAIN:
     import torch as t
 
 def deep_helper_deepshap_reference__reference_environment() -> dict[str, Any]:
-    """Verify installed SHAP files and every cached primary reference by hash."""
+    """Verify the installed SHAP files against the author manifest by hash."""
     import shap
     import sklearn
     from shap.explainers import _deep
@@ -5866,44 +5848,21 @@ def deep_helper_deepshap_reference__reference_environment() -> dict[str, Any]:
     }
     if set(manifest.get("sources", {})) != expected_source_keys:
         raise ValueError("The SHAP author-source manifest has unexpected entries.")
+    # The installed SHAP sources are pinned below. The author's cached source copies, paper PDFs
+    # and historical DeepLIFT sources are not needed to run the lesson, so they are not checked here.
     package_root = Path(shap.__file__).resolve().parent
-    source_hashes: dict[str, str] = {}
     installed_hashes: dict[str, str] = {}
     for name, record in manifest["sources"].items():
-        cached = Path(record["cache_path"])
-        digest = deep_helper_deepshap_reference__sha256(cached)
-        if digest != record["sha256"]:
-            raise ValueError(f"Cached author source changed for {name}.")
-        source_hashes[name] = digest
         if name != "LICENSE":
             installed = package_root / record["installed_relative_path"]
             installed_digest = deep_helper_deepshap_reference__sha256(installed)
-            if installed_digest != record["installed_sha256"] or installed_digest != digest:
+            if installed_digest != record["installed_sha256"] or installed_digest != record["sha256"]:
                 raise ValueError(f"Installed SHAP source is not the pinned v0.49.1 file: {name}.")
             installed_hashes[name] = installed_digest
-    paper_hashes: dict[str, str] = {}
-    for record in manifest.get("papers", []):
-        digest = deep_helper_deepshap_reference__sha256(Path(record["pdf_cache_path"]))
-        if digest != record["pdf_sha256"]:
-            raise ValueError(f"Cached paper changed: {record['title']}.")
-        paper_hashes[record["title"]] = digest
-    historical_hashes: dict[str, str] = {}
-    historical = manifest.get("historical_deeplift", {})
-    for name, record in historical.get("sources", {}).items():
-        digest = deep_helper_deepshap_reference__sha256(Path(record["cache_path"]))
-        if digest != record["sha256"]:
-            raise ValueError(f"Cached historical DeepLIFT source changed for {name}.")
-        historical_hashes[name] = digest
-    if not paper_hashes or not historical_hashes:
-        raise ValueError("Primary-paper and historical DeepLIFT evidence must both be pinned.")
     return {
         "versions": actual_versions,
         "author_manifest_sha256": deep_helper_deepshap_reference__sha256(manifest_path),
-        "cached_source_sha256": source_hashes,
         "installed_source_sha256": installed_hashes,
-        "paper_pdf_sha256": paper_hashes,
-        "historical_deeplift_commit": historical.get("commit"),
-        "historical_source_sha256": historical_hashes,
         "deep_module": str(Path(_deep.__file__).resolve()),
     }
 
@@ -6920,6 +6879,8 @@ if MAIN:
 if MAIN:
     gradient_section_dir = gradient_exercises_dir / gradient_section
 if MAIN:
+    if str(gradient_root_dir) not in sys.path:
+        sys.path.append(str(gradient_root_dir))
     if str(gradient_exercises_dir) not in sys.path:
         sys.path.append(str(gradient_exercises_dir))
 
@@ -11482,14 +11443,6 @@ gradient_helper_gradientshap_reference_EXPECTED_SOURCE_SHA256 = {
 
 if MAIN:
     from pathlib import Path
-
-if MAIN:
-    gradient_helper_gradientshap_reference_REFERENCE_CACHE = Path.home() / ".cache/arena_extended/gradientshap/reference_recon"
-
-# %%
-
-if MAIN:
-    from pathlib import Path
 if MAIN:
     import hashlib
 
@@ -11512,7 +11465,7 @@ if MAIN:
     import torch as t
 
 def gradient_helper_gradientshap_reference_reference_environment() -> dict[str, Any]:
-    """Require the exact installed and cached package implementations."""
+    """Require the exact installed package implementations."""
     import captum
     import shap
 
@@ -11536,23 +11489,16 @@ def gradient_helper_gradientshap_reference_reference_environment() -> dict[str, 
         "captum/attr/_core/noise_tunnel.py": captum_root / "attr/_core/noise_tunnel.py",
         "captum/_utils/common.py": captum_root / "_utils/common.py",
     }
-    cached = {
-        "shap/explainers/_gradient.py": gradient_helper_gradientshap_reference_REFERENCE_CACHE / "sources/shap_v0.49.1_gradient.py",
-        "captum/attr/_core/gradient_shap.py": gradient_helper_gradientshap_reference_REFERENCE_CACHE / "sources/captum_v0.9.0_gradient_shap.py",
-        "captum/attr/_core/noise_tunnel.py": gradient_helper_gradientshap_reference_REFERENCE_CACHE / "sources/captum_v0.9.0_noise_tunnel.py",
-        "captum/_utils/common.py": gradient_helper_gradientshap_reference_REFERENCE_CACHE / "sources/captum_v0.9.0_common.py",
-    }
-    installed_hashes, cached_hashes = {}, {}
+    # The installed sources are pinned below. The author's cached source copies and evidence file
+    # are not needed to run the lesson, so they are not checked here.
+    installed_hashes = {}
     for name, expected in gradient_helper_gradientshap_reference_EXPECTED_SOURCE_SHA256.items():
         installed_hashes[name] = gradient_helper_gradientshap_reference__sha256(installed[name])
-        cached_hashes[name] = gradient_helper_gradientshap_reference__sha256(cached[name])
-        if installed_hashes[name] != expected or cached_hashes[name] != expected:
+        if installed_hashes[name] != expected:
             raise ValueError(f"Pinned package source changed: {name}.")
     return {
         "versions": versions,
         "installed_source_sha256": installed_hashes,
-        "cached_source_sha256": cached_hashes,
-        "source_evidence_sha256": gradient_helper_gradientshap_reference__sha256(gradient_helper_gradientshap_reference_REFERENCE_CACHE / "source_evidence.json"),
     }
 
 # %%
@@ -12644,7 +12590,6 @@ def initialize_lesson_plumbing():
     global gradient_helper_gradientshap_reference_FEATURES
     global gradient_helper_gradientshap_reference_FORWARD_BATCH
     global gradient_helper_gradientshap_reference_MODEL_KEYS
-    global gradient_helper_gradientshap_reference_REFERENCE_CACHE
     global gradient_helper_gradientshap_reference_REFERENCE_SAMPLES
     global gradient_helper_gradientshap_reference_SHAP_BATCH_SIZE
     global gradient_helper_gradientshap_reference_SHAP_NUMPY_SEED
@@ -12702,7 +12647,6 @@ def initialize_lesson_plumbing():
     global tree_helper_run_native_TIMING_ARTIFACT
     global tree_helper_treeshap_reference_ADDENDUM_SHA256
     global tree_helper_treeshap_reference_ATOL
-    global tree_helper_treeshap_reference_CACHE
     global tree_helper_treeshap_reference_COMPILED_INTERVENTIONAL_ATOL
     global tree_helper_treeshap_reference_COMPILED_INTERVENTIONAL_RTOL
     global tree_helper_treeshap_reference_EXACT_KEYS
@@ -12809,7 +12753,6 @@ def initialize_lesson_plumbing():
         )
     tree_helper_treeshap_reference_ATOL = tree_helper_treeshap_reference_RTOL = 1e-8
     tree_helper_treeshap_reference_ADDENDUM_SHA256 = "2e639c56060d45131a093caeb838a8896399a2d6e89cba9fe477bcd9b816023e"
-    tree_helper_treeshap_reference_CACHE = Path.home() / ".cache" / "arena_extended" / "treeshap"
     tree_helper_treeshap_reference_HERE = tree_root_dir / 'chapter16_shapley_attribution_baselines' / "exercises" / 'part13_treeshap'
     deep_root_dir = next(path for path in (Path.cwd(), *Path.cwd().parents) if (path / deep_chapter).exists())
     deep_exercises_dir = deep_root_dir / deep_chapter / "exercises"
@@ -13096,7 +13039,6 @@ def initialize_lesson_plumbing():
         "captum/attr/_core/noise_tunnel.py": "d013c38cdbb4a10d4717a4e38ac063903cacc0b54389a6591a9bcbc4a9fa8606",
         "captum/_utils/common.py": "a1fc8b6752c48a76ffd3305983fed7972c7013ae6764ddb837c873c8eaa4198e",
     }
-    gradient_helper_gradientshap_reference_REFERENCE_CACHE = Path.home() / ".cache/arena_extended/gradientshap/reference_recon"
     initialize_deep_16_rescale_multipliers()
     initialize_deep_19_single_reference()
     initialize_deep_30_background_deepshap()

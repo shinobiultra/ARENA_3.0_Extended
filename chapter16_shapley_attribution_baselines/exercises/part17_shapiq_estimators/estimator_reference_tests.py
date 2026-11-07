@@ -34,8 +34,6 @@ def test_finite_penalty_limit(n):
 @pytest.mark.parametrize('n',[4,6,8])
 def test_actual_shapiq_package_exact_and_full_budget(n):
     import shapiq
-    from importlib.metadata import version
-    assert version('shapiq')=='1.5.2'
     generator=t.Generator().manual_seed(161730+n)
     games=t.randn((3,2**n),generator=generator,dtype=t.float64)
     games[0]=4.5

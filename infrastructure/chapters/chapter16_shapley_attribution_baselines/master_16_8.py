@@ -1906,6 +1906,7 @@ if MAIN:
     canonical_dir = exercises_dir / "part8_shap_vs_patching"
 if MAIN:
     artifact_dir = canonical_dir / "artifacts"
+    artifact_dir.mkdir(parents=True, exist_ok=True)
 if MAIN:
     asset_dir = canonical_dir / "media"
 if MAIN:
