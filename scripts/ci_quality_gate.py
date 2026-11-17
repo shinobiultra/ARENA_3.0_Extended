@@ -24,6 +24,7 @@ HOSTED_CPU_PYTEST_TARGETS = [
     "tests/test_no_minified_files_audit.py",
     "tests/test_build_merged_config.py",
     "tests/test_extension_batch_exit.py",
+    "tests/test_repo_links.py",
 ]
 
 # The study reader lane checks the learner app without running lesson code.
