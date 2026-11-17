@@ -4,8 +4,9 @@ Every file that the pinned original ARENA commit ships under chapters 0-4, and
 under their master-file folders, must still exist with identical bytes. New
 files beside them (the 0.6 and 1.6 extension lessons) are fine. The original
 entries in `infrastructure/core/config.yaml` must be unchanged (the config is
-append-only), and `requirements-original.txt` must equal the original
-`requirements.txt`.
+append-only), `requirements-original.txt` must equal the original
+`requirements.txt`, and `README.md` must end with the original README, unchanged,
+below the extension's opening.
 """
 
 from __future__ import annotations
@@ -125,6 +126,19 @@ def requirements_split_blockers(revision: str | None = None) -> list[str]:
     return []
 
 
+def readme_blockers(revision: str | None = None) -> list[str]:
+    """Require the README to be the extension opening followed by upstream's README, unchanged."""
+
+    revision = revision or original_base_revision()
+    current = (ROOT / "README.md").read_text(encoding="utf-8")
+    upstream = _base_text(revision, "README.md")
+    if not current.endswith(upstream):
+        return ["README.md: does not end with the pinned original ARENA README"]
+    if not current[: -len(upstream)].strip():
+        return ["README.md: has no extension opening above the original ARENA README"]
+    return []
+
+
 def split_config_blockers(revision: str | None = None) -> list[str]:
     """Require config.yaml to equal config_original.yaml merged with config_extension.yaml."""
 
@@ -162,6 +176,7 @@ def original_preservation_blockers() -> list[str]:
         original_chapter_file_blockers(revision)
         + config_append_only_blockers(revision)
         + requirements_split_blockers(revision)
+        + readme_blockers(revision)
         + split_config_blockers(revision)
     )
 

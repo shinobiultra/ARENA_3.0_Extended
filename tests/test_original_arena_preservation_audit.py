@@ -32,3 +32,19 @@ def test_current_worktree_preserves_original_arena_surface():
 
 def test_split_config_is_current_and_generated_equivalent():
     assert audit.split_config_blockers() == []
+
+
+def test_readme_must_end_with_the_pinned_upstream_readme(tmp_path, monkeypatch):
+    upstream = "# Install Instructions\n\nupstream body\n"
+    monkeypatch.setattr(audit, "ROOT", tmp_path)
+    monkeypatch.setattr(audit, "_base_text", lambda _revision, _path: upstream)
+    readme = tmp_path / "README.md"
+
+    readme.write_text("# ARENA Extended\n\nopening\n\n# Original ARENA\n\n" + upstream)
+    assert audit.readme_blockers("rev") == []
+
+    readme.write_text("# ARENA Extended\n\n" + upstream.replace("upstream body", "edited body"))
+    assert audit.readme_blockers("rev") == ["README.md: does not end with the pinned original ARENA README"]
+
+    readme.write_text(upstream)
+    assert audit.readme_blockers("rev") == ["README.md: has no extension opening above the original ARENA README"]
