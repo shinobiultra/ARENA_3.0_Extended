@@ -8,7 +8,7 @@ Streamlit page are generated.
 
 On top of the original pipeline it adds three things the extension needs:
 
-1. Page links point at this fork rather than the upstream ARENA repo.
+1. Pages name the local notebooks instead of linking to Colab (extension lessons run locally).
 2. `--execute` runs the generated solutions notebook top-to-bottom in a fresh kernel,
    and saves it with its outputs (so the solutions notebook doubles as a full set of
    expected outputs). Without `--execute`, if the code cells are unchanged since the last execution (e.g. only
@@ -49,16 +49,12 @@ sys.path.insert(0, str(CORE))
 
 from conversion import MasterFileData  # noqa: E402
 
-FORK = "shinobiultra/ARENA_3.0_Extended"
-BRANCH = "main"
-COLAB_ROOT = f"https://colab.research.google.com/github/{FORK}/blob/{BRANCH}/"
-RAW_ROOT = f"https://raw.githubusercontent.com/{FORK}/{BRANCH}/"
 FIRST_EXTENSION_CHAPTER = 5
 MEDIA_PATTERN = re.compile(r"""src=["']media/([\w\-]+)\.png["']""")
 
 
 class ExtensionMasterFile(MasterFileData):
-    """The original converter, with links pointing at this fork."""
+    """The original converter, with page headers that name the local notebooks."""
 
     def master_py_to_ipynb(self, overwrite: bool = False, ignore_errors: bool = False) -> None:
         """Write the saved master notebook through the schema normaliser."""
@@ -75,11 +71,14 @@ class ExtensionMasterFile(MasterFileData):
         self.master_path.write_text(content, encoding="utf-8")
 
     def get_page_links(self) -> tuple[list[str], list[str]]:
-        rel = f"{self.chapter_dir.name}/exercises/{self.exercise_dir_name}/{self.colab_name}"
-        exercises_link = f"{COLAB_ROOT}{rel}_exercises.ipynb"
-        solutions_link = f"{COLAB_ROOT}{rel}_solutions.ipynb"
+        # Extension lessons run locally (no Colab): name the notebooks in the learner's clone.
+        folder = f"{self.chapter_dir.name}/exercises/{self.exercise_dir_name}/"
+        notebooks = (
+            f"> **Notebooks:** `{self.colab_name}_exercises.ipynb` (exercises) and "
+            f"`{self.colab_name}_solutions.ipynb` (solutions), in `{folder}`"
+        )
         colab_lines = [
-            f"> **Colab: [exercises]({exercises_link}) | [solutions]({solutions_link})**",
+            notebooks,
             "",
             "This section is part of the ARENA extension. The solutions notebook is saved with all of its "
             "outputs, so you can use it as a reference for what every cell should produce.",
@@ -88,7 +87,7 @@ class ExtensionMasterFile(MasterFileData):
             "the left hand side of the markdown header cells.",
         ]
         streamlit_lines = [
-            f"> **Colab: [exercises]({exercises_link}) | [solutions]({solutions_link})**",
+            notebooks,
             "",
             "If you want to change to dark mode, you can do this by clicking the three horizontal lines in the "
             "top-right, then navigating to Settings → Theme.",

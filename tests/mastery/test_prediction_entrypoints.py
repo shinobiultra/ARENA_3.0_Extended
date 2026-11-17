@@ -10,7 +10,7 @@ sys.path.insert(0, str(ROOT / 'infrastructure/extension'))
 import build
 
 
-def test_extension_page_links_carry_colab_links_and_no_practice_banner(tmp_path):
+def test_extension_page_links_are_local_and_carry_no_practice_banner(tmp_path):
     # Link generation never reads the master; the generated .ipynb is not checked in. Upstream's
     # MasterFile requires the source-of-truth master .py beside it.
     master_path = tmp_path / 'master_7_1.ipynb'
@@ -24,7 +24,7 @@ def test_extension_page_links_carry_colab_links_and_no_practice_banner(tmp_path)
         streamlit_page_name='01_[7.1]_Logit_Lens_Tuned_Lens_and_Patchscopes',
     )
     streamlit, notebooks = master.get_page_links()
-    assert any('colab.research.google.com' in line for line in streamlit + notebooks)
+    assert not any('colab' in line.lower() for line in streamlit + notebooks)
     assert not any('prediction practice' in line.lower() for line in streamlit + notebooks)
     assert not any('extension_predictions' in line for line in streamlit + notebooks)
 

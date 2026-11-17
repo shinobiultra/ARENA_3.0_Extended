@@ -180,26 +180,6 @@ ipython.run_line_magic("load_ext", "autoreload")
 ipython.run_line_magic("autoreload", "2")
 
 # ! CELL TYPE: code
-# ! FILTERS: [colab]
-# ! TAGS: [master-comment]
-
-# import os
-# import sys
-#
-# IN_COLAB = "google.colab" in sys.modules
-#
-# if IN_COLAB:
-#     # Install dependencies, and download this chapter's exercise files from the ARENA extension repo
-#     %pip install transformers jaxtyping pyarrow scikit-learn
-#     repo, branch, chapter = "ARENA_3.0_Extended", "main", "chapter9_alignment_interpretability"
-#     if not os.path.exists(f"/content/{chapter}"):
-#         !wget -P /content https://github.com/shinobiultra/{repo}/archive/refs/heads/{branch}.zip
-#         !unzip -q /content/{branch}.zip '{repo}-{branch}/{chapter}/exercises/*' -d /content
-#         !mv /content/{repo}-{branch}/{chapter} /content/{chapter}
-#         !rm -r /content/{branch}.zip /content/{repo}-{branch}
-#     os.chdir(f"/content/{chapter}/exercises")
-
-# ! CELL TYPE: code
 # ! FILTERS: []
 # ! TAGS: []
 
