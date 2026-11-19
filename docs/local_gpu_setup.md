@@ -1,171 +1,113 @@
 # Local GPU Setup
 
-This fork is designed to keep the original ARENA material intact while adding local-first frontier model labs. The default hardware target is a single 24GB CUDA GPU, with CPU smoke tests available for most infrastructure checks.
+How to set up this repo on your own machine, and what to expect from your hardware.
 
-## Local tiers
+## Supported setup
 
-Use these tiers when writing or running extension notebooks:
+- Linux x86_64. WSL2 on Windows counts as Linux.
+- NVIDIA driver 580 or newer, if you want to use a GPU.
+- Python managed by [uv](https://docs.astral.sh/uv/); you don't need to install Python yourself.
+- macOS is not supported.
 
-| Tier | Requirement | Use |
-| --- | --- | --- |
-| Green | CPU or <= 24GB CUDA GPU | Smoke tests, small toy models, GPT-2/Pythia-scale checks, activation-store tests |
-| Yellow | 24GB CUDA GPU with quantization/offload | Gemma-sized inference, small SAE/transcoder runs, video feature extraction with reduced batch sizes |
-| Red | More than a laptop GPU or unsafe training objective | Full-scale SAE training, large activation-oracle/NLA training, dangerous misalignment finetunes |
+The reference machine is a laptop with a 24 GB RTX 5090 (Laptop GPU). Everything in the course
+was run there with PyTorch 2.15 built for CUDA 13.4.
 
-Required exercises should fit in the green or yellow tier. Red-tier work should only appear as optional research direction text.
+## Install
 
-## Environment checks
-
-## Verified local stack
-
-This checkout has been verified on 2026-11-07 with:
-
-```text
-Python: 3.14.10
-PyTorch: 2.15.0+cu134
-torchvision: 0.29.2+cu134
-CUDA build: 13.4 (driver 615.78)
-GPU: NVIDIA GeForce RTX 5090 Laptop GPU
-VRAM: 23.46 GiB
-```
-
-One uv lock covers the whole course, original chapters included (#37). Install it with:
+One lockfile covers the whole course, including the original chapters:
 
 ```bash
 uv sync --locked
 ```
 
-On a machine with the CUDA toolkit (`nvcc`), add the CUDA-only Mamba kernels that 5.4 needs:
+Lesson 5.4 also needs the CUDA-only Mamba kernels. These are an optional extra. They are built
+from source (`mamba-ssm` and `causal-conv1d`, about ten minutes) and need the CUDA toolkit
+(`nvcc`) on your `PATH`:
 
 ```bash
 uv sync --locked --extra cuda-kernels
 ```
 
-That builds `causal-conv1d` and `mamba-ssm` from source for sm_75 through sm_121 (about ten
-minutes). `pyproject.toml` takes `torch` and `torchvision` from the PyTorch CUDA 13.4 wheel index
-`https://download.pytorch.org/whl/cu134`; `bitsandbytes` picks its closest CUDA 13 binary by
-itself, so no `BNB_CUDA_VERSION` override is needed. The Chapter 2 JAX/Brax/EnvPool/Atari stack
-(`jax[cuda13]`) shares the same CUDA 13 libraries as torch and is part of the lock.
+Skip the extra if you don't plan to do 5.4.
 
-### Large downloads inside notebooks
+## Which route fits your hardware
 
-With stock ipykernel on Python ≥ 3.13, a first-time Hugging Face download of a few GB hangs
-the kernel. 11.1 (Mistral-7B, 14.5 GB) and 13.1 (SD-1.5, 2.1 GB) hit this on a clean cache.
-hf_xet reports download progress from Rust threads, and ipykernel never closes the zmq socket
-it opens for each of those progress updates. After a few minutes the kernel runs out of
-sockets.
+| Your machine | What you can do |
+| --- | --- |
+| No GPU | 62 lessons run fully on CPU and 16 run slowly. The 8 lessons that need CUDA (5.4, 5.8, 11.1, 13.1, 13.2, 14.1, 14.2, 16.7) can't run, but you can read their saved outputs in each solutions notebook. |
+| 8 GB GPU | Everything except 11.1. |
+| 16 GB GPU or more | Everything. 11.1 peaks at 13.6 GiB. |
 
-The lock installs [`arena-ipykernel-fix`](../infrastructure/extension/ipykernel_pipe_fix/README.md)
-to prevent this. Every kernel started from `.venv` loads it, whether VS Code, JupyterLab,
-Jupyter Notebook or `build.py --execute` launched it. For kernels from other environments,
-see its README.
+Slow CPU lessons are marked as such at the top of the lesson. If you are unsure, start the
+lesson and read its first cell: it says what it needs.
 
-Large downloads are still easier to watch and resume from a terminal. You can fetch a model
-before opening its lesson; for 11.1:
-
-```bash
-uv run hf download mistralai/Mistral-7B-v0.1 --revision 27d67f1b5f57dc0953326b2601d68371d40ea8da \
-  --include "*.json" --include "*.safetensors" --include "tokenizer.model"
-```
-
-## Required gated artifacts
-
-Some roadmap targets are Google Gemma-family artifacts with manual Hugging Face
-access requirements. Do not replace these with public stand-ins when making a
-full completion claim. The scoped local reports may validate public or toy
-preflights, but the strict roadmap gate requires the exact gated artifacts.
-
-After accepting the model terms and logging in, prepare them with:
-
-```bash
-hf auth login
-uv run python scripts/prepare_gated_gemma_family_artifacts.py --download --require-ready
-```
-
-To inspect the current access state without downloading weights:
-
-```bash
-uv run python scripts/prepare_gated_gemma_family_artifacts.py
-```
-
-Lessons that need Gemma 3 base activations, EmbeddingGemma, or the base
-FunctionGemma checkpoint fail their fresh-kernel run if those gated artifacts
-are unavailable. In the current validated environment they are authenticated
-and ready.
-
-DiffusionGemma is prepared separately because the required 24GB local path is
-the quantized NVIDIA NVFP4 checkpoint, while the Google BF16 checkpoint is much
-larger. Inspect or download the exact pinned NVFP4 artifact with:
-
-```bash
-uv run python scripts/prepare_diffusiongemma_artifacts.py --artifact nvfp4 --json
-uv run python scripts/prepare_diffusiongemma_artifacts.py --artifact nvfp4 --download --require-local --max-workers 1
-```
-
-The BF16 artifact can be inspected with `--artifact bf16`, but it is not the
-required local generation path for the 24GB roadmap target.
-
-Before loading a model, run:
+## Check your environment
 
 ```python
 from arena_ext import get_environment_report
 
 report = get_environment_report()
 print(report.as_dict())
-print(report.warnings(required_vram_gb=24.0))
+print(report.warnings(required_vram_gb=16.0))
 ```
 
-Every GPU notebook should print:
-
-```text
-Python version
-PyTorch version
-CUDA availability and CUDA version
-GPU name and total memory
-BF16 support
-flash-attn / xformers availability when relevant
-```
-
-## Memory checks
-
-Before loading a checkpoint, estimate memory:
+To estimate whether a model will fit before you load it:
 
 ```python
 from arena_ext import estimate_inference_memory
 
 budget = estimate_inference_memory(
-    num_parameters=1_000_000_000,
-    dtype="bfloat16",
-    batch_size=1,
-    context_length=2048,
-    hidden_size=2048,
-    num_layers=18,
-    num_key_value_heads=8,
-    head_dim=256,
-    overhead_gb=1.5,
+    num_parameters=1_000_000_000, dtype="bfloat16", batch_size=1, context_length=2048,
+    hidden_size=2048, num_layers=18, num_key_value_heads=8, head_dim=256, overhead_gb=1.5,
 )
-
-print(budget.as_dict())
-assert budget.fits(24.0)
+print(budget.as_dict(), budget.fits(16.0))
 ```
 
-The estimate is intentionally conservative and simple. It is a preflight check, not a replacement for peak VRAM measurements from PyTorch.
+This is a rough, conservative estimate. Measured peak VRAM from PyTorch is the real answer.
 
-## Notebook footer
+## Large downloads
 
-Every extension notebook should end with a compact footer:
+With stock ipykernel on Python 3.13 or newer, a first-time Hugging Face download of a few GB
+can hang the kernel (11.1 and 13.1 hit this on a clean cache). The lock installs
+[`arena-ipykernel-fix`](../infrastructure/extension/ipykernel_pipe_fix/README.md), which loads in
+every kernel started from `.venv`. For kernels from other environments, see its README.
 
-```text
-checkpoint:
-dtype:
-device:
-seed:
-dataset/subset:
-estimated memory:
-peak VRAM:
-runtime:
-artifacts:
-tests:
+Big downloads are also easier to watch and resume from a terminal. For 11.1:
+
+```bash
+uv run hf download mistralai/Mistral-7B-v0.1 --revision 27d67f1b5f57dc0953326b2601d68371d40ea8da \
+  --include "*.json" --include "*.safetensors" --include "tokenizer.model"
 ```
 
-If a notebook cannot run the full GPU path, it should still run `run_smoke_test(cpu=True)` and clearly state which dependency or hardware constraint blocked the full run.
+## Gated models
+
+Some lessons use Google Gemma-family models, which need you to accept the terms on Hugging Face
+first. After accepting and running `hf auth login`:
+
+```bash
+uv run python scripts/prepare_gated_gemma_family_artifacts.py          # check access
+uv run python scripts/prepare_gated_gemma_family_artifacts.py --download --require-ready
+```
+
+DiffusionGemma uses the quantized NVFP4 checkpoint, which fits in 24 GB:
+
+```bash
+uv run python scripts/prepare_diffusiongemma_artifacts.py --artifact nvfp4 --download --require-local --max-workers 1
+```
+
+## For maintainers
+
+The root `requirements.txt` is an export of `uv.lock`, for people who can't use uv. Each
+upgrade batch regenerates it; never edit it by hand:
+
+```bash
+uv export --frozen --no-hashes --no-dev --emit-index-url --format requirements-txt -o requirements.txt
+```
+
+`--frozen` reads only `uv.lock`, so it needs no network. The export keeps the PyTorch CUDA wheel
+index (`--extra-index-url`) and the local `./infrastructure/extension/ipykernel_pipe_fix`
+package, and leaves out the `cuda-kernels` extra. `tests/test_requirements_export.py` fails
+if the committed file drifts from a fresh export.
+
+`requirements-original.txt` (upstream ARENA) and `requirements-ci-cpu.txt` (hosted CI) are
+separate hand-maintained files, not exports.
