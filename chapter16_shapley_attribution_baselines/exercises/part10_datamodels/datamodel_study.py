@@ -263,11 +263,11 @@ def reference_checks(data: dict, prepared: dict, evaluated: dict | None) -> dict
 
     checks = []
     # Six independently scheduled fits establish batch scheduling parity.
-    for fraction in study.FRACTIONS:
+    for fraction in FRACTIONS:
         masks = prepared["designs"][fraction]["train"]
         theta = prepared["subset_fits"][fraction]["train"]["theta"]
         for row in (0, 1):
-            separate = study.refit_masks(data["train"], masks[row : row + 1])["theta"][0]
+            separate = refit_masks(data["train"], masks[row : row + 1])["theta"][0]
             difference = float((theta[row] - separate).abs().max())
             if difference > 1e-8:
                 raise ValueError("Batch versus separate classifier refits disagree.")
@@ -275,7 +275,7 @@ def reference_checks(data: dict, prepared: dict, evaluated: dict | None) -> dict
                 dict(kind="separate_refit", fraction=fraction, row=row, max_error=difference)
             )
     candidates = []
-    for fraction in study.FRACTIONS:
+    for fraction in FRACTIONS:
         for row in (0, 1, 2):
             candidates.append(
                 (
@@ -314,7 +314,7 @@ def reference_checks(data: dict, prepared: dict, evaluated: dict | None) -> dict
         .sort()
         .values.tolist()
     )
-    for fraction in study.FRACTIONS:
+    for fraction in FRACTIONS:
         x = prepared["designs"][fraction]["train"].double().numpy()
         y = prepared["margins"][fraction]["train"].numpy()
         fit = prepared["responses"][fraction]["lasso"]
