@@ -600,7 +600,7 @@ def plot_signature_recovery(
     """
     colours = {name: c for name, c in zip(sets, [BLUE, RED, GREEN, GREY, ORANGE, PURPLE])}
     styles = [("-", "o"), ("--", "s")]
-    fig, ax = plt.subplots(figsize=(9, 5))
+    fig, ax = plt.subplots(figsize=(11, 5))
     for (model_name, (recovery, layers, n_layers)), (linestyle, marker) in zip(models.items(), styles):
         xs = [layer / (n_layers - 1) for layer in layers]
         for name in sets:
@@ -613,9 +613,10 @@ def plot_signature_recovery(
         plt.Line2D([], [], color="k", ls=ls, marker=m, markersize=4, lw=1.4, label=model_name)
         for model_name, (ls, m) in zip(models, styles)
     ]
-    legend_sets = ax.legend(handles=set_handles, title="patched tokens", fontsize=8, loc="upper right")
+    # Both legends sit outside the axes, so they never cover the late-layer crossover.
+    legend_sets = ax.legend(handles=set_handles, title="patched tokens", fontsize=8, loc="upper left", bbox_to_anchor=(1.01, 1.0))
     ax.add_artist(legend_sets)
-    ax.legend(handles=model_handles, title="model", fontsize=8, loc="center right")
+    ax.legend(handles=model_handles, title="model", fontsize=8, loc="lower left", bbox_to_anchor=(1.01, 0.0))
     ax.set_ylim(-0.1, 1.12)
     ax.set_xlabel("relative depth: layer / (number of layers - 1)")
     ax.set_ylabel("recovery (0 = corrupted answer, 1 = clean answer)")
