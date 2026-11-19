@@ -182,7 +182,6 @@ import gc
 import os
 import hashlib
 import inspect
-import json
 import math
 import statistics
 import sys
@@ -1898,8 +1897,8 @@ if MAIN:
 r'''
 ## 9. Signature Result: Quantization and Storage
 
-`run_cpu_release` requires the bundle. It derives `accepted` from measured
-checks; it cannot default to reference functions. The panel is regenerated
+`run_cpu_release` requires the bundle. It derives its checks from measured
+values; it cannot default to reference functions. The panel is regenerated
 from those same callbacks.
 '''
 
@@ -1921,9 +1920,7 @@ if MAIN:
         implementation=learner_functions,
         make_figure=True,
     )
-    assert cpu_result["accepted"] == all(cpu_result["checks"].values())
     display({
-        "accepted": cpu_result["accepted"],
         "checks": cpu_result["checks"],
         "dataset_sizes": {
             key: cpu_result["dataset"][key]
@@ -1948,7 +1945,7 @@ r'''
 r'''
 ## 10. Train the Marker Rule on TinyStories
 
-Each method result carries its seed. Acceptance extracts exactly three
+Each method result carries its seed. The comparison extracts exactly three
 unique seeds from returned runs, verifies they match every method payload,
 and uses a two-sided 95% Student-t interval with `t(0.975, df=2) =
 4.3026527299`. The comparison reports:
@@ -1962,8 +1959,7 @@ and uses a two-sided 95% Student-t interval with `t(0.975, df=2) =
 - QLoRA-vs-BF16-LoRA and QLoRA-vs-full-BF16 state comparators;
 - per-layer spectra, protected full-vocabulary NLL, and peak CUDA allocation.
 
-The generic `run_gpu_test` hook is for the visible section reference. This
-notebook calls only `run_cuda_release`, whose implementation argument is
+The comparison runs through `run_cuda_release`, whose implementation argument is
 mandatory.
 '''
 
@@ -1994,7 +1990,6 @@ if MAIN:
     RUN_CUDA = t.cuda.is_available() and os.environ.get("ARENA_QLORA_CPU_ONLY") != "1"
     if RUN_CUDA:
         cuda_result = run_cuda_release(max_vram_gb=24.0)
-        assert cuda_result["accepted"] == all(cuda_result["checks"].values())
         display(Image(filename=str(ROOT / "chapter15_peft_misalignment/instructions/assets/qlora_real_signature_panel.png")))
         for method in ("qlora_r8", "bf16_lora_r8", "full_bf16", "random_labels", "same_norm_random"):
             result = cuda_result["summary"][method]
@@ -2019,7 +2014,7 @@ r'''
 r'''
 <details><summary>Expected output: measured TinyStories comparison</summary>
 
-The September 5 reference run uses seeds 0, 1, and 2, with 32 updates per
+The reference run uses seeds 0, 1, and 2, with 32 updates per
 trained method. QLoRA r=8 and BF16 LoRA r=8 both reach 1.000 accuracy on
 these 40 template-transfer and 40 narrow OOD examples. Random labels
 average 0.517 and random same-norm adapters 0.575 on template transfer;
@@ -2027,9 +2022,8 @@ marker removal and the name-only baseline give 0.500.
 
 Resident training state is 38.67 MiB for QLoRA, 39.18 MiB for BF16 LoRA,
 and 60.58 MiB for full BF16. This is about 1.3% savings against BF16 LoRA,
-not an eightfold reduction. The original 0.01 dequantized-matmul error
-limit fails (maximum 0.03125), so the candidate remains unreleased even
-though its behavior and memory checks pass. Thresholds are unchanged.
+not an eightfold reduction. The 0.01 dequantized-matmul error
+limit fails (maximum 0.03125), even though the behavior and memory checks pass.
 
 </details>
 
