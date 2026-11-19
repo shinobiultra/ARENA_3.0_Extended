@@ -592,13 +592,3 @@ if MAIN:
     )
 
 # %%
-
-def run_gpu_test(max_vram_gb: float = 24.0):
-    from part1_exact_shapley_ground_truth_games.solutions import run_gpu_test as _run_gpu_test
-    return _run_gpu_test(max_vram_gb=max_vram_gb)
-
-
-def run_full_experiment(max_vram_gb: float = 24.0):
-    return run_gpu_test(max_vram_gb=max_vram_gb)
-
-# %%
