@@ -36,3 +36,26 @@ jobs:
           uv pip install -r requirements-ci-cpu.txt
       - name: Run hosted CPU quality gate
         run: .venv/bin/python scripts/ci_quality_gate.py --mode hosted-cpu
+
+  maintainer-hooks:
+    name: Maintainer hooks
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: astral-sh/setup-uv@v6
+        with:
+          version: "0.13.9"
+      # ty resolves imports from the locked environment; it reads no CUDA libraries, so skip them.
+      - name: Install the locked environment without CUDA libraries
+        run: uv sync --locked $(sed -n 's/^name = "\(nvidia-[^"]*\)"$/\1/p' uv.lock | grep -v -e nvidia-ml-py -e nvidia-modelopt | sort -u | sed 's/^/--no-install-package /')
+      - name: Run the maintainer hooks on the files this push or pull request changed
+        env:
+          BEFORE: ${{ github.event.before }}
+        run: |
+          case "$GITHUB_REF_NAME" in
+            integration/extension|main) base=$BEFORE ;;
+            *) base=$(git merge-base origin/integration/extension HEAD) ;;
+          esac
+          scripts/run_maintainer_hooks.sh "$base"

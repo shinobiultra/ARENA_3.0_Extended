@@ -197,3 +197,7 @@ markers = [
     "requires_gated_model: tests that require authenticated gated model access",
     "requires_large_download: tests that require large external artifacts",
 ]
+
+[tool.ty.environment]
+# build.py puts the upstream converter (infrastructure/core) on sys.path when it runs.
+extra-paths = ["infrastructure/core"]

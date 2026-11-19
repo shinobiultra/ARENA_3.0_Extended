@@ -1,0 +1,26 @@
+# Maintainer hooks (Spec #39, Runtime and performance): ruff check --fix, ruff format and ty check.
+# The same configuration runs locally and in CI (.github/workflows/extension-quality.yml):
+#
+#   prek install                                                  # on each commit, for the staged files
+#   prek run --from-ref origin/integration/extension --to-ref HEAD  # what CI runs: the files a branch changed
+#
+# The hooks cover maintainer code only. Learner material stays out of scope: original ARENA
+# (chapters 0-4, infrastructure/core), lesson masters (infrastructure/chapters) and generated
+# lesson files (the chapter folders). Older maintainer files are cleaned when a change touches them.
+files: ^(infrastructure/extension|arena_ext|mastery_hub|tests|scripts)/
+repos:
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.17.5
+    hooks:
+      - id: ruff-check
+        args: [--fix]
+      - id: ruff-format
+  - repo: local
+    hooks:
+      - id: ty
+        name: ty check
+        # The project's environment (.venv, from `uv sync --locked`) resolves the imports.
+        entry: ty check --python .venv
+        language: python
+        additional_dependencies: ["ty==0.0.107"]
+        types_or: [python, pyi]
