@@ -10,7 +10,6 @@ target block. No pixel-reconstruction target is used.
 from __future__ import annotations
 
 import copy
-import json
 from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import Any
@@ -1187,49 +1186,3 @@ def plot_signature_result(run: IJEPARun, output_path: str | Path | None = None):
         output_path.parent.mkdir(parents=True, exist_ok=True)
         figure.savefig(output_path, dpi=180, bbox_inches="tight")
     return figure
-
-
-def run_smoke_test(cpu: bool = True) -> dict[str, Any]:
-    """Run the complete three-seed contract on the requested device."""
-
-    device = "cpu" if cpu else "cuda"
-    if not cpu and not t.cuda.is_available():
-        raise RuntimeError("CUDA was requested; no CPU fallback is used")
-    _, report = run_seed_suite(device=device)
-    report.update({"cuda_available": not cpu, "within_vram_budget": True})
-    return report
-
-
-def run_gpu_test(max_vram_gb: float = 24.0) -> dict[str, Any]:
-    """Run all three contract seeds on CUDA, refusing to fall back to CPU."""
-
-    if not t.cuda.is_available():
-        raise RuntimeError("CUDA is required for run_gpu_test; CPU fallback is forbidden")
-    runs, report = run_seed_suite(device="cuda", max_vram_gb=max_vram_gb)
-    plot_signature_result(runs[0], SIGNATURE_ASSET)
-    report.update(
-        {
-            "cuda_available": True,
-            "device": t.cuda.get_device_name(),
-            "gpu_name": t.cuda.get_device_name(),
-            "torch_version": t.__version__,
-            "cuda_version": t.version.cuda,
-            "max_allowed_gpu_gb": max_vram_gb,
-            "within_vram_budget": report["peak_vram_gb"] <= max_vram_gb,
-        }
-    )
-    return report
-
-
-def run_full_experiment(max_vram_gb: float = 24.0) -> dict[str, Any]:
-    """Run the release-grade CUDA experiment with no CPU fallback."""
-
-    return run_gpu_test(max_vram_gb=max_vram_gb)
-
-
-def save_report(report: dict[str, Any], path: str | Path) -> None:
-    Path(path).write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
-
-
-if __name__ == "__main__":
-    print(json.dumps(run_smoke_test(), indent=2))
