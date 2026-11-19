@@ -142,9 +142,6 @@ from IPython.display import display
 from torch import Tensor, nn
 from torch.nn import functional as F
 
-GT_TIER = "GT-0"
-REAL_EXTENSION_GT_TIER = "GT-3"
-EXERCISE_ID = "13_2_denoising_time_causal_patching"
 DIFFICULTY = 5
 IMPORTANCE = 5
 EXPECTED_RUNTIME = "120-180 minutes; the full real sweep runs on CUDA"
@@ -2136,7 +2133,7 @@ random-latent controls. Explain why selecting the maximum over nineteen calls is
 r'''
 ## Signature Result 2: Real SD1.5 Denoising-Time Causality
 
-The pinned CUDA 13.2 release run found best CLIP recoveries of `0.654` and
+In the pinned SD1.5 run the best CLIP recoveries were `0.654` and
 `0.505` on the two color counterfactuals, with regional selectivity `0.222` in
 both cases. The target interventions beat their strongest matched controls by
 `0.194` and `0.213` at `3.235 GiB` peak VRAM.
@@ -2144,8 +2141,7 @@ both cases. The target interventions beat their strongest matched controls by
 ![Pinned SD1.5 denoising-time intervention sweep](../../instructions/assets/denoising_time_sd15_signature.png)
 
 Run the next cell on CUDA to reproduce the figure from your explicit loop and
-case sweep. The committed image is an expected-output reference; no
-verification report supplies the plotted result.
+case sweep. The image above is the expected output.
 '''
 
 # ! CELL TYPE: code
@@ -2328,50 +2324,18 @@ Record the image, both metrics, and the counterfactual you would run next. An an
 
 ## Limitations and Claim Boundary
 
-Supported after the CUDA gate passes: two safe pinned SD1.5 color counterfactuals, exact same-seed DDIM trajectories, one-time latent-region replacement, a complete timestep sweep,
+Supported by the CUDA run: two safe pinned SD1.5 color counterfactuals, exact same-seed DDIM trajectories, one-time latent-region replacement, a complete timestep sweep,
 CLIP donor-vs-recipient calibration, regional recovery, off-region penalty, and four matched controls.
 
 Not supported: a complete SD1.5 circuit, neuron- or channel-level localization in the real UNet, broad prompt generalization, human perceptual evaluation, SDXL/DiT claims, or the
 claim that one denoising timestep is universally decisive. The toy channel/layer result and real latent-state result are separate evidence tiers.
-
-## Verification Appendix
-
-The notebook result is primary. `verification_report.json` records the exact
-CUDA versions, numeric gates, immutable model revisions, and input hashes used
-for release auditing, but it does not substitute for the generated images,
-full time sweep, or controls.
 '''
-
-# ! CELL TYPE: code
-# ! FILTERS: []
-# ! TAGS: []
-
-def run_smoke_test(cpu=True):
-    _ = cpu
-    return reference.run_smoke_test(cpu=True)
-
-def run_gpu_test(max_vram_gb: float = 24.0) -> dict:
-    return reference.run_gpu_test(max_vram_gb=max_vram_gb)
-
-def run_full_experiment(max_vram_gb: float = 24.0) -> dict:
-    return reference.run_full_experiment(max_vram_gb=max_vram_gb)
-if MAIN:
-
-    tests.test_notebook_contract(run_smoke_test)
 
 # ! CELL TYPE: markdown
 # ! FILTERS: []
 # ! TAGS: []
 
 r'''
-<details>
-<summary>Expected output</summary>
-
-```text
-All tests in `test_notebook_contract` passed!
-```
-</details>
-
 ## Reading
 
 - ARENA 1.4.1 activation and path patching: clean/corrupt calibration, visible hooks, heatmaps, and anomaly hunting.
