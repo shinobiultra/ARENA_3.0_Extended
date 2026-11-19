@@ -4430,7 +4430,7 @@ At which layer does the mean recovery from patching the object's tokens first fa
 
 | a | b | c | d | e |
 |---|---|---|---|---|
-| layers 0 to 7 | layers 8 to 9 | layer 10 | layer 11 | it never falls below 0.5 |
+| layer 0 (it is already below 0.5 there) | layer 1 | layers 2 to 5 | layers 6 to 10 | layer 11, or it never falls below 0.5 |
 
 ## Your answers
 
@@ -4462,7 +4462,7 @@ quiz = Quiz(
         "Q1": Interval("d", points=4),
         "Q2": Interval("a", points=5),
         "Q3": Ranking("S < L = J"),
-        "Q4": Interval("d", points=6),
+        "Q4": Interval("b", points=6),
     }
 )
 quiz.score(my_answers)
@@ -4541,8 +4541,8 @@ def letter(value: float, edges: list[float]) -> str:
     return "abcde"[sum(value >= edge for edge in edges)]
 
 
-def object_recovery_curve(pair_list: list, kind: str) -> Tensor:
-    """Recovery of every pair at every layer from patching the object's tokens (the union of its tokens in the clean and corrupted scenes): (layer, pair)."""
+def object_recovery_curve(pair_list: list, kind: str) -> dict[str, Tensor]:
+    """Recovery of every pair at every layer, shape (layer, pair), from patching the object's tokens (the union of its tokens in the clean and corrupted scenes) and, for reference, all image tokens."""
     n = len(pair_list)
     clean_s, corrupt_s, targets = [p[0] for p in pair_list], [p[1] for p in pair_list], [p[2] for p in pair_list]
     word = (lambda s, i: s.objects[i].colour) if kind == "colour" else (lambda s, i: s.objects[i].shape)
@@ -4562,12 +4562,13 @@ def object_recovery_curve(pair_list: list, kind: str) -> Tensor:
     masks_q = t.tensor(np.stack([(utils.object_token_mask(c.objects[i]) | utils.object_token_mask(k.objects[i])).flatten() for c, k, i in zip(clean_s, corrupt_s, targets)]), device=device)
     mask = t.zeros(n, seq_q, dtype=t.bool, device=device)
     mask[:, IMAGE_SLICE] = masks_q
-    curves = patching_sweep(vlm, embeds_corrupt, resids, {"object tokens": mask}, logits_clean, logits_corrupt, ids_clean, ids_corrupt, seq_q - 1, list(range(N_LAYERS)))
-    return curves["object tokens"]
+    everything = t.zeros_like(mask)
+    everything[:, IMAGE_SLICE] = True
+    return patching_sweep(vlm, embeds_corrupt, resids, {"object tokens": mask, "all image tokens": everything}, logits_clean, logits_corrupt, ids_clean, ids_corrupt, seq_q - 1, list(range(N_LAYERS)))
 
 
 # Q1: 20 new colour pairs
-q1_recovery = object_recovery_curve(utils.make_counterfactual_pairs(20, seed=123), "colour")
+q1_recovery = object_recovery_curve(utils.make_counterfactual_pairs(20, seed=123), "colour")["object tokens"]
 q1_mean, q1_low, q1_high = utils.pair_bootstrap_band(q1_recovery.T)
 print(f"Q1: object-token recovery at layer 4 on 20 new colour pairs: {q1_mean[4]:.3f} (95% band {q1_low[4]:.3f} to {q1_high[4]:.3f}); layers 0-8 range {q1_mean[:9].min():.3f} to {q1_mean[:9].max():.3f}")
 
@@ -4597,11 +4598,13 @@ t.cuda.empty_cache()
 print("Q3: colour accuracy " + ", ".join(f"{name} {value:.3f}" for name, value in q3_runs.items()) + f"; final loss of L {np.mean(losses_l[-50:]):.3f}")
 
 # Q4: shape pairs
-q4_recovery = object_recovery_curve(utils.make_shape_pairs(40, seed=11), "shape")
-q4_mean, q4_low, q4_high = utils.pair_bootstrap_band(q4_recovery.T)
+q4_curves = object_recovery_curve(utils.make_shape_pairs(40, seed=11), "shape")
+q4_mean, q4_low, q4_high = utils.pair_bootstrap_band(q4_curves["object tokens"].T)
+q4_all_mean = q4_curves["all image tokens"].mean(dim=1)
 below = [layer for layer in range(N_LAYERS) if q4_mean[layer] < 0.5]
 q4_first = below[0] if below else None
 print("Q4: object-token recovery by layer on 40 shape pairs: " + " ".join(f"{v:.2f}" for v in q4_mean.tolist()))
+print("Q4: all image tokens, for reference:                 " + " ".join(f"{v:.2f}" for v in q4_all_mean.tolist()))
 print(f"Q4: first layer below 0.5: {q4_first}")
 
 # one figure of all the quiz's runs
@@ -4623,6 +4626,7 @@ axes[1, 0].legend(fontsize=8)
 axes[1, 1].plot(layers_axis, patch_curves["object tokens"], "-o", color=utils.GREY, markersize=3.5, label="colour pairs (Part 4)")
 axes[1, 1].plot(layers_axis, q4_mean.numpy(), "-o", color=utils.PURPLE, markersize=4, label="Q4: 40 shape pairs")
 axes[1, 1].fill_between(layers_axis, q4_low.numpy(), q4_high.numpy(), color=utils.PURPLE, alpha=0.2, lw=0)
+axes[1, 1].plot(layers_axis, q4_all_mean.cpu().numpy(), "--s", color=utils.GREEN, markersize=3.5, label="Q4: all image tokens")
 axes[1, 1].axhline(0.5, color="k", ls=":", lw=1.2)
 axes[1, 1].set(title="Q4: object-token recovery, shape pairs", xlabel="layer", ylabel="recovery", ylim=(-0.05, 1.1))
 axes[1, 1].legend(fontsize=8)
@@ -4633,7 +4637,7 @@ plt.show()
 assert letter(float(q1_mean[4]), [0.5, 0.8, 0.9, 1.0]) == quiz.questions["Q1"].key, "Q1 key has drifted"
 assert letter(q2_accuracy, [0.02, 0.2, 0.5, 0.8]) == quiz.questions["Q2"].key, "Q2 key has drifted"
 assert Ranking.from_values(q3_runs, eps=0.02).key_text == quiz.questions["Q3"].key_text, "Q3 key has drifted"
-assert ("e" if q4_first is None else "abcd"[sum(q4_first >= edge for edge in [8, 10, 11])]) == quiz.questions["Q4"].key, "Q4 key has drifted"
+assert ("e" if q4_first is None else "abcde"[sum(q4_first >= edge for edge in [1, 2, 6, 11])]) == quiz.questions["Q4"].key, "Q4 key has drifted"
 print("The written key matches these runs.")
 
 # ! CELL TYPE: markdown
