@@ -36,8 +36,17 @@ By the end of this notebook, you will have produced a dense correspondence-and-m
 DINO/DINOv2 motivate dense learned representations, and SAM motivates promptable mask decoding. The runnable
 features here are **mean pixel RGB**, not DINO/DINOv2/SAM weights or a model trained by their full recipes.
 The purpose is to learn the transportable analysis, then read the exact model bridge without renaming our
-affinity decoder “SAM”. Prerequisites: [0.1] array shapes and PCA basics, [12.1] normalised similarity; [8.1]
-is useful for activation replacement.
+affinity decoder “SAM”.
+
+[8.1] is useful for activation replacement.
+'''
+
+# ! CELL TYPE: markdown
+# ! FILTERS: []
+# ! TAGS: []
+
+r'''
+**Prerequisites:** [12.1] CLIP and SigLIP from Scratch.
 '''
 
 # ! CELL TYPE: markdown

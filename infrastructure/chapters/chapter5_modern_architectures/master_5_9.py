@@ -59,6 +59,14 @@ lesson does not establish EmbeddingGemma internal geometry, FunctionGemma intern
 # ! TAGS: []
 
 r'''
+**Prerequisites:** [1.1] Transformers from Scratch.
+'''
+
+# ! CELL TYPE: markdown
+# ! FILTERS: []
+# ! TAGS: []
+
+r'''
 ## Content & Learning Objectives
 
 ### 1️⃣ Specify exact semantic evidence

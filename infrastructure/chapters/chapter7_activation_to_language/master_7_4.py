@@ -91,6 +91,14 @@ gradient with a KL penalty to a reference policy; you've seen both in [2.3] PPO 
 # ! TAGS: []
 
 r'''
+**Prerequisites:** [7.3] Mini Activation Oracles and [7.1] Logit Lens, Tuned Lens and Patchscopes.
+'''
+
+# ! CELL TYPE: markdown
+# ! FILTERS: []
+# ! TAGS: []
+
+r'''
 ## Content & Learning Objectives
 
 ### 1️⃣ Activations, reconstructions and behaviour

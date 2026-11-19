@@ -47,7 +47,15 @@ two-parameter readout to a tiny analytic counterfactual dataset; it is not the p
 DAS validation. You can inspect every number. The open question is when these components remain meaningful
 after learning them at scale.
 
-Prerequisites: array broadcasting, matrix multiplication, least squares and activation patching (1.2); causal abstraction and rotated subspaces (11.3) help with the final part.
+Causal abstraction and rotated subspaces (11.3) help with the final part.
+'''
+
+# ! CELL TYPE: markdown
+# ! FILTERS: []
+# ! TAGS: []
+
+r'''
+**Prerequisites:** [1.2] Intro to Mech Interp.
 '''
 
 # ! CELL TYPE: markdown

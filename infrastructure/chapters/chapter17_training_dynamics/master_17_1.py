@@ -97,6 +97,14 @@ measurement: grokking itself is not demonstrated here.
 # ! TAGS: []
 
 r'''
+**Prerequisites:** [1.5.2] Grokking & Modular Arithmetic.
+'''
+
+# ! CELL TYPE: markdown
+# ! FILTERS: []
+# ! TAGS: []
+
+r'''
 ## Content & Learning Objectives
 
 ### 1️⃣ Ground truth and Fourier mechanism

@@ -121,6 +121,14 @@ studying.
 # ! TAGS: []
 
 r'''
+**Prerequisites:** [16.1] Exact Shapley on Ground-Truth Games.
+'''
+
+# ! CELL TYPE: markdown
+# ! FILTERS: []
+# ! TAGS: []
+
+r'''
 ## Content & Learning Objectives
 
 ### 1️⃣ Define the game before allocating credit

@@ -66,8 +66,7 @@ matrix and a matched-strength intervention plot. A shuffled-label direction and 
 direction provide the controls. You will also build an entity-recognition gate to see why
 making an unknown entity sound familiar can increase unsupported answers rather than knowledge.
 
-Prerequisites: original ARENA 1.2 (residual streams and hooks), 0.3 (gradient descent), and 9.1
-(activation addition). Work entirely in NumPy float64 on CPU. No model, tokenizer or download is
+Work entirely in NumPy float64 on CPU. No model, tokenizer or download is
 needed. This organism deliberately *constructs* truth and recognition variables. It is not a
 claim that an LLM has the same coordinates, knows these facts, or has a universal truth neuron.
 
@@ -75,6 +74,14 @@ The study edition covers truthfulness directions and
 hallucination probes through visible implementations and a source-grounded native
 bridge. Pretrained cross-dataset extraction, head selection, ITI truthfulness/helpfulness
 measurement and real entity-direction interventions are not covered here.
+'''
+
+# ! CELL TYPE: markdown
+# ! FILTERS: []
+# ! TAGS: []
+
+r'''
+**Prerequisites:** [1.3.1] Linear Probes and [9.1] Refusal Directions and Representation Engineering.
 '''
 
 # ! CELL TYPE: markdown

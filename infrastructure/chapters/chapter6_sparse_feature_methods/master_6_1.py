@@ -66,6 +66,14 @@ The original reconstruction baseline is the train mean, despite the variable nam
 # ! TAGS: []
 
 r'''
+**Prerequisites:** [1.3.3] Interpretability with SAEs and [1.5.4] Superposition & SAEs.
+'''
+
+# ! CELL TYPE: markdown
+# ! FILTERS: []
+# ! TAGS: []
+
+r'''
 ## Content & Learning Objectives
 
 ### 1️⃣ Plant exact causes

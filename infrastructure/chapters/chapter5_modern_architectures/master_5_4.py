@@ -96,6 +96,14 @@ literal recurrence. The quadratic and chunked forms receive no privileged access
 # ! TAGS: []
 
 r'''
+**Prerequisites:** [5.3] Mamba from Scratch.
+'''
+
+# ! CELL TYPE: markdown
+# ! FILTERS: []
+# ! TAGS: []
+
+r'''
 ## Content & Learning Objectives
 
 ### 1️⃣ One causal operator

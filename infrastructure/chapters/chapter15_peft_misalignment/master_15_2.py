@@ -45,6 +45,14 @@ Shared training objectives and budgets coexist with method-specific learning rat
 # ! TAGS: []
 
 r'''
+**Prerequisites:** [15.1] LoRA and DoRA from Scratch.
+'''
+
+# ! CELL TYPE: markdown
+# ! FILTERS: []
+# ! TAGS: []
+
+r'''
 ## Content & Learning Objectives
 
 ### 1️⃣ Build an inspectable adaptation

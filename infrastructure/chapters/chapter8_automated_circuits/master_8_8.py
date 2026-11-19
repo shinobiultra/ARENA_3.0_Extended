@@ -69,6 +69,14 @@ This section assumes [8.2], [8.3] and [8.4], whose implementations it imports.
 # ! TAGS: []
 
 r'''
+**Prerequisites:** [8.3] AtP* from Scratch and [8.4] ACDC and Circuit Metrics.
+'''
+
+# ! CELL TYPE: markdown
+# ! FILTERS: []
+# ! TAGS: []
+
+r'''
 ## Content & Learning Objectives
 
 ### 1️⃣ Compiling a Program into Weights

@@ -92,6 +92,14 @@ lesson evidence.
 # ! TAGS: []
 
 r'''
+**Prerequisites:** none. This section starts from scratch.
+'''
+
+# ! CELL TYPE: markdown
+# ! FILTERS: []
+# ! TAGS: []
+
+r'''
 ## Content & Learning Objectives
 
 ### 1️⃣ Define the complete game

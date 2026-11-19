@@ -96,6 +96,14 @@ to debug; it doesn't tell us what a pretrained model must do.
 # ! TAGS: []
 
 r'''
+**Prerequisites:** [1.3.1] Linear Probes.
+'''
+
+# ! CELL TYPE: markdown
+# ! FILTERS: []
+# ! TAGS: []
+
+r'''
 ## Content & Learning Objectives
 
 ### 1️⃣ Find a useful view

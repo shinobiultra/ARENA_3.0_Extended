@@ -75,6 +75,14 @@ short PyTorch training loop; nothing more than [0.3] Optimization.
 # ! TAGS: []
 
 r'''
+**Prerequisites:** [1.2] Intro to Mech Interp.
+'''
+
+# ! CELL TYPE: markdown
+# ! FILTERS: []
+# ! TAGS: []
+
+r'''
 ## Content & Learning Objectives
 
 ### 1️⃣ The Logit Lens

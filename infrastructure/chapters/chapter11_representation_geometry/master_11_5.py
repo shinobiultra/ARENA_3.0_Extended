@@ -59,6 +59,14 @@ does its score point, and what evidence identifies the feature?**
 # ! TAGS: []
 
 r'''
+**Prerequisites:** [1.3.1] Linear Probes.
+'''
+
+# ! CELL TYPE: markdown
+# ! FILTERS: []
+# ! TAGS: []
+
+r'''
 ## Content & Learning Objectives
 
 ### 1️⃣ Build a contrast pair

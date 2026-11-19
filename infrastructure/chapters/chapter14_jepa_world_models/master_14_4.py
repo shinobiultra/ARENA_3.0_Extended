@@ -44,7 +44,15 @@ as one organism, then fit small linear predictors with a fixed teacher to make t
 interpretable. These are tiny task-matched fixtures, not implementations or benchmark reproductions of all
 named papers.
 
-Prerequisites: 14.1, matrix least squares, Fourier magnitude, simple gradient descent, and linear probes from chapter 11. Everything runs on CPU without downloads.
+Everything runs on CPU without downloads.
+'''
+
+# ! CELL TYPE: markdown
+# ! FILTERS: []
+# ! TAGS: []
+
+r'''
+**Prerequisites:** [14.1] I-JEPA from Scratch.
 '''
 
 # ! CELL TYPE: markdown

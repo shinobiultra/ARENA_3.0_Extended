@@ -94,6 +94,14 @@ for arbitrary inputs or interventions.
 # ! TAGS: []
 
 r'''
+**Prerequisites:** [11.1] PCA, SVD and Geometry Controls and [8.1] Activation Patching Refresher.
+'''
+
+# ! CELL TYPE: markdown
+# ! FILTERS: []
+# ! TAGS: []
+
+r'''
 ## Content & Learning Objectives
 
 ### 1️⃣ Specify the counterfactual

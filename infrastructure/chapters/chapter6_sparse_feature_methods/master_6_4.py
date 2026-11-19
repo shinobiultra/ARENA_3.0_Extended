@@ -72,6 +72,14 @@ Skip transcoders, a learner-trained SAE comparison and cross-layer virtual weigh
 # ! TAGS: []
 
 r'''
+**Prerequisites:** [6.1] SAE Variants.
+'''
+
+# ! CELL TYPE: markdown
+# ! FILTERS: []
+# ! TAGS: []
+
+r'''
 ## Content & Learning Objectives
 
 ### 1️⃣ Replace the exact MLP

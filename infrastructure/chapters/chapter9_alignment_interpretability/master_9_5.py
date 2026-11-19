@@ -51,6 +51,14 @@ records in four disjoint contexts. Adversarial input optimization, red-teaming w
 # ! TAGS: []
 
 r'''
+**Prerequisites:** [9.1] Refusal Directions and Representation Engineering.
+'''
+
+# ! CELL TYPE: markdown
+# ! FILTERS: []
+# ! TAGS: []
+
+r'''
 ## Content & Learning Objectives
 
 ### 1️⃣ Build and challenge the monitor

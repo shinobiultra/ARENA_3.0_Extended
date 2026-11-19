@@ -42,9 +42,17 @@ small LLM. The native bridge section specifies how an instruction-tuned backend 
 structured actions; no backend is loaded or called here. This boundary keeps the causal question
 understandable instead of hiding it behind an API.
 
-Prerequisites: [7.2] explanation/simulation, [6.3] feature dashboards and causal checks, and basic Python dictionaries. An articulate explanation is a hypothesis, not evidence. Our examples are public analytic fixtures; “held out” below means withheld from the controller's observation history, not unknown to a learner reading the complete notebook.
+An articulate explanation is a hypothesis, not evidence. Our examples are public analytic fixtures; “held out” below means withheld from the controller's observation history, not unknown to a learner reading the complete notebook.
 
 **Study edition:** the default examples are deterministic CPU teaching fixtures. No pretrained model is loaded, no network is used, and no trained-model benchmark or native qualification is claimed. Save a personal copy.
+'''
+
+# ! CELL TYPE: markdown
+# ! FILTERS: []
+# ! TAGS: []
+
+r'''
+**Prerequisites:** [7.2] Feature Verbalizers and [6.3] Feature Splitting, Absorption and Dashboards.
 '''
 
 # ! CELL TYPE: markdown

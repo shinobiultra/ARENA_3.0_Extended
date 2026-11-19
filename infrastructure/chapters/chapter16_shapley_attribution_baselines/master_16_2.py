@@ -45,6 +45,14 @@ The exact six-player dividend game runs in seconds on CPU; the local real-model 
 # ! TAGS: []
 
 r'''
+**Prerequisites:** [16.1] Exact Shapley on Ground-Truth Games.
+'''
+
+# ! CELL TYPE: markdown
+# ! FILTERS: []
+# ! TAGS: []
+
+r'''
 ## Content & Learning Objectives
 
 ### 1️⃣ Fix the attribution target

@@ -36,9 +36,16 @@ By the end of this notebook, you will have shown how a sparse-feature interventi
 The images are genuine rendered pixel arrays, but the encoder is deliberately transparent: colour in the top
 half supplies object evidence; exact template matching in the bottom half supplies a word channel; a fixed
 orthogonal map mixes those channels. This is **not CLIP or SigLIP**, and it does not discover their
-text-reading heads. It lets us audit each term before attempting that larger question. Prerequisites: [12.1]
-contrastive retrieval, [0.3] gradients and matrix multiplication. [6.1] is useful background for sparse
+text-reading heads. It lets us audit each term before attempting that larger question. [6.1] is useful background for sparse
 autoencoders.
+'''
+
+# ! CELL TYPE: markdown
+# ! FILTERS: []
+# ! TAGS: []
+
+r'''
+**Prerequisites:** [12.1] CLIP and SigLIP from Scratch.
 '''
 
 # ! CELL TYPE: markdown

@@ -49,6 +49,14 @@ fine-tuning, or an emergent-misalignment replication.
 # ! TAGS: []
 
 r'''
+**Prerequisites:** [4.1] Emergent Misalignment.
+'''
+
+# ! CELL TYPE: markdown
+# ! FILTERS: []
+# ! TAGS: []
+
+r'''
 ## Content & Learning Objectives
 
 ### 1️⃣ Safe proxy drift: exact toy

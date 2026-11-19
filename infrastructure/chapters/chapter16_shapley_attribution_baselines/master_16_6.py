@@ -96,6 +96,14 @@ the IOI task ([1.4.1]) helps with interpreting the GPT-2 results but isn't requi
 # ! TAGS: []
 
 r'''
+**Prerequisites:** [16.2] KernelSHAP and PartitionSHAP and [16.5] Shapley Interactions.
+'''
+
+# ! CELL TYPE: markdown
+# ! FILTERS: []
+# ! TAGS: []
+
+r'''
 ## Content & Learning Objectives
 
 ### 1️⃣ Interactions as Fourier and Möbius coefficients

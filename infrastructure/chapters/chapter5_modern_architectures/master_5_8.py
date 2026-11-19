@@ -51,6 +51,8 @@ r'''
 
 r'''
 
+**Prerequisites:** [1.1] Transformers from Scratch.
+
 ## Content & Learning Objectives
 
 - Implement noising, diffusion loss, reverse probabilities and text sampling.

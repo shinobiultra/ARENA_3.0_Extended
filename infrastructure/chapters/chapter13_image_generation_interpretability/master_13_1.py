@@ -72,6 +72,14 @@ scheduler updates or denoising-time activation patching. The GPU route is pinned
 # ! TAGS: []
 
 r'''
+**Prerequisites:** [12.1] CLIP and SigLIP from Scratch.
+'''
+
+# ! CELL TYPE: markdown
+# ! FILTERS: []
+# ! TAGS: []
+
+r'''
 ## Content & Learning Objectives
 
 ### 1️⃣ Measure named regions and falsify controls

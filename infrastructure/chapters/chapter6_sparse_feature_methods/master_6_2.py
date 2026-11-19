@@ -64,6 +64,14 @@ correlational; the first curriculum includes its separate intervention probe.
 # ! TAGS: []
 
 r'''
+**Prerequisites:** [6.1] SAE Variants.
+'''
+
+# ! CELL TYPE: markdown
+# ! FILTERS: []
+# ! TAGS: []
+
+r'''
 ## Content & Learning Objectives
 
 ### 1️⃣ Feature steering study

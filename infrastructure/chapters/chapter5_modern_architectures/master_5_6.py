@@ -35,9 +35,17 @@ By the end of this notebook, you will have shown that a fixed-size key–value m
 
 The task is deliberately small enough to calculate by hand. You will also implement the token shift, numerically stabilized weighted-key-value operator and channel mixing of an RWKV-4-style block. This is a mechanism study, not a language-model quality ranking. A recurrent state saves the growing key/value cache, but compresses information; parallelism does not make that compression disappear.
 
-Prerequisites: [1.1] matrix attention and broadcasting, [0.3] numerical stability, and the recurrence/state perspective of [5.3]. Read the equations before optimizing them. All arrays below are CPU float64, with time first and channels last. No `torch.compile` is useful for these few dozen arithmetic operations.
+Read the equations before optimizing them. All arrays below are CPU float64, with time first and channels last. No `torch.compile` is useful for these few dozen arithmetic operations.
 
 **Study edition:** the default examples are deterministic CPU teaching fixtures. No pretrained model is loaded, no network is used, and no trained-model benchmark or native qualification is claimed. Save a personal copy.
+'''
+
+# ! CELL TYPE: markdown
+# ! FILTERS: []
+# ! TAGS: []
+
+r'''
+**Prerequisites:** [1.1] Transformers from Scratch and [5.3] Mamba from Scratch.
 '''
 
 # ! CELL TYPE: markdown

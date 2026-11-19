@@ -36,7 +36,15 @@ differ in a visible image-question residual-flow organism, using a layer-by-posi
 object and background controls. Then you will map that intervention contract to the real Qwen2.5-VL,
 PaliGemma, LLaVA-OneVision and Molmo families without pretending a source-level map qualifies their hooks.
 
-The executed model here is a small specified attention route, not pretrained weights or a transformer trained to reason. Its point is that we can calculate the correct result independently. [12.3] supplies the fuller MiniVLM/GPT-2/Qwen reference; [1.2] hooks and [8.1] patching are prerequisites.
+The executed model here is a small specified attention route, not pretrained weights or a transformer trained to reason. Its point is that we can calculate the correct result independently. [12.3] supplies the fuller MiniVLM/GPT-2/Qwen reference.
+'''
+
+# ! CELL TYPE: markdown
+# ! FILTERS: []
+# ! TAGS: []
+
+r'''
+**Prerequisites:** [12.3] Mini VLM from Scratch and [8.1] Activation Patching Refresher.
 '''
 
 # ! CELL TYPE: markdown

@@ -49,6 +49,14 @@ and future-mask stress test; then separately fix the frozen V-JEPA 2 generated w
 # ! TAGS: []
 
 r'''
+**Prerequisites:** [14.1] I-JEPA from Scratch.
+'''
+
+# ! CELL TYPE: markdown
+# ! FILTERS: []
+# ! TAGS: []
+
+r'''
 ## Content & Learning Objectives
 
 ### 1️⃣ Paper mechanics and persistence

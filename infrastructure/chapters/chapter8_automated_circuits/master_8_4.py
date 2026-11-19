@@ -74,6 +74,14 @@ This section assumes [1.2] (induction heads, K-composition, the attention-only m
 # ! TAGS: []
 
 r'''
+**Prerequisites:** [8.1] Activation Patching Refresher.
+'''
+
+# ! CELL TYPE: markdown
+# ! FILTERS: []
+# ! TAGS: []
+
+r'''
 ## Content & Learning Objectives
 
 ### 1️⃣ The Model as a Graph

@@ -87,9 +87,16 @@ Along the way you'll find that a linear probe on the same 768 numbers beats the 
 doesn't understand, and that its blind spots are set by its training data. Those findings are the point of the exercise: they're what you need to know before trusting a full-scale
 oracle.
 
-**Prerequisites.** You should be comfortable with TransformerLens hooks and the residual stream ([1.2] Intro to Mech Interp), and with a basic PyTorch training loop ([0.3]).
 Section [7.1] (logit lens, tuned lens and Patchscopes) is useful background: an activation oracle is a Patchscope whose inspection model has been *trained* to answer. [1.3.4] is a
 good companion but not required.
+'''
+
+# ! CELL TYPE: markdown
+# ! FILTERS: []
+# ! TAGS: []
+
+r'''
+**Prerequisites:** [1.2] Intro to Mech Interp.
 '''
 
 # ! CELL TYPE: markdown

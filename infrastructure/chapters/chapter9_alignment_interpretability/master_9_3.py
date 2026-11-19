@@ -51,6 +51,14 @@ are absent. Those broader items are not covered here.
 # ! TAGS: []
 
 r'''
+**Prerequisites:** [1.2] Intro to Mech Interp.
+'''
+
+# ! CELL TYPE: markdown
+# ! FILTERS: []
+# ! TAGS: []
+
+r'''
 ## Content & Learning Objectives
 
 ### 1️⃣ CoT faithfulness: exact toy and Pythia

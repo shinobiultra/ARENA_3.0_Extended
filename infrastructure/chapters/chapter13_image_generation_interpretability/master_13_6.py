@@ -72,7 +72,7 @@ one-token image edit in an explicit copy-attention organism, because decoded-pix
 the blue square is1 after regeneration,0.25 for a local token replacement, and0 for a
 wrong-region edit. The visible result is an image grid, spatial token grid and causal attention map.
 
-Prerequisites: causal attention from chapter1, vector quantization and array indexing. We use
+We use
 a known RGB codebook and a fixed attention program, not a trained VQ-VAE or autoregressive
 transformer. The VQ loss and straight-through gradients are implemented and checked without
 running an optimizer.
@@ -89,6 +89,14 @@ The default path is a small, deterministic CPU organism with explicit weights an
 images. It teaches the named component operations and controls. It is not a trained diffusion
 model, a pretrained checkpoint, or a paper replication. No model download, GPU selection,
 training run or scientific sweep occurs.
+'''
+
+# ! CELL TYPE: markdown
+# ! FILTERS: []
+# ! TAGS: []
+
+r'''
+**Prerequisites:** [1.1] Transformers from Scratch.
 '''
 
 # ! CELL TYPE: markdown

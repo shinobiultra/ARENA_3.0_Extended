@@ -74,6 +74,14 @@ thresholding and causal metrics, plus a toy SHIFT-style editing exercise. It doe
 # ! TAGS: []
 
 r'''
+**Prerequisites:** [8.2] Attribution Patching and EAP and [6.1] SAE Variants.
+'''
+
+# ! CELL TYPE: markdown
+# ! FILTERS: []
+# ! TAGS: []
+
+r'''
 ## Content & Learning Objectives
 
 ### 1️⃣ Specify and encode features

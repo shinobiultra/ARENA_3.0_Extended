@@ -101,6 +101,14 @@ comfortable with TransformerLens hooks. [7.1] isn't required, but we'll borrow t
 # ! TAGS: []
 
 r'''
+**Prerequisites:** [1.3.3] Interpretability with SAEs.
+'''
+
+# ! CELL TYPE: markdown
+# ! FILTERS: []
+# ! TAGS: []
+
+r'''
 ## Content & Learning Objectives
 
 ### 1️⃣ Activation records

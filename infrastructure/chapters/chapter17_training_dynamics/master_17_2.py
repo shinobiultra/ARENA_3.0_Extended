@@ -75,7 +75,15 @@ test mechanism and measurement without inventing training evidence. A native stu
 two-layer model, phase-change analysis, training-time freezing, and public Pythia checkpoints; those native
 experiments remain pending.
 
-Prerequisites: [1.2] induction heads, attention matrix axes, NumPy matrix multiplication, and cross-entropy. Budget: roughly 90–120 minutes; the reference computation takes seconds on CPU.
+Budget: roughly 90–120 minutes; the reference computation takes seconds on CPU.
+'''
+
+# ! CELL TYPE: markdown
+# ! FILTERS: []
+# ! TAGS: []
+
+r'''
+**Prerequisites:** [1.2] Intro to Mech Interp.
 '''
 
 # ! CELL TYPE: markdown
