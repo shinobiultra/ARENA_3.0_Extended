@@ -160,3 +160,59 @@ def retraining_play(
         },
         exploratory_holdout_reuse=True,
     )
+
+
+def reference_checks(train, mapping, implementation=None):
+    """Separate full runs and NumPy recomputation of the real-data coordinates."""
+    import numpy as np
+
+    if implementation is None:
+        from chapter16_shapley_attribution_baselines.exercises.part11_dataset_cartography import (
+            cartography_methods as implementation,
+        )
+    results = dict(
+        separate_runs=[],
+        numpy_metrics=[],
+        independent_small_loop="cartography_methods_tests.test_train_ensemble",
+    )
+    for name, width in (("clean", 64), ("linear", 0)):
+        separate = implementation.train_ensemble(
+            train["x"][None], train["y"][None], [161100], width=width
+        )
+        batched = mapping["runs"][name]
+        errors = []
+        for key in ("online_logits", "end_logits", "loss"):
+            actual, expected = separate[key][:, 0], batched[key][:, 0]
+            torch.testing.assert_close(actual, expected, rtol=2e-5, atol=2e-5)
+            errors.append(float((actual - expected).abs().max()))
+        for key in separate["parameters"]:
+            actual, expected = separate["parameters"][key][0], batched["parameters"][key][0]
+            torch.testing.assert_close(actual, expected, rtol=2e-5, atol=2e-5)
+            errors.append(float((actual - expected).abs().max()))
+        results["separate_runs"].append(
+            dict(model=name, seed=161100, maximum_absolute_error=max(errors))
+        )
+    for name, label_name in (
+        ("clean", "y"),
+        ("linear", "y"),
+        ("noisy", "noisy_y"),
+        ("shuffled", "shuffled_y"),
+    ):
+        labels = train[label_name].numpy()
+        for mode in ("online", "end"):
+            logits = mapping["runs"][name][f"{mode}_logits"].numpy().astype(np.float64)
+            exponential = np.exp(logits - logits.max(axis=-1, keepdims=True))
+            probability = exponential / exponential.sum(axis=-1, keepdims=True)
+            gold = np.take_along_axis(probability, labels[None, None, :, None], axis=-1)[..., 0]
+            expected = dict(
+                confidence=gold.mean(axis=0),
+                variability=gold.std(axis=0, ddof=0),
+                correctness=(logits.argmax(axis=-1) == labels).mean(axis=0),
+            )
+            errors = {}
+            for key, value in expected.items():
+                actual = mapping["statistics"][name][mode][key].numpy()
+                np.testing.assert_allclose(actual, value, rtol=1e-6, atol=1e-6)
+                errors[key] = float(np.max(np.abs(actual - value)))
+            results["numpy_metrics"].append(dict(model=name, logging=mode, maximum_errors=errors))
+    return results
