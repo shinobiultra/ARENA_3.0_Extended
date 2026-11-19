@@ -173,3 +173,13 @@ def test_the_python_minor_from_the_policy_is_installed_at_its_latest_patch(julia
     digest = julia.copy_lock("lock v1")
     assert julia.sync(digest).returncode == 0
     assert "uv python install --upgrade 3.14" in julia.uv_calls()
+
+
+def test_a_missing_uv_stops_cleanly(julia):
+    digest = julia.copy_lock("lock v1")
+    julia.uv.unlink()
+    result = julia.sync(digest)
+    assert result.returncode == 1
+    assert "cannot run Julia's uv" in result.stderr
+    assert "Traceback" not in result.stderr
+    assert not julia.state.exists()

@@ -43,7 +43,10 @@ def run(command: list[str], cwd: Path) -> None:
 
 
 def uv_version(uv: str) -> str:
-    out = subprocess.run([uv, "--version"], capture_output=True, text=True, check=True).stdout
+    try:
+        out = subprocess.run([uv, "--version"], capture_output=True, text=True, check=True).stdout
+    except (OSError, subprocess.CalledProcessError) as error:
+        raise SyncError(f"cannot run Julia's uv ({uv}): {error}") from error
     return out.split()[1]
 
 
@@ -66,7 +69,10 @@ def sync(repo: Path, state: Path, queue: Path, expected: str, uv: str, wanted_uv
 
     if uv_version(uv) != wanted_uv:
         run([uv, "self", "update", wanted_uv], cwd=repo)
-    python = (repo / ".python-version").read_text().strip()
+    try:
+        python = (repo / ".python-version").read_text().strip()
+    except FileNotFoundError as error:
+        raise SyncError("the checkout on Julia has no .python-version") from error
     run([uv, "python", "install", "--upgrade", python], cwd=repo)
     run([uv, "sync", "--locked", "--python", python], cwd=repo)
 
