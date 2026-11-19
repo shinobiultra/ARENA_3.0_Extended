@@ -1020,26 +1020,6 @@ if MAIN:
 
 # %%
 
-import importlib
-
-
-def _release_solution_module():
-    return importlib.import_module("chapter5_modern_architectures.exercises.part2_gemma_scope_feature_steering.solutions")
-
-
-def run_gpu_test(max_vram_gb: float = 24.0) -> dict:
-    """Run the section's pinned CUDA verification contract."""
-    return _release_solution_module().run_gpu_test(max_vram_gb=max_vram_gb)
-
-
-def run_full_experiment(max_vram_gb: float = 24.0) -> dict:
-    """Run the full experiment used for the checked-in release evidence."""
-    return _release_solution_module().run_full_experiment(
-        max_vram_gb=max_vram_gb
-    )
-
-# %%
-
 import sys
 from collections.abc import Mapping
 from dataclasses import dataclass
@@ -1062,9 +1042,6 @@ if str(deep_dive_exercises_dir) not in sys.path:
 
 import chapter6_sparse_feature_methods.exercises.part2_gemma_scope_deep_dive.tests as deep_dive_tests
 import chapter6_sparse_feature_methods.exercises.part2_gemma_scope_deep_dive.utils as utils
-
-GT_TIER = "GT-1"
-EXERCISE_ID = "6_2_gemma_scope_deep_dive"
 
 
 def show_table(headers, rows):
@@ -1673,39 +1650,5 @@ if MAIN:
 if MAIN:
     for i in active_ids:
         print(f"  {feature_acts[i, suspicious_feature_id]:.2f}  {deep_dive_organism['texts'][i]}")
-
-# %%
-
-if MAIN:
-    gpu = utils.load_pinned_real_evidence(deep_dive_section_dir)
-if MAIN:
-    real = gpu["gemma_scope_real_activation_preflight"]
-if MAIN:
-    show_table(
-        ["pinned real-model field", "value"],
-        [
-            ("artifact", gpu["gemma_scope_artifact_path"]),
-            ("encoder / decoder", f"{gpu['gemma_scope_w_enc_shape']} / {gpu['gemma_scope_w_dec_shape']}"),
-            ("train / held-out prompts", f"{real['train_prompt_count']} / {real['heldout_prompt_count']}"),
-            ("selected / random feature", f"{real['selected_feature_id']} / {real['random_control_feature_id']}"),
-            ("held-out target / random / shuffle AUC", f"{real['feature_auc']:.3f} / {real['baseline_auc']:.3f} / {real['label_shuffle_auc']:.3f}"),
-            ("threshold accuracy", f"{real['threshold_accuracy']:.3f}"),
-            ("positive / negative mean", f"{real['positive_mean']:.2f} / {real['negative_mean']:.2f}"),
-            ("active features per prompt-token", f"{real['active_features_per_prompt_token']:.1f}"),
-            ("prompted reconstruction MSE", f"{real['prompted_reconstruction_mse']:.1f} (not scale-normalized)"),
-            ("peak CUDA memory", f"{gpu['peak_vram_gb']:.2f} GB (< 2.3 GB)"),
-        ],
-    )
-
-# %%
-
-def deep_dive_run_gpu_test(max_vram_gb: float = 24.0) -> dict:
-    from chapter6_sparse_feature_methods.exercises.part2_gemma_scope_deep_dive import solutions as reference_solutions
-
-    return reference_solutions.run_gpu_test(max_vram_gb=max_vram_gb)
-
-
-def deep_dive_run_full_experiment(max_vram_gb: float = 24.0) -> dict:
-    return deep_dive_run_gpu_test(max_vram_gb=max_vram_gb)
 
 # %%

@@ -5,7 +5,6 @@ MAIN = __name__ == "__main__"
 
 # %%
 
-import json
 import sys
 from dataclasses import dataclass
 from pathlib import Path
@@ -16,10 +15,8 @@ import torch.nn.functional as F
 
 chapter = "chapter6_sparse_feature_methods"
 section = "part4_transcoders"
-legacy_section = "part3_transcoders_attribution_graphs"
 root_dir = Path(__file__).resolve().parents[3]
 exercises_dir = root_dir / chapter / "exercises"
-section_dir = exercises_dir / legacy_section  # historical report identity stays at legacy 6.3
 canonical_section_dir = exercises_dir / section
 assets_dir = canonical_section_dir / "media"
 if str(root_dir) not in sys.path:
@@ -29,8 +26,6 @@ if str(exercises_dir) not in sys.path:
 
 import part3_transcoders_attribution_graphs.tests as tests
 
-GT_TIER = "GT-0"
-EXERCISE_ID = "6_3_transcoders_and_attribution_graphs"
 
 @dataclass(frozen=True)
 class ToyOrganism:
@@ -746,35 +741,5 @@ if MAIN:
     print("largest anomaly:", organism.feature_names[anomaly_id])
     print("residual:", round(float(residual[anomaly_id]), 5))
     print("conservation score:", edge_conservation_score(corrupted_edges, len(organism.feature_names)))
-
-# %%
-
-if MAIN:
-    report = json.loads((section_dir / "verification_report.json").read_text())
-    gpu = report["metrics"]["gpu_test"]
-    supporting_metrics = [
-        ("model / revision", f"{gpu['model_name']} / {gpu['hf_revision'][:12]}"),
-        ("cached activations", gpu["activation_count"]),
-        ("oracle MLP max error", f"{gpu['oracle_mlp_out_max_abs_error']:.2e}"),
-        ("oracle logit max error", f"{gpu['oracle_logits_max_abs_error']:.2e}"),
-        ("held-out MSE ratio", f"{gpu['trained_transcoder_heldout_mse_ratio']:.5f}"),
-        ("top-1 agreement", f"{gpu['trained_replacement_top1_agreement']:.5f}"),
-        ("top / low-effect damage", f"{gpu['graph_topk_damage']:.5f} / {gpu['graph_random_damage']:.5f}"),
-    ]
-    for label, value in supporting_metrics:
-        print(f"{label:24s} {value}")
-
-# %%
-
-def run_gpu_test(max_vram_gb: float = 24.0) -> dict:
-    verification_module = __import__(
-        "part3_transcoders_attribution_graphs.solutions",
-        fromlist=["run_gpu_test"],
-    )
-    return verification_module.run_gpu_test(max_vram_gb=max_vram_gb)
-
-
-def run_full_experiment(max_vram_gb: float = 24.0) -> dict:
-    return run_gpu_test(max_vram_gb=max_vram_gb)
 
 # %%

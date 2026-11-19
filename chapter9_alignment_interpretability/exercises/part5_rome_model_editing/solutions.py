@@ -1822,62 +1822,6 @@ def run_course_rome_like_experiment(
     }
 
 
-def serializable_experiment_summary(result: dict[str, Any]) -> dict[str, Any]:
-    """Keep auditable rows and scientific metrics while dropping activation tensors."""
-    trace = result["trace"]
-    details = result["primary_details"]
-    return {
-        "model_id": result["model_id"],
-        "model_revision": result["model_revision"],
-        "edit": result["edit"],
-        "method_scope": result["method_scope"],
-        "official_rome_parity_established": result["official_rome_parity_established"],
-        "missing_official_parity_components": result["missing_official_parity_components"],
-        "paraphrase_provenance": result["paraphrase_provenance"],
-        "suite_sizes": result["suite_sizes"],
-        "covariance_context_count": result["covariance_context_count"],
-        "selected_layer": result["selected_layer"],
-        "trace": {
-            "tokens": trace["tokens"],
-            "subject_positions": trace["subject_positions"],
-            "condition_count": trace["condition_count"],
-            "noise_scales": trace["noise_scales"],
-            "direction_seeds": trace["direction_seeds"],
-            "directions_per_scale": trace["directions_per_scale"],
-            "condition_best_layers": trace["condition_best_layers"].tolist(),
-            "selected_layer_win_fraction": trace["selected_layer_win_fraction"],
-            "layer_zero_mean_recovery": trace["layer_zero_mean_recovery"],
-            "layer_zero_std_recovery": trace["layer_zero_std_recovery"],
-            "mean_recovery": trace["mean_recovery"].tolist(),
-            "std_recovery": trace["std_recovery"].tolist(),
-        },
-        "rank_one_update": {
-            "write_error": details["write_error"],
-            "update_norm": details["update_norm"],
-            "effective_rank": details["effective_rank"],
-            "key_bank_size": details["key_bank_size"],
-            "top_singular_values": details["singular_values"][:8].tolist(),
-            "optimization_start_nll": details["optimization_history"][0]["target_nll"],
-            "optimization_final_nll": details["optimization_history"][-1]["target_nll"],
-            "optimization_final_preservation_kl": details["optimization_history"][-1][
-                "preservation_kl"
-            ],
-            "optimization_preservation_kl_warning_threshold": 0.1,
-            "optimization_preservation_kl_is_large": (
-                details["optimization_history"][-1]["preservation_kl"] > 0.1
-            ),
-        },
-        "layer_sweep": result["layer_sweep"],
-        "localization_result": result["localization_result"],
-        "control_details": result["control_details"],
-        "metrics": result["metrics"],
-        "paraphrase_rows": result["primary_evaluation"]["paraphrase_rows"],
-        "known_fact_rows": result["primary_evaluation"]["known_fact_rows"],
-        "adversarial_rows": result["primary_evaluation"]["adversarial_rows"],
-        "generation_rows": result["primary_evaluation"]["generation_rows"],
-    }
-
-
 def plot_toy_oracle(path: str | None = None):
     """Plot the exact write and the orthogonal protected association."""
     import matplotlib.pyplot as plt
@@ -2069,7 +2013,7 @@ def plot_signature_result(result: dict[str, Any], path: str | None = None):
 
 
 def reference_learner_functions() -> LearnerFunctions:
-    """Bundle the visible section implementation for section-local release generation."""
+    """Bundle the visible section implementation."""
     return LearnerFunctions(
         activation_patching_sweep=activation_patching_sweep,
         build_update=build_course_rome_like_update,
@@ -2080,63 +2024,6 @@ def reference_learner_functions() -> LearnerFunctions:
         metric_summarizer=summarize_edit_metrics,
         random_rank_one=make_same_norm_random_rank_one,
     )
-
-
-def run_cpu_release(
-    *,
-    implementation: LearnerFunctions,
-    steps: int = 12,
-    patching_samples: int = 3,
-) -> dict[str, Any]:
-    """Run the strict, CPU-only evidence hook used by a future parent registrar."""
-    result = run_course_rome_like_experiment(
-        implementation=implementation,
-        device="cpu",
-        steps=steps,
-        patching_samples=patching_samples,
-    )
-    summary = serializable_experiment_summary(result)
-    primary = summary["metrics"]["course_rome_like"]
-    rank_one = summary["rank_one_update"]
-    localization = summary["localization_result"]
-    checks = {
-        "cpu_execution": result["primary_update"].device.type == "cpu",
-        "course_scope_declared": summary["method_scope"] == "course_rome_like_rank_one_edit",
-        "official_parity_not_claimed": summary["official_rome_parity_established"] is False,
-        "three_official_parity_gaps_named": len(summary["missing_official_parity_components"]) == 3,
-        "nine_independent_noise_directions": (
-            summary["trace"]["condition_count"] == 9
-            and len(set(summary["trace"]["direction_seeds"])) == 9
-        ),
-        "rank_one_write": rank_one["effective_rank"] == 1,
-        "affine_write_error_below_1e_4": rank_one["write_error"] < 1e-4,
-        "base_known_fact_denominator_nontrivial": primary["known_fact_qualified_count"] >= 10,
-        "adversarial_leakage_stratified": (
-            primary["leakage_sensitive_count"]
-            < summary["suite_sizes"]["adversarial"]
-        ),
-        "all_layer_comparisons_norm_matched": all(
-            row["norm_matched"]
-            and abs(row["applied_update_norm"] - rank_one["update_norm"]) < 1e-4
-            for row in summary["layer_sweep"]
-        ),
-        "negative_localization_result_reported": localization["negative_localization_result"],
-        "privileged_layer_claim_rejected": localization["supports_privileged_layer_claim"] is False,
-        "large_value_optimizer_kl_reported": rank_one["optimization_preservation_kl_is_large"],
-        "localized_repetition_failure_reported": (
-            primary["generation_repetition_failure_count"] >= 1
-            and primary["localized_louvre_repetition_after"]
-            > primary["localized_louvre_repetition_before"]
-        ),
-    }
-    return {
-        "cuda_available": False,
-        "device": "cpu",
-        "full_path": True,
-        "summary": summary,
-        "checks": checks,
-        "accepted": all(checks.values()),
-    }
 
 
 def run_smoke_test(cpu: bool = True) -> dict[str, Any]:

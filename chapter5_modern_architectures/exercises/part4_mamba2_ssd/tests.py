@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import ast
-import inspect
 import json
 import math
 import re
@@ -286,22 +285,6 @@ def test_released_mamba2_full_mapping_hidden_logits_and_tokens() -> None:
     assert parity.top1_agreement == 1.0, 'Every checked prompt must keep the reference next-token argmax.'
     assert parity.reference_top_tokens == parity.learner_top_tokens, 'The returned token IDs must agree as well as the numerical parity summary.'
     print("All tests in `test_released_mamba2_full_mapping_hidden_logits_and_tokens` passed!")
-
-
-def test_cuda_hooks_are_strict() -> None:
-    gpu_signature = inspect.signature(reference.run_gpu_test)
-    full_signature = inspect.signature(reference.run_full_experiment)
-    assert str(gpu_signature) == "(max_vram_gb: 'float' = 24.0) -> 'dict[str, Any]'", (
-        "run_gpu_test must expose the standard bounded release signature"
-    )
-    assert str(full_signature) == "(max_vram_gb: 'float' = 24.0) -> 'dict[str, Any]'", (
-        "run_full_experiment must expose the standard bounded release signature"
-    )
-    source = inspect.getsource(reference._require_cuda)
-    assert "raise RuntimeError" in source and "fallback" in source, (
-        "CUDA hooks must fail closed when CUDA is unavailable; they may not run on CPU"
-    )
-    print("All tests in `test_cuda_hooks_are_strict` passed!")
 
 
 def test_recall_training_updates_parameters(train_fn=reference.train_recall_model) -> None:

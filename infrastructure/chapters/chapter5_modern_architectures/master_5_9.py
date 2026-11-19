@@ -1301,24 +1301,6 @@ r'''
 Authenticated EmbeddingGemma retrieval and FunctionGemma generation checks need a CUDA GPU; they do not generate the signature result above.
 '''
 
-# ! CELL TYPE: code
-# ! FILTERS: []
-# ! TAGS: []
-
-# These wrappers preserve the section's pinned CUDA evidence path. They are not the lesson result.
-if MAIN:
-    verification_report_path = section_dir / "verification_report.json"
-
-
-def run_gpu_test(max_vram_gb: float = 24.0) -> dict:
-    from chapter5_modern_architectures.exercises.part6_multimodal_embedding_function_models.solutions import run_gpu_test as run
-
-    return run(max_vram_gb=max_vram_gb)
-
-
-def run_full_experiment(max_vram_gb: float = 24.0) -> dict:
-    return run_gpu_test(max_vram_gb=max_vram_gb)
-
 # ! CELL TYPE: markdown
 # ! FILTERS: []
 # ! TAGS: []

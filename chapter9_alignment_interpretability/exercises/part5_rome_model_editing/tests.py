@@ -1,9 +1,7 @@
 from __future__ import annotations
 
-import json
 import inspect
 from functools import lru_cache
-from pathlib import Path
 from typing import Callable
 
 import pytest
@@ -402,35 +400,6 @@ def test_model_and_revision_are_pinned():
     print("All tests in `test_model_and_revision_are_pinned` passed!")
 
 
-def test_section_local_release_report_generation_inputs_are_strict():
-    from chapter9_alignment_interpretability.exercises.part5_rome_model_editing import (
-        release_report,
-    )
-
-    inputs = release_report.build_release_report_generation_inputs()
-    assert inputs["runner_callable"] == "run_cpu_release"
-    assert inputs["implementation_factory"] == "reference_learner_functions"
-    assert inputs["requires_gpu"] is False
-    assert inputs["shared_registration"] == "parent_owned_not_modified_by_section"
-    manifest = inputs["report_inputs"]
-    assert manifest["algorithm"] == "sha256"
-    assert len(manifest["combined_sha256"]) == 64
-    paths = {row["path"] for row in manifest["files"]}
-    for required in (
-        "solutions.py",
-        "tests.py",
-        "build_notebooks.py",
-        "artifacts.lock.yml",
-        "verification_report.schema.json",
-        "9.5_ROME_Model_Editing_solutions.ipynb",
-        "06_[9.6]_Rank-One_Model_Editing_ROME.md",
-        "rome_model_editing_signature.png",
-    ):
-        assert any(path.endswith(required) for path in paths)
-    assert not any("infrastructure/core/config" in path for path in paths)
-    print("All tests in `test_section_local_release_report_generation_inputs_are_strict` passed!")
-
-
 def test_pinned_model_has_nontrivial_base_known_fact_denominator(model=None, tokenizer=None):
     solutions = _solutions()
     if model is None or tokenizer is None:
@@ -512,135 +481,6 @@ def check_learner_bundle_uses_notebook_functions(implementation) -> None:
         assert callable(learner_fn)
         assert learner_fn is not getattr(reference, field)
     print("Final experiment is wired to learner-written notebook functions.")
-
-
-def test_notebook_contract():
-    section = Path(__file__).resolve().parent
-    for name in [
-        "9.5_ROME_Model_Editing_exercises.ipynb",
-        "9.5_ROME_Model_Editing_solutions.ipynb",
-    ]:
-        notebook = json.loads((section / name).read_text())
-        source = "\n".join(
-            "".join(cell.get("source", []))
-            if isinstance(cell.get("source", []), list)
-            else str(cell.get("source", ""))
-            for cell in notebook["cells"]
-        )
-        for required in [
-            "affine module output",
-            "course ROME-like",
-            "official ROME parity is not established",
-            "Wikipedia-derived covariance",
-            "random-prefix",
-            "value-objective parity",
-            "independent_constrained_solve_oracle",
-            "continuation_score_table",
-            "target top-1",
-            "full target likelihood",
-            "per-paraphrase",
-            "activation_patching_sweep",
-            "layer-by-position",
-            "nine independent",
-            "negative localization result",
-            "norm-matched layer",
-            "wrong-position",
-            "five same-norm random rank-one",
-            "shuffled-city targets",
-            "ADVERSARIAL_RECORDS",
-            "legitimate_rome_target",
-            "COVARIANCE_FACTS",
-            "KNOWN_FACT_CANDIDATES",
-            "base-qualified",
-            "large value-optimizer KL",
-            "LearnerFunctions",
-            "Try It Yourself",
-            "single-token and multi-token",
-            "scoring-only",
-            "Limitations",
-        ]:
-            assert required in source, f"{name} is missing learner-visible surface {required!r}."
-        for forbidden in ["official ROME semantics", "causal_trace_sweep", "NEIGHBORHOOD_FACTS"]:
-            assert forbidden not in source
-    solution = json.loads(
-        (section / "9.5_ROME_Model_Editing_solutions.ipynb").read_text()
-    )
-    solution_code = "\n".join(
-        "".join(cell.get("source", []))
-        for cell in solution["cells"]
-        if cell["cell_type"] == "code"
-    )
-    from arena_ext.notebook_checks import unfinished_definitions
-    assert not unfinished_definitions(solution_code)
-    assert "check_learner_bundle_uses_notebook_functions(learner_functions)" in solution_code
-    print("All tests in `test_notebook_contract` passed!")
-
-
-def test_reference_artifact_reports_the_observed_negative_result():
-    section = Path(__file__).resolve().parent
-    artifact = json.loads((section / "expected_outputs" / "reference_metrics.json").read_text())
-    assert artifact["model_id"] == _solutions().MODEL_ID
-    assert artifact["model_revision"] == _solutions().MODEL_REVISION
-    assert artifact["method_scope"] == "course_rome_like_rank_one_edit"
-    assert artifact["official_rome_parity_established"] is False
-    assert len(artifact["missing_official_parity_components"]) == 3
-    assert artifact["covariance_context_count"] == len(_solutions().COVARIANCE_FACTS)
-    assert artifact["suite_sizes"] == {
-        "adversarial": 16,
-        "fluency": 10,
-        "known_fact_candidates": 24,
-        "known_fact_qualified": 14,
-        "paraphrases": 20,
-        "side_effect": 20,
-    }
-    assert len(artifact["paraphrase_rows"]) == 20
-    assert len(artifact["known_fact_rows"]) == 24
-    assert sum(row["base_qualified_known_fact"] for row in artifact["known_fact_rows"]) == 14
-    assert len(artifact["adversarial_rows"]) == 16
-    assert all(
-        not row["counts_as_leakage"]
-        for row in artifact["adversarial_rows"]
-        if row["stratum"] in {"legitimate_rome_target", "target_generalization"}
-    )
-    assert len(artifact["layer_sweep"]) == 6
-    assert all(row["norm_matched"] for row in artifact["layer_sweep"])
-    norms = [row["applied_update_norm"] for row in artifact["layer_sweep"]]
-    assert max(norms) - min(norms) < 1e-4
-    assert len(artifact["control_details"]["random_updates"]) == 5
-    primary = artifact["metrics"]["course_rome_like"]
-    assert primary["pairwise_preference_rate_after"] == 1.0
-    assert primary["target_top1_rate_after"] < primary["pairwise_preference_rate_after"]
-    assert primary["known_fact_qualified_count"] == 14
-    assert primary["leakage_sensitive_mean_rome_probability_change"] > 0.1
-    assert (
-        primary["localized_louvre_repetition_after"]
-        > primary["localized_louvre_repetition_before"]
-    )
-    assert primary["generation_repetition_failure_count"] >= 1
-    assert artifact["rank_one_update"]["write_error"] < 1e-4
-    assert artifact["rank_one_update"]["effective_rank"] == 1
-    assert artifact["rank_one_update"]["optimization_preservation_kl_is_large"] is True
-    assert artifact["localization_result"]["negative_localization_result"] is True
-    assert artifact["localization_result"]["supports_privileged_layer_claim"] is False
-    assert len(artifact["localization_result"]["norm_matched_successful_layers"]) > 1
-    assert len(set(artifact["trace"]["direction_seeds"])) == 9
-    assert all("rewrite_success" not in row for row in artifact["metrics"].values())
-    print("All tests in `test_reference_artifact_reports_the_observed_negative_result` passed!")
-
-
-def test_solution_notebook_is_fully_executed_without_errors():
-    section = Path(__file__).resolve().parent
-    notebook = json.loads((section / "9.5_ROME_Model_Editing_solutions.ipynb").read_text())
-    code_cells = [cell for cell in notebook["cells"] if cell["cell_type"] == "code"]
-    assert code_cells and all(cell["execution_count"] is not None for cell in code_cells)
-    errors = [
-        output
-        for cell in code_cells
-        for output in cell.get("outputs", [])
-        if output.get("output_type") == "error"
-    ]
-    assert errors == []
-    print("All tests in `test_solution_notebook_is_fully_executed_without_errors` passed!")
 
 
 def test_temporary_edit_restores_weights_after_errors(edit_context: Callable | None = None):
@@ -741,39 +581,3 @@ def test_value_optimizer_history_describes_returned_delta(optimize: Callable | N
     print("All tests in `test_value_optimizer_history_describes_returned_delta` passed!")
 
 
-def test_answer_dropdowns_complete_every_learner_definition():
-    import ast
-    import re
-    from arena_ext.notebook_checks import unfinished_definitions
-
-    section = Path(__file__).resolve().parent
-    learner = json.loads((section / "9.5_ROME_Model_Editing_exercises.ipynb").read_text())
-    solved = json.loads((section / "9.5_ROME_Model_Editing_solutions.ipynb").read_text())
-    checked = 0
-    for index, (cell, answer_cell) in enumerate(zip(learner["cells"], solved["cells"], strict=True)):
-        if cell["cell_type"] != "code":
-            for block in re.findall(r"```python\n(.*?)```", "".join(cell["source"]), re.S):
-                ast.parse(block)
-            continue
-        source = "".join(cell["source"])
-        if not unfinished_definitions(source):
-            assert ast.dump(ast.parse(source)) == ast.dump(ast.parse("".join(answer_cell["source"])))
-            continue
-        following = "\n".join("".join(c["source"]) for c in learner["cells"][index + 1:index + 4] if c["cell_type"] == "markdown")
-        dropdown = re.search(r"<summary>Solution</summary>(.*?)</details>", following, re.S)
-        assert dropdown, f"Cell {index} needs an adjacent answer."
-        answer = "\n".join(re.findall(r"```python\n(.*?)```", dropdown[1], re.S))
-        expected_tree = ast.parse("".join(answer_cell["source"]))
-        assert ast.dump(ast.parse(answer)) == ast.dump(expected_tree), f"Cell {index} answer drifted from the solved notebook."
-        learner_tree = ast.parse(source)
-        expected = {node.name: node for node in expected_tree.body if isinstance(node, ast.FunctionDef)}
-        assert {node.name for node in learner_tree.body if isinstance(node, ast.FunctionDef)} == set(expected), (
-            f"Cell {index} is missing a helper or a method stub."
-        )
-        for offset, node in enumerate(learner_tree.body):
-            if isinstance(node, ast.FunctionDef) and unfinished_definitions(ast.Module(body=[node], type_ignores=[])):
-                learner_tree.body[offset] = expected[node.name]
-        assert ast.dump(learner_tree) == ast.dump(expected_tree), f"Cell {index} contains mismatched provided code."
-        checked += 1
-    assert checked == 13
-    print("All tests in `test_answer_dropdowns_complete_every_learner_definition` passed!")

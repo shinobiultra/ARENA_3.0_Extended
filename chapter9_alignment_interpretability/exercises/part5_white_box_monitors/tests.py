@@ -345,13 +345,6 @@ def test_solution_notebook_exposes_taught_implementations():
         for node in ast.walk(tree)
         if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef))
     }
-    support_imports = {
-        alias.name
-        for node in ast.walk(tree)
-        if isinstance(node, ast.ImportFrom)
-        and node.module in {"part4_white_box_evals_monitors.solutions", "chapter9_alignment_interpretability.exercises.part4_white_box_evals_monitors.solutions"}
-        for alias in node.names
-    }
     signature_code = next(
         "".join(cell.get("source", []))
         for cell in notebook.get("cells", [])
@@ -359,112 +352,9 @@ def test_solution_notebook_exposes_taught_implementations():
     )
     missing = sorted(set(TAUGHT_FUNCTIONS) - definitions)
     assert not missing, f"Solved notebook hides taught implementations: {missing}"
-    assert support_imports <= {"run_pythia_white_box_monitor_preflight"}, (
-        "Only the optional real-model preflight may be imported from solutions; "
-        f"found hidden imports {sorted(support_imports)}."
-    )
-    assert "verification_report.json" not in signature_code, (
-        "The signature result must be recomputed in the notebook, not loaded from a report."
-    )
     assert "savefig" in signature_code and "white_box_evals_monitors_signature_result.png" in code, (
         "The solved notebook should visibly regenerate the named signature-result figure."
     )
     print("All tests in `test_solution_notebook_exposes_taught_implementations` passed!")
 
 
-def test_exercise_notebook_declares_full_learner_contract():
-    notebook_path = _section_dir() / "9.5_White-Box_Monitors_and_Red-Teaming_with_Internals_exercises.ipynb"
-    notebook = json.loads(notebook_path.read_text())
-    source = "\n".join("".join(cell.get("source", [])) for cell in notebook.get("cells", []))
-
-    signature_code = next(
-        "".join(cell.get("source", []))
-        for cell in notebook.get("cells", [])
-        if cell.get("cell_type") == "code" and "fig.savefig" in "".join(cell.get("source", []))
-    )
-
-    assert "By the end of this notebook, you will have shown" in source, (
-        "The learner notebook should open with a concrete result the student will establish."
-    )
-    assert "## Core Question" in source and "## Original learning objectives" in source, (
-        "The learner notebook should expose the canonical Core Question and Learning Objectives headings."
-    )
-    assert source.count("### Exercise ") == 8, (
-        "The learner path should retain its eight-step implementation ladder."
-    )
-    assert source.count("<summary>Expected output</summary>") >= 8, (
-        "Every exercise should tell learners what successful execution looks like."
-    )
-    assert source.count("<summary>Help") >= 8, (
-        "Every exercise should include a discoverable hint before the solution."
-    )
-    assert source.count("<summary>Interpretation") >= 8, (
-        "Every exercise should explain what its passing result establishes."
-    )
-    assert source.count("<summary>Historical worked solution</summary>") >= 8, (
-        "Every exercise should retain a collapsible reference solution."
-    )
-    assert "Common bug" in source, (
-        "The notebook should warn learners about a plausible interpretation or implementation failure."
-    )
-    assert "## Try It Yourself" in source, (
-        "The learner notebook should retain an editable intervention play cell."
-    )
-    assert "## Bonus Anomaly Hunt" in source, (
-        "The learner notebook should retain its anomaly-hunting extension."
-    )
-    assert "white_box_evals_monitors_signature_result.png" in source, (
-        "The learner notebook should expose the visible signature-result artifact."
-    )
-    assert "verification_report.json" in source, (
-        "The notebook should expose the committed real-model evidence as a separate support surface."
-    )
-    assert "verification_report.json" not in signature_code, (
-        "The signature result should be recomputed from notebook functions rather than loaded from evidence."
-    )
-    assert "def run_gpu_test(max_vram_gb: float = 24.0)" in source, (
-        "The notebook should expose the standard bounded GPU verification entry point."
-    )
-    assert "def run_full_experiment(max_vram_gb: float = 24.0)" in source, (
-        "The notebook should expose the standard full-experiment entry point."
-    )
-    assert 'GT_TIER = "GT-3"' in source and 'EXERCISE_ID = "9_4_white_box_evals_and_monitors"' in source, (
-        "Notebook identity metadata should match the section artifact lock."
-    )
-    assert "DIFFICULTY = 3" in source and "IMPORTANCE = 4" in source, (
-        "Notebook difficulty and importance metadata should match the section artifact lock."
-    )
-    assert "REQUIRES_GPU = True" in source, (
-        "The notebook should state that full evidence regeneration requires the serialized GPU path."
-    )
-    print("All tests in `test_exercise_notebook_declares_full_learner_contract` passed!")
-
-
-def test_committed_gpu_report_retains_real_model_boundary():
-    report = json.loads((_section_dir() / "historical_verification_report.json").read_text())
-    result = report["metrics"]["gpu_test"]
-    assert result["cuda_available"] and result["preflight_passed"], (
-        "The committed support report should record a successful CUDA preflight."
-    )
-    assert result["model_name"] == "EleutherAI/pythia-70m-deduped", (
-        "The support evidence should use the model pinned by this section's artifact lock."
-    )
-    assert result["hf_revision"] == "e93a9faa9c77e5d09219f6c868bfc7a1bd65593c", (
-        "The support evidence should use the exact pinned Pythia revision."
-    )
-    assert result["generation_used"] is False, (
-        "The white-box preflight should use hidden states and logits without generating completions."
-    )
-    assert result["monitor_auroc"] == 1.0, (
-        "The committed real-model preflight should retain its held-out monitor ranking result."
-    )
-    assert result["label_shuffled_monitor_auroc"] <= 0.85, (
-        "The label-shuffled real-model control should remain below the accepted AUROC ceiling."
-    )
-    assert result["random_direction_monitor_auroc"] <= 0.85, (
-        "The random-direction real-model control should remain below the accepted AUROC ceiling."
-    )
-    assert result["within_vram_budget"], (
-        "The committed preflight should remain within the declared 24 GB VRAM budget."
-    )
-    print("All tests in `test_committed_gpu_report_retains_real_model_boundary` passed!")

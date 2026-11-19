@@ -67,7 +67,7 @@ r'''
 and exact interventions. Released-transcoder integration, the circuit-tracer workflow, frozen-attention replacement-model validation, explicit error nodes, and supernode
 construction are missing. This planted theorem does not establish those capabilities.
 
-**Runtime and device.** The planted DAG is a small CPU exercise. The optional pinned GELU-1L route is a mechanics preflight. Keep the preflight separate from a full tracing result.
+**Runtime and device.** The planted DAG is a small CPU exercise.
 '''
 
 # ! CELL TYPE: markdown
@@ -117,7 +117,7 @@ r'''
 By the end of this notebook, you will have built an attribution graph whose top path predicts and survives exact causal interventions on a meaningful component graph, while
 same-size random and reversed-edge graphs fail.
 
-The CPU theorem takes 45-60 minutes; the local GPU preflight takes minutes and needs a CUDA GPU.
+The CPU theorem takes 45-60 minutes.
 
 ## Core Question
 
@@ -126,9 +126,6 @@ When an attribution graph says that a path carries a behavior, does that path ma
 The current danger with attribution graphs is that the diagram can look more convincing than the evidence. This notebook keeps the main theorem small enough that you can know the
 ground truth exactly. You will build a planted circuit with named feature, head, MLP, and logit nodes, compute edge scores, threshold a graph, recover the top path, and then test
 the path by exact interventions.
-
-The TransformerLens `gelu-1l` path in `solutions.py` is still present, but it is only a residual-position mechanics preflight. A one-edge `position_5 -> position_5` result is not
-the flagship claim for this section.
 
 <details>
 <summary>Expected signature result</summary>
@@ -170,7 +167,6 @@ import torch as t
 
 chapter = "chapter8_automated_circuits"
 section = "part7_attribution_graphs"
-legacy_section = "part4_circuit_tracing_attribution_graphs"
 # FILTERS: ~python
 root_dir = next(p for p in [Path.cwd(), *Path.cwd().parents] if (p / chapter).exists())
 # END FILTERS
@@ -179,7 +175,6 @@ MAIN = __name__ == "__main__"
 root_dir = Path(__file__).resolve().parents[3]
 # END FILTERS
 exercises_dir = root_dir / chapter / "exercises"
-section_dir = exercises_dir / legacy_section
 canonical_section_dir = exercises_dir / section
 assets_dir = canonical_section_dir / "media"
 if MAIN:
@@ -325,8 +320,7 @@ By the end, you should be able to:
 - threshold an attribution matrix into a directed graph;
 - recover the highest-scoring source-to-target path;
 - run exact path patching and path removal;
-- compare the graph to same-size random and reversed-edge controls;
-- explain why the real-model backend is still only a preflight unless nodes are meaningful components.
+- compare the graph to same-size random and reversed-edge controls.
 
 ## Cold Open
 
@@ -2008,7 +2002,6 @@ It combines a graph you can see, an exact-vs-approximation heatmap, and causal i
 <summary>Common bugs</summary>
 
 - Returning only metrics without the matrices needed for plots.
-- Hiding the old `position_5 -> position_5` preflight as the flagship path.
 - Forgetting to include the threshold sweep for the play cell.
 
 </details>
@@ -2285,16 +2278,6 @@ if MAIN:
 
 # ! CELL TYPE: markdown
 # ! FILTERS: []
-# ! TAGS: [html]
-
-r'''
-<img src="../../../chapter8_automated_circuits/exercises/part7_attribution_graphs/media/attribution_graph_legacy_cell_26_output_0.png" width="1100">
-<img src="../../../chapter8_automated_circuits/exercises/part7_attribution_graphs/media/attribution_graph_legacy_cell_26_output_1.png" width="1100">
-<img src="../../../chapter8_automated_circuits/exercises/part7_attribution_graphs/media/attribution_graph_legacy_cell_26_output_2.png" width="1100">
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
 # ! TAGS: []
 
 r'''
@@ -2390,18 +2373,10 @@ A failed control is useful if you can explain what changed. Do not relabel a fai
 # ! TAGS: []
 
 r'''
-## Real-Model Boundary
-
-The remaining GPU function in `solutions.py`, `run_transformerlens_attribution_graph_preflight`, loads a pinned TransformerLens `gelu-1l` model and builds a residual-position EAP
-graph. That route is useful as a mechanics preflight for CUDA, hooks, caches, and gradients. It is not a full attribution-graph interpretability result because its nodes are
-positions, not meaningful heads, MLPs, transcoders, or sparse features.
-
-This notebook runs only CPU tests.
-
 ## Limitations
 
 This notebook proves the graph-validation contract on an exact planted DAG. It does not claim that integrated gradients always recover real transformer circuits, that thresholding
-is robust across models, or that the `gelu-1l` position graph is a meaningful component graph. A real claim needs named model components, held-out prompts, and path interventions
+is robust across models. A real claim needs named model components, held-out prompts, and path interventions
 on those components.
 
 ## Reading Links
@@ -2410,21 +2385,4 @@ on those components.
 - Original ARENA SAE circuits material: attribution graphs need named latent/component nodes and interventions.
 - Anthropic circuit-tracing work: attribution graphs are graph-shaped hypotheses, not evidence by themselves.
 '''
-
-# ! CELL TYPE: code
-# ! FILTERS: []
-# ! TAGS: []
-
-def run_gpu_test(max_vram_gb: float = 24.0) -> dict:
-    from importlib import import_module
-
-    backend = import_module("chapter8_automated_circuits.exercises.part4_circuit_tracing_attribution_graphs.solutions")
-    return backend.run_gpu_test(max_vram_gb=max_vram_gb)
-
-
-def run_full_experiment(max_vram_gb: float = 24.0) -> dict:
-    from importlib import import_module
-
-    backend = import_module("chapter8_automated_circuits.exercises.part4_circuit_tracing_attribution_graphs.solutions")
-    return backend.run_full_experiment(max_vram_gb=max_vram_gb)
 

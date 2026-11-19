@@ -382,14 +382,6 @@ if MAIN:
 
 # ! CELL TYPE: markdown
 # ! FILTERS: []
-# ! TAGS: [html]
-
-r'''
-<img src="media/historical_cell_6_output_0.png" width="980">
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
 # ! TAGS: []
 
 r'''
@@ -529,14 +521,6 @@ if MAIN:
 
 if MAIN:
     plt.show()
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: [html]
-
-r'''
-<img src="media/historical_cell_10_output_0.png" width="980">
-'''
 
 # ! CELL TYPE: markdown
 # ! FILTERS: []
@@ -1682,16 +1666,6 @@ if MAIN:
 
 # ! CELL TYPE: markdown
 # ! FILTERS: []
-# ! TAGS: [html]
-
-r'''
-<img src="media/historical_cell_30_output_0.png" width="980">
-
-<img src="media/historical_cell_30_output_1.png" width="980">
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
 # ! TAGS: []
 
 r'''
@@ -1707,7 +1681,10 @@ r'''
 r'''
 <details><summary>Interpretation</summary>
 
-The main model reaches exact held-out reconstruction because the suffix is a deterministic function of the visible prefix. Its loss curve alone does not establish this: the shuffled-label model can also reduce its training objective by memorizing arbitrary training associations. The decisive evidence is held-out iterative sampling, where the real grammar generalizes and the shuffled control does not.
+The main model reaches exact held-out reconstruction because the suffix is a deterministic function of the
+visible prefix. Its loss curve alone does not establish this: the shuffled-label model can also reduce its
+training objective by memorizing arbitrary training associations. The decisive evidence is held-out iterative
+sampling, where the real grammar generalizes and the shuffled control does not.
 
 The trajectory heatmaps add mechanism-level intuition. Gray cells are still masked, red cells are visible but wrong, and green cells equal the ground-truth token. Stable commitment is measured only when a token remains correct for all later rows, so temporary guesses do not count.
 
@@ -3882,14 +3859,6 @@ if MAIN:
 
 # ! CELL TYPE: markdown
 # ! FILTERS: []
-# ! TAGS: [html]
-
-r'''
-<img src="media/historical_cell_73_output_144.png" width="980">
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
 # ! TAGS: []
 
 r'''
@@ -3973,20 +3942,6 @@ if MAIN:
 
 # ! CELL TYPE: markdown
 # ! FILTERS: []
-# ! TAGS: [html]
-
-r'''
-<img src="media/historical_cell_75_output_120.png" width="980">
-
-<img src="media/historical_cell_75_output_121.png" width="980">
-
-<img src="media/historical_cell_75_output_122.png" width="980">
-
-<img src="media/historical_cell_75_output_123.png" width="980">
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
 # ! TAGS: []
 
 r'''
@@ -4056,18 +4011,6 @@ if MAIN:
 
 # ! CELL TYPE: markdown
 # ! FILTERS: []
-# ! TAGS: [html]
-
-r'''
-<img src="media/historical_cell_77_output_1.png" width="980">
-
-<img src="media/historical_cell_77_output_2.png" width="980">
-
-<img src="media/historical_cell_77_output_3.png" width="980">
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
 # ! TAGS: []
 
 r'''
@@ -4120,14 +4063,6 @@ if MAIN:
                 del model
         assert len(text_timings)==78, "Keep all three seeds, both supervision conditions, twelve diffusion budgets and cached AR."
         text_plotting.plot_cost_quality(text_results,text_timings,assets_dir)
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: [html]
-
-r'''
-<img src="media/historical_cell_79_output_0.png" width="980">
-'''
 
 # ! CELL TYPE: markdown
 # ! FILTERS: []
@@ -4208,14 +4143,6 @@ if MAIN:
             del model
         text_plotting.plot_trajectory_pair(schedule_results[0]["traces"][0],schedule_results[1]["traces"][0],
             tokenizer,assets_dir,name="diffusion_text_schedule_play.png")
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: [html]
-
-r'''
-<img src="media/historical_cell_83_output_1.png" width="980">
-'''
 
 # ! CELL TYPE: markdown
 # ! FILTERS: []

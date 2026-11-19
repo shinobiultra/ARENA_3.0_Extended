@@ -5,8 +5,6 @@ MAIN = __name__ == "__main__"
 
 # %%
 
-import json
-
 import sys
 
 from dataclasses import dataclass
@@ -47,17 +45,9 @@ if MAIN:
 if MAIN:
     import part5_white_box_monitors.tests as tests
 
-GT_TIER = "GT-3"
-
-EXERCISE_ID = "9_4_white_box_evals_and_monitors"
-
 DIFFICULTY = 3
 
 IMPORTANCE = 4
-
-EXPECTED_RUNTIME = "75-100 minutes for the learner path; minutes on local real-model path"
-
-REQUIRES_GPU = True
 
 # %%
 
@@ -710,37 +700,6 @@ if MAIN:
 
 if MAIN:
     plt.show()
-
-# %%
-
-def run_gpu_test(max_vram_gb: float = 24.0) -> dict:
-    from chapter9_alignment_interpretability.exercises.part4_white_box_evals_monitors.solutions import (
-        run_pythia_white_box_monitor_preflight,
-    )
-
-    return run_pythia_white_box_monitor_preflight(max_vram_gb=max_vram_gb)
-
-def run_full_experiment(max_vram_gb: float = 24.0) -> dict:
-    return run_gpu_test(max_vram_gb=max_vram_gb)
-
-if MAIN:
-    report = json.loads((section_dir / "historical_verification_report.json").read_text())
-
-if MAIN:
-    gpu = report["metrics"]["gpu_test"]
-
-if MAIN:
-    print({
-        "preflight_passed": gpu["preflight_passed"],
-        "monitor_auroc": gpu["monitor_auroc"],
-        "black_box_proxy_accuracy": gpu["black_box_proxy_accuracy"],
-        "label_shuffled_monitor_auroc": gpu["label_shuffled_monitor_auroc"],
-        "random_direction_monitor_auroc": gpu["random_direction_monitor_auroc"],
-        "generation_used": gpu["generation_used"],
-    })
-
-if MAIN:
-    tests.test_committed_gpu_report_retains_real_model_boundary()
 
 # %%
 

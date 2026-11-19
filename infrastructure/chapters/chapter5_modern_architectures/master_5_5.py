@@ -93,7 +93,7 @@ By the end of this notebook, you will be able to:
 - hunt confident OOD failures instead of hiding them in an average.
 
 The entire learner path runs on CPU. Expect roughly 60-90 minutes including exercises;
-the completed training cells take seconds on a typical laptop CPU. A CUDA GPU is needed only for the optional release verification.
+the completed training cells take seconds on a typical laptop CPU.
 '''
 
 # ! CELL TYPE: markdown
@@ -129,7 +129,7 @@ r'''
 
 ### ☆ Bonus
 
-Find confident errors, preserve limitations and inspect the optional release surface.
+Find confident errors and preserve limitations.
 '''
 
 # ! CELL TYPE: code
@@ -393,14 +393,6 @@ if MAIN:
     ax.legend(title="action", frameon=False, ncol=2)
 if MAIN:
     plt.show()
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: [html]
-
-r'''
-<img src="media/state_tracking_historical_cell_4_output_1.png" width="1000">
-'''
 
 # ! CELL TYPE: markdown
 # ! FILTERS: []
@@ -736,14 +728,6 @@ if MAIN:
     fig.tight_layout()
 if MAIN:
     plt.show()
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: [html]
-
-r'''
-<img src="media/state_tracking_historical_cell_7_output_3.png" width="1000">
-'''
 
 # ! CELL TYPE: markdown
 # ! FILTERS: []
@@ -1689,14 +1673,6 @@ if MAIN:
 
 # ! CELL TYPE: markdown
 # ! FILTERS: []
-# ! TAGS: [html]
-
-r'''
-<img src="media/state_tracking_historical_cell_15_output_0.png" width="1000">
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
 # ! TAGS: []
 
 r'''
@@ -1761,14 +1737,6 @@ if MAIN:
     plt.title("Play: where does length generalization weaken?")
 if MAIN:
     plt.show()
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: [html]
-
-r'''
-<img src="media/state_tracking_historical_cell_17_output_1.png" width="1000">
-'''
 
 # ! CELL TYPE: markdown
 # ! FILTERS: []
@@ -1995,14 +1963,6 @@ if MAIN:
 
 # ! CELL TYPE: markdown
 # ! FILTERS: []
-# ! TAGS: [html]
-
-r'''
-<img src="media/state_tracking_historical_cell_20_output_1.png" width="1000">
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
 # ! TAGS: []
 
 r'''
@@ -2031,45 +1991,8 @@ r'''
 # ! TAGS: []
 
 r'''
-## GPU entry points
-
-The exercises and signature result above are the CPU learner path. The two entry points below run the GPU check and
-the full path; neither runs automatically. Call them only on a CUDA GPU.
-
-`run_gpu_test(max_vram_gb=24.0)` runs the bounded GPU check. `run_full_experiment(max_vram_gb=24.0)` runs the
-same validated full path.
-'''
-
-# ! CELL TYPE: code
-# ! FILTERS: []
-# ! TAGS: []
-
-import importlib
-
-
-def _release_solution_module():
-    return importlib.import_module("chapter5_modern_architectures.exercises.part4_mamba_state_tracking.solutions")
-
-
-def run_gpu_test(max_vram_gb: float = 24.0) -> dict:
-    """Run the section's pinned CUDA verification contract."""
-    return _release_solution_module().run_gpu_test(max_vram_gb=max_vram_gb)
-
-
-def run_full_experiment(max_vram_gb: float = 24.0) -> dict:
-    """Run the full experiment used for the checked-in release evidence."""
-    return _release_solution_module().run_full_experiment(
-        max_vram_gb=max_vram_gb
-    )
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ## Reproducibility
 
 The student generator default is `max_depth=3` while the solution default is `4`. Every measured call fixes `max_depth=3` explicitly. Use the declared
 argument rather than assuming the defaults coincide.
 '''
-
