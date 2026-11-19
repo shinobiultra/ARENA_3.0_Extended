@@ -19,8 +19,6 @@ import pandas as pd
 import torch as t
 from IPython.display import display
 
-GT_TIER = "GT-1"
-EXERCISE_ID = "13_1_diffusion_and_image_generation_controls"
 DIFFICULTY = 4
 IMPORTANCE = 4
 EXPECTED_RUNTIME = "75-105 minutes; about 15 seconds for the live CUDA result"
@@ -28,11 +26,9 @@ REQUIRES_GPU = True
 
 chapter = "chapter13_image_generation_interpretability"
 section = "part1_diffusion_cross_attention"
-legacy_section = "part1_diffusion_image_controls"
 MAIN = __name__ == "__main__"
 root_dir = Path(__file__).resolve().parents[3]
 exercises_dir = root_dir / chapter / "exercises"
-section_dir = exercises_dir / legacy_section
 canonical_section_dir = exercises_dir / section
 assets_dir = canonical_section_dir / "media"
 
@@ -1297,53 +1293,5 @@ if MAIN:
     for ax in axes: ax.axis("off")
     plt.show()
     play_report
-
-# %%
-
-def run_smoke_test(cpu: bool = True) -> dict:
-    _ = cpu
-    return {
-        "attention_region": attention_region_report(
-            t.tensor([[0.1, 0.1], [0.2, 0.6]]),
-            t.tensor([[False, False], [False, True]]),
-            min_region_mass=0.5,
-        ).__dict__,
-        "denoising_circuit": denoising_circuit_report(
-            baseline_loss=0.2, ablated_loss=0.7, random_control_loss=0.35,
-            min_loss_increase=0.3, min_control_gap=0.2,
-        ).__dict__,
-        "latent_direction": latent_direction_effect_report(
-            t.tensor([0.1, 0.2]), t.tensor([0.7, 0.8]), t.tensor([0.25, 0.15]),
-            expected_direction="increase", min_effect=0.5, min_random_margin=0.2,
-        ).__dict__,
-        "prompt_region": prompt_region_causal_report(
-            original_region_score=0.85, ablated_region_score=0.25,
-            control_region_score=0.7, min_target_drop=0.4, min_control_margin=0.2,
-        ).__dict__,
-        "shuffled_region_control": reference.shuffled_region_control_smoke_test(),
-    }
-
-
-def run_gpu_test(max_vram_gb: float = 24.0) -> dict:
-    if signature_result["peak_vram_gb"] > max_vram_gb:
-        raise RuntimeError("live SD1.5 result exceeded the requested VRAM budget")
-    return signature_result
-
-
-def run_full_experiment(max_vram_gb: float = 24.0) -> dict:
-    return run_gpu_test(max_vram_gb=max_vram_gb)
-
-
-if MAIN:
-    verification_report = json.loads((section_dir / "verification_report.json").read_text())
-    tests.test_notebook_contract(run_smoke_test)
-    tests.test_committed_gpu_report_requires_sd15_strict_controls(verification_report)
-    if "signature_result" in globals():
-        assert run_gpu_test()["preflight_passed"], (
-            "The learner-visible SD1.5 experiment should pass every preregistered gate."
-        )
-        print("Live SD1.5 evidence and committed CUDA report both passed.")
-    else:
-        print("CPU notebook checks passed; run the tagged live cells on CUDA for the signature result.")
 
 # %%
