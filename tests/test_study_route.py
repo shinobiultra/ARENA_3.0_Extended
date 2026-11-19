@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import copy
+import dataclasses
 import re
 from pathlib import Path
 from urllib.parse import unquote
@@ -299,19 +300,16 @@ def test_companions_are_optional_side_trips_at_their_stops(real_route):
     assert "optimizer lab" in u02 and "mastery_hub/app.py" in u02
 
 
-def test_side_trips_leave_core_order_and_pacing_alone(real_route):
-    without = [stop for stop in real_route.stops if stop.kind != "companion"]
-    assert [s.number for s in without if s.core] == [s.number for s in real_route.stops if s.core]
-    assert all(stop.days is None for stop in real_route.stops if stop.kind == "companion")
+def test_side_trips_are_unsized_and_never_core(real_route):
+    trips = [stop for stop in real_route.stops if stop.kind == "companion"]
+    assert len(trips) == 7
+    assert all(stop.days is None and not stop.core for stop in trips)
 
 
 def test_companion_materials_link_only_what_exists(real_route, tmp_path):
     for unit in real_route.companions:
         for _, target in study_route.companion_materials(real_route, unit, ROOT):
             assert target.startswith("https://") or (ROOT / target).exists(), (unit, target)
-    assert study_route.companion_materials(real_route, "u07", ROOT) == [] or all(
-        "u07" not in target for _, target in study_route.companion_materials(real_route, "u07", ROOT)
-    )
     lab = dict(study_route.companion_materials(real_route, "u02", ROOT))
     assert lab.get("optimizer lab") == "mastery_hub/app.py"
     # Without the companion page or the lab, nothing dangles.
@@ -361,3 +359,16 @@ def test_every_extension_chapter_has_a_tldr(real_route):
     for chapter in SYLLABUS["chapters"]:
         if SYLLABUS["chapters"][chapter]["number"] >= 5:
             assert "Start with" in study_route.chapter_tldr(real_route, chapter) or "Optional" in study_route.chapter_tldr(real_route, chapter)
+
+
+def test_the_finale_links_u07_once_its_companion_exists(real_route, tmp_path):
+    (tmp_path / "mastery_hub/units/u07_exotic").mkdir(parents=True)
+    companions = dict(real_route.companions)
+    companions["u07"] = {**companions["u07"], "dir": "mastery_hub/units/u07_exotic", "status": "written"}
+    released = dataclasses.replace(real_route, companions=companions)
+    assert study_route.companion_materials(released, "u07", tmp_path) == [
+        ("companion notebook", "mastery_hub/units/u07_exotic")
+    ]
+    assert study_route.companion_materials(real_route, "u07", ROOT) == [] or all(
+        label == "companion list" for label, _ in study_route.companion_materials(real_route, "u07", ROOT)
+    )
