@@ -220,13 +220,19 @@ if MAIN:
 
 # %%
 
+def random_unit_vectors(n: int, d: int, seed: int = 0) -> Float[Tensor, "n d"]:
+    """n random unit vectors in R^d."""
+    vectors = t.randn(n, d, generator=t.Generator().manual_seed(seed))
+    return vectors / vectors.norm(dim=-1, keepdim=True)
+
+
+def match_norm(v: Tensor, target: Tensor) -> Tensor:
+    """`v` rescaled to the length of `target`, on the working device."""
+    return v.to(device) / v.norm() * target.norm()
+
+# %%
+
 if MAIN:
-    def random_unit_vectors(n: int, d: int, seed: int = 0) -> Float[Tensor, "n d"]:
-        """n random unit vectors in R^d."""
-        vectors = t.randn(n, d, generator=t.Generator().manual_seed(seed))
-        return vectors / vectors.norm(dim=-1, keepdim=True)
-    
-    
     def readout_auroc(direction: Float[Tensor, " d_model"], layer: int, pos: int = -1, split: str = "test") -> float:
         """AUROC of the projection onto `direction`, at one layer and position, for harmful vs harmless prompts."""
         harmful = acts["harmful"][split][layer, :, pos] @ direction.to(device)
@@ -424,18 +430,31 @@ if MAIN:
 
 # %%
 
+def draw_controls(
+    acts_pos: Float[Tensor, "n_pos d_model"], acts_neg: Float[Tensor, "n_neg d_model"], reference: Float[Tensor, " d_model"],
+    n_draws: int = 6, random_seed: int = 100,
+) -> dict[str, list[Tensor]]:
+    """The shared control set: `n_draws` random and `n_draws` stratified label-shuffled directions, each as long as `reference`."""
+    return {
+        "random direction": [match_norm(v, reference) for v in random_unit_vectors(n_draws, reference.shape[0], seed=random_seed)],
+        "label-shuffled direction": [
+            match_norm(shuffled_label_direction(acts_pos, acts_neg, seed=s, stratified=True), reference) for s in range(n_draws)
+        ],
+    }
+
+
+def mean_and_range(per_draw: list[dict[str, float]]) -> dict[str, tuple[float, float, float]]:
+    """For each metric, the (mean, smallest, largest) value over a list of per-draw results."""
+    return {key: (float(np.mean([d[key] for d in per_draw])), min(d[key] for d in per_draw), max(d[key] for d in per_draw)) for key in per_draw[0]}
+
+# %%
+
 if MAIN:
     N_CONTROLS = 6
     harmful_test, harmless_test = prompts["harmful"]["test"], prompts["harmless"]["test"]
     train_harmful, train_harmless = acts["harmful"]["train"][layer, :, pos], acts["harmless"]["train"][layer, :, pos]
     
-    def match_norm(v: Tensor, target: Tensor) -> Tensor:
-        return v.to(device) / v.norm() * target.norm()
-    
-    control_vectors = {
-        "random direction": [match_norm(v, direction) for v in random_unit_vectors(N_CONTROLS, d_model, seed=100)],
-        "label-shuffled direction": [match_norm(shuffled_label_direction(train_harmful, train_harmless, seed=s, stratified=True), direction) for s in range(N_CONTROLS)],
-    }
+    control_vectors = draw_controls(train_harmful, train_harmless, direction, n_draws=N_CONTROLS)
     all_vectors = {"difference of means": [direction], **control_vectors}
     
     ABLATION_STRENGTHS = [0.0, 0.25, 0.5, 0.75, 1.0]
@@ -490,7 +509,7 @@ if MAIN:
     rows = [{"model": "unedited", "harmful: refusal": unedited["harmful"].rate, "harmful: distinct-2": unedited["harmful"].distinct2, "harmless: refusal": unedited["harmless"].rate}]
     for name, vectors in all_vectors.items():
         full = [row[-1] for row in ablation_runs[name]]
-        harmless_runs = [run_with(directional_ablation(model, v), harmless_test) for v in vectors[:3]]
+        harmless_runs = [run_with(directional_ablation(model, v), harmless_test) for v in vectors]
         rows.append({
             "model": f"ablate: {name}", "harmful: refusal": np.mean([r.rate for r in full]), "harmful: distinct-2": np.mean([r.distinct2 for r in full]),
             "harmless: refusal": np.mean([r.rate for r in harmless_runs]),
@@ -660,18 +679,22 @@ if MAIN:
             }
     
     
-    N_CTRL_EVAL = 3
     results = {
         "unedited": evaluate_edit(model),
         "ablate: refusal direction (hooks)": evaluate_edit(model, directional_ablation(model, direction)),
         "weights: refusal direction": evaluate_edit(edited),
     }
+    side_ranges = {}  # (row, metric) -> (smallest, largest) over the shared draws
     for name, vectors in control_vectors.items():
-        per_draw = [evaluate_edit(model, directional_ablation(model, v)) for v in tqdm(vectors[:N_CTRL_EVAL], desc=name)]
-        results[f"ablate: {name} (mean of {N_CTRL_EVAL})"] = {k: float(np.mean([d[k] for d in per_draw])) for k in per_draw[0]}
+        summary = mean_and_range([evaluate_edit(model, directional_ablation(model, v)) for v in tqdm(vectors, desc=name)])
+        row = f"ablate: {name} (mean of {len(vectors)})"
+        results[row] = {metric: mean for metric, (mean, low, high) in summary.items()}
+        side_ranges.update({(row, metric): (low, high) for metric, (mean, low, high) in summary.items()})
     side_effects = pd.DataFrame(results).T
     display(side_effects.round(3))
-    utils.plot_side_effects(side_effects, "What does removing a direction cost? (Qwen2.5-0.5B-Instruct)")
+    print("Smallest and largest value over the six draws:")
+    display(pd.DataFrame({row: {m: f"[{lo:.3f}, {hi:.3f}]" for (r, m), (lo, hi) in side_ranges.items() if r == row} for row in dict.fromkeys(r for r, _ in side_ranges)}).T)
+    utils.plot_side_effects(side_effects, "What does removing a direction cost? (Qwen2.5-0.5B-Instruct)", ranges=side_ranges)
     del edited  # free the copy before the next part
     utils.free_gpu_memory()
 
@@ -934,27 +957,42 @@ if MAIN:
 # %%
 
 if MAIN:
-    vectors_at_layer = {
+    single_vectors = {
         "difference of means": direction,
         "LAT: harmless stimuli only": lat_benign[layer],
         "LAT: harmful/harmless pairs": lat_dataset[layer],
         "logistic-regression probe": probe[layer],
-        "random direction": control_vectors["random direction"][0],
-        "label-shuffled direction": control_vectors["label-shuffled direction"][0],
     }
-    table_rows = []
-    for name, v in vectors_at_layer.items():
+    
+    
+    def reading_and_control(v: Tensor) -> dict[str, float]:
+        """The three tests for one vector: how well it reads, how much refusal adding it induces, how much ablating it removes."""
         v = v.to(device)
         scaled = v / v.norm() * direction.norm()
-        reading = float(fold(readout_auroc(v, layer, pos)))
         with activation_addition(model, scaled, layer, coefficient=1.0):
             induced = utils.refusal_rate(model, tokenizer, harmless_test, is_refusal).rate
         with directional_ablation(model, v):
             removed = unedited["harmful"].rate - utils.refusal_rate(model, tokenizer, harmful_test, is_refusal).rate
-        table_rows.append({"vector": name, "cos with diff. of means": F.cosine_similarity(v, direction, dim=0).item(), "reading AUROC": reading, "induced refusal (harmless + v)": induced, "refusal removed (harmful, ablate v)": removed})
-    control_table = pd.DataFrame(table_rows).set_index("vector")
-    display(control_table.round(3))
-    utils.plot_reading_vs_control(control_table.drop(columns="cos with diff. of means"), f"Reading versus control at layer {layer}, position {pos - N_POS} (vectors scaled to the length of the difference of means; reading AUROC is sign-agnostic)")
+        return {
+            "cos with diff. of means": F.cosine_similarity(v, direction, dim=0).item(), "reading AUROC": float(fold(readout_auroc(v, layer, pos))),
+            "induced refusal (harmless + v)": induced, "refusal removed (harmful, ablate v)": removed,
+        }
+    
+    
+    metrics = {name: reading_and_control(v) for name, v in single_vectors.items()}
+    control_ranges = {}  # (row, metric) -> (smallest, largest) over the shared draws
+    for name, vectors in control_vectors.items():
+        summary = mean_and_range([reading_and_control(v) for v in tqdm(vectors, desc=name)])
+        row = f"{name} (mean of {len(vectors)})"
+        metrics[row] = {metric: mean for metric, (mean, low, high) in summary.items()}
+        control_ranges.update({(row, metric): (low, high) for metric, (mean, low, high) in summary.items()})
+    control_table = pd.DataFrame(metrics).T
+    control_table.index.name = "vector"
+    shown = control_table.round(3).astype(str)
+    for (row, metric), (low, high) in control_ranges.items():
+        shown.loc[row, metric] += f" [{low:.2f}, {high:.2f}]"
+    display(shown)
+    utils.plot_reading_vs_control(control_table.drop(columns="cos with diff. of means"), f"Reading versus control at layer {layer}, position {pos - N_POS} (vectors scaled to the length of the difference of means; controls: mean and range of six draws)", ranges=control_ranges)
 
 # %%
 
@@ -1038,5 +1076,110 @@ if MAIN:
         rows.append((p if len(p) < 52 else p[:49] + "...", tokens, scores))
     utils.plot_token_scores(rows, f"Your prompts: per-token refusal score (layer {layer})")
     utils.show_completions(model, tokenizer, my_prompts, is_refusal, max_new_tokens=30, max_chars=150)
+
+# %%
+
+if MAIN:
+    sys.path.append(str(root_dir / "infrastructure" / "extension" / "learner"))
+    from quiz import Interval, Quiz, Ranking
+    
+    # Fill in every answer before you open any Reveal below.
+    my_answers = {
+        "Q1": "",  # "a" to "e"
+        "Q2": "",
+        "Q3": "",  # a ranking such as "L20 < L6 = L10 < L14"
+        "Q4": "",
+        "Q5": "",
+    }
+    my_reasons = {  # one sentence each: which result from this lesson are you relying on?
+        "Q1": "",
+        "Q2": "",
+        "Q3": "",
+        "Q4": "",
+        "Q5": "",
+    }
+
+# %%
+
+if MAIN:
+    quiz = Quiz({
+        "Q1": Interval("e", points=3),
+        "Q2": Interval("d", points=4),
+        "Q3": Ranking("L6 = L20 = L10 < L14"),
+        "Q4": Interval("d", points=4),
+        "Q5": Interval("a", points=5),
+    })
+    quiz.score(my_answers)
+
+# %%
+
+if MAIN:
+    from bisect import bisect_right
+    
+    
+    def interval_of(value: float, edges: list[float]) -> str:
+        """Which interval (a to e) a measured value falls in, given the four edges between the intervals."""
+        return "abcde"[bisect_right(edges, value)]
+    
+    
+    def pile_loss(model_) -> float:
+        return float(np.mean([next_token_loss(model_, pile[i : i + 5]).item() for i in range(0, len(pile), 5)]))
+    
+    
+    # Q1: add the direction at c = 1 to the 32 questions about the assistant
+    with activation_addition(model, direction, layer, coefficient=1.0):
+        q1 = utils.refusal_rate(model, tokenizer, utils.PERSONA_PROMPTS, is_refusal)
+    print(f"Q1: refusal rate on the {q1.n} questions about the assistant with the direction added at c=1: {q1.rate:.3f} ({q1.k}/{q1.n}); unedited {baseline['questions about the assistant'].rate:.3f}")
+    
+    # Q2: the layer-10 direction, ablated at full strength, on harmful test prompts
+    q2 = run_with(directional_ablation(model, directions[10, pos]), harmful_test)
+    print(f"Q2: harmful refusal with the layer-10 direction ablated: {q2.rate:.3f} ({q2.k}/{q2.n}); layer 14: {ablation_runs['difference of means'][0][-1].rate:.3f}; unedited {unedited['harmful'].rate:.3f}")
+    
+    # Q3: the direction from layers 6, 10, 14 and 20, each added at its own layer with c = 1
+    q3 = {f"L{l}": run_with(activation_addition(model, directions[l, pos], l, coefficient=1.0), harmless_test).rate for l in [6, 10, 14, 20]}
+    print(f"Q3: harmless refusal induced at c=1: {q3}")
+    print(f"    gaps to the 0.06 tie edge: {sorted(round(abs(abs(a - b) - 0.06), 3) for a in q3.values() for b in q3.values() if a < b)}")
+    
+    # Q4: orthogonalise the weights with the rejected layer-17 direction
+    edited_17 = copy.deepcopy(model)
+    orthogonalize_weights(edited_17, directions[17, pos])
+    q4_loss = pile_loss(edited_17)
+    del edited_17
+    utils.free_gpu_memory()
+    q4_rise = q4_loss - results["unedited"]["Pile loss"]
+    print(f"Q4: Pile loss with the layer-17 weight edit {q4_loss:.3f}, a rise of {q4_rise:.3f} nats (unedited {results['unedited']['Pile loss']:.3f}; layer-14 edit rose by {results['weights: refusal direction']['Pile loss'] - results['unedited']['Pile loss']:.3f})")
+    
+    # Q5: eight prompts per class, three random choices of the eight
+    q5_runs = []
+    for seed in range(3):
+        chosen = t.randperm(40, generator=t.Generator().manual_seed(seed))[:8]
+        small_direction = train_harmful[chosen].mean(0) - train_harmless[chosen].mean(0)
+        q5_runs.append(run_with(directional_ablation(model, small_direction), harmful_test).rate)
+    q5_mean = float(np.mean(q5_runs))
+    print(f"Q5: harmful refusal after ablating a direction built from 8 prompts per class: {[round(r, 3) for r in q5_runs]} (mean {q5_mean:.3f}); from 40: {ablation_runs['difference of means'][0][-1].rate:.3f}")
+    
+    utils.plot_quiz_runs([
+        {"title": "Q1: add the direction to questions about the assistant", "ylabel": "refusal rate", "ylim": (0, 1.1),
+         "bars": {"unedited": baseline["questions about the assistant"].rate, "+ direction, c=1": q1.rate}, "highlight": ["+ direction, c=1"]},
+        {"title": "Q2: ablate the direction from layer 10", "ylabel": "harmful refusal remaining", "ylim": (0, 1.1),
+         "bars": {"unedited": unedited["harmful"].rate, "layer 14": ablation_runs["difference of means"][0][-1].rate, "layer 10": q2.rate}, "highlight": ["layer 10"]},
+        {"title": "Q3: add the direction from each layer (c=1)", "ylabel": "harmless refusal induced", "ylim": (0, 1.1),
+         "bars": q3, "highlight": ["L6", "L10", "L20"]},
+        {"title": "Q4: orthogonalise with the layer-17 direction", "ylabel": "rise in Pile loss (nats)",
+         "bars": {"layer 14": results["weights: refusal direction"]["Pile loss"] - results["unedited"]["Pile loss"], "layer 17": q4_rise}, "highlight": ["layer 17"], "fmt": "{:.3f}"},
+        {"title": "Q5: build the direction from 8 prompts per class", "ylabel": "harmful refusal remaining", "ylim": (0, 1.1),
+         "bars": {"40 prompts": ablation_runs["difference of means"][0][-1].rate, **{f"8 prompts, seed {i}": r for i, r in enumerate(q5_runs)}, "8 prompts, mean": q5_mean},
+         "highlight": [f"8 prompts, seed {i}" for i in range(3)] + ["8 prompts, mean"]},
+    ])
+    
+    # The written key must match what these runs produced.
+    EDGES = {"Q1": [0.25, 0.55, 0.80, 0.95], "Q2": [0.10, 0.35, 0.60, 0.80], "Q4": [0.05, 0.15, 0.30, 0.60], "Q5": [0.05, 0.25, 0.50, 0.75]}
+    measured = {"Q1": q1.rate, "Q2": q2.rate, "Q4": q4_rise, "Q5": q5_mean}
+    for name, value in measured.items():
+        letter = interval_of(value, EDGES[name])
+        assert quiz.questions[name].key == letter, f"{name}: the key says {quiz.questions[name].key}, but {value:.3f} falls in interval {letter}"
+    q3_key = Ranking.from_values({name: rate for name, rate in q3.items()}, eps=0.06).key_text
+    assert quiz.questions["Q3"].key_text == q3_key, f"Q3: the key says {quiz.questions['Q3'].key_text}, but the runs give {q3_key}"
+    print("The key matches the runs:", {name: quiz.questions[name].key for name in measured}, "and Q3:", q3_key)
 
 # %%
