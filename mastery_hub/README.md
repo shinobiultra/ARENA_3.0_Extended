@@ -70,86 +70,10 @@ in every eigendirection. A finite successful simulation is not proof of asymptot
 convergence; a noisy run need not converge to zero. This is an **analytic toy**,
 not fresh language-model training or a transformer loss landscape.
 
-## Prediction practice in existing extension lessons
+## Lessons in the reader
 
-The [guided workbook](units/extension_predictions/exercises.ipynb) covers 86
-current master-backed extension lessons. Each lesson also links to its checkpoint.
-Prepare and test your student method, freeze its exact inputs and source, commit a
-forecast with confidence and reasoning, then run the frozen experiment. Record
-the actual controls, explain any mismatch, and predict a changed scientific case.
-These public reference-rich lessons remain guided practice; completing a record
-does not establish unseen mastery or independent scientific evaluation.
-
-Sections 0.6, 1.6 and 16.3 offer separate blank Practice copies with direct links
-to the intact original notebooks. Saved original outputs remain historical;
-blank exercises and preserved outputs serve different points in the lesson.
-
-For a local forecast before the pilot lessons, open [7.1 blank public Practice](units/pilot_practice/7_1_exercises.ipynb) or [9.1 blank public Practice](units/pilot_practice/9_1_exercises.ipynb). Each copy preserves the original method, controls and play, links the intact references, and adds manual reflection after controls. These copies do not add blind companions or checkpoints; published text/hints still expose results. See [Practice instructions](units/pilot_practice/README.md).
-
-Workbook observations are explicitly learner reported. Its separate
-`arena-extension-guided-practice` JSON format restores the worksheet, without
-rerunning the experiment, and is not accepted by the optimizer app importer.
-Transfers remain forecasts until separately run. Intentional stubs stop Run All;
-the workbook launches no models or training. Keep private exports outside Git.
-
-The additive [blind circuit challenge](units/circuit_prediction/exercises.ipynb)
-asks how changing readout gain affects circuit attribution. Implement the visible
-compiler, patching, EAP, integrated gradients and AUC methods; pass the separate
-practice tests; freeze inputs and commit your forecast before running. The reveal
-compares paired AUC bars, exact-effect heatmaps, task behavior and a noise-free
-control. No target answers or saved result plots are prefilled. Run the notebook
-from this checkout on CPU; no model download is needed. Its private JSON receipt
-has its own schema and replay does not run a model. Prior exposure remains an
-explicit learner declaration, never an automatic claim of unseen mastery.
-
-The [blind Data Shapley challenge](units/shapley_prediction/exercises.ipynb)
-asks how coalition-training normalization changes one example's credit. Implement
-gradient descent, validation utility, exact Shapley values and marginal contributions;
-pass independent practice fixtures and commit before the eight-example experiment.
-Paired credit bars and a marginal-contribution plot expose the difference, with
-duplicate-example, label-relocation, zero-learning-rate and efficiency controls.
-Play with the stored results, then save a reflection and transfer forecast. The
-notebook ships without target answers. Its separate private receipt also retains
-failed measurements, and replay performs no training.
-
-The [blind SAGE challenge](units/sage_prediction/exercises.ipynb) asks how
-conditional information and marginal model use allocate global credit. Implement
-the restricted predictor, population loss game, exact Shapley allocation and
-marginal-contribution summaries; commit before comparing the two allocations.
-The reveal shows credit bars, coalition-risk curves and controls. A separately
-committed covariance change tests transfer. Its notebook contains no target
-answers or saved outputs; strict private receipts support replay without recomputation.
-
-The [blind SSD challenge](units/ssd_prediction/exercises.ipynb) asks how weakening
-state carry changes a signed final readout. Implement the recurrent, quadratic
-and chunked forms, pass distinct practice fixtures, and commit before seeing
-state heatmaps and carry-effect curves. A separately committed decay change tests
-transfer. Scalar-oracle, chunk-size, causal and linearity controls check the three
-equivalent computations. The notebook ships blank; private receipts support replay
-without rerunning methods. This fixed filter does not establish trained-model
-behavior, CUDA performance or unseen learner mastery.
-
-The fifth blank companion, [8.7 graph/path prediction](units/graph_prediction/exercises.ipynb),
-asks how graph attribution and path recovery respond to a fixed public synthetic setup.
-It is separate from the 8.8 readout-gain circuit challenge. Implement the visible
-methods, pass the distinct DEV mathematics fixtures, and commit a forecast before
-an explicitly authorized CPU target experiment. Source and DEV checks passed;
-the target remains unexecuted, with no empirical result or prefilled answer.
-Its own strict private receipt retains measurements and failures, supports exclusive
-file export, and replays stored observations without running methods. The notebook
-does not automatically train, download or run the target. Public setup and DEV
-success do not establish unseen mastery or independent scientific evaluation.
-
-The sixth blank companion, [6.1 fixed-forward SAE prediction](units/sae_prediction/exercises.ipynb),
-asks how four fixed forward rules change codes and reconstructions under the same
-inspectable weights. Implement seven visible methods, pass distinct DEV fixtures,
-and commit a signed forecast before any separately authorized CPU target attempt.
-Source and DEV checks passed; the public target remains unexecuted, with no target
-result or prefilled answer. Code/residual heatmaps and row MSE/L0 retain zero-code
-and mismatched-decoder controls, alongside a separate known-failing DEV alignment
-panel. Private receipts retain partial failures and replay stored observations
-without running methods. The notebook does not automatically run, train or download
-models/data; fixed-rule mechanics do not rank learned SAEs or establish unseen mastery.
+`mastery_hub/read.py` serves each extension lesson with its exercises notebook and
+executed reference. Sections 0.6, 1.6 and 16.3 also link their earlier notebooks.
 
 The [original-materials shelf](../docs/mastery/original_materials.md) preserves
 canonical upstream links and provenance. Original ARENA chapters 0–4 are unchanged.
@@ -173,13 +97,6 @@ The app is a self-study tool, not tamper-proof exam software.
 
 ```bash
 uv run --no-sync --offline python scripts/build_mastery_notebooks.py --check
-uv run --no-sync --offline python scripts/build_extension_prediction_workbook.py --check
-uv run --no-sync --offline python scripts/build_circuit_prediction_notebook.py --check
-uv run --no-sync --offline python scripts/build_shapley_prediction_notebook.py --check
-uv run --no-sync --offline python scripts/build_sage_prediction_notebook.py --check
-uv run --no-sync --offline python scripts/build_ssd_prediction_notebook.py --check
-uv run --no-sync --offline python scripts/build_graph_prediction_notebook.py --check
-uv run --no-sync --offline python scripts/build_sae_prediction_notebook.py --check
 uv run --no-sync --offline python scripts/build_mastery_notebooks.py --execute
 uv run --no-sync --offline pytest -q tests/mastery
 uv run --no-sync --offline python scripts/audit_original_arena_preservation.py

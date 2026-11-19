@@ -32,11 +32,6 @@ help and expected answers remain public Practice. Use the study routes below to 
    adding a short next-action note; the bookmark resumes reading, while that file
    preserves your implementation. It does not record mastery or a completed run.
 
-For 7.1 and 9.1, first read the [pilot Practice session guide][study-017]. Prepare
-and test the method before recording its exact implementation fingerprint; an
-informal initial prediction can come first. The exact forecast for a chosen new
-experiment is frozen after preparation and before that experiment is run.
-
 The original ARENA course remains the foundation. This guide gives exact routes to **86 covered extension
 lessons**, their reference notebooks and reading pages. Coverage means that these materials exist; it does
 not mean that all 86 have native/model execution evidence, independent evaluation or learner acceptance.
@@ -55,7 +50,7 @@ separately below so you can see their scope before choosing a route.
   PartitionSHAP][study-006]. Ask how two players can receive credit for the same interaction, then compare
   exact credit with an estimator and a different grouping of players. The finite-game exercises and plots
   have a CPU route.
-- **Want to understand a model’s internal answer?** After original 1.2, use [7.1 blank Practice][study-007].
+- **Want to understand a model’s internal answer?** After original 1.2, use [7.1 exercises][study-007].
   Watch capital-city tokens emerge across layers, implement the lenses, then investigate what a patched
   vector can make an inspection prompt say. Continue through [8.1 activation patching][study-008] → [8.2
   attribution patching][study-009] → [8.3 AtP*][study-010] → [8.4 ACDC][study-011]. ACDC is currently
@@ -64,9 +59,8 @@ separately below so you can see their scope before choosing a route.
 - **Want to build image–text matching?** Start with [12.1 CLIP and SigLIP][study-013]: similarity matrix →
   two losses → tiny dual encoder → retrieval controls. Finish the tiny-model comparison before moving to its
   released-checkpoint part. Then try [12.3 Mini VLM][study-014]: build the projector and input assembly,
-  compare against image-blind controls, and ask which regions affect an answer. Read the checked-recovery
-  note below before making a new recovery curve.
-- **Want to study a causal direction?** Use [9.1 blank Practice][study-015] after learning residual-stream
+  compare against image-blind controls, and ask which regions affect an answer.
+- **Want to study a causal direction?** Use [9.1 exercises][study-015] after learning residual-stream
   hooks. Implement the direction and interventions, inspect the refusal-strength sweep, and compare random
   and label-shuffled directions alongside benign side effects. A refusal rubric is not a general safety
   classifier.
@@ -91,20 +85,13 @@ locations.
    before changing one scientific condition in a “Try It Yourself” cell. A changed case stays a prediction
    until you actually measure it.
 
-The [guided prediction workbook][study-016] supplies a checkpoint for each of the 86 lessons. Use its
-section number to record the exact experiment, forecast, observations and transfer question. It accompanies
-the method notebook; it does not replace it. Follow the lesson’s existing environment and setup when you
-choose to run it, and preserve the published reference while working in your own copy.
-
 These are **guided public Practice** materials. Blank code outputs do not hide cold-open examples, expected
 answers or public solutions. Use them to strengthen understanding; recording a forecast after seeing the
-answer does not make it an unseen assessment. The [Practice instructions][study-017] explain the 7.1 and 9.1
-copies.
+answer does not make it an unseen assessment.
 
-## Two reading notes before interpreting the pilots
+## Reading note before interpreting 7.1
 
-Keep the [7.1 interpretation note][study-018], [7.1 control-reflection note][study-019] and [12.3 recovery
-note][study-020] beside the corresponding exercises.
+Keep the [7.1 interpretation note][study-018] and [7.1 control-reflection note][study-019] beside the exercises.
 
 **7.1 — a readable donor is not a necessity result.** A Patchscope can show that a donor state carries
 useful information and that an inspection prompt can use it at a given insertion layer. The late-layer
@@ -114,16 +101,6 @@ wording, keep this distinction and propose an additional native-recall necessity
 reflection, inspect a correct control if there is one; otherwise write **none**, then inspect a
 patched-success/control-failure case. All three saved controls—text-only, norm-matched random vector and
 wrong position—have 0% accuracy, so a correct control example is not required.
-
-**12.3 — check the entire cohort before averaging recovery.** Before changing scene pairs or making a new
-recovery plot, complete the [Mini VLM checked recovery exercises][study-021] and read their [short
-instructions][study-022]. The inline exercises test finite inputs and recovery and require a positive
-clean-minus-corrupt gap for every pair in the declared cohort before aggregation. Zero or reversed gaps must
-be reported with their pair indices rather than silently dropped. A tiny positive gap remains eligible;
-finite recovery outside [0,1] is retained. The literal CPU exercises need no model. The final bridge
-requires an already prepared 12.3 session; historical Mini weights were not saved as recoverable
-checkpoints. The highest-attention comparison in the prediction workbook is an additional learner exercise,
-not an outcome supplied by the historical curves.
 
 ## Choose a route that fits your machine
 
@@ -138,7 +115,6 @@ later benchmark.
 | 12.1 losses and tiny dual encoder | The lesson provides CPU and accelerator selection and describes the tiny model as suitable for a recent multi-core CPU. Its later released CLIP/SigLIP comparison needs the specified checkpoint/data setup. |
 | 7.1, 8.4 and 9.1 model studies | The notebooks select MPS/CUDA/CPU. Their documented model recipes include GPU runs; 8.4 performs thousands of forward passes and 9.1 repeated generation. 7.1 gives a reduced CPU lens recipe, which changes the training setting. No current runtime or cache availability is promised here. |
 | 12.3 full Mini VLM and optional real-VLM bridge | The default lesson describes GPU featurisation/training, including about 1.5 GB for cached vision features. It offers reduced CPU settings. Its later real-VLM part quotes about 6 GB of GPU memory. Those are lesson estimates, not a fresh machine preflight. |
-| Six optional companions below; Mini VLM guard fixtures | Bounded CPU/analytic exercises. They do not reproduce the corresponding trained-model studies. |
 | The 26 new study editions listed below | Small CPU mathematical or explicitly constructed model organisms, immediate independent tests and controlled visible results. Their native/pretrained bridges, large-model comparisons and learner acceptance remain pending. |
 
 For other lessons, check the linked setup and limitations rather than assuming a GPU budget from the title.
@@ -336,27 +312,6 @@ intact books when you want the original source and historical output context:
 For the original course and upstream resources, keep the [original-materials shelf][study-266] alongside
 this guide. Original ARENA chapters 0–4 remain the base; 0.6 and 1.6 are extension addenda.
 
-## Optional prediction companions
-
-After learning the method, choose one companion if you want a focused forecast with visible controls. Each
-starts without saved code outputs. Declare prior exposure honestly; a blank notebook does not make a public
-setup unseen. Pass its separate practice fixtures before committing to the target, and use its own
-instructions for observation, reflection and replay.
-
-| Companion | Question to forecast |
-| --- | --- |
-| [8.8 circuit prediction][study-267] | How does changing readout gain affect circuit attribution? |
-| [Data Shapley prediction][study-268] | How does coalition-training normalization change one example’s credit? |
-| [SAGE prediction][study-269] | How do conditional information and marginal model use allocate global credit? |
-| [SSD prediction][study-270] | How does weakening state carry change a signed final readout? |
-| [8.7 graph/path prediction][study-271] | How do graph attribution and path recovery behave in a fixed synthetic graph? |
-| [6.1 fixed-forward SAE prediction][study-272] | How do four fixed rules change codes and reconstructions with the same weights? |
-
-These are bounded CPU studies, with their own target and exposure boundaries. The graph/path and SAE public
-targets remain unexecuted in the current record. Fixed-rule SAE mechanics do not rank trained SAEs, and
-fixed-filter SSD does not establish CUDA performance. Completing a companion record is practice evidence
-rather than automatic unseen mastery.
-
 ## The 26 new CPU study editions (2026-11-02)
 
 At the earlier 60-lesson checkpoint, these 26 configured destinations had no current canonical
@@ -405,7 +360,7 @@ later model bridge or a planned topic remains unfinished.
 [study-004]: ../README.md
 [study-005]: ../chapter16_shapley_attribution_baselines/exercises/part1_exact_shapley/16.1_Exact_Shapley_on_Ground-Truth_Games_exercises.ipynb
 [study-006]: ../chapter16_shapley_attribution_baselines/exercises/part2_kernelshap_partitionshap/16.2_KernelSHAP_and_PartitionSHAP_exercises.ipynb
-[study-007]: units/pilot_practice/7_1_exercises.ipynb
+[study-007]: ../chapter7_activation_to_language/exercises/part1_lenses_patchscopes/7.1_Logit_Lens_Tuned_Lens_and_Patchscopes_exercises.ipynb
 [study-008]: ../chapter8_automated_circuits/exercises/part1_activation_patching_refresher/8.1_Activation_Patching_Refresher_exercises.ipynb
 [study-009]: ../chapter8_automated_circuits/exercises/part2_attribution_patching_eap/8.2_Attribution_Patching_and_EAP_exercises.ipynb
 [study-010]: ../chapter8_automated_circuits/exercises/part3_atp_star/8.3_AtP_from_Scratch_exercises.ipynb
@@ -413,14 +368,9 @@ later model bridge or a planned topic remains unfinished.
 [study-012]: ../chapter1_transformer_interp/exercises/part41_indirect_object_identification/1.4.1_Indirect_Object_Identification_exercises.ipynb
 [study-013]: ../chapter12_vlm_interpretability/exercises/part1_clip_siglip/12.1_CLIP_and_SigLIP_from_Scratch_exercises.ipynb
 [study-014]: ../chapter12_vlm_interpretability/exercises/part3_mini_vlm_from_scratch/12.3_Mini_VLM_from_Scratch_exercises.ipynb
-[study-015]: units/pilot_practice/9_1_exercises.ipynb
-[study-016]: units/extension_predictions/exercises.ipynb
-[study-017]: units/pilot_practice/README.md
+[study-015]: ../chapter9_alignment_interpretability/exercises/part1_refusal_directions/9.1_Refusal_Directions_and_Representation_Engineering_exercises.ipynb
 [study-018]: ../docs/mastery/pilot_reader_notes_20261023.md#7-1-interpretation
 [study-019]: ../docs/mastery/pilot_reader_notes_20261023.md#7-1-controls-reflection
-[study-020]: ../docs/mastery/pilot_reader_notes_20261023.md#12-3-recovery
-[study-021]: practice_addons/mini_vlm_checked_recovery/exercises.ipynb
-[study-022]: practice_addons/mini_vlm_checked_recovery/README.md
 [study-023]: ../chapter0_fundamentals/exercises/part6_fake_interpretability_results_practice/0.6_How_to_Know_When_an_Interpretability_Result_Is_Fake_Practice_exercises.ipynb
 [study-024]: ../chapter0_fundamentals/exercises/part6_fake_interpretability_results_practice/0.6_How_to_Know_When_an_Interpretability_Result_Is_Fake_Practice_solutions.ipynb
 [study-025]: ../chapter0_fundamentals/instructions/pages/06_%5B0.6%5D_How_to_Know_When_an_Interpretability_Result_Is_Fake_Practice.md
@@ -665,25 +615,7 @@ later model bridge or a planned topic remains unfinished.
 [study-264]: ../chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/16.15_Expected_Gradients_Which_Expectation_Does_GradientSHAP_Estimate_exercises.ipynb
 [study-265]: ../chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/16.15_Expected_Gradients_Which_Expectation_Does_GradientSHAP_Estimate_solutions.ipynb
 [study-266]: ../docs/mastery/original_materials.md
-[study-267]: units/circuit_prediction/exercises.ipynb
-[study-268]: units/shapley_prediction/exercises.ipynb
-[study-269]: units/sage_prediction/exercises.ipynb
-[study-270]: units/ssd_prediction/exercises.ipynb
-[study-271]: units/graph_prediction/exercises.ipynb
-[study-272]: units/sae_prediction/exercises.ipynb
 [study-273]: ../infrastructure/extension/syllabus.yaml
-
-## More practice for 8.4 ACDC
-
-After the 8.4 lesson, use the [own-method guided public Practice notebook][acdc-own-practice] and its
-[instructions][acdc-own-instructions] to build the GPT-2 callback yourself, with visible sender/edge methods,
-immediate CPU checks, controls and play. Both are available as native downloads when you select 8.4 in the reader.
-The own-method GPT-2 run and its panel including 20 random-circuit controls remain pending; native parity
-tolerances are **UNSET** and must be resolved before that model run. Reference answers remain public.
-
-[acdc-own-practice]: units/acdc_own_method/exercises.ipynb
-[acdc-own-instructions]: units/acdc_own_method/README.md
-
 
 [study-274]: ../chapter5_modern_architectures/exercises/part6_linear_attention_retnet_rwkv/5.6_Linear_Attention_RetNet_and_RWKV_exercises.ipynb
 [study-275]: ../chapter5_modern_architectures/exercises/part6_linear_attention_retnet_rwkv/5.6_Linear_Attention_RetNet_and_RWKV_solutions.ipynb
