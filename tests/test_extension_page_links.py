@@ -64,13 +64,8 @@ CASES = [
     ),
     (
         "chapter16_shapley_attribution_baselines/instructions/pages/11_[16.11]_Datamodels_and_Dataset_Cartography.md",
-        "../part9_influence_and_tracin/README.md",
-        "chapter16_shapley_attribution_baselines/exercises/part9_influence_and_tracin/README.md",
-    ),
-    (
-        "chapter16_shapley_attribution_baselines/instructions/pages/11_[16.11]_Datamodels_and_Dataset_Cartography.md",
-        "../part10_datamodels/README.md",
-        "chapter16_shapley_attribution_baselines/exercises/part10_datamodels/README.md",
+        "../part10_influence_tracin/16.10_Influence_Functions_and_TracIn_exercises.ipynb",
+        "chapter16_shapley_attribution_baselines/exercises/part10_influence_tracin/16.10_Influence_Functions_and_TracIn_exercises.ipynb",
     ),
 ]
 

@@ -72,15 +72,10 @@ _PAGE_LINKS = {
         ),
     },
     "chapter16_shapley_attribution_baselines/instructions/pages/11_[16.11]_Datamodels_and_Dataset_Cartography.md": {
-        "../part9_influence_and_tracin/README.md": (
-            "chapter16_shapley_attribution_baselines/exercises/part9_influence_and_tracin/README.md",
-            "10c7e101e78cd62a19e94cb0e06e1b7e97a6e4f53c26ce3e21be92ad32cd74df",
-            "source document",
-        ),
-        "../part10_datamodels/README.md": (
-            "chapter16_shapley_attribution_baselines/exercises/part10_datamodels/README.md",
-            "457adb74910cbe3a745129313626f8a6c410afc0fcffe9d1ca2ee0c95797a2e0",
-            "source document",
+        "../part10_influence_tracin/16.10_Influence_Functions_and_TracIn_exercises.ipynb": (
+            "chapter16_shapley_attribution_baselines/exercises/part10_influence_tracin/16.10_Influence_Functions_and_TracIn_exercises.ipynb",
+            "3cf1243b5d7d932686754aa45eb860b456181206dcef2c6d58b0986fcad21617",
+            "lesson notebook",
         ),
     },
 }
