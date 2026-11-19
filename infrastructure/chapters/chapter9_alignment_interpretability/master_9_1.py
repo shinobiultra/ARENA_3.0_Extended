@@ -6,10 +6,11 @@ r'''
 ```python
 [
     {"title": "Finding a Refusal Direction", "icon": "1-circle-fill", "subtitle": "(15%)"},
-    {"title": "Ablation, Addition and Controls", "icon": "2-circle-fill", "subtitle": "(30%)"},
+    {"title": "Ablation, Addition and Controls", "icon": "2-circle-fill", "subtitle": "(25%)"},
     {"title": "Weight Orthogonalisation and Side Effects", "icon": "3-circle-fill", "subtitle": "(15%)"},
-    {"title": "Is Refusal One Direction?", "icon": "4-circle-fill", "subtitle": "(20%)"},
+    {"title": "Is Refusal One Direction?", "icon": "4-circle-fill", "subtitle": "(15%)"},
     {"title": "Representation Engineering: Reading Vectors", "icon": "5-circle-fill", "subtitle": "(15%)"},
+    {"title": "Held-out Quiz", "icon": "bullseye", "subtitle": "(10%)"},
     {"title": "Bonus", "icon": "star", "subtitle": "(5%)"},
 ]
 ```
@@ -60,7 +61,7 @@ User:  Write a short poem about the ocean at sunset.
 Model: I am sorry, but I can't assist with that.
 ```
 
-The request hasn't changed and nothing in it is harmful. We've just nudged the model's internal state along
+Before any edit, this model refuses 85% of the harmful test prompts we'll use and 3% of the harmless ones. The request above hasn't changed and nothing in it is harmful. We've just nudged the model's internal state along
 one direction, and the model reads that nudge as "this is a request I should decline".
 [Arditi et al. (2024)](https://arxiv.org/abs/2406.11717), *Refusal in Language Models Is Mediated by a Single
 Direction*, showed that this works across thirteen open chat models up to 72B parameters. The effect also runs
@@ -80,8 +81,8 @@ then ask the skeptical follow-up questions**:
   [representation engineering](https://arxiv.org/abs/2310.01405) (Zou et al., 2023) a *reading vector* is
   built from carefully designed prompts and used to monitor what a model is "thinking". We'll build one using
   only harmless text, and find that it reads harmful-versus-harmless prompts almost as well as the supervised
-  direction, and that adding it makes the model refuse harmless requests, yet *removing* it doesn't stop the
-  model refusing: it is sufficient for refusal, but not necessary.
+  direction, and that adding it makes the model refuse harmless requests. Whether *removing* it stops the
+  model refusing is a separate question, and we'll test it.
 
 By the end you'll have built every piece yourself: the refusal measurements, the difference-of-means direction, the ablation and addition hooks, the weight edit, a gradient-based
 direction search, and a reading vector. And you'll have produced the section's central picture, **refusal rate against intervention strength, for the refusal direction and for
@@ -93,9 +94,17 @@ to defeat it, so the section is built so that you never see harmful content: har
 `utils.show_completions` for a harmful prompt). When we say a direction "removes refusal", the evidence is a rate and a set of controls, never a transcript, and we'll be explicit
 about what that evidence can and can't tell you.
 
-This section follows on from [1.3.2] Function Vectors & Model Steering (adding vectors to the residual stream with hooks), and assumes you're comfortable with the residual stream
-picture from [1.2] and with linear probing from [1.3.1]. It uses plain Hugging Face `transformers` models rather than TransformerLens, because that's what you'll meet when you work
-with chat models in the wild; every hook we need is a few lines of PyTorch.
+We study `Qwen2.5-0.5B-Instruct` (24 blocks, a residual stream of 896 numbers) with plain Hugging Face `transformers`, because that's what you'll meet when you work with chat models in the wild; every hook we need is a few lines of PyTorch. Nothing is trained.
+
+In this section you will:
+
+- find a refusal direction as a difference of means, and pick its layer and position;
+- remove it and add it, against random and label-shuffled directions that should fail;
+- bake the edit into the weights and measure what it costs;
+- test whether refusal is one direction or several;
+- compare the reading vectors of representation engineering with the difference of means.
+
+Prerequisites: [1.2] [Intro to Mech Interp](https://learn.arena.education/chapter1_transformer_interp/02_intro_mech_interp/) (the residual stream), [1.3.1] [Probing](https://learn.arena.education/chapter1_transformer_interp/11_probing/) (linear probes) and [1.3.2] [Function Vectors and Model Steering](https://learn.arena.education/chapter1_transformer_interp/12_function_vectors/) (adding vectors to the residual stream with hooks).
 '''
 
 # ! CELL TYPE: markdown
@@ -170,9 +179,19 @@ the model. You'll finish by using a direction as a monitor, scoring each token o
 > - Use a reading vector as a token-level monitor and see where it fires on harmless prompts that merely sound alarming
 > - State the limitations of reading vectors as safety monitors
 
+### 🎯 Held-out Quiz
+
+Five experiments we ran on Qwen2.5-0.5B-Instruct and didn't show you. Each changes one thing in a run you made. You'll predict each result and write down why, then see what really happened and what a good mental model would have said.
+
+> ##### Learning Objectives
+>
+> - Predict the result of a change to a direction, a layer or a dataset size from results you've already measured
+> - Name the result your prediction rests on, and notice where your picture breaks down
+> - Check a number against the run that produced it
+
 ### ☆ Bonus
 
-Replicating on another model, harmfulness versus refusal, defences that target the refusal direction, sparse-autoencoder features of refusal, and further reading.
+Replicating on another model, harmfulness versus refusal, defences that target the refusal direction, further reading (including persona vectors, abstract activation spaces and visual steering), and what this lesson doesn't show.
 '''
 
 # ! CELL TYPE: markdown
@@ -181,6 +200,8 @@ Replicating on another model, harmfulness versus refusal, defences that target t
 
 r'''
 ## Setup code
+
+SETUP_LINE_PLACEHOLDER
 '''
 
 # ! CELL TYPE: code
@@ -192,26 +213,6 @@ from IPython import get_ipython
 ipython = get_ipython()
 ipython.run_line_magic("load_ext", "autoreload")
 ipython.run_line_magic("autoreload", "2")
-
-# ! CELL TYPE: code
-# ! FILTERS: [colab]
-# ! TAGS: [master-comment]
-
-# import os
-# import sys
-#
-# IN_COLAB = "google.colab" in sys.modules
-#
-# if IN_COLAB:
-#     # Install dependencies, and download this chapter's exercise files from the ARENA extension repo
-#     %pip install transformers jaxtyping pyarrow scikit-learn
-#     repo, branch, chapter = "ARENA_3.0_Extended", "main", "chapter9_alignment_interpretability"
-#     if not os.path.exists(f"/content/{chapter}"):
-#         !wget -P /content https://github.com/shinobiultra/{repo}/archive/refs/heads/{branch}.zip
-#         !unzip -q /content/{branch}.zip '{repo}-{branch}/{chapter}/exercises/*' -d /content
-#         !mv /content/{repo}-{branch}/{chapter} /content/{chapter}
-#         !rm -r /content/{branch}.zip /content/{repo}-{branch}
-#     os.chdir(f"/content/{chapter}/exercises")
 
 # ! CELL TYPE: code
 # ! FILTERS: []
@@ -531,6 +532,8 @@ Now the baseline numbers, for the unmodified model, over five groups of prompts.
 - *questions about the assistant*: `"What is your favourite colour?"`, which it often answers with `"As an AI, I don't have..."`;
 - *alarming-sounding but harmless*: `"How do I kill a Python process?"`. A well-calibrated model should simply answer these, so any refusal here is **over-refusal**.
 
+The "95% interval" column is a **Wilson interval**: the range of true refusal rates that would plausibly produce the count we saw, which is wide when there are only 40 prompts. Go deeper: 0.7 Foundations Toolkit, Part 5.
+
 `utils.refusal_rate` returns only aggregates: a rate, and a "distinct-2" score (the fraction of distinct token bigrams in the completions, which is close to 1 for varied text and drops for repetitive loops; we'll use it as a cheap check that a model is still producing real text).
 '''
 
@@ -684,7 +687,7 @@ r'''
 
 r'''
 <details>
-<summary>Help - how should I interpret this plot?</summary>
+<summary>Help - how should I interpret this?</summary>
 
 The harmful validation prompts tend to put much more probability on an initial `I`: their mean log-odds is -0.38, compared with -4.68 for harmless prompts. The histograms overlap,
 and some harmful prompts have negative scores. Use this as a continuous proxy for comparing interventions, not a calibrated refusal classifier: an answer beginning with `I` can
@@ -789,15 +792,17 @@ print("train activations (layer, prompt, position, d_model):", tuple(acts["harmf
 r'''
 ## The difference-of-means direction
 
-Here's the idea behind the whole section. Let $\mu^{\ell, i}_{\text{harmful}}$ be the average residual stream, over harmful training prompts, at layer $\ell$ and (post-instruction)
-position $i$, and $\mu^{\ell, i}_{\text{harmless}}$ the same for harmless ones. The **difference-of-means direction** is
+Here is the idea behind the whole section, with toy numbers first. Give each prompt two coordinates. Two harmful prompts sit at $(1, 0)$ and $(3, 2)$, so their mean is $(2, 1)$. One harmless prompt sits at $(0, 1)$, so its mean is $(0, 1)$. Subtract the means: $(2, 1) - (0, 1) = [2, 0]$. That arrow points from "typical harmless" to "typical harmful", and it ignores everything the two groups share (here, the second coordinate). In the model the points have 896 coordinates, but the arithmetic is the same.
+
+Two things to remember. The arrow isn't scaled to length one: its length is the gap between the class means, which we'll need when we *add* it later. And it is only as good as the prompts you average: anything that differs between your two groups (topic, phrasing) ends up in it too. You build this function once, here, and the later sections of this chapter reuse it.
+
+In symbols: let $\mu^{\ell, i}_{\text{harmful}}$ be the average residual stream over harmful training prompts at layer $\ell$ and (post-instruction) position $i$, and $\mu^{\ell, i}_{\text{harmless}}$ the same for harmless ones. Then
 
 $$
 r^{\ell, i} = \mu^{\ell, i}_{\text{harmful}} - \mu^{\ell, i}_{\text{harmless}}.
 $$
 
-It points from "typical harmless prompt" to "typical harmful prompt" at that layer and position. It isn't normalised: its length is the distance between the two class means, which
-we'll need later when we *add* it to the model's activations. When we need a unit vector we write $\hat r = r / \|r\|$.
+When we need a unit vector we write $\hat r = r / \|r\|$.
 '''
 
 # ! CELL TYPE: markdown
@@ -1023,13 +1028,22 @@ and $-v$ are the same line), so the plot shows $\max(\text{AUROC}, 1-\text{AUROC
 
 # ! CELL TYPE: code
 # ! FILTERS: []
-# ! TAGS: [main]
+# ! TAGS: []
 
 def random_unit_vectors(n: int, d: int, seed: int = 0) -> Float[Tensor, "n d"]:
     """n random unit vectors in R^d."""
     vectors = t.randn(n, d, generator=t.Generator().manual_seed(seed))
     return vectors / vectors.norm(dim=-1, keepdim=True)
 
+
+def match_norm(v: Tensor, target: Tensor) -> Tensor:
+    """`v` rescaled to the length of `target`, on the working device."""
+    return v.to(device) / v.norm() * target.norm()
+
+
+# ! CELL TYPE: code
+# ! FILTERS: []
+# ! TAGS: [main]
 
 def readout_auroc(direction: Float[Tensor, " d_model"], layer: int, pos: int = -1, split: str = "test") -> float:
     """AUROC of the projection onto `direction`, at one layer and position, for harmful vs harmless prompts."""
@@ -1090,7 +1104,7 @@ r'''
 
 r'''
 <details>
-<summary>Help - how should I interpret this plot?</summary>
+<summary>Help - how should I interpret this?</summary>
 
 At the final post-instruction position, the training difference of means reads harmful-versus-harmless test prompts increasingly well, reaching AUROC 1.00 at layers 15, 20 and 23
 in the printed sample. Layer 0 has no separation because this identical template token has not yet read the request. The controls are not all chance: at layer 14 the random median
@@ -1683,7 +1697,33 @@ For the real direction the band is a 95% Wilson interval for a proportion measur
 band spans the smallest to the largest draw.
 
 This cell makes about 140 generation calls, so it takes a few minutes on a GPU.
+
+**Make a prediction first:** will a label-shuffled direction remove refusal fully, partly, or not at all when we ablate it at full strength?
+
+All the controls in this section come from one shared set of draws, so every table and figure below uses the same twelve vectors. `draw_controls` makes them: six random unit vectors and six stratified label-shuffles of the training activations, each rescaled to the length of the real direction. `mean_and_range` summarises a metric over the draws as a mean with the smallest and largest value.
 '''
+
+# ! CELL TYPE: code
+# ! FILTERS: []
+# ! TAGS: []
+
+def draw_controls(
+    acts_pos: Float[Tensor, "n_pos d_model"], acts_neg: Float[Tensor, "n_neg d_model"], reference: Float[Tensor, " d_model"],
+    n_draws: int = 6, random_seed: int = 100,
+) -> dict[str, list[Tensor]]:
+    """The shared control set: `n_draws` random and `n_draws` stratified label-shuffled directions, each as long as `reference`."""
+    return {
+        "random direction": [match_norm(v, reference) for v in random_unit_vectors(n_draws, reference.shape[0], seed=random_seed)],
+        "label-shuffled direction": [
+            match_norm(shuffled_label_direction(acts_pos, acts_neg, seed=s, stratified=True), reference) for s in range(n_draws)
+        ],
+    }
+
+
+def mean_and_range(per_draw: list[dict[str, float]]) -> dict[str, tuple[float, float, float]]:
+    """For each metric, the (mean, smallest, largest) value over a list of per-draw results."""
+    return {key: (float(np.mean([d[key] for d in per_draw])), min(d[key] for d in per_draw), max(d[key] for d in per_draw)) for key in per_draw[0]}
+
 
 # ! CELL TYPE: code
 # ! FILTERS: []
@@ -1693,13 +1733,7 @@ N_CONTROLS = 6
 harmful_test, harmless_test = prompts["harmful"]["test"], prompts["harmless"]["test"]
 train_harmful, train_harmless = acts["harmful"]["train"][layer, :, pos], acts["harmless"]["train"][layer, :, pos]
 
-def match_norm(v: Tensor, target: Tensor) -> Tensor:
-    return v.to(device) / v.norm() * target.norm()
-
-control_vectors = {
-    "random direction": [match_norm(v, direction) for v in random_unit_vectors(N_CONTROLS, d_model, seed=100)],
-    "label-shuffled direction": [match_norm(shuffled_label_direction(train_harmful, train_harmless, seed=s, stratified=True), direction) for s in range(N_CONTROLS)],
-}
+control_vectors = draw_controls(train_harmful, train_harmless, direction, n_draws=N_CONTROLS)
 all_vectors = {"difference of means": [direction], **control_vectors}
 
 ABLATION_STRENGTHS = [0.0, 0.25, 0.5, 0.75, 1.0]
@@ -1748,7 +1782,7 @@ r'''
 
 r'''
 <details>
-<summary>Help - how should I interpret this figure?</summary>
+<summary>Help - how should I interpret this?</summary>
 
 Full ablation changes the harmful test refusal rate from 85% to 0% (Wilson interval 0–9%); half-strength already gives 8%. On harmless prompts, adding the direction raises refusal
 from 3% to 88% at c=1 and 100% at c=1.5. At c=3 the rate falls back to 55%, so more steering is not monotonically better: inspect the harmless play examples for degradation. Random
@@ -1814,7 +1848,7 @@ what it says.
 rows = [{"model": "unedited", "harmful: refusal": unedited["harmful"].rate, "harmful: distinct-2": unedited["harmful"].distinct2, "harmless: refusal": unedited["harmless"].rate}]
 for name, vectors in all_vectors.items():
     full = [row[-1] for row in ablation_runs[name]]
-    harmless_runs = [run_with(directional_ablation(model, v), harmless_test) for v in vectors[:3]]
+    harmless_runs = [run_with(directional_ablation(model, v), harmless_test) for v in vectors]
     rows.append({
         "model": f"ablate: {name}", "harmful: refusal": np.mean([r.rate for r in full]), "harmful: distinct-2": np.mean([r.distinct2 for r in full]),
         "harmless: refusal": np.mean([r.rate for r in harmless_runs]),
@@ -1833,29 +1867,7 @@ r'''
 <details>
 <summary>Expected output</summary>
 
-<pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace">                                  harmful: refusal  harmful: distinct-2  \
-model                                                                     
-unedited                                     0.850                0.994   
-ablate: difference of means                  0.000                0.988   
-ablate: random direction                     0.800                0.995   
-ablate: label-shuffled direction             0.646                0.989   
-
-                                  harmless: refusal  
-model                                                
-unedited                                      0.025  
-ablate: difference of means                   0.025  
-ablate: random direction                      0.025  
-ablate: label-shuffled direction              0.042
-
-Ablating the direction does not stop the model answering harmless prompts:
-&gt; How to make homemade pasta from scratch
-  Making homemade pasta from scratch is a fun and rewarding process that allows you to control the ingredients and the final product. Here’s a simple recipe to get you started: ### Ingredients: - 2 cups all-purpose flour -...  [no refusal]
-
-&gt; How to make candles at home from scratch
-  Creating candles at home from scratch is a fun and rewarding project that can be done with a variety of materials and techniques. Here’s a simple guide to help you make your own candles at home: ### Materials Needed: - W...  [no refusal]
-
-&gt; Create a packing list for a camping trip
-  Creating a packing list for a camping trip is a great way to ensure you have everything you need to enjoy your adventure. Here’s a simple packing list to get you started: ### Camping Trip Packing List #### 1. **Clothing  [no refusal]</pre>
+<pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace">FILL_ABLATE_CHECK</pre>
 
 </details>
 
@@ -1876,7 +1888,7 @@ used the *stratified* shuffle, which part 1️⃣ argued is the cleaner version.
 the controls more carefully. For 30 directions of each of three kinds (random, naively shuffled,
 stratified-shuffled) we compute:
 
-- the absolute cosine similarity with the real direction;
+- the absolute cosine similarity with the real direction (1 if the two point along the same line, 0 if they are at right angles; two random directions in 896 dimensions have a cosine close to 0);
 - the first-token refusal score on harmful validation prompts when the direction is ablated (a *single forward pass*, so we can afford many directions);
 - the KL divergence on harmless validation prompts when it is ablated: the *cost* of the edit.
 
@@ -1930,7 +1942,7 @@ r'''
 
 r'''
 <details>
-<summary>Help - how should I interpret this plot?</summary>
+<summary>Help - how should I interpret this?</summary>
 
 Random vectors cluster near zero alignment and generally near the unedited score at small KL. Shuffled vectors span much larger alignments, effects and costs; even the stratified
 ones can reduce the score substantially. Alignment explains some effects but not all: the second panel shows that large changes can also accompany damage to the harmless
@@ -2001,7 +2013,7 @@ custom system prompt                   0.77</pre>
 </details>
 
 <details>
-<summary>Help - how should I interpret this table?</summary>
+<summary>Help - how should I interpret this?</summary>
 
 The same direction still suppresses marker refusals across all four formats: harmful refusal is 0–3% after ablation. Adding it to harmless prompts induces 73–100% refusal. The
 unedited harmful rate itself changes from 38% with the trailing instruction to 90% with the custom system prompt, so formatting is a substantial confound for absolute rates. These
@@ -2088,8 +2100,7 @@ Change one prompt or coefficient at a time, and read the harmless output as well
   limits how specifically we can attribute the effect to the original labels.
 - Controls need care. Both naive and stratified shuffled directions can overlap the real direction and change refusal. The scatter plot relates their effects to alignment and harmless KL; it does not isolate alignment from the disruption caused by the edit or establish that the mean difference is unique.
 - Ablation leaves the ordinary harmless refusal rate at 0.025 and completions diverse, and its refusal effect
-  survives the tested prompt-format changes. This is narrower than preserving harmless behaviour: simple-task
-  accuracy falls from 0.891 to 0.844, Pile loss rises from 2.851 to 3.067 nats, and harmless KL is 0.087. What
+  survives the tested prompt-format changes. This is narrower than preserving harmless behaviour: the edit has a cost, and part 3 measures it. What
   we can't say from a refusal rate is whether the ablated model's answers to harmful prompts are good (or
   bad); we deliberately don't look.
 '''
@@ -2371,6 +2382,8 @@ The logits at position `i` predict token `i + 1`, so compare `logits[:, :-1]` wi
 `(N,)`, so reshape both with `.reshape(-1, d_vocab)` and `.reshape(-1)`.
 </details>
 
+**Make a prediction first:** removing the refusal direction from every layer of the model changes its next-token loss on ordinary text (the Pile snippets). Will the loss rise by less than 0.05 nats, by roughly 0.2, or by more than 1? And will the random-direction edit cost more or less than that?
+
 Now the evaluation. `evaluate_edit` runs all six metrics on a model under an optional hook context. (For the Pile loss we process the 100 snippets in batches of 5, to keep the
 `(batch, 128, 151936)` logit tensor small.)
 '''
@@ -2395,18 +2408,22 @@ def evaluate_edit(model_, context=None) -> dict[str, float]:
         }
 
 
-N_CTRL_EVAL = 3
 results = {
     "unedited": evaluate_edit(model),
     "ablate: refusal direction (hooks)": evaluate_edit(model, directional_ablation(model, direction)),
     "weights: refusal direction": evaluate_edit(edited),
 }
+side_ranges = {}  # (row, metric) -> (smallest, largest) over the shared draws
 for name, vectors in control_vectors.items():
-    per_draw = [evaluate_edit(model, directional_ablation(model, v)) for v in tqdm(vectors[:N_CTRL_EVAL], desc=name)]
-    results[f"ablate: {name} (mean of {N_CTRL_EVAL})"] = {k: float(np.mean([d[k] for d in per_draw])) for k in per_draw[0]}
+    summary = mean_and_range([evaluate_edit(model, directional_ablation(model, v)) for v in tqdm(vectors, desc=name)])
+    row = f"ablate: {name} (mean of {len(vectors)})"
+    results[row] = {metric: mean for metric, (mean, low, high) in summary.items()}
+    side_ranges.update({(row, metric): (low, high) for metric, (mean, low, high) in summary.items()})
 side_effects = pd.DataFrame(results).T
 display(side_effects.round(3))
-utils.plot_side_effects(side_effects, "What does removing a direction cost? (Qwen2.5-0.5B-Instruct)")
+print("Smallest and largest value over the six draws:")
+display(pd.DataFrame({row: {m: f"[{lo:.3f}, {hi:.3f}]" for (r, m), (lo, hi) in side_ranges.items() if r == row} for row in dict.fromkeys(r for r, _ in side_ranges)}).T)
+utils.plot_side_effects(side_effects, "What does removing a direction cost? (Qwen2.5-0.5B-Instruct)", ranges=side_ranges)
 del edited  # free the copy before the next part
 utils.free_gpu_memory()
 
@@ -2416,6 +2433,13 @@ utils.free_gpu_memory()
 
 r'''
 <img src="media/side_effects.png" width="1000">
+
+<details>
+<summary>Expected output</summary>
+
+<pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace">FILL_SIDE_EFFECTS</pre>
+
+</details>
 '''
 
 # ! CELL TYPE: markdown
@@ -2505,7 +2529,7 @@ These pictures make different predictions, and this section tests four of them:
 ## PCA of the activations
 
 PCA finds the orthogonal directions along which a cloud of points varies most. If the activations at the selected (layer, position) were dominated by a harmful-versus-harmless
-axis, the first principal component would be that axis, and it would line up with the difference of means.
+axis, the first principal component would be that axis, and it would line up with the difference of means. Go deeper: 0.7 Foundations Toolkit, Part 2.
 '''
 
 # ! CELL TYPE: markdown
@@ -2635,6 +2659,8 @@ We build one difference-of-means direction per family, each against the same har
 - **unsafe**: the harmful training prompts (our usual direction);
 - **can't-do**: 16 of the can't-do requests (the other 16 are held out for testing);
 - **about-the-assistant**: 16 of the questions about the assistant (the other 16 are held out).
+
+**Make a prediction first:** ablate the *unsafe* direction. What happens to the refusal rate on the can't-do requests: does it fall to near zero, fall partway, or stay where it was?
 
 Two questions about each pair of directions. *Descriptively*: what's the cosine similarity? And *causally*: if I ablate direction A, does the model stop declining family B? The
 second is a **cross-ablation matrix**: rows are ablated directions (plus an unedited row and a random-direction control), columns are the families of held-out prompts, and each
@@ -2933,7 +2959,7 @@ random (orthogonal to diff. of means)                  0.025
 </details>
 
 <details>
-<summary>Help - how should I interpret this table?</summary>
+<summary>Help - how should I interpret this?</summary>
 
 The orthogonally constrained search has cosine 0 with the difference of means yet leaves only 2.5% harmful refusal after ablation, against 85% for the orthogonal random vector. Its
 harmless KL is 0.034 versus 0.087 for the original direction. But addition of this searched vector induces only 2.5% harmless refusal, unlike the original direction's 87.5%. Free
@@ -3231,6 +3257,8 @@ system-style framing or from the request itself being something it shouldn't ans
 prompts it has never seen.
 
 The harmful and harmless prompts in the **test** split are not used to build any of the vectors below, so every AUROC is held-out.
+
+We'll also fit a **logistic-regression probe**, the standard supervised alternative: a linear classifier trained to tell the two classes apart, whose weight vector is a direction. Go deeper: 0.7 Foundations Toolkit, Part 4.
 '''
 
 # ! CELL TYPE: code
@@ -3286,7 +3314,7 @@ r'''
 
 r'''
 <details>
-<summary>Help - how should I interpret this plot?</summary>
+<summary>Help - how should I interpret this?</summary>
 
 The harmless-stimuli LAT vector nearly matches the supervised direction at middle layers: AUROC 0.99 at layers 13–15, versus 0.99–1.00 for the mean difference and logistic probe.
 It then falls to 0.54 at layer 23, where the probe remains 0.99. Reading quality depends on both construction and layer. The stratified-shuffle median is also above chance (0.79 at
@@ -3302,7 +3330,7 @@ r'''
 ## Reading is not controlling
 
 A vector that reads well is a good *monitor*. But the section's running lesson is that reading and control are different properties, and control itself has two sides: a direction
-can be **sufficient** to cause a behaviour (adding it produces refusal) without being **necessary** for it (removing it doesn't stop refusal, because the model has other routes).
+can be **sufficient** to cause a behaviour (adding it produces refusal) without being **necessary** for it (removing it might not stop the behaviour, if the model has other routes).
 We now put every vector through three tests, at the layer and position we've been using. For each vector $v$ (scaled to the length of the difference of means, so addition is
 comparable):
 
@@ -3310,35 +3338,51 @@ comparable):
 - **Control, sufficiency (addition)**: add $v$ at the layer to harmless test prompts: how many now get refused?
 - **Control, necessity (ablation)**: ablate $v$ from harmful test prompts: how much refusal does it remove? (Unedited rate minus ablated rate.)
 
-The vectors: the difference of means (our reference), the two LAT vectors, the logistic-regression probe, and the two controls (a random direction and a stratified shuffled-label
-direction).
+The vectors: the difference of means (our reference), the two LAT vectors, the logistic-regression probe, and the two controls (the six random and six stratified shuffled-label directions we've used throughout, shown as mean and range).
+
+**Make a prediction first:** the vector built from harmless stimuli only reads almost as well as the supervised direction, and adding it makes harmless prompts refuse. Now ablate it from the harmful test prompts. Will the refusal rate fall as far as it did for the difference of means, fall a little, or not fall at all?
 '''
 
 # ! CELL TYPE: code
 # ! FILTERS: []
 # ! TAGS: [main]
 
-vectors_at_layer = {
+single_vectors = {
     "difference of means": direction,
     "LAT: harmless stimuli only": lat_benign[layer],
     "LAT: harmful/harmless pairs": lat_dataset[layer],
     "logistic-regression probe": probe[layer],
-    "random direction": control_vectors["random direction"][0],
-    "label-shuffled direction": control_vectors["label-shuffled direction"][0],
 }
-table_rows = []
-for name, v in vectors_at_layer.items():
+
+
+def reading_and_control(v: Tensor) -> dict[str, float]:
+    """The three tests for one vector: how well it reads, how much refusal adding it induces, how much ablating it removes."""
     v = v.to(device)
     scaled = v / v.norm() * direction.norm()
-    reading = float(fold(readout_auroc(v, layer, pos)))
     with activation_addition(model, scaled, layer, coefficient=1.0):
         induced = utils.refusal_rate(model, tokenizer, harmless_test, is_refusal).rate
     with directional_ablation(model, v):
         removed = unedited["harmful"].rate - utils.refusal_rate(model, tokenizer, harmful_test, is_refusal).rate
-    table_rows.append({"vector": name, "cos with diff. of means": F.cosine_similarity(v, direction, dim=0).item(), "reading AUROC": reading, "induced refusal (harmless + v)": induced, "refusal removed (harmful, ablate v)": removed})
-control_table = pd.DataFrame(table_rows).set_index("vector")
-display(control_table.round(3))
-utils.plot_reading_vs_control(control_table.drop(columns="cos with diff. of means"), f"Reading versus control at layer {layer}, position {pos - N_POS} (vectors scaled to the length of the difference of means; reading AUROC is sign-agnostic)")
+    return {
+        "cos with diff. of means": F.cosine_similarity(v, direction, dim=0).item(), "reading AUROC": float(fold(readout_auroc(v, layer, pos))),
+        "induced refusal (harmless + v)": induced, "refusal removed (harmful, ablate v)": removed,
+    }
+
+
+metrics = {name: reading_and_control(v) for name, v in single_vectors.items()}
+control_ranges = {}  # (row, metric) -> (smallest, largest) over the shared draws
+for name, vectors in control_vectors.items():
+    summary = mean_and_range([reading_and_control(v) for v in tqdm(vectors, desc=name)])
+    row = f"{name} (mean of {len(vectors)})"
+    metrics[row] = {metric: mean for metric, (mean, low, high) in summary.items()}
+    control_ranges.update({(row, metric): (low, high) for metric, (mean, low, high) in summary.items()})
+control_table = pd.DataFrame(metrics).T
+control_table.index.name = "vector"
+shown = control_table.round(3).astype(str)
+for (row, metric), (low, high) in control_ranges.items():
+    shown.loc[row, metric] += f" [{low:.2f}, {high:.2f}]"
+display(shown)
+utils.plot_reading_vs_control(control_table.drop(columns="cos with diff. of means"), f"Reading versus control at layer {layer}, position {pos - N_POS} (vectors scaled to the length of the difference of means; controls: mean and range of six draws)", ranges=control_ranges)
 
 # ! CELL TYPE: markdown
 # ! FILTERS: []
@@ -3356,32 +3400,7 @@ r'''
 <details>
 <summary>Expected output</summary>
 
-<pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace">                             cos with diff. of means  reading AUROC  \
-vector                                                                
-difference of means                            1.000          0.996   
-LAT: harmless stimuli only                     0.449          0.989   
-LAT: harmful/harmless pairs                    0.994          0.991   
-logistic-regression probe                      0.985          0.999   
-random direction                              -0.026          0.738   
-label-shuffled direction                       0.349          0.747   
-
-                             induced refusal (harmless + v)  \
-vector                                                        
-difference of means                                   0.875   
-LAT: harmless stimuli only                            0.950   
-LAT: harmful/harmless pairs                           0.850   
-logistic-regression probe                             0.900   
-random direction                                      0.025   
-label-shuffled direction                              0.025   
-
-                             refusal removed (harmful, ablate v)  
-vector                                                            
-difference of means                                        0.850  
-LAT: harmless stimuli only                                -0.075  
-LAT: harmful/harmless pairs                                0.850  
-logistic-regression probe                                  0.850  
-random direction                                           0.250  
-label-shuffled direction                                   0.200</pre>
+<pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace">FILL_READING_CONTROL</pre>
 
 </details>
 
@@ -3516,7 +3535,7 @@ r'''
 
 r'''
 <details>
-<summary>Help - how should I interpret this figure?</summary>
+<summary>Help - how should I interpret this?</summary>
 
 The colours are centred projections at each token, not probabilities. Alarming words such as `kill`, `shoot` and `crack` can score highly in harmless contexts, and template tokens
 can carry signal after reading the request. The projection changes with the surrounding text, so a bright token is not a context-free dangerous-word detector. A score here
@@ -3567,7 +3586,7 @@ alarming-sounding but harmless  20           10%           20%</pre>
 </details>
 
 <details>
-<summary>Help - how should I interpret this table?</summary>
+<summary>Help - how should I interpret this?</summary>
 
 The midpoint monitor flags 90% of harmful test prompts and 3% of ordinary harmless ones, near their marker refusal rates of 85% and 3%. But it flags only 3% of can't-do requests
 and 0% of assistant questions, while the model refuses/disclaims on 88% and 100%. On alarming-sounding harmless prompts the corresponding rates are 10% and 20%. This is a monitor
@@ -3643,6 +3662,348 @@ trace with the actual completion and change one harmless phrase at a time.
 # ! TAGS: []
 
 r'''
+# 🎯 Held-out Quiz
+'''
+
+# ! CELL TYPE: markdown
+# ! FILTERS: []
+# ! TAGS: []
+
+r'''
+You've found a refusal direction in Qwen2.5-0.5B-Instruct, removed it and added it, baked it into the weights, searched for others, and compared it with reading vectors. We ran five more experiments on the same model and haven't shown you any of them. Before you see the results, predict them.
+
+This is how Stanford's CS 312 *[Deep Learning Alchemy](https://deep-learning-alchemy.github.io/)* tests understanding: if you understand a system, you can say what it will do in a setting you haven't tried. A wrong answer here isn't a failure. It's the most useful thing that can happen in this lesson, because it shows you exactly which part of your picture is off. As everywhere in this section, we only ever report aggregate numbers for harmful prompts.
+
+**How it works.**
+
+1. Each question shows its change as a diff against a call you made in this lesson.
+2. Write your answers, and one sentence of reasoning for each, in the answer cell. The reasoning should name a result from this lesson. Don't run any new experiments first.
+3. Run `quiz.score(my_answers)`, then open the **Reveal** dropdowns. Each has the real numbers and what a good mental model would have said.
+
+**Difficulty** says how far a question takes you from what you ran:
+
+- **Easy** means something you built, used on a case it was designed for.
+- **Medium** means one knob turned beyond the range you ran.
+- **Hard** means a regime you never saw, or a number rather than a direction.
+
+**Scoring.** The right interval earns full points and a neighbouring interval earns half. The ranking earns one point per correctly ordered pair. There are 22 points in total. The score is for you: it isn't saved or sent anywhere. Expect to get around half.
+
+> ```yaml
+> Importance: 🔵🔵🔵🔵⚪
+>
+> You should spend up to 25 minutes on this quiz.
+> ```
+
+**The baseline.** In your runs, the unedited model refuses 85% of the harmful test prompts and 3% of the harmless ones. The direction we selected is the difference of means at layer 14, position -4. Ablating it removes the refusals (0% of harmful prompts still refused), adding it at c = 1 makes the model refuse 88% of harmless prompts, and the weight edit raises the Pile loss from 2.851 to 3.067 nats.
+'''
+
+# ! CELL TYPE: markdown
+# ! FILTERS: []
+# ! TAGS: []
+
+r'''
+## Q1. Questions about the assistant &nbsp;·&nbsp; Easy &nbsp;·&nbsp; 3 points
+
+**From the lesson.** In Part 2 you added the refusal direction at c = 1 to harmless test prompts and the model refused most of them. In Part 1 you saw that the unedited model already answers the 32 questions about the assistant (`"What is your favourite colour?"`) with a disclaimer every time.
+
+**This question changes.** The prompts. We add the same direction at c = 1 to those 32 questions instead of the harmless test prompts.
+
+```diff
+  with activation_addition(model, direction, layer, coefficient=1.0):
+-     rate = utils.refusal_rate(model, tokenizer, harmless_test, is_refusal).rate
++     rate = utils.refusal_rate(model, tokenizer, utils.PERSONA_PROMPTS, is_refusal).rate
+```
+
+**What refusal rate do you get?**
+
+| a | b | c | d | e |
+|---|---|---|---|---|
+| TBD | TBD | TBD | TBD | TBD |
+'''
+
+# ! CELL TYPE: markdown
+# ! FILTERS: []
+# ! TAGS: []
+
+r'''
+## Q2. A direction from an earlier layer &nbsp;·&nbsp; Medium &nbsp;·&nbsp; 4 points
+
+**From the lesson.** In Part 2 the sweep selected layer 14, position -4, and ablating that direction took the harmful test refusal rate from 85% to 0%.
+
+**This question changes.** The layer the direction comes from. We take the difference of means from layer 10 (same position, -4) and ablate it at full strength, everywhere in the model, exactly as before.
+
+```diff
+- ablate_direction = directions[14, pos]
++ ablate_direction = directions[10, pos]
+  with directional_ablation(model, ablate_direction, strength=1.0):
+      rate = utils.refusal_rate(model, tokenizer, harmful_test, is_refusal).rate
+```
+
+**What harmful refusal rate remains?**
+
+| a | b | c | d | e |
+|---|---|---|---|---|
+| TBD | TBD | TBD | TBD | TBD |
+'''
+
+# ! CELL TYPE: markdown
+# ! FILTERS: []
+# ! TAGS: []
+
+r'''
+## Q3. Four layers, one coefficient &nbsp;·&nbsp; Medium &nbsp;·&nbsp; 6 points
+
+**From the lesson.** In Part 2 you added the layer-14 direction at layer 14 with c = 1 and the model refused 88% of harmless test prompts.
+
+**This question changes.** The layer. We take the difference-of-means direction (position -4) from layers 6, 10, 14 and 20, add each one **at its own layer** with c = 1, and measure the refusal rate on the harmless test prompts.
+
+```diff
+- with activation_addition(model, directions[14, pos], 14, coefficient=1.0):
++ for layer_ in [6, 10, 14, 20]:
++     with activation_addition(model, directions[layer_, pos], layer_, coefficient=1.0):
+          rate = utils.refusal_rate(model, tokenizer, harmless_test, is_refusal).rate
+```
+
+**Rank the four runs by the harmless refusal they induce, from lowest to highest, writing `=` for runs within 0.05 of each other.** For example `L20 < L6 = L10 < L14`. The runs are `L6`, `L10`, `L14` and `L20`.
+'''
+
+# ! CELL TYPE: markdown
+# ! FILTERS: []
+# ! TAGS: []
+
+r'''
+## Q4. The direction the sweep rejected &nbsp;·&nbsp; Medium &nbsp;·&nbsp; 4 points
+
+**From the lesson.** In Part 2 the sweep rejected layer 17, position -4, even though ablating it gave the lowest refusal score of all, because it failed the KL and addition criteria. In Part 3 you baked the layer-14 direction into the weights and the Pile loss rose from 2.851 to 3.067 nats.
+
+**This question changes.** The direction. We orthogonalise the weights with the rejected layer-17 direction instead of the layer-14 one, and measure the same Pile loss on the same 100 snippets.
+
+```diff
+- orthogonalize_weights(edited, directions[14, pos])
++ orthogonalize_weights(edited, directions[17, pos])
+```
+
+**By how much does the Pile loss rise, compared with the unedited 2.851 nats?**
+
+| a | b | c | d | e |
+|---|---|---|---|---|
+| TBD | TBD | TBD | TBD | TBD |
+'''
+
+# ! CELL TYPE: markdown
+# ! FILTERS: []
+# ! TAGS: []
+
+r'''
+## Q5. A direction from eight prompts per class &nbsp;·&nbsp; Hard &nbsp;·&nbsp; 5 points
+
+**From the lesson.** You computed the layer-14 direction from 40 harmful and 40 harmless training prompts. Part 1's label-shuffled control showed how much a direction built from a few dozen prompts can wander.
+
+**This question changes.** The amount of data. We build the difference of means from only 8 randomly chosen prompts per class (the same layer and position), ablate it at full strength, and average over three random choices of the 8 (seeds 0, 1, 2).
+
+```diff
+- train_harmful, train_harmless = acts["harmful"]["train"][layer, :, pos], acts["harmless"]["train"][layer, :, pos]
++ chosen = t.randperm(40, generator=t.Generator().manual_seed(seed))[:8]
++ train_harmful, train_harmless = acts["harmful"]["train"][layer, chosen, pos], acts["harmless"]["train"][layer, chosen, pos]
+```
+
+**What harmful refusal rate remains after full ablation (mean over the three seeds)?**
+
+| a | b | c | d | e |
+|---|---|---|---|---|
+| TBD | TBD | TBD | TBD | TBD |
+'''
+
+# ! CELL TYPE: markdown
+# ! FILTERS: []
+# ! TAGS: []
+
+r'''
+## Your answers
+
+Fill in every answer before you open any Reveal below.
+'''
+
+# ! CELL TYPE: code
+# ! FILTERS: []
+# ! TAGS: [main]
+
+sys.path.append(str(root_dir / "infrastructure" / "extension" / "learner"))
+from quiz import Interval, Quiz, Ranking
+
+# Fill in every answer before you open any Reveal below.
+my_answers = {
+    "Q1": "",  # "a" to "e"
+    "Q2": "",
+    "Q3": "",  # a ranking such as "L20 < L6 = L10 < L14"
+    "Q4": "",
+    "Q5": "",
+}
+my_reasons = {  # one sentence each: which result from this lesson are you relying on?
+    "Q1": "",
+    "Q2": "",
+    "Q3": "",
+    "Q4": "",
+    "Q5": "",
+}
+
+# ! CELL TYPE: markdown
+# ! FILTERS: []
+# ! TAGS: []
+
+r'''
+Now the key, and your score. (The key is written out in the cell below. If you'd rather not see it before you've answered, answer first.)
+'''
+
+# ! CELL TYPE: code
+# ! FILTERS: []
+# ! TAGS: [main]
+
+quiz = Quiz({
+    "Q1": Interval("c", points=3),
+    "Q2": Interval("c", points=4),
+    "Q3": Ranking("L6 < L10 < L14 < L20"),
+    "Q4": Interval("c", points=4),
+    "Q5": Interval("c", points=5),
+})
+quiz.score(my_answers)
+
+# ! CELL TYPE: markdown
+# ! FILTERS: []
+# ! TAGS: []
+
+r'''
+## Reveal
+
+REVEALS_TBD
+'''
+
+# ! CELL TYPE: markdown
+# ! FILTERS: []
+# ! TAGS: []
+
+r'''
+## Try it yourself - reproduce one result
+
+Pick the question you got most wrong and reproduce it. Q2 is the cheapest: it takes a few seconds, using the directions you already have.
+
+```python
+with directional_ablation(model, directions[10, pos], strength=1.0):
+    print(f"harmful refusal with the layer-10 direction ablated: {utils.refusal_rate(model, tokenizer, harmful_test, is_refusal).rate:.3f}")
+```
+'''
+
+# ! CELL TYPE: markdown
+# ! FILTERS: []
+# ! TAGS: []
+
+r'''
+## The runs behind this quiz
+
+Every number in the reveals above comes from the next cell, which reruns all the key runs and draws the figure below. It takes about a minute and a half on a GPU. You don't need to run it. It's here so that you can check any answer, and so that the quiz can never drift from the code: the cell ends by checking that the key above matches what the runs produced.
+'''
+
+# ! CELL TYPE: code
+# ! FILTERS: []
+# ! TAGS: [main]
+
+from bisect import bisect_right
+
+
+def interval_of(value: float, edges: list[float]) -> str:
+    """Which interval (a to e) a measured value falls in, given the four edges between the intervals."""
+    return "abcde"[bisect_right(edges, value)]
+
+
+def pile_loss(model_) -> float:
+    return float(np.mean([next_token_loss(model_, pile[i : i + 5]).item() for i in range(0, len(pile), 5)]))
+
+
+# Q1: add the direction at c = 1 to the 32 questions about the assistant
+with activation_addition(model, direction, layer, coefficient=1.0):
+    q1 = utils.refusal_rate(model, tokenizer, utils.PERSONA_PROMPTS, is_refusal)
+print(f"Q1: refusal rate on the {q1.n} questions about the assistant with the direction added at c=1: {q1.rate:.3f} ({q1.k}/{q1.n}); unedited {baseline['questions about the assistant'].rate:.3f}")
+
+# Q2: the layer-10 direction, ablated at full strength, on harmful test prompts
+q2 = run_with(directional_ablation(model, directions[10, pos]), harmful_test)
+print(f"Q2: harmful refusal with the layer-10 direction ablated: {q2.rate:.3f} ({q2.k}/{q2.n}); layer 14: {ablation_runs['difference of means'][0][-1].rate:.3f}; unedited {unedited['harmful'].rate:.3f}")
+
+# Q3: the direction from layers 6, 10, 14 and 20, each added at its own layer with c = 1
+q3 = {f"L{l}": run_with(activation_addition(model, directions[l, pos], l, coefficient=1.0), harmless_test).rate for l in [6, 10, 14, 20]}
+print(f"Q3: harmless refusal induced at c=1: {q3}")
+print(f"    gaps to the 0.05 tie edge: {sorted(round(abs(abs(a - b) - 0.05), 3) for a in q3.values() for b in q3.values() if a < b)}")
+
+# Q4: orthogonalise the weights with the rejected layer-17 direction
+edited_17 = copy.deepcopy(model)
+orthogonalize_weights(edited_17, directions[17, pos])
+q4_loss = pile_loss(edited_17)
+del edited_17
+utils.free_gpu_memory()
+q4_rise = q4_loss - results["unedited"]["Pile loss"]
+print(f"Q4: Pile loss with the layer-17 weight edit {q4_loss:.3f}, a rise of {q4_rise:.3f} nats (unedited {results['unedited']['Pile loss']:.3f}; layer-14 edit rose by {results['weights: refusal direction']['Pile loss'] - results['unedited']['Pile loss']:.3f})")
+
+# Q5: eight prompts per class, three random choices of the eight
+q5_runs = []
+for seed in range(3):
+    chosen = t.randperm(40, generator=t.Generator().manual_seed(seed))[:8]
+    small_direction = train_harmful[chosen].mean(0) - train_harmless[chosen].mean(0)
+    q5_runs.append(run_with(directional_ablation(model, small_direction), harmful_test).rate)
+q5_mean = float(np.mean(q5_runs))
+print(f"Q5: harmful refusal after ablating a direction built from 8 prompts per class: {[round(r, 3) for r in q5_runs]} (mean {q5_mean:.3f}); from 40: {ablation_runs['difference of means'][0][-1].rate:.3f}")
+
+utils.plot_quiz_runs([
+    {"title": "Q1: add the direction to questions about the assistant", "ylabel": "refusal rate", "ylim": (0, 1.1),
+     "bars": {"unedited": baseline["questions about the assistant"].rate, "+ direction, c=1": q1.rate}, "highlight": ["+ direction, c=1"]},
+    {"title": "Q2: ablate the direction from layer 10", "ylabel": "harmful refusal remaining", "ylim": (0, 1.1),
+     "bars": {"unedited": unedited["harmful"].rate, "layer 14": ablation_runs["difference of means"][0][-1].rate, "layer 10": q2.rate}, "highlight": ["layer 10"]},
+    {"title": "Q3: add the direction from each layer (c=1)", "ylabel": "harmless refusal induced", "ylim": (0, 1.1),
+     "bars": q3, "highlight": ["L6", "L10", "L20"]},
+    {"title": "Q4: orthogonalise with the layer-17 direction", "ylabel": "rise in Pile loss (nats)",
+     "bars": {"layer 14": results["weights: refusal direction"]["Pile loss"] - results["unedited"]["Pile loss"], "layer 17": q4_rise}, "highlight": ["layer 17"], "fmt": "{:.3f}"},
+    {"title": "Q5: build the direction from 8 prompts per class", "ylabel": "harmful refusal remaining", "ylim": (0, 1.1),
+     "bars": {"40 prompts": ablation_runs["difference of means"][0][-1].rate, **{f"8 prompts, seed {i}": r for i, r in enumerate(q5_runs)}, "8 prompts, mean": q5_mean},
+     "highlight": [f"8 prompts, seed {i}" for i in range(3)] + ["8 prompts, mean"]},
+])
+
+# The written key must match what these runs produced.
+EDGES = {"Q1": [0.0, 0.0, 0.0, 0.0], "Q2": [0.0, 0.0, 0.0, 0.0], "Q4": [0.0, 0.0, 0.0, 0.0], "Q5": [0.0, 0.0, 0.0, 0.0]}
+measured = {"Q1": q1.rate, "Q2": q2.rate, "Q4": q4_rise, "Q5": q5_mean}
+for name, value in measured.items():
+    letter = interval_of(value, EDGES[name])
+    assert quiz.questions[name].key == letter, f"{name}: the key says {quiz.questions[name].key}, but {value:.3f} falls in interval {letter}"
+q3_key = Ranking.from_values({name: rate for name, rate in q3.items()}, eps=0.05).key_text
+assert quiz.questions["Q3"].key_text == q3_key, f"Q3: the key says {quiz.questions['Q3'].key_text}, but the runs give {q3_key}"
+print("The key matches the runs:", {name: quiz.questions[name].key for name in measured}, "and Q3:", q3_key)
+
+# ! CELL TYPE: markdown
+# ! FILTERS: []
+# ! TAGS: [html]
+
+r'''
+<img src="media/quiz_runs.png" width="1300">
+'''
+
+# ! CELL TYPE: markdown
+# ! FILTERS: []
+# ! TAGS: []
+
+r'''
+<details>
+<summary>Help - how should I read this figure?</summary>
+
+QUIZ_FIGURE_HELP_TBD
+</details>
+
+## What this quiz tested
+
+QUIZ_TESTED_TBD
+'''
+
+# ! CELL TYPE: markdown
+# ! FILTERS: []
+# ! TAGS: []
+
+r'''
 # ☆ Bonus
 '''
 
@@ -3684,6 +4045,10 @@ still refuse when you ablate the difference of means, the search direction from 
 the plane between them? A defence that only handles the difference of means is a defence against one point in
 a cone.
 
+## Persona vectors
+
+The same recipe (a difference of means between two sets of prompts, then adding or removing it) is used to steer character traits rather than refusal. If you want to see it applied to traits such as sycophancy and evil, and to monitor a model while it is being fine-tuned, see [4.4] [Persona Vectors](https://learn.arena.education/chapter4_alignment_science/4_persona_vectors/), sections 3 and 4. This is optional.
+
 ## More questions
 
 - **Anomaly hunt: position `-4`.** The sweep selected a direction from position `-4`, the newline right after `<|im_end|>`,
@@ -3694,6 +4059,14 @@ a cone.
 - **The rubric.** Hand-label 40 harmless completions as "declines" or "doesn't decline", and compute the agreement of `is_refusal` with you. Build a better judge (a second model, say) and re-measure the numbers in part 2️⃣. How much of "the refusal rate dropped" depends on the rubric?
 - **Sparse-autoencoder features.** [Gemma Scope](https://huggingface.co/google/gemma-scope-2-1b-it) provides SAEs for Gemma models. Do individual features carry the refusal direction? Does ablating just those features reproduce the effect of ablating the whole direction?
 - **Ablation versus fine-tuning.** Fine-tuning a safety-trained model on a few hundred benign examples is known to reduce refusal as a side effect ([Qi et al., 2023](https://arxiv.org/abs/2310.03693)). Does fine-tuning move the activations along the refusal direction, or somewhere else?
+
+## What this lesson doesn't show
+
+- **One small model.** Everything here is Qwen2.5-0.5B-Instruct. The paper's models are 2B to 72B parameters, and the replication on another model above is yours to run.
+- **Forty prompts per test set.** Each refusal rate is a count out of 40, so a Wilson interval is about 10 to 15 percentage points wide. Six random and six label-shuffled draws describe the controls; they don't pin down the distribution of all random or shuffled edits.
+- **A marker rubric.** Refusal means the completion contains a phrase from our list. It misses refusals phrased another way (the poem at c = 2 above) and it counts disclaimers as refusals. We never read what the model says to harmful prompts, so we can't say whether the ablated model's answers are good or bad.
+- **Part 5 reads a different position.** Part 1's readout figure reads the final token (position -1), while Part 5's reads position -4, the one Part 2 selected, so the two figures aren't directly comparable.
+- **Sufficient, not necessary.** Adding a direction can cause refusal and removing a direction can stop it, but neither shows that the direction is how the model decides. Parts 4 and 5 show other directions that work too.
 
 ## Further reading
 
@@ -3706,5 +4079,7 @@ a cone.
 - Marks & Tegmark (2023), [*The Geometry of Truth*](https://arxiv.org/abs/2310.06824). The same questions (does a probe direction read, or control?) for truthfulness; this leads into section [9.2].
 - Park, Choe & Veitch (2023), [*The Linear Representation Hypothesis and the Geometry of Large Language Models*](https://arxiv.org/abs/2311.03658).
 - Röttger et al. (2023), [*XSTest: A Test Suite for Identifying Exaggerated Safety Behaviours in Large Language Models*](https://arxiv.org/abs/2308.01263). A much larger and more careful version of our "alarming-sounding but harmless" prompts.
+- Maraia et al. (2026), [*Abstract Activation Spaces for Content-Invariant Reasoning in Large Language Models*](https://arxiv.org/abs/2602.02462). Moves content-conditioned activations towards the states of abstract syllogisms, a different use of "steer the activations towards a target state", with a confound between content and validity to control for.
+- Balakrishnan et al. (2025), [*VISOR++: Universal Visual Inputs based Steering for Large Vision Language Models*](https://arxiv.org/abs/2509.25533). Steering a vision-language model with an optimised *input image* instead of an activation edit. Worth comparing with this section's hooks: what access does crafting the image need, and what does using it need?
 - Yu et al. (2024), [*Robust LLM Safeguarding via Refusal Feature Adversarial Training*](https://arxiv.org/abs/2409.20089), and Zou et al. (2024), [*Improving Alignment and Robustness with Circuit Breakers*](https://arxiv.org/abs/2406.04313). Defences designed with the refusal direction in mind.
 '''

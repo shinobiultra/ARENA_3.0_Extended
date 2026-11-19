@@ -468,10 +468,11 @@ def plot_control_scatter(groups: dict[str, dict[str, list[float]]], title: str, 
     plt.show()
 
 
-def plot_side_effects(table: pd.DataFrame, title: str):
+def plot_side_effects(table: pd.DataFrame, title: str, ranges: dict[tuple[str, str], tuple[float, float]] | None = None):
     """
     `table` has one row per condition and columns for each metric. We plot one small bar panel per metric,
     colouring the unedited model grey, the refusal-direction edits blue/dark blue and the controls orange.
+    `ranges` maps (row, metric) to the (smallest, largest) value over a set of control draws, drawn as a black bar.
     """
     metrics = list(table.columns)
     fig, axes = plt.subplots(1, len(metrics), figsize=(2.6 * len(metrics), 3.8), sharey=False)
@@ -482,9 +483,14 @@ def plot_side_effects(table: pd.DataFrame, title: str):
         ax.set_xticks(range(len(table)))
         ax.set_xticklabels(table.index, rotation=60, ha="right", fontsize=7)
         ax.set_title(metric, fontsize=9)
-        for i, v in enumerate(values):
+        top = max(values)
+        for i, (row, v) in enumerate(zip(table.index, values)):
+            if ranges and (row, metric) in ranges:
+                low, high = ranges[(row, metric)]
+                ax.plot([i, i], [low, high], color="k", lw=1.2)
+                top = max(top, high)
             ax.text(i, v, f"{v:.2f}", ha="center", va="bottom", fontsize=6)
-        ax.set_ylim(0, max(values) * 1.2 + 1e-9)
+        ax.set_ylim(0, top * 1.2 + 1e-9)
     fig.suptitle(title + "   (grey: unedited model, blue: refusal-direction edit, orange: control edit)", fontsize=10)
     plt.tight_layout()
     plt.show()
@@ -552,7 +558,7 @@ def plot_cone_slice(angles: list[float], curves: dict[str, list[float]], title: 
     plt.show()
 
 
-def plot_reading_vs_control(table: pd.DataFrame, title: str):
+def plot_reading_vs_control(table: pd.DataFrame, title: str, ranges: dict[tuple[str, str], tuple[float, float]] | None = None):
     """
     Three bar panels, one bar per vector, for the three tests in `table` (columns: reading AUROC, refusal induced by adding the
     vector to harmless prompts, refusal removed by ablating it from harmful prompts). Controls (names containing "random" or
@@ -571,7 +577,9 @@ def plot_reading_vs_control(table: pd.DataFrame, title: str):
         values = table[column].values
         colours = [ORANGE if ("random" in n or "shuffled" in n) else palette.get(n, GREY) for n in table.index]
         ax.bar(range(len(values)), values, color=colours)
-        for i, v in enumerate(values):
+        for i, (row, v) in enumerate(zip(table.index, values)):
+            if ranges and (row, column) in ranges:
+                ax.plot([i, i], list(ranges[(row, column)]), color="k", lw=1.2)
             ax.text(i, max(v, 0) + 0.01, f"{v:.2f}", ha="center", va="bottom", fontsize=8)
         ax.set_xticks(range(len(values)))
         ax.set_xticklabels(table.index, rotation=35, ha="right", fontsize=8)
@@ -612,4 +620,28 @@ def plot_token_scores(rows: list[tuple[str, list[str], Tensor]], title: str, vma
     ax.set_title(title, fontsize=10)
     sm = plt.cm.ScalarMappable(norm=norm, cmap=cmap)
     fig.colorbar(sm, ax=ax, orientation="horizontal", fraction=0.05, pad=0.02, label="projection onto the direction, minus the typical value on harmless prompts")
+    plt.show()
+
+
+def plot_quiz_runs(panels: list[dict]):
+    """
+    One figure with every key run of the quiz, one bar panel per question. Each panel is a dict with `title`, `ylabel`,
+    `bars` (label -> value), optional `highlight` (labels drawn in orange, the quiz's changed runs), `ylim` and `fmt`.
+    """
+    fig, axes = plt.subplots(1, len(panels), figsize=(4.6 * len(panels), 4.4))
+    for ax, panel in zip(np.atleast_1d(axes), panels):
+        labels, values = list(panel["bars"]), list(panel["bars"].values())
+        colours = [ORANGE if label in panel.get("highlight", ()) else GREY for label in labels]
+        ax.bar(range(len(values)), values, color=colours)
+        for i, v in enumerate(values):
+            ax.text(i, v, panel.get("fmt", "{:.2f}").format(v), ha="center", va="bottom", fontsize=8)
+        ax.set_xticks(range(len(values)))
+        ax.set_xticklabels(labels, rotation=30, ha="right", fontsize=8)
+        ax.set_ylabel(panel["ylabel"], fontsize=8)
+        ax.set_title(panel["title"], fontsize=9)
+        if "ylim" in panel:
+            ax.set_ylim(*panel["ylim"])
+        ax.grid(axis="y", alpha=0.3)
+    fig.suptitle("Every key run of the quiz (orange: the run the question changes; grey: runs from the lesson)", fontsize=10)
+    plt.tight_layout()
     plt.show()

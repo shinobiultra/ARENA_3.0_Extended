@@ -13,10 +13,11 @@ import streamlit_antd_components as sac
 # ]
 metadata = [
     {'title': 'Finding a Refusal Direction', 'icon': '1-circle-fill', 'subtitle': '(15%)'},
-    {'title': 'Ablation, Addition and Controls', 'icon': '2-circle-fill', 'subtitle': '(30%)'},
+    {'title': 'Ablation, Addition and Controls', 'icon': '2-circle-fill', 'subtitle': '(25%)'},
     {'title': 'Weight Orthogonalisation and Side Effects', 'icon': '3-circle-fill', 'subtitle': '(15%)'},
-    {'title': 'Is Refusal One Direction?', 'icon': '4-circle-fill', 'subtitle': '(20%)'},
+    {'title': 'Is Refusal One Direction?', 'icon': '4-circle-fill', 'subtitle': '(15%)'},
     {'title': 'Representation Engineering: Reading Vectors', 'icon': '5-circle-fill', 'subtitle': '(15%)'},
+    {'title': 'Held-out Quiz', 'icon': 'bullseye', 'subtitle': '(10%)'},
     {'title': 'Bonus', 'icon': 'star', 'subtitle': '(5%)'},
 ]
 chapter_name = 'chapter9_alignment_interpretability'
