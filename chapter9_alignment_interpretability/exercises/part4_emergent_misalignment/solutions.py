@@ -5,21 +5,11 @@ MAIN = __name__ == "__main__"
 
 # %%
 
-GT_TIER = "GT-3"
-
-EXERCISE_ID = "9_3_emergent_misalignment_detection"
-
 DIFFICULTY = 4
 
 IMPORTANCE = 5
 
-EXPECTED_RUNTIME = "60-75 minutes for exercises; parent task serializes the pinned CUDA preflight"
-
-REQUIRES_GPU = True  # exercises are CPU-friendly; full acceptance uses pinned CUDA evidence
-
 # %%
-
-import json
 
 import sys
 
@@ -46,9 +36,6 @@ if MAIN:
 
 if MAIN:
     exercises_dir = root_dir / chapter / "exercises"
-
-if MAIN:
-    section_dir = exercises_dir / section
 
 if MAIN:
     if str(root_dir) not in sys.path:
@@ -1178,43 +1165,5 @@ def run_smoke_test(cpu: bool = True) -> dict:
 
 if MAIN:
     tests.test_notebook_contract(run_smoke_test)
-
-# %%
-
-def run_gpu_test(max_vram_gb: float = 24.0) -> dict:
-    from chapter9_alignment_interpretability.exercises.part3_emergent_misalignment_detection.solutions import (
-        run_pythia_proxy_drift_preflight,
-    )
-
-    return run_pythia_proxy_drift_preflight(max_vram_gb=max_vram_gb)
-
-def run_full_experiment(max_vram_gb: float = 24.0) -> dict:
-    return run_gpu_test(max_vram_gb=max_vram_gb)
-
-if MAIN:
-    report = json.loads((section_dir / "historical_verification_report.json").read_text())
-
-if MAIN:
-    gpu = report["metrics"]["gpu_test"]
-
-if MAIN:
-    utils.print_report(
-        "Pythia proxy-drift preflight",
-        {
-            "preflight_passed": gpu["preflight_passed"],
-            "detector_accuracy": gpu["detector_accuracy"],
-            "drift_alignment_correlation": gpu["drift_alignment_correlation"],
-            "label_shuffled_detector_accuracy": gpu["label_shuffled_detector_accuracy"],
-            "random_direction_accuracy": gpu["random_direction_accuracy"],
-            "black_box_behavior_proxy_accuracy": gpu["black_box_behavior_proxy_accuracy"],
-            "mitigation_drift_delta_reduction": gpu["mitigation_drift_delta_reduction"],
-            "mitigation_neutral_delta_shift": gpu["mitigation_neutral_delta_shift"],
-            "generation_used": gpu["generation_used"],
-            "peak_vram_gb": gpu["peak_vram_gb"],
-        },
-    )
-
-if MAIN:
-    tests.test_committed_gpu_report_matches_proxy_drift_contract(report)
 
 # %%

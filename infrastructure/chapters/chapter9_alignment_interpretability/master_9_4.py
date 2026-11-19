@@ -4,7 +4,7 @@
 
 r'''
 ```python
-[{"title": "Safe proxy drift: exact toy and preflight", "icon": "1-circle-fill", "subtitle": ""}]
+[{"title": "Safe proxy drift: exact toy", "icon": "1-circle-fill", "subtitle": ""}]
 ```
 '''
 
@@ -40,7 +40,7 @@ r'''
 Can an internal detector identify a known benign proxy drift before a delayed behavior gate? Build the existing exact toy, inspect its timeline and controls, and measure projection mitigation alongside capability cost.
 
 The fixed toy
-has known onset; the pinned Pythia-70M path is safe policy-description hidden-state/next-token preflight, not generated behavior, trained crosscoders, harmful
+has known onset; it is not a study of generated behavior, trained crosscoders, harmful
 fine-tuning, or an emergent-misalignment replication.
 '''
 
@@ -51,7 +51,7 @@ fine-tuning, or an emergent-misalignment replication.
 r'''
 ## Content & Learning Objectives
 
-### 1️⃣ Safe proxy drift: exact toy and preflight
+### 1️⃣ Safe proxy drift: exact toy
 
 > ##### Learning Objectives
 >
@@ -59,7 +59,6 @@ r'''
 > 2. Recover a mean-difference direction, fit on train contexts, and evaluate a held-out context.
 > 3. Compare white-box and delayed behavior gates using accuracy and margin.
 > 4. Measure projection mitigation and capability cost beside random and shuffled controls.
-> 5. Interpret the original Pythia preflight within its narrow proxy scope.
 '''
 
 # ! CELL TYPE: code
@@ -73,7 +72,7 @@ MAIN = __name__ == "__main__"
 # ! TAGS: []
 
 r'''
-# 1️⃣ Safe proxy drift: exact toy and preflight
+# 1️⃣ Safe proxy drift: exact toy
 '''
 
 # ! CELL TYPE: markdown
@@ -92,10 +91,9 @@ before a delayed behavior proxy fires, while random-direction and label-shuffled
 
 When someone says they have detected emergent misalignment from model internals, what would make the claim hard to fake in a safe course setting?
 
-Here the answer is deliberately narrow: you will first build a toy checkpoint series where the true drift direction and onset are known, then compare the same
-measurement pattern against a pinned Pythia-70M hidden-state preflight that uses safe policy-description prompts and no generation.
+Here the answer is deliberately narrow: you will build a toy checkpoint series where the true drift direction and onset are known, then check a detector, controls and a mitigation against that ground truth.
 
-**Common bug:** treating a classifier score or a verification report as the lesson. In this notebook, the claim only passes when the direction recovers known
+**Common bug:** treating a classifier score as the lesson. In this notebook, the claim only passes when the direction recovers known
 toy ground truth, predicts held-out proxy drift, beats controls, aligns with a behavior proxy, and reduces under a bounded intervention.
 '''
 
@@ -103,28 +101,16 @@ toy ground truth, predicts held-out proxy drift, beats controls, aligns with a b
 # ! FILTERS: [~python]
 # ! TAGS: []
 
-GT_TIER = "GT-3"
-EXERCISE_ID = "9_3_emergent_misalignment_detection"
 DIFFICULTY = 4
 IMPORTANCE = 5
-EXPECTED_RUNTIME = "60-75 minutes for exercises; parent task serializes the pinned CUDA preflight"
-REQUIRES_GPU = True  # exercises are CPU-friendly; full acceptance uses pinned CUDA evidence
 
 # ! CELL TYPE: code
 # ! FILTERS: [python]
 # ! TAGS: []
 
-GT_TIER = "GT-3"
-
-EXERCISE_ID = "9_3_emergent_misalignment_detection"
-
 DIFFICULTY = 4
 
 IMPORTANCE = 5
-
-EXPECTED_RUNTIME = "60-75 minutes for exercises; parent task serializes the pinned CUDA preflight"
-
-REQUIRES_GPU = True  # exercises are CPU-friendly; full acceptance uses pinned CUDA evidence
 
 # ! CELL TYPE: markdown
 # ! FILTERS: []
@@ -141,8 +127,7 @@ By the end, you should be able to:
 4. identify drift onset from a checkpoint timeline using accuracy and margin;
 5. compare white-box evidence to a delayed behavior proxy;
 6. implement projection-style mitigation and capability-cost accounting;
-7. reject random-direction and label-shuffled controls; and
-8. read the Pythia report as supporting evidence, not as the learner-facing result.
+7. reject random-direction and label-shuffled controls.
 
 > **Notebooks: [exercises](../../../chapter9_alignment_interpretability/exercises/part4_emergent_misalignment/9.4_Emergent_Misalignment_Detection_exercises.ipynb) |
 [solutions](../../../chapter9_alignment_interpretability/exercises/part4_emergent_misalignment/9.4_Emergent_Misalignment_Detection_solutions.ipynb)**
@@ -174,7 +159,6 @@ r'''
 # ! FILTERS: [~python]
 # ! TAGS: []
 
-import json
 import sys
 from dataclasses import dataclass
 from pathlib import Path
@@ -189,8 +173,6 @@ chapter = "chapter9_alignment_interpretability"
 section = "part4_emergent_misalignment"
 root_dir = next(p for p in [Path.cwd(), *Path.cwd().parents] if (p / chapter).exists())
 exercises_dir = root_dir / chapter / "exercises"
-section_dir = exercises_dir / section
-
 if str(root_dir) not in sys.path:
     sys.path.append(str(root_dir))
 if str(exercises_dir) not in sys.path:
@@ -205,8 +187,6 @@ t.set_grad_enabled(False)
 # ! CELL TYPE: code
 # ! FILTERS: [python]
 # ! TAGS: []
-
-import json
 
 import sys
 
@@ -233,9 +213,6 @@ if MAIN:
 
 if MAIN:
     exercises_dir = root_dir / chapter / "exercises"
-
-if MAIN:
-    section_dir = exercises_dir / section
 
 if MAIN:
     if str(root_dir) not in sys.path:
@@ -2200,7 +2177,7 @@ r'''
 >
 > You should spend 10 minutes on this exercise.
 
-A white-box score is not enough. It should move in the same signed direction as a behavior proxy on held-out examples. Here the behavior proxy is safe and generated by the toy organism; in the Pythia path it is two next-token logits.
+A white-box score is not enough. It should move in the same signed direction as a behavior proxy on held-out examples. Here the behavior proxy is safe and generated by the toy organism.
 '''
 
 # ! CELL TYPE: code
@@ -4122,7 +4099,7 @@ controls should collapse. If behavior margin is too permissive, early-warning ev
 r'''
 ## Notebook Contract
 
-The report runner calls `run_smoke_test`. It should aggregate the deterministic CPU checks and must not run the CUDA preflight.
+`run_smoke_test` aggregates the deterministic CPU checks into one contract.
 '''
 
 # ! CELL TYPE: code
@@ -4194,119 +4171,7 @@ All tests in `test_notebook_contract` passed!
 <details>
 <summary>Interpreting the contract</summary>
 
-This is the CPU learner contract. It protects the visible mechanics. The Pythia report below is supporting real-model evidence and should be regenerated by the parent CUDA task, not by this notebook during ordinary study.
-
-</details>
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-## Pinned Pythia Preflight as Supporting Evidence
-
-The real-model path is intentionally safe and narrow. It loads pinned `EleutherAI/pythia-70m-deduped`, extracts hidden states and next-token logits on benign
-policy-description prompts, fits the same thresholded drift direction on train contexts, evaluates held-out contexts, compares label-shuffled and fixed random
-directions, and checks a projection-style LM-head mitigation. It does not generate completions, train adapters, or reproduce harmful emergent misalignment.
-'''
-
-# ! CELL TYPE: code
-# ! FILTERS: [~python]
-# ! TAGS: []
-
-def run_gpu_test(max_vram_gb: float = 24.0) -> dict:
-    from chapter9_alignment_interpretability.exercises.part3_emergent_misalignment_detection.solutions import (
-        run_pythia_proxy_drift_preflight,
-    )
-
-    return run_pythia_proxy_drift_preflight(max_vram_gb=max_vram_gb)
-
-
-def run_full_experiment(max_vram_gb: float = 24.0) -> dict:
-    return run_gpu_test(max_vram_gb=max_vram_gb)
-
-
-report = json.loads((section_dir / "historical_verification_report.json").read_text())
-gpu = report["metrics"]["gpu_test"]
-utils.print_report(
-    "Pythia proxy-drift preflight",
-    {
-        "preflight_passed": gpu["preflight_passed"],
-        "detector_accuracy": gpu["detector_accuracy"],
-        "drift_alignment_correlation": gpu["drift_alignment_correlation"],
-        "label_shuffled_detector_accuracy": gpu["label_shuffled_detector_accuracy"],
-        "random_direction_accuracy": gpu["random_direction_accuracy"],
-        "black_box_behavior_proxy_accuracy": gpu["black_box_behavior_proxy_accuracy"],
-        "mitigation_drift_delta_reduction": gpu["mitigation_drift_delta_reduction"],
-        "mitigation_neutral_delta_shift": gpu["mitigation_neutral_delta_shift"],
-        "generation_used": gpu["generation_used"],
-        "peak_vram_gb": gpu["peak_vram_gb"],
-    },
-)
-tests.test_committed_gpu_report_matches_proxy_drift_contract(report)
-
-# ! CELL TYPE: code
-# ! FILTERS: [python]
-# ! TAGS: []
-
-def run_gpu_test(max_vram_gb: float = 24.0) -> dict:
-    from chapter9_alignment_interpretability.exercises.part3_emergent_misalignment_detection.solutions import (
-        run_pythia_proxy_drift_preflight,
-    )
-
-    return run_pythia_proxy_drift_preflight(max_vram_gb=max_vram_gb)
-
-def run_full_experiment(max_vram_gb: float = 24.0) -> dict:
-    return run_gpu_test(max_vram_gb=max_vram_gb)
-
-if MAIN:
-    report = json.loads((section_dir / "historical_verification_report.json").read_text())
-
-if MAIN:
-    gpu = report["metrics"]["gpu_test"]
-
-if MAIN:
-    utils.print_report(
-        "Pythia proxy-drift preflight",
-        {
-            "preflight_passed": gpu["preflight_passed"],
-            "detector_accuracy": gpu["detector_accuracy"],
-            "drift_alignment_correlation": gpu["drift_alignment_correlation"],
-            "label_shuffled_detector_accuracy": gpu["label_shuffled_detector_accuracy"],
-            "random_direction_accuracy": gpu["random_direction_accuracy"],
-            "black_box_behavior_proxy_accuracy": gpu["black_box_behavior_proxy_accuracy"],
-            "mitigation_drift_delta_reduction": gpu["mitigation_drift_delta_reduction"],
-            "mitigation_neutral_delta_shift": gpu["mitigation_neutral_delta_shift"],
-            "generation_used": gpu["generation_used"],
-            "peak_vram_gb": gpu["peak_vram_gb"],
-        },
-    )
-
-if MAIN:
-    tests.test_committed_gpu_report_matches_proxy_drift_contract(report)
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-<details>
-<summary>Expected output</summary>
-
-```text
-Pythia proxy-drift preflight:
-  preflight_passed                 : True
-  detector_accuracy                : 1.0
-  drift_alignment_correlation      : 0.7360556721687317
-  label_shuffled_detector_accuracy : 0.6666666865348816
-  random_direction_accuracy        : 0.375
-  black_box_behavior_proxy_accuracy: 1.0
-  mitigation_drift_delta_reduction : 1.0936462879180908
-  mitigation_neutral_delta_shift   : 0.0
-  generation_used                  : False
-All tests in `test_committed_gpu_report_matches_proxy_drift_contract` passed!
-```
+This is the CPU learner contract. It protects the visible mechanics.
 
 </details>
 '''
@@ -4333,8 +4198,6 @@ This section supports a narrow safe proxy-drift measurement pattern, not a broad
 
 - The toy organism is generated with a known causal direction and known onset.
 - The proxy drift categories are benign behavior-policy changes, not harmful finetunes.
-- The Pythia path uses hidden states and logits only; it does not evaluate generated completions.
-- The behavior proxy uses two next-token logits, so it is much narrower than a behavior benchmark.
 - The mitigation is a projection readout/intervention on activations, not a deployed mitigation method.
 - The result does not claim dangerous emergent misalignment, arbitrary unsafe behavior detection, or trained crosscoder evidence.
 '''
