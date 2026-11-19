@@ -34,7 +34,9 @@ def test_every_extension_section_is_checked():
 def test_page_has_one_prerequisites_line_matching_the_syllabus(number):
     text = opening(number)
     lines = LINE.findall(text)
-    assert len(lines) == 1, f"{number}: expected one '**Prerequisites:**' paragraph before the objectives"
+    assert len(lines) == 1, (
+        f"{number}: expected one '**Prerequisites:**' paragraph before the objectives"
+    )
     assert len(ANY_PREREQUISITES_PARAGRAPH.findall(text)) == 1, (
         f"{number}: another paragraph also starts with 'Prerequisites'; keep only the syllabus line"
     )

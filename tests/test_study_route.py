@@ -15,7 +15,9 @@ from infrastructure.extension import route as study_route
 from infrastructure.extension import sync_config
 
 ROOT = Path(__file__).resolve().parents[1]
-SYLLABUS = yaml.safe_load((ROOT / "infrastructure/extension/syllabus.yaml").read_text(encoding="utf-8"))
+SYLLABUS = yaml.safe_load(
+    (ROOT / "infrastructure/extension/syllabus.yaml").read_text(encoding="utf-8")
+)
 ORIGINALS = study_route.original_sections(ROOT)
 
 
@@ -26,20 +28,33 @@ def small_syllabus() -> dict:
             "chapter5_fixture": {
                 "number": 5,
                 "sections": [
-                    {"number": "5.1", "title": "First", "dir": "part1_first", "prerequisites": ["1.1"]},
-                    {"number": "5.2", "title": "Second", "dir": "part2_second", "prerequisites": ["5.1"]},
+                    {
+                        "number": "5.1",
+                        "title": "First",
+                        "dir": "part1_first",
+                        "prerequisites": ["1.1"],
+                    },
+                    {
+                        "number": "5.2",
+                        "title": "Second",
+                        "dir": "part2_second",
+                        "prerequisites": ["5.1"],
+                    },
                 ],
             }
         },
         "companions": [{"unit": "u01", "title": "Basics", "dir": None, "status": "planned"}],
         "route": [
             {"stage": "Start", "stops": [{"section": "0.0", "core": True}, {"companion": "u01"}]},
-            {"stage": "Build", "stops": [
-                {"section": "1.1", "core": True},
-                {"section": "5.1", "core": True},
-                {"section": "5.2"},
-                {"planned": "5.3", "title": "Third", "days": 1},
-            ]},
+            {
+                "stage": "Build",
+                "stops": [
+                    {"section": "1.1", "core": True},
+                    {"section": "5.1", "core": True},
+                    {"section": "5.2"},
+                    {"planned": "5.3", "title": "Third", "days": 1},
+                ],
+            },
         ],
     }
 
@@ -63,7 +78,12 @@ def test_a_small_valid_route_passes():
     "edit, message",
     [
         (lambda d: d["route"][1]["stops"].append({"section": "9.9"}), "9.9"),
-        (lambda d: d["chapters"]["chapter5_fixture"]["sections"][1].update(prerequisites=["7.7"]), "7.7"),
+        (
+            lambda d: d["chapters"]["chapter5_fixture"]["sections"][1].update(
+                prerequisites=["7.7"]
+            ),
+            "7.7",
+        ),
         (lambda d: d["route"][0]["stops"].append({"companion": "u05"}), "u05"),
     ],
     ids=["unknown section", "unknown prerequisite", "unknown companion"],
@@ -157,9 +177,24 @@ def test_stops_without_time_lines_need_days(kind):
 # ---------- the real route (#315) ----------
 
 SPEC_STAGES = [
-    "Start", "Fundamentals", "Transformers", "Is it real?", "Modern architectures", "Features", "Circuits",
-    "Reading activations", "Geometry", "Research Practice I", "RL", "Evals", "Alignment", "Multimodal",
-    "World models and convergence", "Attribution", "Dynamics and intrinsic", "Finale",
+    "Start",
+    "Fundamentals",
+    "Transformers",
+    "Is it real?",
+    "Modern architectures",
+    "Features",
+    "Circuits",
+    "Reading activations",
+    "Geometry",
+    "Research Practice I",
+    "RL",
+    "Evals",
+    "Alignment",
+    "Multimodal",
+    "World models and convergence",
+    "Attribution",
+    "Dynamics and intrinsic",
+    "Finale",
 ]
 # Spec #39's "Core days" column. Stage 11 was 3 before the Batch 0 sync split upstream 2.2 into 2.2.1 and 2.2.2.
 SPEC_CORE_DAYS = [1, 4.5, 2, 1, 2, 5, 3, 1, 3, 1.5, 4, 3, 5.5, 3, 2.5, 2, 3, 3]
@@ -182,7 +217,8 @@ def test_stage_core_days_follow_the_time_lines(real_route):
 
 
 @pytest.mark.parametrize(
-    "minutes, days", [(0, 1), (110, 1), (275, 1), (330, 1), (495, 1.5), (515, 1.5), (870, 2.5), (1300, 3.5)]
+    "minutes, days",
+    [(0, 1), (110, 1), (275, 1), (330, 1), (495, 1.5), (515, 1.5), (870, 2.5), (1300, 3.5)],
 )
 def test_a_day_is_six_hours_in_half_days_with_a_minimum_of_one(minutes, days):
     assert study_route.days_from_minutes(minutes) == days
@@ -197,7 +233,12 @@ def test_split_stops_sit_where_the_spec_puts_them(real_route):
     assert (first.stage, first.core, first.first_part, first.last_part) == (10, True, 1, 4)
     assert (last.stage, last.core, last.first_part, last.last_part) == (18, True, 5, None)
     core_part, rest = stops_of(real_route, "11.2")
-    assert (core_part.stage, core_part.core, core_part.first_part, core_part.last_part) == (9, True, 1, 2)
+    assert (core_part.stage, core_part.core, core_part.first_part, core_part.last_part) == (
+        9,
+        True,
+        1,
+        2,
+    )
     assert (rest.stage, rest.core) == (9, False)
     for number in ("14.4", "19.3"):
         (stop,) = stops_of(real_route, number)
@@ -214,7 +255,10 @@ def test_upstream_split_sections_use_their_own_identities(real_route):
 
 def test_original_stops_open_on_learn_arena_education(real_route):
     (ioi,) = stops_of(real_route, "1.4.1")
-    assert real_route.original_url(ioi) == "https://learn.arena.education/chapter1_transformer_interp/21_ioi/"
+    assert (
+        real_route.original_url(ioi)
+        == "https://learn.arena.education/chapter1_transformer_interp/21_ioi/"
+    )
     (vpg,) = stops_of(real_route, "2.2.2")
     assert real_route.original_url(vpg) == "https://learn.arena.education/chapter2_rl/22_vpg/"
 
@@ -273,8 +317,13 @@ def test_guide_has_no_status_or_provenance_wording():
 def test_guide_links_resolve():
     for target in MARKDOWN_LINK.findall(guide_text()):
         if target.startswith("http"):
-            assert target.startswith(("https://learn.arena.education/", "https://deep-learning-alchemy.github.io/",
-                                      "http://127.0.0.1:18505/")), target
+            assert target.startswith(
+                (
+                    "https://learn.arena.education/",
+                    "https://deep-learning-alchemy.github.io/",
+                    "http://127.0.0.1:18505/",
+                )
+            ), target
             continue
         path = (GUIDE.parent / unquote(target.split("#", 1)[0])).resolve()
         assert path.exists(), f"dead link {target}"
@@ -290,8 +339,18 @@ def test_planned_lessons_are_unlinked_labels(real_route):
 
 def test_companions_are_optional_side_trips_at_their_stops(real_route):
     stops = real_route.stops
-    after = {stop.number: stops[i - 1].number for i, stop in enumerate(stops) if stop.kind == "companion"}
-    assert after == {"u01": "0.3", "u02": "u01", "u03": "u02", "u04": "1.1", "u05": "5.2", "u06": "16.9", "u07": "10.1"}
+    after = {
+        stop.number: stops[i - 1].number for i, stop in enumerate(stops) if stop.kind == "companion"
+    }
+    assert after == {
+        "u01": "0.3",
+        "u02": "u01",
+        "u03": "u02",
+        "u04": "1.1",
+        "u05": "5.2",
+        "u06": "16.9",
+        "u07": "10.1",
+    }
     assert all(not stop.core for stop in stops if stop.kind == "companion")
     text = guide_text()
     for unit in after:
@@ -358,17 +417,24 @@ def test_chapter_tldr_links_use_the_given_destinations(real_route):
 def test_every_extension_chapter_has_a_tldr(real_route):
     for chapter in SYLLABUS["chapters"]:
         if SYLLABUS["chapters"][chapter]["number"] >= 5:
-            assert "Start with" in study_route.chapter_tldr(real_route, chapter) or "Optional" in study_route.chapter_tldr(real_route, chapter)
+            assert "Start with" in study_route.chapter_tldr(
+                real_route, chapter
+            ) or "Optional" in study_route.chapter_tldr(real_route, chapter)
 
 
 def test_the_finale_links_u07_once_its_companion_exists(real_route, tmp_path):
     (tmp_path / "mastery_hub/units/u07_exotic").mkdir(parents=True)
     companions = dict(real_route.companions)
-    companions["u07"] = {**companions["u07"], "dir": "mastery_hub/units/u07_exotic", "status": "written"}
+    companions["u07"] = {
+        **companions["u07"],
+        "dir": "mastery_hub/units/u07_exotic",
+        "status": "written",
+    }
     released = dataclasses.replace(real_route, companions=companions)
     assert study_route.companion_materials(released, "u07", tmp_path) == [
         ("companion notebook", "mastery_hub/units/u07_exotic")
     ]
     assert study_route.companion_materials(real_route, "u07", ROOT) == [] or all(
-        label == "companion list" for label, _ in study_route.companion_materials(real_route, "u07", ROOT)
+        label == "companion list"
+        for label, _ in study_route.companion_materials(real_route, "u07", ROOT)
     )

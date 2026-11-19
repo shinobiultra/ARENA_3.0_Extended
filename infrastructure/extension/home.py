@@ -19,7 +19,7 @@ def chapter_tldr(chapter: str) -> str:
     Original ARENA lessons link to learn.arena.education; this chapter's own lessons are listed below the TLDR
     with their page links, and lessons elsewhere in the extension are named.
     """
-    from infrastructure.extension import route as study_route  # noqa: PLC0415
+    from infrastructure.extension import route as study_route
 
     route = study_route.load()
 

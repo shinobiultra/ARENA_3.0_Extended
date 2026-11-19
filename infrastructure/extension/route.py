@@ -135,7 +135,9 @@ def validate_route(doc: dict, originals: dict[str, str]) -> None:
             where = f"route stage {stage_number} ({stage['stage']})"
             kinds = [key for key in ("section", "planned", "companion") if key in stop]
             if len(kinds) != 1:
-                raise ValueError(f"{where}: each stop needs exactly one of section, planned, companion: {stop}")
+                raise ValueError(
+                    f"{where}: each stop needs exactly one of section, planned, companion: {stop}"
+                )
             if "core" in stop and not isinstance(stop["core"], bool):
                 raise ValueError(f"{where}: core must be true or false: {stop}")
             if "section" in stop:
@@ -144,7 +146,9 @@ def validate_route(doc: dict, originals: dict[str, str]) -> None:
                     raise ValueError(f"{where}: unknown section {number}")
                 _parse_parts(stop.get("parts"), f"{where} {number}")
                 if "parts" in stop and stop.get("days") is None:
-                    raise ValueError(f"{where}: section {number} names its parts, so it needs `days:`")
+                    raise ValueError(
+                        f"{where}: section {number} names its parts, so it needs `days:`"
+                    )
                 appearances.setdefault(number, []).append("parts" in stop)
                 if number not in first_stop:
                     first_stop[number] = index
@@ -158,26 +162,36 @@ def validate_route(doc: dict, originals: dict[str, str]) -> None:
                 if not str(stop.get("title") or "").strip():
                     raise ValueError(f"{where}: planned lesson {number} needs a title")
                 if stop.get("days") is None:
-                    raise ValueError(f"{where}: planned lesson {number} has no time lines yet, so it needs `days:`")
+                    raise ValueError(
+                        f"{where}: planned lesson {number} has no time lines yet, so it needs `days:`"
+                    )
             else:
                 unit = str(stop["companion"])
                 if unit not in companions:
-                    raise ValueError(f"{where}: unknown companion {unit}; add it to `companions:` first")
+                    raise ValueError(
+                        f"{where}: unknown companion {unit}; add it to `companions:` first"
+                    )
                 if stop.get("core"):
-                    raise ValueError(f"{where}: companion {unit} is an optional side trip, never core")
+                    raise ValueError(
+                        f"{where}: companion {unit} is an optional side trip, never core"
+                    )
                 routed_companions.append(unit)
             index += 1
 
     for number, has_parts in appearances.items():
         if len(has_parts) > 1 and not all(has_parts):
-            raise ValueError(f"section {number} appears more than once; name the parts at each stop")
+            raise ValueError(
+                f"section {number} appears more than once; name the parts at each stop"
+            )
     missing = sorted(known - set(first_stop), key=_number_key)
     if missing:
         raise ValueError(f"configured sections missing from the route: {missing}")
     unrouted = sorted(companions - set(routed_companions))
     duplicated = sorted({unit for unit in routed_companions if routed_companions.count(unit) > 1})
     if unrouted or duplicated:
-        raise ValueError(f"each companion needs exactly one route stop; unrouted {unrouted}, repeated {duplicated}")
+        raise ValueError(
+            f"each companion needs exactly one route stop; unrouted {unrouted}, repeated {duplicated}"
+        )
 
     for number, section in extension.items():
         for prerequisite in section.get("prerequisites") or []:
@@ -185,7 +199,9 @@ def validate_route(doc: dict, originals: dict[str, str]) -> None:
             if prerequisite not in known:
                 raise ValueError(f"{number} has unknown prerequisite {prerequisite}")
             if first_stop[prerequisite] >= first_stop[number]:
-                raise ValueError(f"{number} needs {prerequisite}, which must come earlier on the route")
+                raise ValueError(
+                    f"{number} needs {prerequisite}, which must come earlier on the route"
+                )
             if core_at_first[number] and not core_at_first[prerequisite]:
                 raise ValueError(
                     f"core stop {number} needs {prerequisite}, which is optional on the route; "
@@ -223,8 +239,10 @@ class Route:
 
     def stage_days(self, stage: int) -> tuple[float, float]:
         """(core days, all days) for one stage; companions are unsized."""
-        stops = [stop for stop in self.stages[stage - 1][1] if stop.days is not None]
-        return sum(stop.days for stop in stops if stop.core), sum(stop.days for stop in stops)
+        sized = [
+            (stop.core, stop.days) for stop in self.stages[stage - 1][1] if stop.days is not None
+        ]
+        return sum(days for core, days in sized if core), sum(days for _, days in sized)
 
     def totals(self) -> tuple[float, float]:
         days = [self.stage_days(stage) for stage in range(1, len(self.stages) + 1)]
@@ -235,12 +253,26 @@ class Route:
         return self._original_urls.get(stop.number) if stop.kind == "original" else None
 
     def first_stop(self, number: str) -> Stop | None:
-        return next((stop for stop in self.stops if stop.number == number and stop.kind != "companion"), None)
+        return next(
+            (stop for stop in self.stops if stop.number == number and stop.kind != "companion"),
+            None,
+        )
+
+    def stop_for(self, number: str) -> Stop:
+        """The first stop of a section that `validate_route` guarantees is on the route."""
+        stop = self.first_stop(number)
+        if stop is None:
+            raise KeyError(f"section {number} is not on the route")
+        return stop
 
     def locate(self, number: str, part_index: int, part_count: int) -> Stop | None:
         """The stop a reader part belongs to (10.1 part 5️⃣ is the finale, not stage 10)."""
         for stop in self.stops:
-            if stop.number == number and stop.kind != "companion" and stop.covers(part_index, part_count):
+            if (
+                stop.number == number
+                and stop.kind != "companion"
+                and stop.covers(part_index, part_count)
+            ):
                 return stop
         return None
 
@@ -259,7 +291,9 @@ def load(root: Path = ROOT) -> Route:
     validate_route(doc, originals)
     extension = _extension_sections(doc)
     chapter_of = {
-        str(section["number"]): chapter for chapter, data in doc["chapters"].items() for section in data["sections"]
+        str(section["number"]): chapter
+        for chapter, data in doc["chapters"].items()
+        for section in data["sections"]
     }
     merged = yaml.safe_load((root / "infrastructure/core/config.yaml").read_text(encoding="utf-8"))
     pages: dict[str, Path] = {}
@@ -280,28 +314,62 @@ def load(root: Path = ROOT) -> Route:
     for stage_number, stage in enumerate(doc["route"], start=1):
         stops = []
         for raw in stage["stops"]:
-            common = dict(stage=stage_number, stage_title=stage["stage"], core=bool(raw.get("core")))
+            title_of_stage, core = str(stage["stage"]), bool(raw.get("core"))
             if "companion" in raw:
                 unit = str(raw["companion"])
-                stops.append(Stop(kind="companion", number=unit, title=companions[unit]["title"], **common))
+                stops.append(
+                    Stop(
+                        stage_number,
+                        title_of_stage,
+                        "companion",
+                        unit,
+                        companions[unit]["title"],
+                        core,
+                    )
+                )
                 continue
             if "planned" in raw:
                 number = str(raw["planned"])
-                stops.append(Stop(kind="planned", number=number, title=raw["title"], days=float(raw["days"]),
-                                  chapter=chapter_numbers.get(int(number.split(".")[0])), **common))
+                stops.append(
+                    Stop(
+                        stage_number,
+                        title_of_stage,
+                        "planned",
+                        number,
+                        str(raw["title"]),
+                        core,
+                        days=float(raw["days"]),
+                        chapter=chapter_numbers.get(int(number.split(".")[0])),
+                    )
+                )
                 continue
             number = str(raw["section"])
             first, last = _parse_parts(raw.get("parts"), number)
             days = raw.get("days")
             if days is None:
-                days = days_from_minutes(time_line_minutes(pages[number].read_text(encoding="utf-8")))
+                days = days_from_minutes(
+                    time_line_minutes(pages[number].read_text(encoding="utf-8"))
+                )
             title = originals[number] if number in originals else extension[number]["title"]
             kind = "original" if number in originals else "extension"
-            stops.append(Stop(kind=kind, number=number, title=title, first_part=first, last_part=last,
-                              days=float(days), chapter=chapter_of.get(number), **common))
+            stops.append(
+                Stop(
+                    stage_number,
+                    title_of_stage,
+                    kind,
+                    number,
+                    str(title),
+                    core,
+                    first_part=first,
+                    last_part=last,
+                    days=float(days),
+                    chapter=chapter_of.get(number),
+                )
+            )
         stages.append((stage["stage"], tuple(stops)))
     prerequisites = {
-        number: tuple(str(item) for item in section.get("prerequisites") or ()) for number, section in extension.items()
+        number: tuple(str(item) for item in section.get("prerequisites") or ())
+        for number, section in extension.items()
     }
     return Route(tuple(stages), prerequisites, companions, pages, urls)
 
@@ -318,7 +386,11 @@ def companion_materials(route: Route, unit: str, root: Path = ROOT) -> list[tupl
     root = Path(root)
     entry = route.companions[unit]
     materials = []
-    if entry.get("status") in ("written", "finished") and entry.get("dir") and (root / entry["dir"]).is_dir():
+    if (
+        entry.get("status") in ("written", "finished")
+        and entry.get("dir")
+        and (root / entry["dir"]).is_dir()
+    ):
         materials.append(("companion notebook", str(entry["dir"])))
     lab = COMPANION_LABS.get(unit)
     if lab and (root / lab).is_file():
@@ -332,8 +404,10 @@ def companion_materials(route: Route, unit: str, root: Path = ROOT) -> list[tupl
 
 GUIDE = Path("mastery_hub/STUDY-GUIDE.md")
 GUIDE_MARKERS = (
-    "<!-- The stage table below is generated from the syllabus route: "
-    "uv run python infrastructure/extension/route.py --write -->",
+    (
+        "<!-- The stage table below is generated from the syllabus route: "
+        "uv run python infrastructure/extension/route.py --write -->"
+    ),
     "<!-- End of the generated stage table. -->",
 )
 
@@ -342,7 +416,11 @@ def _guide_target(route: Route, stop: Stop, root: Path) -> str | None:
     """Where the guide links a stop: originals to learn.arena.education, extension pages by relative path."""
     if stop.kind == "original":
         return route.original_url(stop)
-    if stop.kind == "extension" and stop.number in route.pages and route.pages[stop.number].is_file():
+    if (
+        stop.kind == "extension"
+        and stop.number in route.pages
+        and route.pages[stop.number].is_file()
+    ):
         relative = route.pages[stop.number].resolve().relative_to(Path(root).resolve())
         return "../" + quote(relative.as_posix())
     return None
@@ -353,7 +431,9 @@ def _guide_ref(route: Route, stop: Stop, root: Path, *, short: bool = False) -> 
     target = _guide_target(route, stop, root)
     if target is None:
         return text
-    return f"[{text.replace('[', '').replace(']', '')}]({target})" if short else f"[{text}]({target})"
+    return (
+        f"[{text.replace('[', '').replace(']', '')}]({target})" if short else f"[{text}]({target})"
+    )
 
 
 def _companion_line(route: Route, stop: Stop, root: Path) -> str:
@@ -384,16 +464,24 @@ def render_guide(route: Route, root: Path = ROOT) -> str:
     ]
     for number, (title, stops) in enumerate(route.stages, start=1):
         core = ", ".join(_guide_ref(route, s, root, short=True) for s in stops if s.core) or "—"
-        optional = [_guide_ref(route, s, root, short=True) for s in stops if not s.core and s.kind != "companion"]
+        optional = [
+            _guide_ref(route, s, root, short=True)
+            for s in stops
+            if not s.core and s.kind != "companion"
+        ]
         optional += [f"{s.number} (side trip)" for s in stops if s.kind == "companion"]
         core_days, all_days = route.stage_days(number)
-        lines.append(f"| {number} | {title} | {core} | {', '.join(optional) or '—'} | {core_days:g} | {all_days:g} |")
+        lines.append(
+            f"| {number} | {title} | {core} | {', '.join(optional) or '—'} | {core_days:g} | {all_days:g} |"
+        )
     core_total, all_total = route.totals()
     lines += [
         "",
-        f"The core route is about {core_total:g} days (about {_weeks(core_total)} weeks full-time). Everything, "
-        f"optional lessons included, is about {all_total:g} days (about {_weeks(all_total)} weeks). Alchemy side "
-        "trips are not counted.",
+        (
+            f"The core route is about {core_total:g} days (about {_weeks(core_total)} weeks full-time). Everything, "
+            f"optional lessons included, is about {all_total:g} days (about {_weeks(all_total)} weeks). Alchemy side "
+            "trips are not counted."
+        ),
         "",
         "## The route, stage by stage",
     ]
@@ -409,7 +497,9 @@ def render_guide(route: Route, root: Path = ROOT) -> str:
             lines += [f"- {_guide_ref(route, s, root)}{_where(s)}" for s in core]
         if optional:
             lines += ["", "Optional, in any order:", ""]
-            lines += [f"- {_guide_ref(route, s, root)}{_where(s)}{_needs(route, s)}" for s in optional]
+            lines += [
+                f"- {_guide_ref(route, s, root)}{_where(s)}{_needs(route, s)}" for s in optional
+            ]
         if trips:
             lines += ["", "Side trips:", ""]
             lines += [f"- {_companion_line(route, s, root)}" for s in trips]
@@ -422,11 +512,8 @@ def _where(stop: Stop) -> str:
 
 def _needs(route: Route, stop: Stop, ref: Callable[[Stop], str] | None = None) -> str:
     """For an optional lesson: its prerequisites that are themselves optional stops."""
-    extra = [
-        route.first_stop(number)
-        for number in route.prerequisites.get(stop.number, ())
-        if not route.first_stop(number).core
-    ]
+    needed = [route.stop_for(number) for number in route.prerequisites.get(stop.number, ())]
+    extra = [prerequisite for prerequisite in needed if not prerequisite.core]
     if not extra:
         return ""
     ref = ref or (lambda s: f"[{s.number}] {s.title}")
@@ -479,7 +566,10 @@ def chapter_tldr(route: Route, chapter: str, ref: Callable[[Stop], str] = _plain
     lines = ["## TLDR (if you're in a hurry!)", ""]
     if len(segments) == 1:
         segment = segments[0]
-        lines += [f"This chapter is stage {segment[0].stage} of the study route, *{segment[0].stage_title}*.", ""]
+        lines += [
+            f"This chapter is stage {segment[0].stage} of the study route, *{segment[0].stage_title}*.",
+            "",
+        ]
         lines += _segment_directions(route, chapter, segment, ref)
     else:
         lines += ["This chapter's lessons sit at more than one stage of the study route.", ""]
@@ -490,7 +580,9 @@ def chapter_tldr(route: Route, chapter: str, ref: Callable[[Stop], str] = _plain
     return "\n".join(lines).rstrip() + "\n"
 
 
-def _segment_directions(route: Route, chapter: str, segment: list[Stop], ref: Callable[[Stop], str]) -> list[str]:
+def _segment_directions(
+    route: Route, chapter: str, segment: list[Stop], ref: Callable[[Stop], str]
+) -> list[str]:
     lines = []
     core = [stop for stop in segment if stop.core]
     optional = [stop for stop in segment if not stop.core]
@@ -501,7 +593,7 @@ def _segment_directions(route: Route, chapter: str, segment: list[Stop], ref: Ca
         for stop in core:
             for number in route.prerequisites.get(stop.number, ()):
                 if number not in in_chapter and number not in {s.number for s in before}:
-                    before.append(route.first_stop(number))
+                    before.append(route.stop_for(number))
         before.sort(key=route.stops.index)
         if continuing:
             prepared = f"the core of stages 1–{core[0].stage - 1}"
@@ -514,22 +606,30 @@ def _segment_directions(route: Route, chapter: str, segment: list[Stop], ref: Ca
         described = [f"{ref(stop)}{_needs(route, stop, ref)}" for stop in optional]
         lines.append(f"- **Optional, in any order:** {'; '.join(described)}.")
     following = route.next_core(segment[-1])
-    while following is not None and following.chapter == chapter and following.stage == segment[-1].stage:
+    while (
+        following is not None
+        and following.chapter == chapter
+        and following.stage == segment[-1].stage
+    ):
         following = route.next_core(following)
     if following is None:
         lines.append("- **Then:** this is the end of the route.")
     elif following.stage == segment[-1].stage:
         lines.append(f"- **Then:** the route continues with {ref(following)}.")
     else:
-        lines.append(f"- **Then:** the route continues with stage {following.stage}, *{following.stage_title}*: "
-                     f"{ref(following)}.")
+        lines.append(
+            f"- **Then:** the route continues with stage {following.stage}, *{following.stage_title}*: "
+            f"{ref(following)}."
+        )
     return lines
 
 
 if __name__ == "__main__":
     import argparse
 
-    parser = argparse.ArgumentParser(description="Regenerate or check the study guide's stage table.")
+    parser = argparse.ArgumentParser(
+        description="Regenerate or check the study guide's stage table."
+    )
     parser.add_argument("--check", action="store_true", help="exit 1 if the guide is out of date")
     parser.add_argument("--write", action="store_true", help="rewrite the guide's generated table")
     args = parser.parse_args()

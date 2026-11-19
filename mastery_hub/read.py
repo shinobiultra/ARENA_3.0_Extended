@@ -15,8 +15,7 @@ ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-from infrastructure.extension import route as study_route  # noqa: E402
-
+from infrastructure.extension import route as study_route
 
 _SUPPLEMENTS = {'*': (('Download study guide', 'mastery_hub/STUDY-GUIDE.md'),)}
 
