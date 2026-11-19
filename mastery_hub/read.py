@@ -1,6 +1,7 @@
 """Read current ARENA extension lessons without loading chat or teaching code."""
 from __future__ import annotations
 
+from contextlib import nullcontext
 from html import escape
 from pathlib import Path
 import re
@@ -13,6 +14,8 @@ import yaml
 ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
+
+from infrastructure.extension import route as study_route  # noqa: E402
 
 
 _SUPPLEMENTS = {'*': (('Download study guide', 'mastery_hub/STUDY-GUIDE.md'),)}
@@ -123,17 +126,100 @@ def resolve_route(query, rows: list[dict]) -> tuple[dict | None, int, str | None
 def start_panel(st) -> None:
     st.markdown(
         "### Start here\n"
-        f"- **Small CPU route:** {route_link('16.1 Exact Shapley', '16.1')} → "
-        f"{route_link('16.2 KernelSHAP / PartitionSHAP', '16.2')}, using the finite-game exercises.\n"
-        f"- **Read internal answers:** {route_link('7.1 Logit Lens / Tuned Lens / Patchscopes', '7.1')}, after original ARENA 1.2.\n"
-        f"- **Match images and text:** {route_link('12.1 CLIP / SigLIP', '12.1')} → "
-        f"{route_link('12.3 Mini VLM', '12.3')}.\n"
-        f"- **Intervene on a direction:** {route_link('9.1 Refusal Directions', '9.1')}, after residual-stream hooks.\n"
-        "- **Build foundations:** [Original ARENA course](https://learn.arena.education/).\n\n"
-        "Choose one route; follow the lesson's setup before running its cells. "
-        "Saved reference outputs are separate from your own execution.",
+        "- **New to ARENA?** Start at original ARENA "
+        '<a href="https://learn.arena.education/chapter0_fundamentals/00_prereqs/" target="_blank">0.0 Prerequisites</a>, '
+        "stage 1 of the route, and follow the sidebar's stages in order.\n"
+        f"- **Done ARENA chapters 0–1?** Start at {route_link('0.6 How to Know When an Interpretability Result Is Fake', '0.6')} "
+        "(stage 4).\n\n"
+        "Core lessons make the route; the rest of each stage is optional, in any order. Original ARENA lessons "
+        "open on learn.arena.education. A lesson's last part links to the next stop on the route.",
         unsafe_allow_html=True,
     )
+
+
+def _available(rows: list[dict]) -> dict[str, dict]:
+    return {row["number"]: row for row in rows if row["available"]}
+
+
+def opens_in_reader(stop, rows: list[dict]) -> bool:
+    """Whether a route stop has a destination: learn.arena.education, or an available reader lesson."""
+    return stop.kind == "original" or (stop.kind == "extension" and stop.number in _available(rows))
+
+
+def stop_link(route, stop, rows: list[dict]) -> str:
+    """A route stop as HTML: originals open on learn.arena.education, extension stops in the reader."""
+    if stop.kind == "original":
+        url = route.original_url(stop)
+        return f'<a href="{escape(url, quote=True)}" target="_blank">{escape(stop.label)}</a> ↗'
+    row = _available(rows).get(stop.number)
+    if stop.kind == "extension" and row is not None:
+        first, _ = stop.reader_parts(len(parts(row["page"])))
+        return route_link(stop.label, stop.number, first)
+    return escape(stop.label)
+
+
+def next_on_route(route, rows: list[dict], stop):
+    """(core stops the reader can't open yet, the first one it can open or None at the end of the route)."""
+    waiting = []
+    following = route.next_core(stop)
+    while following is not None and not opens_in_reader(following, rows):
+        waiting.append(following)
+        following = route.next_core(following)
+    return waiting, following
+
+
+def side_trip(route, stop) -> str:
+    """An Alchemy side trip, with the materials that exist in this checkout."""
+    text = f"↪ {escape(stop.label)}, optional side trip"
+    for label, target in study_route.companion_materials(route, stop.number, ROOT):
+        if label == "optimizer lab":
+            text += f"; {label}: <code>{escape(study_route.LAB_COMMAND.format(path=target))}</code>"
+        else:
+            text += f"; {label}: <code>{escape(target)}</code> in this checkout"
+    return text + ' (<a href="https://deep-learning-alchemy.github.io/" target="_blank">CS 312</a> ↗)'
+
+
+def route_sidebar(st, route, rows: list[dict], current) -> None:
+    """All 18 stages; the current one is open and marked."""
+    st.sidebar.markdown("## Study route")
+    for number, (title, stops) in enumerate(route.stages, start=1):
+        here = current is not None and current.stage == number
+        core_days, all_days = route.stage_days(number)
+        lines = []
+        for stop in stops:
+            if stop.kind == "companion":
+                lines.append(f"- {side_trip(route, stop)}")
+                continue
+            text = stop_link(route, stop, rows)
+            if stop == current:
+                text = f"<b>{text}</b> ← you are here"
+            lines.append(f"- {'●' if stop.core else '○'} {text}{'' if stop.core else ' (optional)'}")
+        body = f"Core {core_days:g} days, {all_days:g} in all. ● core, ○ optional.\n\n" + "\n".join(lines)
+        container = st.sidebar.expander(f"{'📍 ' if here else ''}{number}. {title}", expanded=here) \
+            if hasattr(st.sidebar, "expander") else nullcontext()
+        with container:
+            (st if hasattr(st.sidebar, "expander") else st.sidebar).markdown(body, unsafe_allow_html=True)
+
+
+def next_step(st, route, rows: list[dict], stop) -> None:
+    """At the end of a route stop: "Next on the route →", or the end of the route."""
+    waiting, following = next_on_route(route, rows, stop)
+    if following is None and not waiting:
+        trips = [s for s in route.stages[stop.stage - 1][1] if s.kind == "companion"]
+        extra = "".join(f"<br>{side_trip(route, trip)}" for trip in trips)
+        st.markdown(f"🏁 **You've reached the end of the route.**{extra}", unsafe_allow_html=True)
+        return
+    later = "".join(f"{escape(s.label)} (not in the reader yet), then " for s in waiting)
+    target = stop_link(route, following, rows) if following is not None else "the end of the route"
+    st.markdown(f"**Next on the route →** {later}{target}", unsafe_allow_html=True)
+
+
+def at_stop_end(stop, page_parts: list[str], part: int) -> bool:
+    """The stop's last part, or its last numbered part when only the ☆ Bonus follows."""
+    first, last = stop.reader_parts(len(page_parts))
+    if part == last:
+        return True
+    return part == last - 1 and part >= first and part_title(page_parts[last], last).startswith("☆")
 
 
 def notebook_handoff(st, root: Path, lesson: dict) -> None:
@@ -169,8 +255,9 @@ def render(st, root: Path = ROOT) -> None:
     st.markdown("Choose a lesson, make a prediction, then work through its exercises and controls. "
                 "The reference notebooks contain public worked answers and saved outputs.")
     query = getattr(st, "query_params", {})
+    study = study_route.load(root)
     if hasattr(st, "expander"):
-        with st.expander("Choose a starting route", expanded=not query.get("section")):
+        with st.expander("Start here", expanded=not query.get("section")):
             start_panel(st)
     else:
         start_panel(st)
@@ -180,7 +267,7 @@ def render(st, root: Path = ROOT) -> None:
         "[Reinforcement Learning](https://learn.arena.education/chapter2_rl/) · "
         "[LLM Evaluations](https://learn.arena.education/chapter3_llm_evals/) · "
         "[Alignment Science](https://learn.arena.education/chapter4_alignment_science/)\n\n"
-        "Full study routes: `mastery_hub/STUDY-GUIDE.md` in this checkout.")
+        "The whole route, with days per stage: `mastery_hub/STUDY-GUIDE.md` in this checkout.")
     chapters = list(dict.fromkeys(row["chapter"] for row in rows))
     names = {row["chapter"]: row["chapter_title"] for row in rows}
     route_lesson, route_part, route_error = resolve_route(query, rows)
@@ -242,8 +329,19 @@ def render(st, root: Path = ROOT) -> None:
         links.append(route_link("← Previous part", lesson["number"], part - 1))
     if part + 1 < len(page_parts):
         links.append(route_link("Next part →", lesson["number"], part + 1))
+    stop = study.locate(lesson["number"], part, len(page_parts))
+    if stop is not None and part == stop.reader_parts(len(page_parts))[0]:
+        tldr = study_route.chapter_tldr(study, lesson["chapter"], lambda s: stop_link(study, s, rows))
+        if tldr:
+            label = f"{names[lesson['chapter']]}: before, during and after"
+            container = st.expander(label, expanded=False) if hasattr(st, "expander") else nullcontext()
+            with container:
+                st.markdown(tldr.replace("## TLDR (if you're in a hurry!)", "", 1), unsafe_allow_html=True)
     st.markdown(f"Part **{part + 1} of {len(page_parts)}** · " + " · ".join(links), unsafe_allow_html=True)
     st.markdown(page_parts[part], unsafe_allow_html=True)
+    if stop is not None and at_stop_end(stop, page_parts, part):
+        next_step(st, study, rows, stop)
+    route_sidebar(st, study, rows, stop)
 
 
 if __name__ == "__main__":

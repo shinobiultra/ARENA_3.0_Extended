@@ -98,8 +98,10 @@ def test_start_routes_and_exact_jupyter_handoff_are_visible(rows):
     at = app({"section": "7.1", "part": "1"})
     assert not at.exception
     text = markdown_text(at)
-    for number in ("16.1", "16.2", "7.1", "12.1", "12.3", "9.1"):
-        assert f"?section={number}&part=1" in text
+    assert "https://learn.arena.education/chapter0_fundamentals/00_prereqs/" in text
+    assert "?section=0.6&part=1" in text and "stage 4" in text
+    for retired in ("Small CPU route", "Read internal answers", "Match images and text", "Intervene on a direction"):
+        assert retired not in text
     row = next(row for row in rows if row["number"] == "7.1")
     assert str(row["exercises"].parent) in text
     assert row["exercises"].name in text
@@ -149,3 +151,94 @@ def test_mini_vlm_route_has_no_retired_memory_handoff():
     at = app({"section": "12.3", "part": "1"})
     assert not at.exception
     assert "Before the optional Step 5 Qwen bridge" not in markdown_text(at)
+
+
+# ---------- the study route in the reader (#320, #322) ----------
+
+from infrastructure.extension import route as study_route  # noqa: E402
+
+ROUTE = study_route.load(ROOT)
+
+
+def sidebar_text(at):
+    return unescape("\n".join(element.value for element in at.sidebar.markdown))
+
+
+def expander_labels(at):
+    return [element.label for element in at.sidebar.expander]
+
+
+def last_part(section):
+    row = next(row for row in reader.inventory(ROOT) if row["number"] == section)
+    return len(reader.parts(row["page"]))
+
+
+def test_sidebar_lists_the_eighteen_stages_and_marks_the_current_one():
+    at = app({"section": "8.2", "part": "2"})
+    assert not at.exception
+    labels = expander_labels(at)
+    stage_labels = [label for label in labels if label.lstrip("📍 ").split(".", 1)[0].isdigit()]
+    assert len(stage_labels) == 18
+    assert [label.split(". ", 1)[1] for label in stage_labels] == [title for title, _ in ROUTE.stages]
+    assert [label for label in stage_labels if label.startswith("📍")] == ["📍 7. Circuits"]
+    text = sidebar_text(at)
+    assert "?section=8.1&part=1" in text  # core stops of the stage link to the reader
+    assert "https://learn.arena.education/chapter1_transformer_interp/21_ioi/" in text
+    assert "optional" in text.lower()
+
+
+def test_next_on_the_route_appears_at_the_end_of_a_lesson_and_crosses_stages():
+    at = app({"section": "8.2", "part": "2"})
+    assert "Next on the route" not in markdown_text(at)
+    at = app({"section": "8.2", "part": str(last_part("8.2"))})
+    assert not at.exception
+    text = markdown_text(at)
+    assert "Next on the route" in text
+    assert "?section=7.1&part=1" in text.split("Next on the route", 1)[1]
+
+
+def test_split_ten_one_leads_to_research_practice_then_the_finale():
+    at = app({"section": "10.1", "part": "5"})  # part 4️⃣, the end of stage 10's stop
+    text = markdown_text(at)
+    after = text.split("Next on the route", 1)[1]
+    assert "[10.2] Replicate and Critique a Fresh Claim" in after  # planned: a plain label
+    assert "?section=10.2" not in after
+    assert 'href="https://learn.arena.education/chapter2_rl/01_intro_rl/"' in after
+    assert [label for label in expander_labels(at) if label.startswith("📍")] == ["📍 10. Research Practice I"]
+    at = app({"section": "10.1", "part": "6"})  # part 5️⃣, the finale
+    assert [label for label in expander_labels(at) if label.startswith("📍")] == ["📍 18. Finale"]
+    assert "end of the route" in markdown_text(at)
+
+
+def test_core_parts_of_eleven_two_lead_on_to_stage_ten():
+    at = app({"section": "11.2", "part": "3"})  # part 2️⃣ ends the core stop
+    text = markdown_text(at)
+    assert "?section=10.1&part=1" in text.split("Next on the route", 1)[1]
+
+
+def test_next_on_the_route_skips_targets_the_reader_cannot_open(rows):
+    rows = [dict(row) for row in rows]
+    for row in rows:
+        if row["number"] == "7.1":
+            row["available"] = False
+    stop = ROUTE.locate("8.2", last_part("8.2") - 1, last_part("8.2"))
+    waiting, target = reader.next_on_route(ROUTE, rows, stop)
+    assert [s.number for s in waiting] == ["7.1"]
+    assert target.number == "1.3.1" and ROUTE.original_url(target)
+
+
+def test_side_trips_show_at_their_stops_in_the_reader():
+    at = app({"section": "5.2", "part": "1"})
+    text = sidebar_text(at)
+    assert "Alchemy u05" in text and "side trip" in text
+    at = app({"section": "0.6", "part": "1"})
+    text = sidebar_text(at)
+    lab = text.split("Alchemy u02", 1)[1].split("Alchemy u03", 1)[0]
+    assert "optimizer lab" in lab and "mastery_hub/app.py" in lab
+
+
+def test_chapter_directions_come_from_the_route():
+    at = app({"section": "8.1", "part": "1"})
+    text = markdown_text(at)
+    assert "Before you start" in text and "Start with" in text
+    assert "?section=7.1&part=1" in text.split("Then", 1)[1]
