@@ -3,7 +3,7 @@
 This is what a real lesson declares: its questions and answers, nothing else.
 """
 
-from quiz import Interval, Quiz, Ranking, Word
+from quiz import Interval, Quiz, Ranking, Word  # ty: ignore[import-not-found]
 
 # Image-to-text R@1 of four runs; runs within 0.01 of each other tie.
 RUNS = {"A": 0.96, "B": 0.97, "C": 0.58, "D": 0.01}

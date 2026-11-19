@@ -1,5 +1,6 @@
 """Unit tests of the shared Held-out Quiz scorer (`quiz.score`), CPU only."""
 
+import importlib
 import socket
 import sys
 from pathlib import Path
@@ -10,7 +11,13 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "infrastructure/extension/learner"))
 sys.path.insert(0, str(ROOT / "tests/fixtures"))
 
-from quiz import Interval, Quiz, Ranking, Word
+quiz_module = importlib.import_module("quiz")
+Interval, Quiz, Ranking, Word = (
+    quiz_module.Interval,
+    quiz_module.Quiz,
+    quiz_module.Ranking,
+    quiz_module.Word,
+)
 
 pytestmark = pytest.mark.cpu
 
@@ -188,9 +195,9 @@ def test_score_never_writes_or_connects(tmp_path, monkeypatch, capsys):
 
 
 def test_example_lesson_end_to_end(capsys):
-    from quiz_example import EXAMPLE_ANSWERS, quiz
+    example = importlib.import_module("quiz_example")
 
-    quiz.score(EXAMPLE_ANSWERS)
+    example.quiz.score(example.EXAMPLE_ANSWERS)
     lines = capsys.readouterr().out.splitlines()
     rows = {line.split()[0]: line for line in lines if line.startswith(("Q1", "Q2", "Q3", "total"))}
     assert rows["Q1"].endswith("1 / 1")
