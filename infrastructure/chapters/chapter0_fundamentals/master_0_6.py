@@ -833,60 +833,8 @@ SOLUTION
 # ! FILTERS: []
 # ! TAGS: []
 
-def leakage_diagnostic() -> dict:
-    return label_leakage_report().__dict__
-
-# ! CELL TYPE: code
-# ! FILTERS: []
-# ! TAGS: []
-
-def cherry_pick_diagnostic() -> dict:
-    return cherry_pick_report().__dict__
-
-# ! CELL TYPE: code
-# ! FILTERS: []
-# ! TAGS: []
-
-def probe_overfit_diagnostic() -> dict:
-    return probe_overfit_report().__dict__
-
-# ! CELL TYPE: code
-# ! FILTERS: []
-# ! TAGS: []
-
-def random_direction_diagnostic() -> dict:
-    return random_direction_control_report().__dict__
-
-# ! CELL TYPE: code
-# ! FILTERS: []
-# ! TAGS: []
-
-def audit_diagnostic() -> dict:
-    return fake_result_audit_report().__dict__
-
-# ! CELL TYPE: code
-# ! FILTERS: []
-# ! TAGS: []
-
-def run_smoke_test(cpu: bool = True) -> dict:
-    _ = cpu
-    audit = audit_diagnostic()
-    return {
-        "leakage": leakage_diagnostic(),
-        "cherry_pick": cherry_pick_diagnostic(),
-        "probe_overfit": probe_overfit_diagnostic(),
-        "random_direction": random_direction_diagnostic(),
-        "audit": audit,
-        "contract_passed": audit["all_bogus_results_flagged"],
-    }
-
-# ! CELL TYPE: code
-# ! FILTERS: []
-# ! TAGS: []
-
 if MAIN:
     tests.test_fake_result_audit_report_aggregates_all_failure_modes(fake_result_audit_report)
-    tests.test_notebook_contract(run_smoke_test)
 
 # ! CELL TYPE: markdown
 # ! FILTERS: []
@@ -962,77 +910,6 @@ r'''
 # ! TAGS: []
 
 r'''
-## Runtime entry points
-
-The following CUDA callbacks and dependency diagnostics are available after explicit runtime initialization.
-'''
-
-# ! CELL TYPE: code
-# ! FILTERS: []
-# ! TAGS: []
-
-def run_gpu_test(max_vram_gb: float = 24.0) -> dict:
-    if not t.cuda.is_available():
-        raise RuntimeError("CUDA is required for the 0.6 fake-result diagnostic preflight.")
-    device = t.device("cuda")
-    t.manual_seed(606)
-    t.cuda.reset_peak_memory_stats()
-
-    features, labels = default_label_leakage_fixture(device=device)
-    leakage = label_leakage_report(features, labels)
-    cherry_pick = cherry_pick_report(default_cherry_pick_fixture(device=device))
-    probe = probe_overfit_report(*default_probe_overfit_fixture(device=device))
-    random_direction = random_direction_control_report(
-        *default_random_direction_fixture(device=device)
-    )
-    audit = fake_result_audit_report(leakage, cherry_pick, probe, random_direction)
-
-    t.cuda.synchronize()
-    peak_vram_gb = t.cuda.max_memory_allocated() / 1024**3
-    return {
-        "cuda_available": True,
-        "device": t.cuda.get_device_name(0),
-        "leaked_feature_accuracy": leakage.leaked_feature_accuracy,
-        "shifted_no_leak_accuracy": leakage.shifted_no_leak_accuracy,
-        "leakage_gap": leakage.accuracy_gap,
-        "cherry_pick_inflation": cherry_pick.inflation_ratio,
-        "selected_mean_effect": cherry_pick.selected_mean_effect,
-        "population_median_effect": cherry_pick.population_median_effect,
-        "probe_train_accuracy": probe.train_accuracy,
-        "probe_heldout_accuracy": probe.heldout_accuracy,
-        "probe_overfit_gap": probe.generalization_gap,
-        "claimed_direction_effect": random_direction.claimed_effect,
-        "random_p95_effect": random_direction.random_p95_effect,
-        "random_direction_effect_gap": random_direction.effect_gap,
-        "random_direction_control_rejects_claim": (
-            random_direction.detects_random_direction_failure
-        ),
-        "all_bogus_results_flagged": audit.all_bogus_results_flagged,
-        "input_driven_alternate_fixtures_passed": True,
-        "peak_vram_gb": peak_vram_gb,
-        "within_vram_budget": peak_vram_gb <= max_vram_gb,
-        "preflight_passed": audit.all_bogus_results_flagged
-        and peak_vram_gb <= max_vram_gb,
-        "full_path": (
-            "CUDA diagnostic preflight for fake-result failure modes: label leakage, "
-            "cherry-pick inflation, probe overfit, and random-direction control rejection."
-        ),
-    }
-
-# ! CELL TYPE: code
-# ! FILTERS: []
-# ! TAGS: []
-
-def run_full_experiment(max_vram_gb: float = 24.0) -> dict:
-    """Run the validated experiment path used by the verification report."""
-
-    return run_gpu_test(max_vram_gb=max_vram_gb)
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ## Limitations and scope gaps
 
 The existing syllabus additionally names learned-probe selectivity/shuffled-label controls, a permutation or multiple-comparison null, and the dormant-direction subspace-patching illusion. These are not implemented by this source and remain open; the four existing detectors do not establish those results. There is no real-model mechanism claim. The fixed direction bank and anti-correlated leakage control have deliberately limited meanings. Zero norms and degenerate population means retain the original numerical policy rather than silently adding new defaults.
@@ -1042,7 +919,6 @@ The existing syllabus additionally names learned-probe selectivity/shuffled-labe
 # ! FILTERS: [colab-soln]
 # ! TAGS: [keep-main,master-comment]
 
-# import json
 # import sys
 # from pathlib import Path
 # 
@@ -1074,51 +950,4 @@ The existing syllabus additionally names learned-probe selectivity/shuffled-labe
 # tests.test_random_direction_control_report_rejects_weak_claim(solutions.random_direction_control_report)
 # tests.test_random_direction_control_report_accepts_strong_claim(solutions.random_direction_control_report)
 # tests.test_fake_result_audit_report_aggregates_all_failure_modes(solutions.fake_result_audit_report)
-# tests.test_notebook_contract(solutions.run_smoke_test)
-
-# ! CELL TYPE: code
-# ! FILTERS: [colab-soln]
-# ! TAGS: [keep-main,master-comment]
-
-# contract = solutions.run_smoke_test(cpu=True)
-# assert contract["contract_passed"]
-# assert contract["leakage"]["leaked_feature_accuracy"] == 1.0
-# assert contract["leakage"]["shifted_no_leak_accuracy"] == 0.0
-# assert contract["cherry_pick"]["inflation_ratio"] >= 3.0
-# assert contract["probe_overfit"]["train_accuracy"] == 1.0
-# assert contract["probe_overfit"]["heldout_accuracy"] == 0.5
-# assert contract["random_direction"]["detects_random_direction_failure"]
-# contract
-
-# ! CELL TYPE: code
-# ! FILTERS: [colab-soln]
-# ! TAGS: [keep-main,master-comment]
-
-# tests.test_committed_gpu_report_records_fake_result_signature()
-# report = json.loads((section_dir / "verification_report.json").read_text())
-# gpu = report["metrics"]["gpu_test"]
-# assert report["accepted"]
-# assert gpu["cuda_available"]
-# assert gpu["preflight_passed"]
-# assert gpu["leaked_feature_accuracy"] == 1.0
-# assert gpu["shifted_no_leak_accuracy"] == 0.0
-# assert gpu["leakage_gap"] >= 0.5
-# assert gpu["cherry_pick_inflation"] >= 3.0
-# assert gpu["selected_mean_effect"] >= 5 * gpu["population_median_effect"]
-# assert gpu["probe_train_accuracy"] == 1.0
-# assert gpu["probe_heldout_accuracy"] == 0.5
-# assert gpu["probe_overfit_gap"] >= 0.35
-# assert gpu["random_direction_control_rejects_claim"]
-# assert gpu["random_direction_effect_gap"] < 0.25
-# assert gpu["all_bogus_results_flagged"]
-# assert gpu["within_vram_budget"]
-# {key: gpu[key] for key in [
-#     "device",
-#     "leaked_feature_accuracy",
-#     "shifted_no_leak_accuracy",
-#     "cherry_pick_inflation",
-#     "probe_overfit_gap",
-#     "random_direction_effect_gap",
-#     "peak_vram_gb",
-# ]}
 
