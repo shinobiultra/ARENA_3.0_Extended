@@ -30,6 +30,7 @@ from __future__ import annotations
 import argparse
 import base64
 import fnmatch
+import math
 import os
 import re
 import sys
@@ -54,6 +55,10 @@ BRANCH = "main"
 COLAB_ROOT = f"https://colab.research.google.com/github/{FORK}/blob/{BRANCH}/"
 RAW_ROOT = f"https://raw.githubusercontent.com/{FORK}/{BRANCH}/"
 FIRST_EXTENSION_CHAPTER = 5
+# Spec #39 (RT9): one fresh-kernel run of a lesson gets 30 minutes of wall-clock time, no exceptions.
+LESSON_TIME_LIMIT_S = 1800
+# Exit status of a lesson that ran past its limit (as GNU `timeout` uses), so runners can tell it apart.
+TIMEOUT_EXIT_CODE = 124
 MEDIA_PATTERN = re.compile(r"""src=["']media/([\w\-]+)\.png["']""")
 
 
@@ -180,25 +185,45 @@ def media_cells(nb: nbformat.NotebookNode) -> dict[int, list[str]]:
     return found
 
 
-def execute(path: Path, timeout: int) -> tuple[nbformat.NotebookNode, float]:
-    from nbclient import NotebookClient
-    from nbclient.exceptions import CellExecutionError
+class LessonTimeout(TimeoutError):
+    """A lesson's fresh-kernel run went past its wall-clock deadline."""
 
+
+def execute(path: Path, deadline: float) -> tuple[nbformat.NotebookNode, float]:
+    """Run a notebook top to bottom in a fresh kernel, stopping it at `deadline` (`time.monotonic()`).
+
+    Each cell may run only for the time left before the deadline. A failed or timed-out run is saved
+    as `<name>.FAILED.ipynb` (gitignored) and the kernel's whole process group is killed.
+    """
+    from nbclient import NotebookClient
+    from nbclient.exceptions import CellExecutionError, CellTimeoutError
+
+    if time.monotonic() >= deadline:
+        raise LessonTimeout(f"{path.name}: the time limit was used up before the kernel started")
     nb = nbformat.read(path, as_version=4)
     # A non-interactive MPLBACKEND (e.g. Agg, set on clusters) would stop the kernel from rendering figures inline
     os.environ.pop("MPLBACKEND", None)
     client = NotebookClient(
         nb,
-        timeout=timeout,
+        # nbclient treats 0 as "no timeout", so a cell always gets at least one second.
+        timeout_func=lambda cell: max(1, math.ceil(deadline - time.monotonic())),
         kernel_name="python3",
         resources={"metadata": {"path": str(path.parent)}},
         allow_errors=False,
+        # Kill the kernel's process group, so processes the lesson started can't outlive the run.
+        shutdown_kernel="immediate",
     )
     start = time.time()
+    failed = path.with_name(path.stem + ".FAILED.ipynb")
     try:
         client.execute()
+    except CellTimeoutError as error:
+        nbformat.write(nb, failed)
+        print(f"\nTimed out. Partially executed notebook saved to {failed}")
+        raise LessonTimeout(
+            f"{path.name}: stopped after {time.time() - start:.0f}s, at the lesson's time limit"
+        ) from error
     except CellExecutionError:
-        failed = path.with_name(path.stem + ".FAILED.ipynb")
         nbformat.write(nb, failed)
         print(f"\nExecution failed. Partially executed notebook saved to {failed}")
         raise
@@ -365,7 +390,12 @@ def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("sections", nargs="+", help="Section numbers or patterns, e.g. 7.1 or '7.*'")
     parser.add_argument("--execute", action="store_true", help="Execute the solutions notebook and save outputs")
-    parser.add_argument("--timeout", type=int, default=3600, help="Per-cell execution timeout in seconds")
+    parser.add_argument(
+        "--time-limit",
+        type=int,
+        default=LESSON_TIME_LIMIT_S,
+        help="Wall-clock seconds for each lesson's whole run with --execute (default: 30 minutes)",
+    )
     args = parser.parse_args()
 
     config = load_config()
@@ -380,6 +410,7 @@ def main() -> None:
 
     for section in sections:
         print(f"\n=== {section} ===")
+        deadline = time.monotonic() + args.time_limit
         mapping = config["conversion_map"][section]
         chapter_dir = ROOT / config["chapter_names"][int(section.split(".")[0])]
         colab_name = mapping["streamlit_page"].split("_[")[-1].replace("]", "")
@@ -396,7 +427,11 @@ def main() -> None:
                 print("WARNING: code cells changed, so the solutions notebook now has no outputs. Run with --execute.")
         if args.execute:
             wanted = media_cells(nbformat.read(solutions, as_version=4))
-            executed, seconds = execute(solutions, args.timeout)
+            try:
+                executed, seconds = execute(solutions, deadline)
+            except LessonTimeout as timeout:
+                print(f"TIMEOUT: {section} ran past its {args.time_limit}s time limit ({timeout})", flush=True)
+                raise SystemExit(TIMEOUT_EXIT_CODE) from timeout
             saved = save_media(executed, wanted, media_dir)
             strip_environment_noise(executed)
             nbformat.write(executed, solutions)
