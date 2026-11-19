@@ -201,8 +201,6 @@ import itertools
 import math
 import os
 import sys
-import json
-import hashlib
 import tempfile
 from pathlib import Path
 from types import SimpleNamespace
@@ -231,10 +229,6 @@ from chapter16_shapley_attribution_baselines.exercises.part12_sage_global_import
 # Every attribution method and every model forward/training function is implemented below.
 from chapter16_shapley_attribution_baselines.exercises.part12_sage_global_importance.sage_reference import (
     checks as reference_checks,
-)
-from chapter16_shapley_attribution_baselines.exercises.part12_sage_global_importance.run_native import (
-    summarize as summarize_run,
-    validate_freeze,
 )
 
 if MAIN:
@@ -1896,25 +1890,9 @@ def prepare_study(train, explain, directory, methods):
 
 
 if MAIN:
-    validate_freeze()
-if MAIN:
     native_dir = Path(tempfile.mkdtemp(prefix="native-", dir=output_dir))
 if MAIN:
     prepared = prepare_study(train, explain, native_dir / "study", methods)
-if MAIN:
-    (native_dir / "before_audit.json").write_text(
-        json.dumps(
-            {
-                "phase": prepared["phase"],
-                "audit_loaded": False,
-                "prepared_sha256": hashlib.sha256(
-                    (native_dir / "study/prepared.pt").read_bytes()
-                ).hexdigest(),
-            },
-            indent=2,
-        )
-        + "\n"
-    )
 if MAIN:
     print(f"Trained six networks and one ridge model on {len(train['y'])} rows.")
 if MAIN:
@@ -3274,12 +3252,7 @@ if MAIN:
     print(f"All {reference['permutations']:,} feature orderings agree with exact SAGE.")
 if MAIN:
     print("Constrained weighted regression, NumPy network predictions, and the author imputer agree.")
-if MAIN:
-    summary = summarize_run(prepared, audit, diagnostic, reference)
-if MAIN:
-    summary["native_directory"] = str(native_dir / "study")
-if MAIN:
-    (output_dir / "native_summary.json").write_text(json.dumps(summary, indent=2) + "\n")
+
 
 # ! CELL TYPE: markdown
 # ! FILTERS: []
