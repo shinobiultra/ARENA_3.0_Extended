@@ -931,3 +931,35 @@ chapters:
           New section. Training with weight sparsity / modularity penalties (brain-inspired modular training, sparse
           circuits by construction), Kolmogorov-Arnold networks with symbolic regression of learned splines, and sparse
           decision trees as an interpretable baseline; compare accuracy vs interpretability on the same tasks.
+
+# Alchemy companions, one per CS 312 unit. `status` (planned | written | finished) is set by hand,
+# like a lesson's `status: finished`. The list does no routing; `dir: null` means not started.
+companions:
+  - unit: u01
+    title: Basics
+    dir: null
+    status: planned
+  - unit: u02
+    title: Hyperparameter scaling
+    dir: mastery_hub/units/u02_optimization
+    status: planned
+  - unit: u03
+    title: Optimization
+    dir: null
+    status: planned
+  - unit: u04
+    title: Architecture
+    dir: null
+    status: planned
+  - unit: u05
+    title: Capacity
+    dir: null
+    status: planned
+  - unit: u06
+    title: Generalization
+    dir: null
+    status: planned
+  - unit: u07
+    title: Not yet released
+    dir: null
+    status: planned

@@ -19,7 +19,9 @@ SYLLABUS = ROOT / "infrastructure" / "extension" / "syllabus.yaml"
 CONFIG = ROOT / "infrastructure" / "core" / "config_extension.yaml"
 REGISTRY = ROOT / "docs" / "roadmap_requirement_registry.yml"
 
-DEFAULT_HEADER = "https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/headers/header-13-2.png"
+DEFAULT_HEADER = (
+    "https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/headers/header-13-2.png"
+)
 CHAPTER_STYLE = {
     5: ("#2563EB", "cpu", "header-11.png"),
     6: ("#7C3AED", "microscope", "header-13-2.png"),
@@ -38,6 +40,44 @@ CHAPTER_STYLE = {
 }
 
 
+COMPANION_STATUSES = ("planned", "written", "finished")
+COMPANION_UNIT = re.compile(r"^u0[1-7]$")
+
+
+def validate_companions(companions: object, root: Path = ROOT) -> None:
+    """Raise ValueError if the syllabus `companions:` list is malformed."""
+    if not isinstance(companions, list) or not companions:
+        raise ValueError("syllabus `companions:` must be a non-empty list")
+    seen: set[str] = set()
+    for entry in companions:
+        unit = entry.get("unit") if isinstance(entry, dict) else None
+        if not isinstance(unit, str) or not COMPANION_UNIT.match(unit):
+            raise ValueError(f"companion unit must look like u01..u07, got {unit!r}")
+        if unit in seen:
+            raise ValueError(f"duplicate companion unit {unit}")
+        seen.add(unit)
+        if not str(entry.get("title") or "").strip():
+            raise ValueError(f"companion {unit} needs a title")
+        status = entry.get("status")
+        if status not in COMPANION_STATUSES:
+            raise ValueError(
+                f"companion {unit} has status {status!r}; use one of {COMPANION_STATUSES}"
+            )
+        directory = entry.get("dir")
+        if directory is None:
+            if status != "planned":
+                raise ValueError(f"companion {unit} is {status} and requires a dir")
+        elif not (root / directory).is_dir():
+            raise ValueError(f"companion {unit} dir {directory} does not exist")
+
+
+def validate_requirements(assigned: dict[str, str], registry_ids: set[str]) -> None:
+    """Raise ValueError if the syllabus maps a requirement id the registry does not have."""
+    unknown = sorted(set(assigned) - registry_ids)
+    if unknown:
+        raise ValueError(f"unknown requirement ids in syllabus: {unknown}")
+
+
 def slug(title: str) -> str:
     title = title.replace("&", "and").replace(" - ", " ")
     title = re.sub(r"[^A-Za-z0-9\-\s]", "", title)
@@ -50,7 +90,9 @@ def page_name(section: dict, index: int) -> str:
 
 
 def main() -> None:
-    syllabus = yaml.safe_load(SYLLABUS.read_text())["chapters"]
+    syllabus_doc = yaml.safe_load(SYLLABUS.read_text())
+    validate_companions(syllabus_doc.get("companions"))
+    syllabus = syllabus_doc["chapters"]
     config = {"conversion_map": {}, "chapter_names": {}, "chapter_names_long": {}, "chapters": {}}
     assigned: dict[str, str] = {}
 
@@ -59,23 +101,34 @@ def main() -> None:
         sections_out = []
         for index, section in enumerate(chapter["sections"], start=1):
             page = page_name(section, index)
-            config["conversion_map"][section["number"]] = {"streamlit_page": page, "exercise_dir": section["dir"]}
-            color, icon, header = CHAPTER_STYLE.get(number, ("#2563EB", "book", "header-13-2.png"))
-            header_url = f"https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/headers/{header}"
-            description = section.get("description") or section["title"]
-            sections_out.append({
-                "id": f"{index}_{section['dir'].split('_', 1)[1]}",
-                "number": section["number"],
-                "title": section["title"],
+            config["conversion_map"][section["number"]] = {
+                "streamlit_page": page,
                 "exercise_dir": section["dir"],
-                "page_file": f"{page}.md",
-                "header_image": header_url if number >= 5 else "https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/headers/header-00.png",
-                "streamlit_description": description,
-                "streamlit_description_short": description.split(". ")[0].rstrip("."),
-            })
+            }
+            color, icon, header = CHAPTER_STYLE.get(number, ("#2563EB", "book", "header-13-2.png"))
+            header_url = (
+                f"https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/headers/{header}"
+            )
+            description = section.get("description") or section["title"]
+            sections_out.append(
+                {
+                    "id": f"{index}_{section['dir'].split('_', 1)[1]}",
+                    "number": section["number"],
+                    "title": section["title"],
+                    "exercise_dir": section["dir"],
+                    "page_file": f"{page}.md",
+                    "header_image": header_url
+                    if number >= 5
+                    else "https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/headers/header-00.png",
+                    "streamlit_description": description,
+                    "streamlit_description_short": description.split(". ")[0].rstrip("."),
+                }
+            )
             for req in section.get("requirements", []):
                 if req in assigned:
-                    raise ValueError(f"{req} is assigned to both {assigned[req]} and {section['number']}")
+                    raise ValueError(
+                        f"{req} is assigned to both {assigned[req]} and {section['number']}"
+                    )
                 assigned[req] = section["number"]
 
         if number >= 5:
@@ -104,14 +157,12 @@ def main() -> None:
     n_sections = len(config["conversion_map"])
     print(f"Wrote {CONFIG.relative_to(ROOT)} with {n_sections} sections")
 
-    registry = yaml.safe_load(REGISTRY.read_text())["requirements"]
-    unassigned = [r["id"] for r in registry if r["id"] not in assigned]
-    unknown = sorted(set(assigned) - {r["id"] for r in registry})
+    registry_ids = {r["id"] for r in yaml.safe_load(REGISTRY.read_text())["requirements"]}
+    validate_requirements(assigned, registry_ids)
+    unassigned = sorted(registry_ids - set(assigned))
     print(f"{len(assigned)} roadmap requirements assigned to sections")
     if unassigned:
         print(f"Not assigned to any extension section ({len(unassigned)}): {unassigned}")
-    if unknown:
-        print(f"Unknown requirement ids in syllabus: {unknown}")
 
 
 if __name__ == "__main__":
