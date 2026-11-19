@@ -14,6 +14,11 @@ from pathlib import Path
 
 import yaml
 
+try:
+    from infrastructure.extension.route import original_sections, validate_route
+except ModuleNotFoundError:  # run as a script: `python infrastructure/extension/sync_config.py`
+    from route import original_sections, validate_route  # type: ignore[no-redef]
+
 ROOT = Path(__file__).resolve().parents[2]
 SYLLABUS = ROOT / "infrastructure" / "extension" / "syllabus.yaml"
 CONFIG = ROOT / "infrastructure" / "core" / "config_extension.yaml"
@@ -92,6 +97,7 @@ def page_name(section: dict, index: int) -> str:
 def main() -> None:
     syllabus_doc = yaml.safe_load(SYLLABUS.read_text())
     validate_companions(syllabus_doc.get("companions"))
+    validate_route(syllabus_doc, original_sections(ROOT))
     syllabus = syllabus_doc["chapters"]
     config = {"conversion_map": {}, "chapter_names": {}, "chapter_names_long": {}, "chapters": {}}
     assigned: dict[str, str] = {}
