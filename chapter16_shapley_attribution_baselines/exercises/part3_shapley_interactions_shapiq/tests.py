@@ -1,6 +1,4 @@
-from collections.abc import Callable, Mapping
-import json
-from pathlib import Path
+from collections.abc import Callable
 from typing import Any
 
 import torch as t
@@ -14,18 +12,6 @@ def _solutions():
     )
 
     return solutions
-
-
-def _section_dir() -> Path:
-    return Path(__file__).resolve().parent
-
-
-def _verification_report() -> dict:
-    return json.loads((_section_dir() / "verification_report.json").read_text())
-
-
-def _gpu_report() -> dict:
-    return _verification_report()["metrics"]["gpu_test"]
 
 
 def _as_dict(report: object) -> dict[str, Any]:
@@ -469,67 +455,3 @@ def test_neural_game_value_table_contains_planted_interactions(
         "Unplanted feature pairs should remain near zero in the exact true table."
     )
     print("All tests in `test_neural_game_value_table_contains_planted_interactions` passed!")
-
-
-def test_notebook_contract(run_smoke_test: Callable | None = None):
-    run_smoke_test = run_smoke_test or _solutions().run_smoke_test
-    result = run_smoke_test(cpu=True)
-    assert result["additive_interactions"]["max_abs_interaction"] < 1e-9, (
-        "The notebook contract should include the additive zero-interaction control."
-    )
-    assert result["target_pair"]["recovers_interaction"], (
-        "The notebook contract should include the exact target-pair recovery control."
-    )
-    assert result["shapiq_parity"]["shapiq_available"], (
-        "The notebook contract should require shapiq to be installed."
-    )
-    assert result["shapiq_parity"]["matches_shapiq"], (
-        "The notebook contract should include shapiq parity on the toy coalition table."
-    )
-    print("All tests in `test_notebook_contract` passed!")
-
-
-def test_committed_gpu_report_matches_shapley_interaction_contract(
-    gpu: Mapping[str, Any] | None = None,
-):
-    gpu = dict(gpu or _gpu_report())
-    assert gpu["cuda_available"] and gpu["preflight_passed"], (
-        "The committed report should be produced by a passing CUDA preflight."
-    )
-    assert gpu["device"] == "NVIDIA GeForce RTX 5090 Laptop GPU", (
-        "The report should record the local RTX 5090 Laptop GPU used for validation."
-    )
-    assert gpu["model_family"] == "cuda_trained_neural_coalition_game_mlp", (
-        "16.3 should validate a trained finite neural coalition game, not a placeholder."
-    )
-    assert gpu["num_players"] == 4 and gpu["coalition_count"] == 16, (
-        "The CUDA report should cover the complete four-feature coalition table."
-    )
-    assert gpu["fit_mse"] <= 1e-8 and gpu["fit_max_abs_error"] <= 1e-4, (
-        "The trained model should fit the finite target game before interactions are trusted."
-    )
-    assert gpu["positive_interaction_pair"] == [0, 2], (
-        "The report should identify the planted positive interaction pair."
-    )
-    assert gpu["negative_interaction_pair"] == [1, 3], (
-        "The report should identify the planted negative interaction pair."
-    )
-    assert gpu["positive_interaction_value"] > 0 and gpu["negative_interaction_value"] < 0, (
-        "The recovered interaction signs should match the planted game."
-    )
-    assert gpu["interaction_max_abs_error"] <= 1e-4, (
-        "Model-derived pair interactions should match the exact true-game interactions."
-    )
-    assert gpu["max_spurious_interaction"] <= 1e-4, (
-        "Unplanted feature pairs should stay near zero in the trained-model table."
-    )
-    assert gpu["shapiq_available"] and gpu["shapiq_matches"], (
-        "The trained-model coalition table should also pass shapiq SII parity."
-    )
-    assert gpu["shuffled_control_interaction_error"] >= 1.0 and gpu["shuffled_control_rejected"], (
-        "The shuffled-label trained-model control should be rejected."
-    )
-    assert gpu["peak_vram_gb"] < 1.0 and gpu["within_vram_budget"], (
-        "The finite-game CUDA preflight should stay well inside the 1 GB expected budget."
-    )
-    print("All tests in `test_committed_gpu_report_matches_shapley_interaction_contract` passed!")

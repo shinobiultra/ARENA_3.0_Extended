@@ -552,18 +552,6 @@ if MAIN:
 
 # %%
 
-if MAIN:
-    verification_report_path = section_dir / 'verification_report.json'
-
-def run_gpu_test(max_vram_gb: float=24.0) -> dict:
-    from part3_shapley_interactions_shapiq.solutions import run_gpu_test as run
-    return run(max_vram_gb=max_vram_gb)
-
-def run_full_experiment(max_vram_gb: float=24.0) -> dict:
-    return run_gpu_test(max_vram_gb=max_vram_gb)
-
-# %%
-
 from fractions import Fraction
 
 if MAIN:
@@ -626,7 +614,6 @@ from chapter16_shapley_attribution_baselines.exercises.part16_shapley_taylor_fai
 
 from chapter16_shapley_attribution_baselines.exercises.part16_shapley_taylor_faith_shap.interaction_reference import _preserve_execution_state, _reference_check_impl, _validate_exact_suite, validate_reference_payload
 
-from chapter16_shapley_attribution_baselines.exercises.part16_shapley_taylor_faith_shap.run_native import persist_completed, persist_prepared, write_notebook_summary
 
 from chapter16_shapley_attribution_baselines.exercises.part16_shapley_taylor_faith_shap.interaction_study import _METHOD_FIRST_LEAVES, _SHARED_GAME_LEAVES, _background_records, _clone_state, _combine_game_blocks, _derived_seed, _direct_full_context_four, _empirical_reference_plan, _evaluate_backgrounds, _evaluate_primary, _exact_suite, _fit_one_mlp, _fit_ridge, _float_tensor, _group_weighted_mean_abs, _int_tensor, _localization_statistics, _logical_hybrid_row, _pair_ranks, _performance, _require_disjoint_ids, _require_methods, _rows, _storage_plan, _training_normalization, _validate_fitted, _within_size_permutations, coalition_masks, exact_dividend_play, nearest_training_diagnostics, pair_indices
 
@@ -645,8 +632,6 @@ if MAIN:
 if MAIN:
     FIGURE_DIR = allocation_Path(allocation_os.environ.get('ARENA_INTERACTION_OUTPUT_DIRECTORY', './figures'))
 
-if MAIN:
-    native_directory = FIGURE_DIR / 'native'
 
 def allocation_show_figure(figure, stem: str):
     """Display one result and retain the exact PNG used by the draft execution."""
@@ -1568,8 +1553,6 @@ def prepare_study(fitted: allocation_Mapping[str, allocation_Any], train: alloca
 if MAIN:
     prepared = prepare_study(fitted, train, explain, methods=allocation_methods, reference=reference_methods, manifest=manifest)
 
-if MAIN:
-    persist_prepared(native_directory, fitted, prepared)
 
 if MAIN:
     assert prepared['phase'] == 'prepared_before_audit'
@@ -1803,11 +1786,6 @@ if MAIN:
 if MAIN:
     allocation_play = native_play(evaluated, methods=allocation_methods)
 
-if MAIN:
-    publication_summary = persist_completed(native_directory, fitted, prepared, evaluated, reference_result, diagnostics, allocation_play, timings={})
-
-if MAIN:
-    write_notebook_summary(FIGURE_DIR, native_directory, publication_summary)
 
 if MAIN:
     print('Complete games, controls and reference checks retained. Read the figures below.')
