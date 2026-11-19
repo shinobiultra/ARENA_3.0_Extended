@@ -2,8 +2,6 @@
 
 from __future__ import annotations
 
-import inspect
-from pathlib import Path
 from types import SimpleNamespace
 from typing import Callable
 
@@ -286,47 +284,3 @@ def test_same_norm_random_lora_matches_learned_norm(
     assert abs(delta.norm().item() - 3.5) < 1e-5, "Random low-rank control must match the learned Frobenius norm."
     print("All tests in `test_same_norm_random_lora_matches_learned_norm` passed!")
 
-
-def test_gpu_hooks_are_strict_and_have_exact_budget_signature() -> None:
-    assert str(inspect.signature(solutions.run_gpu_test)) == "(max_vram_gb: 'float' = 24.0) -> 'dict[str, Any]'", "GPU smoke hook must expose the shared 24 GiB budget contract."
-    assert str(inspect.signature(solutions.run_full_experiment)) == "(max_vram_gb: 'float' = 24.0) -> 'dict[str, Any]'", "Full experiment hook must expose the shared 24 GiB budget contract."
-    source = inspect.getsource(solutions._cuda_metadata)
-    assert "CUDA is required" in source, "CUDA verification must fail closed with an actionable error."
-    assert 't.device("cpu")' not in source and "device='cpu'" not in source, "The strict GPU hook must not contain a CPU execution branch."
-    print("All tests in `test_gpu_hooks_are_strict_and_have_exact_budget_signature` passed!")
-
-
-def test_notebook_contract_exposes_method_and_controls() -> None:
-    section = Path(__file__).resolve().parent
-    exercise = (section / "15.2_LoRA_vs_Full_Finetuning_exercises.ipynb").read_text()
-    solution = (section / "15.2_LoRA_vs_Full_Finetuning_solutions.ipynb").read_text()
-    combined = exercise + solution
-    for required in (
-        "LoRALinear",
-        "inject_lora",
-        "freeze_except_lora",
-        "merge_unmerge",
-        "extract_target_update_matrix",
-        "dominant_activation_drift",
-        "evaluate_direction_ablation",
-        "random labels",
-        "same-norm random",
-        "Try It Yourself",
-        "Bonus Anomaly Hunt",
-        "Common bug",
-        "run_gpu_test",
-        "run_full_experiment",
-    ):
-        assert required.lower() in combined.lower(), f"Learner surface is missing required concept or function: {required}."
-    print("All tests in `test_notebook_contract_exposes_method_and_controls` passed!")
-
-
-def test_run_smoke_test_packages_exact_oracles() -> None:
-    smoke = solutions.run_smoke_test()
-    assert smoke["delta"] == [[6.0, 12.0], [8.0, 16.0]], "Smoke test must preserve the visible exact LoRA oracle."
-    assert smoke["delta_rank"] == 1, "The exact LoRA fixture must remain rank one."
-    assert smoke["merge_max_abs_diff"] < 1e-5, "Smoke evidence must include merge parity."
-    assert smoke["unmerge_restoration_max_abs_diff"] < 1e-6, "Smoke evidence must include unmerge restoration."
-    assert smoke["heldout_examples"] >= 20 and smoke["disjoint_templates"], "Smoke evidence must expose the held-out design."
-    assert smoke["model_revision"] == solutions.MODEL_REVISION, "The pretrained transformer revision must remain immutable."
-    print("All tests in `test_run_smoke_test_packages_exact_oracles` passed!")

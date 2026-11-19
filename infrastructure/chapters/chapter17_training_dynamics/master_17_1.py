@@ -193,11 +193,9 @@ import torch as t
 import torch.nn.functional as F
 from IPython.display import Markdown, display
 
-GT_TIER = "GT-0"
-EXERCISE_ID = "17_1_checkpoint_archaeology_and_mechanism_emergence"
 DIFFICULTY = 4
 IMPORTANCE = 3
-EXPECTED_RUNTIME = "seconds for exact Fourier oracles; about 30 seconds for the CPU train/save/reload notebook contract; parent runner handles CUDA validation"
+EXPECTED_RUNTIME = "seconds for exact Fourier oracles; about 30 seconds for the CPU train/save/reload notebook contract"
 REQUIRES_GPU = True
 
 chapter = "chapter17_training_dynamics"
@@ -1713,165 +1711,6 @@ def metrics_table_markdown(metrics_table: list[dict]) -> str:
         )
     return "\n".join(rows)
 # END SOLUTION
-# EXERCISE
-# def checkpoint_emergence_smoke_test() -> dict:
-#     raise NotImplementedError()
-# END EXERCISE
-# SOLUTION
-
-def checkpoint_emergence_smoke_test() -> dict:
-    steps, trajectories = toy_training_trajectories()
-    return _report_dict(
-        mechanism_emergence_report(
-            steps,
-            trajectories["autoregressive"],
-            metric_name="induction_probe_accuracy",
-            threshold=0.6,
-            min_consecutive=2,
-        )
-    )
-# END SOLUTION
-# EXERCISE
-# def phase_transition_smoke_test() -> dict:
-#     raise NotImplementedError()
-# END EXERCISE
-# SOLUTION
-
-def phase_transition_smoke_test() -> dict:
-    steps, trajectories = toy_training_trajectories()
-    return _report_dict(
-        phase_transition_report(
-            steps,
-            trajectories["autoregressive"],
-            metric_name="induction_probe_accuracy",
-            min_jump=0.3,
-        )
-    )
-# END SOLUTION
-# EXERCISE
-# def random_control_smoke_test() -> dict:
-#     raise NotImplementedError()
-# END EXERCISE
-# SOLUTION
-
-def random_control_smoke_test() -> dict:
-    _, trajectories = toy_training_trajectories()
-    return _report_dict(
-        random_control_report(
-            trajectories["random_control"],
-            metric_name="label_shuffled_probe",
-            max_allowed_value=0.2,
-        )
-    )
-# END SOLUTION
-# EXERCISE
-# def developmental_comparison_smoke_test() -> dict:
-#     raise NotImplementedError()
-# END EXERCISE
-# SOLUTION
-
-def developmental_comparison_smoke_test() -> dict:
-    steps, trajectories = toy_training_trajectories()
-    return _report_dict(
-        developmental_comparison_report(
-            steps,
-            trajectories,
-            threshold=0.6,
-            min_consecutive=2,
-        )
-    )
-# END SOLUTION
-# EXERCISE
-# def live_checkpoint_archaeology_smoke_test(
-#     checkpoint_root: Path | None = None,
-#     *,
-#     device: str | t.device = "cpu",
-#     seed: int = 0,
-# ) -> dict:
-#     raise NotImplementedError()
-# END EXERCISE
-# SOLUTION
-
-def live_checkpoint_archaeology_smoke_test(
-    checkpoint_root: Path | None = None,
-    *,
-    device: str | t.device = "cpu",
-    seed: int = 0,
-) -> dict:
-    return checkpoint_archaeology_signature_result(
-        checkpoint_root=checkpoint_root,
-        device=device,
-        seed=seed,
-        include_figure=False,
-    )
-# END SOLUTION
-# EXERCISE
-# def run_smoke_test(cpu: bool = True) -> dict:
-#     raise NotImplementedError()
-# END EXERCISE
-# SOLUTION
-
-def run_smoke_test(cpu: bool = True) -> dict:
-    _ = cpu
-    return {
-        "checkpoint_emergence": checkpoint_emergence_smoke_test(),
-        "phase_transition": phase_transition_smoke_test(),
-        "random_control": random_control_smoke_test(),
-        "developmental_comparison": developmental_comparison_smoke_test(),
-        "live_checkpoint_archaeology": live_checkpoint_archaeology_smoke_test(device="cpu"),
-    }
-# END SOLUTION
-# EXERCISE
-# def run_modular_addition_checkpoint_archaeology_preflight(max_vram_gb: float = 24.0) -> dict:
-#     # CUDA wrapper for the parent serial validation path. Do not run it in this child task.
-#     raise NotImplementedError()
-# END EXERCISE
-# SOLUTION
-
-def run_modular_addition_checkpoint_archaeology_preflight(
-    max_vram_gb: float = 24.0,
-) -> dict:
-    """CUDA wrapper used by the parent serial validation path."""
-
-    if not t.cuda.is_available():
-        raise RuntimeError("Checkpoint archaeology GPU verification requires CUDA.")
-
-    t.cuda.reset_peak_memory_stats()
-    result = checkpoint_archaeology_signature_result(device="cuda", include_figure=False)
-    t.cuda.synchronize()
-    peak_vram_gb = t.cuda.max_memory_allocated() / 1024**3
-    result.update(
-        {
-            "cuda_available": True,
-            "device": t.cuda.get_device_name(0),
-            "torch_version": t.__version__,
-            "cuda_version": t.version.cuda,
-            "gpu_total_memory_gb": t.cuda.get_device_properties(0).total_memory / 1024**3,
-            "peak_vram_gb": peak_vram_gb,
-            "within_vram_budget": peak_vram_gb <= max_vram_gb,
-        }
-    )
-    result["preflight_passed"] = bool(result["preflight_passed"] and result["within_vram_budget"])
-    return result
-# END SOLUTION
-# EXERCISE
-# def run_gpu_test(max_vram_gb: float = 24.0) -> dict:
-#     raise NotImplementedError()
-# END EXERCISE
-# SOLUTION
-
-def run_gpu_test(max_vram_gb: float = 24.0) -> dict:
-    return run_modular_addition_checkpoint_archaeology_preflight(max_vram_gb=max_vram_gb)
-# END SOLUTION
-# EXERCISE
-# def run_full_experiment(max_vram_gb: float = 24.0) -> dict:
-#     raise NotImplementedError()
-# END EXERCISE
-# SOLUTION
-
-def run_full_experiment(max_vram_gb: float = 24.0) -> dict:
-    return run_gpu_test(max_vram_gb=max_vram_gb)
-# END SOLUTION
 # HIDE
 if MAIN:
 
@@ -1923,7 +1762,7 @@ The saved figure is shown under the plotting cell above.
 <details>
 <summary>Help - check the reasoning before opening the solution</summary>
 
-Do not load a figure from `verification_report.json`. Plot directly from `signature_result`: checkpoint trajectories in panel 1, intervention bars in panel 2, and
+Plot directly from `signature_result`: checkpoint trajectories in panel 1, intervention bars in panel 2, and
 random-label/random-mask control curves in panel 3.
 
 </details>
@@ -2115,42 +1954,3 @@ r'''
 - Nanda et al., Progress measures for grokking via mechanistic interpretability.
 - Toy-model checkpoint studies are useful when the mechanism metric has an exact oracle and a failing control.
 '''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-## Appendix: Verification Report Is Support, Not The Lesson
-
-The parent validation runner can execute `run_gpu_test(max_vram_gb=24.0)` serially. This notebook does not need CUDA to teach the core mechanism, and this child task intentionally
-does not launch GPU jobs.
-'''
-
-
-# ! CELL TYPE: code
-# ! FILTERS: []
-# ! TAGS: []
-
-# HIDE
-if MAIN:
-    verification_report_path = section_dir / "verification_report.json"
-# END HIDE
-# HIDE
-if MAIN:
-    committed_evidence = json.loads(verification_report_path.read_text())
-# END HIDE
-# HIDE
-if MAIN:
-    assert committed_evidence["notebook_id"] == EXERCISE_ID, (
-        "The committed evidence should belong to this checkpoint-archaeology exercise."
-    )
-# END HIDE
-# HIDE
-if MAIN:
-
-    tests.test_notebook_contract(run_smoke_test)
-# END HIDE
-# Parent serial validation may run this later on CUDA:
-# cuda_result = run_gpu_test(max_vram_gb=24.0)

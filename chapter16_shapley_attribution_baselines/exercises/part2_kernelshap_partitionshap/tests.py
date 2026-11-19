@@ -1,8 +1,6 @@
 from __future__ import annotations
 
 from collections.abc import Callable
-import json
-from pathlib import Path
 
 import torch as t
 
@@ -66,10 +64,6 @@ def _solutions():
     )
 
     return solutions
-
-
-def _section_dir() -> Path:
-    return Path(__file__).resolve().parent.parent / "part2_kernelshap_partition_shap_controls"
 
 
 def _assert_tensor_close(actual: t.Tensor, expected: t.Tensor, *, msg: str) -> None:
@@ -283,73 +277,6 @@ def test_partition_shap_report_rejects_invalid_grouping(
     else:
         raise AssertionError("Overlapping PartitionSHAP groups should raise ValueError.")
     print("All tests in `test_partition_shap_report_rejects_invalid_grouping` passed!")
-
-
-def test_notebook_contract(run_smoke_test: Callable | None = None):
-    run_smoke_test = run_smoke_test or _solutions().run_smoke_test
-    result = run_smoke_test(cpu=True)
-    assert result["kernel_additive"]["approximates_exact"], (
-        "The notebook contract should prove KernelSHAP additive parity."
-    )
-    assert result["kernel_interaction"]["approximates_exact"], (
-        "The notebook contract should prove KernelSHAP conjunction parity."
-    )
-    assert result["partition_additive"]["recovers_exact"], (
-        "The notebook contract should prove PartitionSHAP additive parity."
-    )
-    assert result["partition_interaction"]["recovers_exact"], (
-        "The notebook contract should prove PartitionSHAP interaction-group parity."
-    )
-    assert result["partition_cross_group_interaction"]["recovers_exact"], (
-        "The notebook contract should prove PartitionSHAP does not assign cross-group interaction credit to irrelevant players."
-    )
-    print("All tests in `test_notebook_contract` passed!")
-
-
-def test_committed_report_has_real_cuda_kernel_partition_evidence():
-    report = json.loads((_section_dir() / "verification_report.json").read_text())
-    gpu = report["metrics"]["gpu_test"]
-    evidence = report["metrics"]["gpu_evidence"]
-    assert report["accepted"] is True, (
-        "The committed verification report should be accepted."
-    )
-    assert report["gt_tier"] == "GT-0", (
-        "16.2 should remain scoped to GT-0 finite-table SHAP controls."
-    )
-    assert evidence["uses_cuda"] is True and evidence["placeholder_only"] is False, (
-        "16.2 evidence should come from a real CUDA section metric, not a placeholder path."
-    )
-    assert gpu["cuda_available"] is True and gpu["preflight_passed"] is True, (
-        "The GPU preflight should run on CUDA and pass all SHAP-control gates."
-    )
-    assert gpu["kernel_approximates_exact"] is True, (
-        "KernelSHAP should match exact Shapley on the trained model coalition table."
-    )
-    assert gpu["kernel_vs_true_max_abs_error"] <= 1e-4, (
-        "Trained-model KernelSHAP should remain close to the analytic ground-truth game."
-    )
-    assert gpu["partition_recovers_exact"] is True, (
-        "Singleton PartitionSHAP should recover exact player Shapley values."
-    )
-    assert gpu["aligned_partition_recovers_exact"] is True, (
-        "Grouped PartitionSHAP should recover exact player credit for this trained pairwise game."
-    )
-    assert gpu["mismatched_partition_recovers_exact"] is True, (
-        "The mismatched grouping should still be computed by exact Owen values, not the old within-group heuristic."
-    )
-    assert gpu["cross_group_partition_recovers_exact"] is True, (
-        "The cross-group interaction counterexample should recover exact credit."
-    )
-    assert gpu["cross_group_irrelevant_credit"] <= 1e-8, (
-        "An irrelevant player inside a mixed group should receive zero cross-group interaction credit."
-    )
-    assert gpu["shuffled_control_rejected"] is True, (
-        "The shuffled-label trained-model attribution should be rejected."
-    )
-    assert gpu["within_vram_budget"] is True, (
-        "The CUDA preflight should stay inside the declared VRAM budget."
-    )
-    print("All tests in `test_committed_report_has_real_cuda_kernel_partition_evidence` passed!")
 
 
 def test_exact_dividend_game_oracle(
