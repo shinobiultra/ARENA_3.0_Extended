@@ -67,10 +67,10 @@ class Scene:
 
 
 def sample_scene(rng: np.random.Generator, n_objects: int | None = None) -> Scene:
-    """A random scene with 1-3 objects (probabilities 0.25 / 0.4 / 0.35), distinct shapes, colours and quadrants."""
+    """A random scene with 1-3 objects (probabilities 0.25 / 0.4 / 0.35), distinct shapes, colours and quadrants. n_objects=4 fills all four quadrants and must repeat a shape."""
     if n_objects is None:
         n_objects = int(rng.choice([1, 2, 3], p=[0.25, 0.4, 0.35]))
-    shapes = rng.permutation(SHAPES)[:n_objects]
+    shapes = rng.permutation(SHAPES)[:n_objects] if n_objects <= len(SHAPES) else rng.choice(SHAPES, n_objects)  # a fourth object repeats a shape
     colours = rng.permutation(list(COLOURS))[:n_objects]
     quadrants = [QUADRANTS[i] for i in rng.permutation(4)[:n_objects]]
     objects = [

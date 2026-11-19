@@ -2037,6 +2037,7 @@ r'''
 
 READOUT_READING
 </details>
+'''
 
 # ! CELL TYPE: markdown
 # ! FILTERS: []
@@ -4418,7 +4419,372 @@ t.cuda.empty_cache()
 # ! TAGS: []
 
 r'''
+# 🎯 Held-out Quiz
+'''
+
+# ! CELL TYPE: markdown
+# ! FILTERS: []
+# ! TAGS: []
+
+r'''
+You've built the mini VLM, trained it two ways, and taken it apart with lenses, attention, patching and a real model for comparison. We then ran four more experiments on it that we haven't
+shown you. Before you see them, predict them.
+
+This is how Stanford's CS 312 *[Deep Learning Alchemy](https://deep-learning-alchemy.github.io/)* tests understanding: if you understand a system, you can say what it will do in a setting you
+haven't tried. A wrong answer here isn't a failure. It's the most useful thing that can happen in this lesson, because it shows you exactly which part of your picture is off.
+
+**How it works.**
+
+1. Each question shows its change as a diff against a call you ran in this lesson.
+2. Write your answers, and one sentence of reasoning for each, in the answer cell. The reasoning should name a result from this lesson. Don't run any new experiments first.
+3. Run `quiz.score(my_answers)`, then open the **Reveal** dropdowns. Each has the real numbers and what a good mental model would have said.
+
+**Difficulty** says how far a question takes you from what you ran:
+
+- **Easy** means something you built, used on a case it was designed for.
+- **Medium** means one setting turned beyond the range you ran.
+- **Hard** means a regime you never saw, or a number rather than a direction.
+
+**Scoring.** An interval question gives full points for the right interval and half for a neighbouring one. A ranking gives one point for every pair of runs you put in the right order. Write `=`
+when you think two runs land within 0.02 of each other. There are 18 points in total. The score is for you: it isn't saved or sent anywhere. Expect to get around half.
+
+> ```yaml
+> Importance: 🔵🔵🔵🔵⚪
+>
+> You should spend up to 20-25 minutes on this quiz.
+> ```
+
+All four questions are about the trained model you made in Part 3, regime (B), unless a question says otherwise.
+'''
+
+# ! CELL TYPE: markdown
+# ! FILTERS: []
+# ! TAGS: []
+
+r'''
+## Q1. Twenty new pairs &nbsp;·&nbsp; Easy &nbsp;·&nbsp; 4 points
+
+**From the lesson.** In Part 4 you patched the object's tokens from the clean run into the corrupted run, at every layer, on 100 recolouring pairs, and read off the recovery of the
+clean-versus-corrupted logit difference.
+
+**This question changes.** The pairs. We draw 20 new ones from a different seed (so different scenes, objects and colours), and patch the object's tokens at layer 4 exactly as you did.
+
+```diff
+- pairs = utils.make_counterfactual_pairs(100, seed=7)
++ pairs = utils.make_counterfactual_pairs(20, seed=123)
+```
+
+The mean recovery over the 20 pairs, from patching the object's tokens at layer 4, is in:
+
+| a | b | c | d | e |
+|---|---|---|---|---|
+| below 0.5 | 0.5 to 0.8 | 0.8 to 0.95 | 0.95 to 1.05 | above 1.05 |
+
+## Q2. A fourth object &nbsp;·&nbsp; Medium &nbsp;·&nbsp; 5 points
+
+**From the lesson.** Every scene you trained on had one, two or three objects. In Part 3 the model answered `count` questions correctly 99.8% of the time, with the answer one of `one`, `two` or `three`.
+
+**This question changes.** The scenes. We draw 500 scenes with **four** objects (one in each quadrant) and ask the same count question. The model is scored by forced choice among four words now,
+because the right answer is `four`.
+
+```diff
+- scene = utils.sample_scene(rng)                      # 1, 2 or 3 objects
++ scene = utils.sample_scene(rng, n_objects=4)         # four objects
+- candidates = [" one", " two", " three"]
++ candidates = [" one", " two", " three", " four"]
+```
+
+The count accuracy on the 500 four-object scenes is in:
+
+| a | b | c | d | e |
+|---|---|---|---|---|
+| below 2% | 2% to 20% | 20% to 50% | 50% to 80% | above 80% |
+
+## Q3. More steps, same projector &nbsp;·&nbsp; Medium &nbsp;·&nbsp; 3 points
+
+**From the lesson.** In Part 3 the projector-only run (A, 600 steps) reached a colour accuracy of 0.615, and the run that also trained GPT-2 (B, 1,500 steps) reached 0.999. The two differ in
+steps *and* in what was trained.
+
+**This question changes.** We add a third run: the projector only, with GPT-2 frozen, but trained for the same 1,500 steps as regime B.
+
+```diff
+- losses_a = train_vlm(lm_a, projector_a, train_features, train_scenes, n_steps=600, train_lm=False)
++ losses_l = train_vlm(lm_l, projector_l, train_features, train_scenes, n_steps=1500, train_lm=False)
+```
+
+**Rank the colour accuracy** of **S** (projector only, 600 steps: Part 3's regime A), **L** (projector only, 1,500 steps: the new run) and **J** (projector and GPT-2, 1,500 steps: Part 3's regime B), lowest
+first, for example `S < L = J`. Use `=` for runs within 0.02 of each other.
+
+## Q4. Shape instead of colour &nbsp;·&nbsp; Hard &nbsp;·&nbsp; 6 points
+
+**From the lesson.** In Part 4 the object's tokens recovered most of the answer through layers 0 to 8, and then the recovery fell as the answer moved to the last position. Recovery stayed well
+above 0.5 until the late layers.
+
+**This question changes.** The question. We ask about **shape** (`What shape is the red object?`) instead of colour. We draw 40 new pairs of scenes with one or two objects that differ in exactly one
+thing, the **shape** of the queried object (a circle becomes a square, say), and patch the union of the object's tokens in the two scenes, layer by layer, as in Part 4.
+
+```diff
+- pairs = utils.make_counterfactual_pairs(100, seed=7)              # the queried object changes colour
++ pairs = utils.make_shape_pairs(40, seed=11)                       # the queried object changes shape
+- prompt = question_and_answer(scene, "colour", target)[0]
++ prompt = question_and_answer(scene, "shape", target)[0]
+```
+
+At which layer does the mean recovery from patching the object's tokens first fall **below 0.5**?
+
+| a | b | c | d | e |
+|---|---|---|---|---|
+| layers 0 to 3 | layers 4 to 7 | layers 8 to 9 | layer 10 | layer 11, or it never falls below 0.5 |
+
+## Your answers
+
+Fill in the cell below, every answer and one sentence of reasoning for each, before you open any Reveal. Then run it: `quiz.score` prints your score.
+'''
+
+# ! CELL TYPE: code
+# ! FILTERS: []
+# ! TAGS: []
+
+my_answers = {
+    "Q1": "",  # "a" to "e"
+    "Q2": "",  # "a" to "e"
+    "Q3": "",  # e.g. "S < L = J"
+    "Q4": "",  # "a" to "e"
+}
+my_reasons = {  # one sentence each: which result from this lesson are you relying on?
+    "Q1": "",
+    "Q2": "",
+    "Q3": "",
+    "Q4": "",
+}
+
+sys.path.append(str(root_dir / "infrastructure" / "extension" / "learner"))
+from quiz import Interval, Quiz, Ranking
+
+quiz = Quiz(
+    {
+        "Q1": Interval("c", points=4),
+        "Q2": Interval("a", points=5),
+        "Q3": Ranking("S < L < J"),
+        "Q4": Interval("e", points=6),
+    }
+)
+quiz.score(my_answers)
+
+# ! CELL TYPE: markdown
+# ! FILTERS: []
+# ! TAGS: []
+
+r'''
+## Reveal
+
+<details>
+<summary>Reveal - Q1: twenty new pairs</summary>
+
+Q1_REVEAL
+</details>
+
+<details>
+<summary>Reveal - Q2: a fourth object</summary>
+
+Q2_REVEAL
+</details>
+
+<details>
+<summary>Reveal - Q3: more steps, same projector</summary>
+
+Q3_REVEAL
+</details>
+
+<details>
+<summary>Reveal - Q4: shape instead of colour</summary>
+
+Q4_REVEAL
+</details>
+
+## What this quiz tested
+
+QUIZ_TESTED
+
+## Try it yourself - reproduce one result
+
+Q2 is the cheapest to reproduce: a hundred four-object scenes take a few seconds. Run it with your own functions. Then look at which wrong word the model picks, and ask what in Part 3 would have told you.
+'''
+
+# ! CELL TYPE: code
+# ! FILTERS: []
+# ! TAGS: [main]
+
+rng4 = np.random.default_rng(1234)
+scenes4 = [utils.sample_scene(rng4, n_objects=4) for _ in range(100)]
+tokens4, lens4 = utils.tokenize_prompts(vlm, [" Question: How many shapes are there? Answer:"] * len(scenes4))
+with t.no_grad():
+    logits4 = vlm_answer_logits(vlm, projector, featurise(scenes4), tokens4, lens4)
+count_ids = t.tensor([vlm.to_single_token(w) for w in [" one", " two", " three", " four"]], device=device)
+says = Counter([" one", " two", " three", " four"][i] for i in logits4[:, count_ids].argmax(-1).tolist())
+print(f"{len(scenes4)} scenes with four objects: the model says {dict(says)}; accuracy {answer_accuracy(logits4, count_ids[3].repeat(len(scenes4)), count_ids):.0%}")
+
+# ! CELL TYPE: markdown
+# ! FILTERS: []
+# ! TAGS: []
+
+r'''
+## The runs behind this quiz
+
+Every number in the reveals above comes from the next cell, which runs all four experiments: 20 new colour pairs, 500 four-object scenes, one more projector-only training run of 1,500
+steps (the slow one, about two minutes), and 40 shape pairs. You don't need to run it. It's here so that you can check any answer, and so that the quiz can never drift from the code: the
+cell ends by checking that the answers written in the key above are still the ones these runs produce.
+'''
+
+# ! CELL TYPE: code
+# ! FILTERS: []
+# ! TAGS: [main]
+
+def letter(value: float, edges: list[float]) -> str:
+    """Which of five intervals a-e the value falls in, for four ascending edges."""
+    return "abcde"[sum(value >= edge for edge in edges)]
+
+
+def object_recovery_curve(pair_list: list, kind: str) -> Tensor:
+    """Recovery of every pair at every layer from patching the object's tokens (the union of its tokens in the clean and corrupted scenes): (layer, pair)."""
+    n = len(pair_list)
+    clean_s, corrupt_s, targets = [p[0] for p in pair_list], [p[1] for p in pair_list], [p[2] for p in pair_list]
+    word = (lambda s, i: s.objects[i].colour) if kind == "colour" else (lambda s, i: s.objects[i].shape)
+    prompts = [question_and_answer(s, kind, i)[0] for s, i in zip(clean_s, targets)]
+    tokens, lens = utils.tokenize_prompts(vlm, prompts)
+    assert (lens == a_lens[0]).all(), "all prompts should have the same length"
+    ids_clean = t.tensor([vlm.to_single_token(" " + word(s, i)) for s, i in zip(clean_s, targets)], device=device)
+    ids_corrupt = t.tensor([vlm.to_single_token(" " + word(s, i)) for s, i in zip(corrupt_s, targets)], device=device)
+    with t.no_grad():
+        embeds_clean = build_input_embeddings(vlm, projector(featurise(clean_s)), tokens)
+        embeds_corrupt = build_input_embeddings(vlm, projector(featurise(corrupt_s)), tokens)
+        _, cache_q = vlm.run_with_cache(embeds_clean, start_at_layer=0, stop_at_layer=N_LAYERS, names_filter=lambda name: name.endswith("resid_pre"))
+        resids = {layer: cache_q["resid_pre", layer] for layer in range(N_LAYERS)}
+        final = lambda x: vlm.unembed(vlm.ln_final(vlm(x, start_at_layer=0, stop_at_layer=N_LAYERS)[:, ANSWER_POS]))
+        logits_clean, logits_corrupt = final(embeds_clean), final(embeds_corrupt)
+    masks_q = t.tensor(np.stack([(utils.object_token_mask(c.objects[i]) | utils.object_token_mask(k.objects[i])).flatten() for c, k, i in zip(clean_s, corrupt_s, targets)]), device=device)
+    mask = t.zeros(n, SEQ_LEN, dtype=t.bool, device=device)
+    mask[:, IMAGE_SLICE] = masks_q
+    curves = patching_sweep(vlm, embeds_corrupt, resids, {"object tokens": mask}, logits_clean, logits_corrupt, ids_clean, ids_corrupt, ANSWER_POS, list(range(N_LAYERS)))
+    return curves["object tokens"]
+
+
+# Q1: 20 new colour pairs
+q1_recovery = object_recovery_curve(utils.make_counterfactual_pairs(20, seed=123), "colour")
+q1_mean, q1_low, q1_high = utils.pair_bootstrap_band(q1_recovery.T)
+print(f"Q1: object-token recovery at layer 4 on 20 new colour pairs: {q1_mean[4]:.3f} (95% band {q1_low[4]:.3f} to {q1_high[4]:.3f}); layers 0-8 range {q1_mean[:9].min():.3f} to {q1_mean[:9].max():.3f}")
+
+# Q2: four objects
+rng4 = np.random.default_rng(777)
+scenes4 = [utils.sample_scene(rng4, n_objects=4) for _ in range(500)]
+tokens4, lens4 = utils.tokenize_prompts(vlm, [" Question: How many shapes are there? Answer:"] * len(scenes4))
+with t.no_grad():
+    logits4 = vlm_answer_logits(vlm, projector, featurise(scenes4), tokens4, lens4)
+q2_accuracy = answer_accuracy(logits4, count_ids[3].repeat(len(scenes4)), count_ids)
+q2_says = Counter([" one", " two", " three", " four"][i] for i in logits4[:, count_ids].argmax(-1).tolist())
+print(f"Q2: 500 four-object scenes: the model says {dict(q2_says)}; count accuracy {q2_accuracy:.3f}")
+
+# Q3: projector only, 1,500 steps
+t.manual_seed(0)
+projector_l = Projector().to(device)
+lm_l = copy.deepcopy(gpt2)
+losses_l = train_vlm(lm_l, projector_l, train_features, train_scenes, n_steps=1500, train_lm=False)
+q3_runs = {
+    "S": results_a["colour"],
+    "L": evaluate_vlm(lm_l, projector_l, test_features, test_questions)["colour"],
+    "J": results_b["colour"],
+}
+del lm_l
+t.cuda.empty_cache()
+print("Q3: colour accuracy " + ", ".join(f"{name} {value:.3f}" for name, value in q3_runs.items()) + f"; final loss of L {np.mean(losses_l[-50:]):.3f}")
+
+# Q4: shape pairs
+q4_recovery = object_recovery_curve(utils.make_shape_pairs(40, seed=11), "shape")
+q4_mean, q4_low, q4_high = utils.pair_bootstrap_band(q4_recovery.T)
+below = [layer for layer in range(N_LAYERS) if q4_mean[layer] < 0.5]
+q4_first = below[0] if below else None
+print("Q4: object-token recovery by layer on 40 shape pairs: " + " ".join(f"{v:.2f}" for v in q4_mean.tolist()))
+print(f"Q4: first layer below 0.5: {q4_first}")
+
+# one figure of all the quiz's runs
+fig, axes = plt.subplots(2, 2, figsize=(11, 7.5))
+layers_axis = np.arange(N_LAYERS)
+axes[0, 0].plot(layers_axis, patch_curves["object tokens"], "-o", color=utils.GREY, markersize=3.5, label="Part 4: 100 pairs")
+axes[0, 0].plot(layers_axis, q1_mean.numpy(), "-o", color=utils.BLUE, markersize=4, label="Q1: 20 new pairs")
+axes[0, 0].fill_between(layers_axis, q1_low.numpy(), q1_high.numpy(), color=utils.BLUE, alpha=0.2, lw=0)
+axes[0, 0].axvline(4, color="k", ls=":", lw=1)
+axes[0, 0].set(title="Q1: object-token recovery, colour pairs", xlabel="layer", ylabel="recovery", ylim=(-0.05, 1.1))
+axes[0, 0].legend(fontsize=8)
+words4 = [" one", " two", " three", " four"]
+axes[0, 1].bar([w.strip() for w in words4], [q2_says.get(w, 0) / len(scenes4) for w in words4], color=[utils.GREY, utils.GREY, utils.ORANGE, utils.BLUE])
+axes[0, 1].set(title="Q2: what the model says on 500 four-object scenes", ylabel="fraction of scenes", ylim=(0, 1.05))
+axes[1, 0].bar(["S: proj. only\n600 steps", "L: proj. only\n1,500 steps", "J: proj. + GPT-2\n1,500 steps"], [q3_runs["S"], q3_runs["L"], q3_runs["J"]], color=[utils.GREY, utils.ORANGE, utils.BLUE])
+axes[1, 0].axhline(IMAGE_BLIND["colour"], color="k", ls=":", lw=1.2, label="best image-blind guess")
+axes[1, 0].set(title="Q3: colour accuracy", ylabel="accuracy", ylim=(0, 1.08))
+axes[1, 0].legend(fontsize=8)
+axes[1, 1].plot(layers_axis, patch_curves["object tokens"], "-o", color=utils.GREY, markersize=3.5, label="colour pairs (Part 4)")
+axes[1, 1].plot(layers_axis, q4_mean.numpy(), "-o", color=utils.PURPLE, markersize=4, label="Q4: 40 shape pairs")
+axes[1, 1].fill_between(layers_axis, q4_low.numpy(), q4_high.numpy(), color=utils.PURPLE, alpha=0.2, lw=0)
+axes[1, 1].axhline(0.5, color="k", ls=":", lw=1.2)
+axes[1, 1].set(title="Q4: object-token recovery, shape pairs", xlabel="layer", ylabel="recovery", ylim=(-0.05, 1.1))
+axes[1, 1].legend(fontsize=8)
+plt.tight_layout()
+plt.show()
+
+# the written key must still be what these runs produce
+assert letter(float(q1_mean[4]), [0.5, 0.8, 0.95, 1.05]) == quiz.questions["Q1"].key, "Q1 key has drifted"
+assert letter(q2_accuracy, [0.02, 0.2, 0.5, 0.8]) == quiz.questions["Q2"].key, "Q2 key has drifted"
+assert Ranking.from_values(q3_runs, eps=0.02).key_text == quiz.questions["Q3"].key_text, "Q3 key has drifted"
+assert ("e" if q4_first is None else letter(q4_first, [4, 8, 10, 11])) == quiz.questions["Q4"].key, "Q4 key has drifted"
+print("The written key matches these runs.")
+
+# ! CELL TYPE: markdown
+# ! FILTERS: []
+# ! TAGS: [html]
+
+r'''
+<img src="media/quiz_runs.png" width="900">
+'''
+
+# ! CELL TYPE: markdown
+# ! FILTERS: []
+# ! TAGS: []
+
+r'''
+<details>
+<summary>Help - how should I read this figure?</summary>
+
+QUIZ_FIGURE_READING
+</details>
+'''
+
+# ! CELL TYPE: markdown
+# ! FILTERS: []
+# ! TAGS: []
+
+r'''
 # ☆ Bonus
+'''
+
+# ! CELL TYPE: markdown
+# ! FILTERS: []
+# ! TAGS: []
+
+r'''
+## What this lesson doesn't show
+
+Everything in this lesson comes from one training seed of one mini VLM on synthetic shapes, so a different seed could move the numbers (the quiz gives you a taste of this: change the
+training and the answer changes). The Qwen3-VL comparison uses 20 counterfactual pairs of the same synthetic scenes, which is why its bands are wide. Several limits are worth
+keeping in mind:
+
+- **"Is it looking?" is a behavioural question.** Blank, noise, shuffled and random-projector controls show that the answers depend on the image; they don't say what the model represents.
+  The image-only control is the trained model on a prompt it never saw, not a separately trained image-only model.
+- **Patching shows sufficiency, and the object mask is geometric.** SigLIP is contextual, so some information about the object sits in tokens outside the object's mask; this is why patching all
+  image tokens recovers more than the object's tokens alone.
+- **Knockout blocks routes in groups,** with attention renormalised over the survivors, and a joint blockade of every route is not tested.
+- **The left/right result is reported, not explained.** The model stays at 84% on `horizontal` after training, and the periodic-position idea in the first Bonus sections is a guess to test.
+- **No natural images, no new templates, no held-out colour-shape combinations.** The scenes and questions are synthetic and fixed.
+- **Curves that agree are not the same circuit.** The mini VLM and Qwen share a coarse shape on a relative-depth axis; their heads, routes and sizes are different.
 '''
 
 # ! CELL TYPE: markdown
@@ -4431,9 +4797,9 @@ r'''
 LLaVA trains in two stages: first the projector alone, then projector and language model. In this section regime (B) trained everything together from the start, and regime (A)
 stopped after the first stage. Try the two-stage recipe: train the projector for 600 steps with the language model frozen (that is exactly regime (A)), then **continue from
 there**: call `train_vlm` again with `train_lm=True`, reusing the projector you just trained and the same (so far untouched) language model, for another 1,500 steps. Compare
-held-out accuracy against joint training at a matched total compute budget. The saved notebook does not execute this continuation or a learning-rate ablation, so its result is an
-open experiment. In the executed joint run, horizontal accuracy (84.4%) trails vertical (99.0%) despite almost perfect colour, shape and count; use that observation to motivate a
-measured learning-curve study rather than assuming a particular "take-off".
+held-out accuracy against joint training at a matched total compute budget. Nobody has run this continuation or a learning-rate ablation for you, so the result is open. In the joint run,
+horizontal accuracy (84.4%) trails vertical (99.0%) despite almost perfect colour, shape and count; use that observation to motivate a measured learning-curve study rather than
+assuming a particular "take-off".
 
 - Plot accuracy on each kind against the number of training steps. Is the take-off sudden?
 - Which regime reaches high spatial accuracy first, and which setting of the learning rates matters most?

@@ -12,16 +12,17 @@ import streamlit_antd_components as sac
 #     ...
 # ]
 metadata = [
-    {'title': 'A World to Ask Questions About', 'icon': '1-circle-fill', 'subtitle': '(15%)'},
-    {'title': 'Building the VLM', 'icon': '2-circle-fill', 'subtitle': '(20%)'},
-    {'title': 'Training and Modality Controls', 'icon': '3-circle-fill', 'subtitle': '(20%)'},
+    {'title': 'A World to Ask Questions About', 'icon': '1-circle-fill', 'subtitle': '(10%)'},
+    {'title': 'Building the VLM', 'icon': '2-circle-fill', 'subtitle': '(15%)'},
+    {'title': 'Training and Modality Controls', 'icon': '3-circle-fill', 'subtitle': '(15%)'},
     {'title': 'Where Does the Answer Come From?', 'icon': '4-circle-fill', 'subtitle': '(30%)'},
     {'title': 'Is a Real VLM Doing the Same?', 'icon': '5-circle-fill', 'subtitle': '(10%)'},
+    {'title': 'Held-out Quiz', 'icon': 'bullseye', 'subtitle': '(15%)'},
     {'title': 'Bonus', 'icon': 'star', 'subtitle': '(5%)'},
 ]
 chapter_name = 'chapter12_vlm_interpretability'
 chapter_name_long = 'Chapter 12 - VLM Interpretability'
-section_title = '[12.3] Mini VLM from Scratch'
+section_title = '[12.3] Build a Mini VLM on SigLIP and GPT-2'
 
 pages_dir = Path(__file__).parent  # ARENA_3/chapter_name/instructions/pages
 instructions_dir = pages_dir.parent  # ARENA_3/chapter_name/instructions
