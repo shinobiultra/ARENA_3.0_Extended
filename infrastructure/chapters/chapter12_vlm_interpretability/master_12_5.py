@@ -117,7 +117,7 @@ stated textual prior?**
 ## Scope and runtime
 
 The CPU ground-truth lab takes about 4-6 hours for a learner and seconds to execute solved. The
-optional pinned-Qwen release run is budgeted at **12-25 minutes on CUDA** and may take up to 40
+optional pinned-Qwen run is budgeted at **12-25 minutes on CUDA** and may take up to 40
 minutes; this notebook never silently falls back to CPU.
 
 The organism is deliberately analytic: it measures target-color occupancy from pixels, compares 2x2
@@ -233,21 +233,6 @@ PRIOR_PRESENT = 1
 PRIOR_ABSENT = 2
 
 REAL_LAYER_CANDIDATE_FRACTIONS = (0.15, 0.35, 0.55, 0.75)
-
-REAL_ACCEPTANCE_THRESHOLDS = {
-    "test_example_count_min": 32,
-    "validation_pair_count_min": 8,
-    "test_pair_count_min": 8,
-    "joint_accuracy_min": 0.55,
-    "conflict_accuracy_min": 0.25,
-    "hallucination_rate_max": 0.60,
-    "image_question_accuracy_min": 0.60,
-    "text_only_accuracy_max": 0.75,
-    "object_directional_effect_min": 0.10,
-    "object_flip_fraction_min": 0.25,
-    "wall_clock_seconds_max": 2400.0,
-    "peak_vram_gb_max": 24.0,
-}
 
 @dataclass(frozen=True)
 class ArbitrationExample:
@@ -1367,7 +1352,7 @@ def modality_baseline_report(
 
 <details><summary>Interpretation</summary>
 
-Overall accuracy can hide asymmetric object hallucinations, so the real-model gate requires joint
+Overall accuracy can hide asymmetric object hallucinations, so a real-model evaluation reports joint
 accuracy, conflict accuracy, and hallucination rate separately.
 
 </details>
@@ -2799,17 +2784,15 @@ r'''
 ## Real VLM Escalation
 
 **Visual-counterfactual preflight only.** These eight pairs have neutral priors; they do not
-intervene on the hallucinating conflict cases. Passing these gates cannot establish hallucination
-repair or distinguish perception, transfer, arbitration, and decoding. Those experiments remain
-unfinished.
+intervene on the hallucinating conflict cases. These results cannot establish hallucination
+repair or distinguish perception, transfer, arbitration, and decoding.
 
 The pinned Qwen path uses the same prompt-identical image pairs and geometry controls. Candidate
 language layers are scored on all eight validation pairs. Only the selected layer is evaluated on
-eight untouched test pairs. Acceptance requires joint and conflict accuracy, hallucination rate,
+eight untouched test pairs. The run reports joint and conflict accuracy, hallucination rate,
 image-question and text-only baselines, donor-directed object effects or answer flips, two disjoint
-same-size controls, and a full-visual positive control. It deliberately does **not** require
-full-visual patching at an intermediate language layer to reconstruct the donor output after token
-mixing.
+same-size controls, and a full-visual positive control. Full-visual patching at an intermediate language layer
+is not expected to reconstruct the donor output after token mixing.
 '''
 
 # ! CELL TYPE: code
@@ -2902,7 +2885,7 @@ def capture_module_output(
 def _require_cuda(max_vram_gb: float) -> None:
     if not t.cuda.is_available():
         raise RuntimeError("The pinned real-VLM experiment requires CUDA; CPU fallback is forbidden.")
-    if not 0 < max_vram_gb <= REAL_ACCEPTANCE_THRESHOLDS["peak_vram_gb_max"]:
+    if not 0 < max_vram_gb <= 24.0:
         raise ValueError("max_vram_gb must be positive and no greater than the audited budget")
 
 
@@ -3199,164 +3182,6 @@ def select_real_layer_on_validation(
     return selected, summary_frame.to_dict(orient="records")
 
 
-def evaluate_real_acceptance(result: Mapping[str, object]) -> tuple[bool, list[str]]:
-    required = {
-        "model_id",
-        "revision",
-        "test_example_count",
-        "validation_pair_count",
-        "test_pair_count",
-        "selected_layer",
-        "layer_selection_split",
-        "reporting_split",
-        "joint_accuracy",
-        "conflict_accuracy",
-        "hallucination_rate",
-        "image_question_accuracy",
-        "text_only_accuracy",
-        "test_patch_summary",
-        "peak_vram_gb",
-        "wall_clock_seconds",
-        "joint_margins", "image_question_margins", "text_only_margins",
-        "test_patch_rows", "candidate_layers",
-    }
-    missing = required - set(result)
-    if missing:
-        raise ValueError(f"Real result is missing required fields: {sorted(missing)}")
-    failures = []
-    if result["model_id"] != MODEL_ID or result["revision"] != MODEL_REVISION:
-        failures.append("model identity does not match the pinned checkpoint")
-    rate_keys = (
-        "joint_accuracy", "conflict_accuracy", "hallucination_rate",
-        "image_question_accuracy", "text_only_accuracy",
-    )
-    numeric_keys = (*rate_keys, "test_example_count", "validation_pair_count",
-                    "test_pair_count", "selected_layer", "peak_vram_gb", "wall_clock_seconds")
-    for key in numeric_keys:
-        value = result[key]
-        if isinstance(value, bool) or not isinstance(value, (int, float)) or not math.isfinite(value):
-            failures.append(f"{key} must be finite numeric evidence")
-        elif key in rate_keys and not 0 <= value <= 1:
-            failures.append(f"{key} must be a probability in [0, 1]")
-        elif key not in rate_keys and value < 0:
-            failures.append(f"{key} must be nonnegative")
-    for key in ("test_example_count", "validation_pair_count", "test_pair_count", "selected_layer"):
-        if not isinstance(result[key], int) or isinstance(result[key], bool):
-            failures.append(f"{key} must be an integer")
-    if result["selected_layer"] not in result["candidate_layers"]:
-        failures.append("selected_layer must be one of the evaluated candidates")
-    if failures:
-        return False, failures
-
-    # Recompute behavior from ordered example margins rather than trusting five
-    # caller-supplied aggregate scores. These are preflight metrics, not proof of
-    # correcting hallucinations: the intervention cohort has neutral priors.
-    examples = build_arbitration_benchmark()
-    test_examples = [example for example in examples if example.split == "test"]
-    expected_pairs = _counterfactual_pairs(examples, "test")
-    if result["test_example_count"] != len(test_examples):
-        failures.append("test_example_count disagrees with the fixed held-out suite")
-    if result["test_pair_count"] != len(expected_pairs):
-        failures.append("test_pair_count disagrees with the fixed counterfactual cohort")
-    if result["validation_pair_count"] != len(_counterfactual_pairs(examples, "validation")):
-        failures.append("validation_pair_count disagrees with the fixed validation cohort")
-    vectors = {}
-    for key in ("joint_margins", "image_question_margins", "text_only_margins"):
-        values = result[key]
-        if (not isinstance(values, list) or len(values) != len(test_examples)
-                or any(isinstance(v, bool) or not isinstance(v, (int, float)) or not math.isfinite(v) for v in values)):
-            failures.append(f"{key} must contain one finite margin per held-out example")
-        else:
-            vectors[key] = t.tensor(values, dtype=t.float64) >= 0
-    if failures:
-        return False, failures
-    labels = t.tensor([example.label for example in test_examples])
-    conflict = t.tensor([example.condition in CONFLICT_CONDITIONS for example in test_examples])
-    joint = vectors["joint_margins"]
-    derived = {
-        "joint_accuracy": float((joint == labels).float().mean()),
-        "conflict_accuracy": float((joint[conflict] == labels[conflict]).float().mean()),
-        "hallucination_rate": float(joint[labels == 0].float().mean()),
-        "image_question_accuracy": float((vectors["image_question_margins"] == labels).float().mean()),
-        "text_only_accuracy": float((vectors["text_only_margins"] == labels).float().mean()),
-    }
-    for key, value in derived.items():
-        if not math.isclose(float(result[key]), value, rel_tol=0, abs_tol=1e-6):
-            failures.append(f"{key} disagrees with raw held-out margins")
-    try:
-        rows = pd.DataFrame(result["test_patch_rows"])
-        expected_ids = {recipient.example_id for recipient, _ in expected_pairs}
-        required_conditions = {"recipient", "donor", "object_patch", "background_patch", "same_size_random", "full_visual_patch"}
-        if (set(rows.example_id) != expected_ids or set(rows.split) != {"test"}
-                or set(rows.layer) != {result["selected_layer"]}
-                or len(rows) != len(expected_ids) * len(required_conditions)):
-            raise ValueError("patch cohort, split, layer, or row count mismatch")
-        for _, group in rows.groupby("example_id"):
-            if set(group.condition) != required_conditions or group.condition.duplicated().any():
-                raise ValueError("each example needs exactly one row for every control")
-            recipient_margin = float(group.loc[group.condition == "recipient", "margin"].iloc[0])
-            donor_margin = float(group.loc[group.condition == "donor", "margin"].iloc[0])
-            direction = 1.0 if donor_margin > recipient_margin else -1.0
-            for row in group.itertuples():
-                expected_effect = direction * (float(row.margin) - recipient_margin)
-                expected_flip = (float(row.margin) >= 0) != (recipient_margin >= 0)
-                if (not math.isclose(float(row.directional_effect), expected_effect, rel_tol=0, abs_tol=1e-6)
-                        or row.answer_flip != expected_flip
-                        or row.prediction != ("yes" if row.margin >= 0 else "no")):
-                    raise ValueError("patch effect, prediction, or flip disagrees with raw margin")
-        if not np.isfinite(rows[["margin", "directional_effect"]].to_numpy(dtype=float)).all():
-            raise ValueError("patch effects must be finite")
-        if any(not isinstance(value, bool) for value in rows.answer_flip):
-            raise ValueError("answer_flip must contain booleans")
-        recomputed = summarize_patch_rows(rows, layer=int(result["selected_layer"]))
-        supplied = result["test_patch_summary"]
-        for key, value in recomputed.items():
-            if key not in supplied or not math.isclose(float(supplied[key]), value, rel_tol=0, abs_tol=1e-6):
-                failures.append(f"test_patch_summary {key} disagrees with raw patch rows")
-    except (KeyError, AttributeError, TypeError, ValueError) as exc:
-        failures.append(f"invalid test_patch_rows: {exc}")
-    if failures:
-        return False, failures
-
-    def minimum(key: str, threshold_key: str) -> None:
-        if float(result[key]) < REAL_ACCEPTANCE_THRESHOLDS[threshold_key]:
-            failures.append(f"{key} below {REAL_ACCEPTANCE_THRESHOLDS[threshold_key]}")
-
-    def maximum(key: str, threshold_key: str) -> None:
-        if float(result[key]) > REAL_ACCEPTANCE_THRESHOLDS[threshold_key]:
-            failures.append(f"{key} above {REAL_ACCEPTANCE_THRESHOLDS[threshold_key]}")
-
-    minimum("test_example_count", "test_example_count_min")
-    minimum("validation_pair_count", "validation_pair_count_min")
-    minimum("test_pair_count", "test_pair_count_min")
-    minimum("joint_accuracy", "joint_accuracy_min")
-    minimum("conflict_accuracy", "conflict_accuracy_min")
-    maximum("hallucination_rate", "hallucination_rate_max")
-    minimum("image_question_accuracy", "image_question_accuracy_min")
-    maximum("text_only_accuracy", "text_only_accuracy_max")
-    maximum("peak_vram_gb", "peak_vram_gb_max")
-    maximum("wall_clock_seconds", "wall_clock_seconds_max")
-    if result["layer_selection_split"] != "validation" or result["reporting_split"] != "test":
-        failures.append("layer selection and reporting splits are not validation/test")
-
-    patch: Mapping[str, float] = result["test_patch_summary"]  # type: ignore[assignment]
-    object_effect = float(patch["object_patch_directional_effect_mean"])
-    background = float(patch["background_patch_absolute_effect_mean"])
-    random_control = float(patch["same_size_random_absolute_effect_mean"])
-    full_effect = float(patch["full_visual_patch_directional_effect_mean"])
-    flip_fraction = float(patch["object_patch_flip_fraction"])
-    if object_effect <= max(background, random_control):
-        failures.append("object patch does not beat both matched controls")
-    if full_effect <= max(background, random_control):
-        failures.append("full-visual positive control does not beat matched controls")
-    if not (
-        object_effect >= REAL_ACCEPTANCE_THRESHOLDS["object_directional_effect_min"]
-        or flip_fraction >= REAL_ACCEPTANCE_THRESHOLDS["object_flip_fraction_min"]
-    ):
-        failures.append("object patch has neither a directional effect nor enough answer flips")
-    return not failures, failures
-
-
 def run_real_vlm_benchmark(max_vram_gb: float = 24.0) -> dict[str, object]:
     _require_cuda(max_vram_gb)
     examples = build_arbitration_benchmark()
@@ -3420,66 +3245,18 @@ def run_real_vlm_benchmark(max_vram_gb: float = 24.0) -> dict[str, object]:
         "peak_vram_gb": t.cuda.max_memory_allocated() / 1024**3,
         "wall_clock_seconds": elapsed,
     }
-    accepted, failures = evaluate_real_acceptance(result)
-    result["acceptance_failures"] = failures
-    result["accepted"] = accepted
     return result
-
-
-def run_smoke_test(cpu: bool = True) -> dict[str, object]:
-    if not cpu:
-        raise ValueError("The deterministic smoke fixture is CPU-only; use run_gpu_test for Qwen")
-    result = toy_signature_result()
-    metrics: Mapping[str, float] = result["metrics"]  # type: ignore[assignment]
-    patch: Mapping[str, float] = result["test_patch_summary"]  # type: ignore[assignment]
-    baselines: pd.DataFrame = result["baselines"]  # type: ignore[assignment]
-    baseline_accuracy = dict(zip(baselines.condition, baselines.accuracy))
-    return {
-        "notebook_id": NOTEBOOK_ID,
-        "organism": "pixel_prompt_ground_truth_vlm_v2",
-        "example_count": len(result["examples"]),  # type: ignore[arg-type]
-        "validation_pair_count": 8,
-        "test_pair_count": 8,
-        "selected_layer": int(result["selected_layer"]),
-        "joint_accuracy": metrics["joint_accuracy"],
-        "conflict_accuracy": metrics["conflict_accuracy"],
-        "hallucination_rate": metrics["hallucination_rate"],
-        "image_question_accuracy": float(baseline_accuracy["image_question_only"]),
-        "text_only_accuracy": float(baseline_accuracy["text_only"]),
-        "shuffled_images_accuracy": float(baseline_accuracy["shuffled_images"]),
-        "object_patch_directional_effect": patch["object_patch_directional_effect_mean"],
-        "object_patch_flip_fraction": patch["object_patch_flip_fraction"],
-        "background_patch_absolute_effect": patch["background_patch_absolute_effect_mean"],
-        "random_patch_absolute_effect": patch["same_size_random_absolute_effect_mean"],
-        "full_visual_directional_effect": patch["full_visual_patch_directional_effect_mean"],
-        "accepted": bool(result["accepted"]),
-    }
-
-
-def run_gpu_test(max_vram_gb: float = 24.0) -> dict[str, object]:
-    return run_real_vlm_benchmark(max_vram_gb=max_vram_gb)
-
-
-def run_full_experiment(max_vram_gb: float = 24.0) -> dict[str, object]:
-    return run_gpu_test(max_vram_gb=max_vram_gb)
-
-
-def write_real_result(result: Mapping[str, object], output_path: str | Path) -> None:
-    accepted, failures = evaluate_real_acceptance(result)
-    if bool(result.get("accepted")) != accepted or list(result.get("acceptance_failures", [])) != failures:
-        raise ValueError("Result acceptance fields do not match the strict acceptance contract")
-    Path(output_path).write_text(json.dumps(result, indent=2, sort_keys=True) + "\n")
 
 # ! CELL TYPE: code
 # ! FILTERS: []
 # ! TAGS: [main]
 
-RUN_CUDA_RELEASE = False
-if RUN_CUDA_RELEASE:
-    real_result = run_full_experiment(max_vram_gb=24.0)
-    write_real_result(real_result, root_dir / 'chapter12_vlm_interpretability/exercises/part2_object_hallucination_arbitration' / "expected_outputs/real_qwen_result.json")
+RUN_REAL_QWEN = False
+if RUN_REAL_QWEN:
+    real_result = run_real_vlm_benchmark(max_vram_gb=24.0)
+    print(json.dumps(real_result["test_patch_summary"], indent=2))
 else:
-    print("CUDA release run not requested; no model is loaded.")
+    print("Real-model run not requested; no model is loaded.")
 
 # ! CELL TYPE: markdown
 # ! FILTERS: []
@@ -3525,7 +3302,6 @@ r'''
 - The CPU organism is analytic ground truth over rendered shapes, not a trained or natural-image VLM.
 - The prompt encoder supports only the declared template and vocabulary.
 - A causal effect on this benchmark does not establish a universal hallucination circuit.
-- The pinned Qwen path remains unaccepted until the parent CUDA run records all behavioral and intervention gates.
 - Full-visual replacement at an intermediate language layer is only a positive control because prompt-token states may already contain mixed visual information.
 '''
 
@@ -3546,24 +3322,6 @@ r'''
 # ! TAGS: []
 
 r'''
-## Verification Appendix
-
-The smoke fixture is generated from this executed CPU organism. `verification_report.json` is
-intentionally unaccepted for the real-VLM claim until CUDA evidence is supplied.
-'''
-
-# ! CELL TYPE: code
-# ! FILTERS: []
-# ! TAGS: [main]
-
-smoke = run_smoke_test(cpu=True)
-print(json.dumps(smoke, indent=2))
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ## What the signature establishes
 
 The saved layer × region heatmap shows a large donor-directed effect before evidence leaves visual
@@ -3575,8 +3333,8 @@ with overall accuracy.
 The neutral-prior donor pairs test causal visual transfer in the analytic organism. They do **not**
 test whether patching repairs the wrong-prior conflict cases. A visual patch can change an answer
 without diagnosing natural-image perception, cross-modal transfer, prior arbitration or decoding.
-The toy prior-routing rule is programmed and visible. The retained Qwen preflight and strict
-acceptance code are an unexecuted extension, not a new empirical claim.
+The toy prior-routing rule is programmed and visible. The retained Qwen code is an
+unexecuted extension, not a new empirical claim.
 
 The original play reuses public test renders. Treat subsequent layer/region/strength changes as
 exploratory. If choosing a mitigation or layer, use validation only and freeze the

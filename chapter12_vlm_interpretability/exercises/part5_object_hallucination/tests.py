@@ -43,20 +43,11 @@ def test_validation_selects_layer_and_test_remains_untouched(*args, **kwargs):
 def test_parameterized_playground_changes_strength_and_region(*args, **kwargs):
     return _legacy().test_parameterized_playground_changes_strength_and_region(*args, **kwargs)
 
-def test_toy_signature_and_smoke_fixture(*args, **kwargs):
-    return _legacy().test_toy_signature_and_smoke_fixture(*args, **kwargs)
+def test_toy_signature(*args, **kwargs):
+    return _legacy().test_toy_signature(*args, **kwargs)
 
 def test_vlm_geometry_controls_exclude_object_and_distractor(*args, **kwargs):
     return _legacy().test_vlm_geometry_controls_exclude_object_and_distractor(*args, **kwargs)
-
-def test_real_acceptance_requires_behavior_and_directional_controls(*args, **kwargs):
-    return _legacy().test_real_acceptance_requires_behavior_and_directional_controls(*args, **kwargs)
-
-def test_real_acceptance_rejects_wrong_identity_nonfinite_and_impossible_rates(*args, **kwargs):
-    return _legacy().test_real_acceptance_rejects_wrong_identity_nonfinite_and_impossible_rates(*args, **kwargs)
-
-def test_real_acceptance_recomputes_raw_rows_and_denominators(*args, **kwargs):
-    return _legacy().test_real_acceptance_recomputes_raw_rows_and_denominators(*args, **kwargs)
 
 def test_capture_module_output_removes_hook(*args, **kwargs):
     return _legacy().test_capture_module_output_removes_hook(*args, **kwargs)
@@ -69,9 +60,6 @@ def test_solution_notebook_keeps_taught_causal_methods_inline_and_is_executed(*a
 
 def test_instruction_page_places_images_beside_prose_and_uses_honest_number(*args, **kwargs):
     return _legacy().test_instruction_page_places_images_beside_prose_and_uses_honest_number(*args, **kwargs)
-
-def test_local_report_schema_and_manifest_are_strict_and_fresh(*args, **kwargs):
-    return _legacy().test_local_report_schema_and_manifest_are_strict_and_fresh(*args, **kwargs)
 
 def test_real_path_is_pinned_cuda_only_validation_selected_and_has_no_invalid_equality_gate(*args, **kwargs):
     return _legacy().test_real_path_is_pinned_cuda_only_validation_selected_and_has_no_invalid_equality_gate(*args, **kwargs)

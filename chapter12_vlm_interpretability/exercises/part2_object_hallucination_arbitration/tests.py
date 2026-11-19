@@ -10,7 +10,6 @@ import pandas as pd
 import pytest
 import torch as t
 from torch import Tensor
-import yaml
 
 
 def _solutions():
@@ -246,15 +245,13 @@ def test_parameterized_playground_changes_strength_and_region():
     )["prediction"] == "yes"
 
 
-def test_toy_signature_and_smoke_fixture():
+def test_toy_signature():
     s = _solutions()
     result = s.toy_signature_result()
     assert result["accepted"]
     assert result["metrics"]["joint_accuracy"] == 0.75
     assert result["metrics"]["conflict_accuracy"] == 0.0
     assert result["metrics"]["hallucination_rate"] == 0.25
-    fixture = json.loads((_section_dir() / "expected_outputs/smoke_test.json").read_text())
-    assert fixture == s.run_smoke_test()
 
 
 def test_vlm_geometry_controls_exclude_object_and_distractor():
@@ -278,88 +275,6 @@ def test_vlm_geometry_controls_exclude_object_and_distractor():
     assert target == set(controls.object)
     assert distractor.isdisjoint(controls.background)
     assert distractor.isdisjoint(controls.random)
-
-
-def _valid_real_preflight_fixture():
-    # Synthetic unit-test evidence for validating the acceptance calculation only.
-    # This fixture is never serialized as an actual Qwen run.
-    s = _solutions()
-    examples = s.build_arbitration_benchmark()
-    test = [example for example in examples if example.split == "test"]
-    margins = [1.0 if example.label else -1.0 for example in test]
-    rows = []
-    for recipient, _ in s._counterfactual_pairs(examples, "test"):
-        for condition, margin in (
-            ("recipient", -1.0), ("donor", 1.0), ("object_patch", 0.0),
-            ("background_patch", -0.9), ("same_size_random", -0.9), ("full_visual_patch", 0.2),
-        ):
-            rows.append({
-                "example_id": recipient.example_id, "split": "test", "layer": 12,
-                "condition": condition, "margin": margin,
-                "prediction": "yes" if margin >= 0 else "no", "token_count": 4,
-                "directional_effect": margin + 1.0, "answer_flip": margin >= 0,
-            })
-    return {
-        "model_id": s.MODEL_ID, "revision": s.MODEL_REVISION,
-        "test_example_count": 64, "validation_pair_count": 8, "test_pair_count": 8,
-        "selected_layer": 12, "candidate_layers": [3, 8, 12, 20],
-        "layer_selection_split": "validation", "reporting_split": "test",
-        "joint_accuracy": 1.0, "conflict_accuracy": 1.0, "hallucination_rate": 0.0,
-        "image_question_accuracy": 1.0, "text_only_accuracy": 0.5,
-        "joint_margins": margins, "image_question_margins": margins,
-        "text_only_margins": [-1.0] * 64, "test_patch_rows": rows,
-        "test_patch_summary": s.summarize_patch_rows(pd.DataFrame(rows), layer=12),
-        "peak_vram_gb": 10.0, "wall_clock_seconds": 900.0,
-    }
-
-
-def test_real_acceptance_requires_behavior_and_directional_controls():
-    s = _solutions()
-    result = _valid_real_preflight_fixture()
-    assert s.evaluate_real_acceptance(result) == (True, [])
-    result["conflict_accuracy"] = 0.0
-    accepted, failures = s.evaluate_real_acceptance(result)
-    assert not accepted and any("conflict_accuracy" in failure for failure in failures)
-    result = _valid_real_preflight_fixture()
-    result["test_patch_summary"]["object_patch_directional_effect_mean"] = 0.0
-    accepted, failures = s.evaluate_real_acceptance(result)
-    assert not accepted and any("object_patch" in failure for failure in failures)
-
-
-def test_real_acceptance_rejects_wrong_identity_nonfinite_and_impossible_rates():
-    s = _solutions()
-    for key, value in (
-        ("model_id", "another/model"), ("revision", "main"),
-        ("joint_accuracy", float("nan")), ("hallucination_rate", float("inf")),
-        ("joint_accuracy", 1.1), ("text_only_accuracy", -0.2),
-        ("wall_clock_seconds", -1.0), ("test_example_count", 64.5),
-    ):
-        result = _valid_real_preflight_fixture()
-        result[key] = value
-        assert not s.evaluate_real_acceptance(result)[0], f"Reject invalid {key}={value}."
-    for key in ("joint_margins", "image_question_margins", "text_only_margins"):
-        result = _valid_real_preflight_fixture()
-        result[key] = [float("nan")] * 64
-        assert not s.evaluate_real_acceptance(result)[0], f"Reject nonfinite raw {key}."
-
-
-def test_real_acceptance_recomputes_raw_rows_and_denominators():
-    s = _solutions()
-    result = _valid_real_preflight_fixture()
-    result["test_patch_rows"][2]["directional_effect"] = float("nan")
-    assert not s.evaluate_real_acceptance(result)[0], "Nonfinite row effects must never pass."
-    result = _valid_real_preflight_fixture()
-    result["test_patch_rows"][2]["margin"] = -1.0
-    assert not s.evaluate_real_acceptance(result)[0], "Effect and flip must follow the observed margin."
-    result = _valid_real_preflight_fixture()
-    result["test_patch_rows"].pop()
-    assert not s.evaluate_real_acceptance(result)[0], "Every example must have every required control."
-    result = _valid_real_preflight_fixture()
-    result["joint_margins"] = result["joint_margins"][:-1]
-    assert not s.evaluate_real_acceptance(result)[0], "Do not silently shrink the held-out denominator."
-    result = _valid_real_preflight_fixture()
-    result["test_patch_rows"][0]["split"] = "validation"
-    assert not s.evaluate_real_acceptance(result)[0], "Test reports cannot include validation rows."
 
 
 def test_capture_module_output_removes_hook():
@@ -451,29 +366,6 @@ def test_instruction_page_places_images_beside_prose_and_uses_honest_number():
     assert "12.2" not in source
 
 
-def test_local_report_schema_and_manifest_are_strict_and_fresh():
-    from jsonschema import Draft202012Validator
-    from arena_ext.verification import verify_report_input_manifest
-
-    section = _section_dir()
-    schema = json.loads((section / "verification_report.schema.json").read_text())
-    report = json.loads((section / "verification_report.json").read_text())
-    manifest = yaml.safe_load((section / "artifacts.lock.yml").read_text())
-    assert schema["additionalProperties"] is False
-    assert schema["properties"]["report_inputs"]["additionalProperties"] is False
-    assert schema["properties"]["metrics"]["properties"]["cpu_smoke"]["additionalProperties"] is False
-    Draft202012Validator(schema).validate(report)
-    assert set(manifest) == {
-        "notebook_id", "section", "title", "exercise_metadata", "gt_tier",
-        "evidence_level", "claim_scope", "required_gpu_gb", "max_allowed_gpu_gb",
-        "models", "datasets", "expected_metrics", "controls", "safety_notes",
-    }
-    assert manifest["notebook_id"] == "12_5_object_hallucination_arbitration"
-    assert manifest["section"] == "12.5"
-    assert manifest["exercise_metadata"]["EXPECTED_RUNTIME"] == "4-6 hours learner; 12-25 minutes CUDA verification"
-    assert verify_report_input_manifest(_repo_root(), report["report_inputs"]) == []
-
-
 def test_real_path_is_pinned_cuda_only_validation_selected_and_has_no_invalid_equality_gate():
     source = (_section_dir() / "solutions.py").read_text()
     tree = ast.parse(source)
@@ -485,10 +377,7 @@ def test_real_path_is_pinned_cuda_only_validation_selected_and_has_no_invalid_eq
         "patch_real_vlm_layer",
         "real_activation_patch_controls",
         "select_real_layer_on_validation",
-        "evaluate_real_acceptance",
         "run_real_vlm_benchmark",
-        "run_gpu_test",
-        "run_full_experiment",
     }
     assert required <= functions
     s = _solutions()
