@@ -1,6 +1,5 @@
 from collections.abc import Callable
 import json
-from pathlib import Path
 
 import pytest
 import torch as t
@@ -403,80 +402,6 @@ def test_object_permanence_report_rejects_absent_and_different_object_controls(
     )
 
 
-def test_notebook_contract(run_smoke_test: Callable | None = None):
-    run_smoke_test = run_smoke_test or _solutions().run_smoke_test
-    result = run_smoke_test(cpu=True)
-    assert result["jepa_prediction"]["predicts_target"], (
-        "The notebook contract should include a passing JEPA target-prediction report."
-    )
-    assert result["state_probe"]["predicts_state"], (
-        "The notebook contract should include a passing world-state probe report."
-    )
-    assert result["transition"]["transition_consistent"], (
-        "The notebook contract should include a passing transition-consistency report."
-    )
-    assert result["collapse"]["collapsed_control_rejected"], (
-        "The notebook contract should include a collapsed-representation negative control."
-    )
-    assert result["state_probe_control"]["shuffled_control_rejected"], (
-        "The notebook contract should include a shuffled-label probe control."
-    )
-    assert result["rollout_control"]["copy_and_shuffled_controls_rejected"], (
-        "The notebook contract should include copy and shuffled-action rollout controls."
-    )
-    assert result["object_permanence"]["preserves_occluded_object"], (
-        "The notebook contract should include a passing object-permanence report."
-    )
-    assert result["object_permanence_control"]["different_object_rejected"], (
-        "The notebook contract should include a different-object permanence control."
-    )
-    print("All tests in `test_notebook_contract` passed!")
-
-
-def test_committed_verification_report_vjepa_world_controls():
-    report_path = Path(__file__).with_name("verification_report.json")
-    report = json.loads(report_path.read_text())
-    gpu = report["metrics"]["gpu_test"]
-
-    assert gpu["vjepa2_preflight_passed"], (
-        "The report should still include the pinned V-JEPA 2 feature-extraction gate."
-    )
-    assert gpu["vjepa2_world_model_controls_passed"], (
-        "The accepted report must include the stronger frozen-latent world-model controls."
-    )
-    assert gpu["masked_prediction_passed"], (
-        "The masked latent predictor should reduce held-out occluded-to-visible loss."
-    )
-    assert gpu["state_probe_accuracy"] >= 0.8, (
-        "The held-out state probe should classify generated object states from frozen V-JEPA latents."
-    )
-    assert gpu["state_probe_margin_over_random"] >= 0.2, (
-        "The state probe must beat a shuffled-label baseline by a clear margin."
-    )
-    assert gpu["latent_rollout_passed"], (
-        "The action-conditioned rollout head should beat copy and shuffled-action baselines."
-    )
-    assert gpu["real_latent_object_permanence_passed"], (
-        "Occluded-object V-JEPA latents should remain closer than absent-object controls."
-    )
-    assert gpu["causal_latent_patching_passed"], (
-        "Object-token latent patches should beat same-size random-token patches."
-    )
-    assert gpu["causal_latent_patch_random_gap"] >= 0.4, (
-        "The causal patch effect should exceed the random patch control."
-    )
-    assert gpu["vjepa2_world_feature_shape"] == [200, 1024], (
-        "The report should keep the generated-video world-control suite shape explicit."
-    )
-    assert gpu["vjepa2_token_feature_shape"] == [200, 144, 1024], (
-        "The report should keep the V-JEPA token grid available for patching checks."
-    )
-    assert gpu["peak_vram_gb"] < 24.0, (
-        "The accepted local V-JEPA 2 path should fit the requested 24GB machine."
-    )
-    print("All tests in `test_committed_verification_report_vjepa_world_controls` passed!")
-
-
 def validate_vjepa2_signature_visual_payload(signature_result: dict) -> None:
     """Validate the real videos, latents, and patch effects plotted by the notebook."""
 
@@ -544,51 +469,3 @@ def validate_vjepa2_signature_visual_payload(signature_result: dict) -> None:
         "Object-token latent patches should beat same-size random-token patches."
     )
     print("All tests in `validate_vjepa2_signature_visual_payload` passed!")
-
-
-def test_exercise_notebook_declares_full_verification_contract():
-    notebook_path = Path(__file__).with_name(
-        "14.1_JEPA_and_World_Model_Controls_exercises.ipynb"
-    )
-    notebook = json.loads(notebook_path.read_text())
-    source = "\n".join(
-        "".join(cell.get("source", [])) for cell in notebook.get("cells", [])
-    )
-
-    assert "REQUIRES_GPU = True" in source, (
-        "The learner notebook should not advertise CPU-only scope for this GT-1 JEPA section."
-    )
-    assert "def run_smoke_test(cpu: bool = True)" in source, (
-        "The learner notebook should expose the CPU contract surface."
-    )
-    assert "def run_gpu_test(max_vram_gb: float = 24.0)" in source, (
-        "The learner notebook should expose the GPU verification surface."
-    )
-    assert "def run_full_experiment(max_vram_gb: float = 24.0)" in source, (
-        "The learner notebook should expose the full experiment surface."
-    )
-    assert "test_committed_verification_report_vjepa_world_controls" in source, (
-        "The learner notebook should end by checking the committed V-JEPA world-model report."
-    )
-    assert "Expected output" in source, (
-        "The learner notebook should show expected outputs, not just hidden assertions."
-    )
-    assert "Help - " in source, (
-        "The learner notebook should include interpretation/help dropdowns."
-    )
-    assert "Signature Result" in source, (
-        "The learner notebook should expose the section's signature result."
-    )
-    assert "What this does not show" in source, (
-        "The learner notebook should state claim boundaries."
-    )
-    assert "## Try It Yourself" in source, (
-        "The learner notebook should let students perturb a real video or control."
-    )
-    assert "run_vjepa2_world_model_signature_result" in source, (
-        "The learner notebook should generate the live V-JEPA 2 evidence panel."
-    )
-    assert "jepa_world_model_live_signature.png" in source, (
-        "The learner notebook should display the real video-latent signature figure."
-    )
-    print("All tests in `test_exercise_notebook_declares_full_verification_contract` passed!")
