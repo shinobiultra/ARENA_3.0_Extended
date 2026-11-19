@@ -1998,7 +1998,6 @@ of the same mathematical quantity.
 # ! FILTERS: []
 # ! TAGS: []
 
-import json
 import tempfile
 from types import SimpleNamespace
 from scipy.stats import rankdata
@@ -3717,70 +3716,3 @@ Read the original methods alongside your derivations:
   Compare exact path effects, first-order approximations, checkpoint heuristics
   and the meaning of a proponent or opponent.
 '''
-
-# ! CELL TYPE: code
-# ! FILTERS: []
-# ! TAGS: []
-
-# Save supporting run metadata; the figures and actual interventions above
-# are the learning results. Tensor artifacts retain every prescribed case.
-if MAIN:
-    native_summary = {
-        "scope": "real_digit_influence_and_tracin",
-        "native_model_executed": True,
-        "native_directory": str(NATIVE_DIR),
-        "device": "cpu",
-        "dtype": "float64",
-        "train_count": 128,
-        "ranking_query_count": 48,
-        "final_query_count": 64,
-        "reference_refits": sum(
-            sum(len(value[key]["theta"]) for key in ("base", "loo", "perturbations", "deletions"))
-            for value in fitted.values()
-        ),
-        "sgd_paths": sum(len(value["paths"]) for value in fitted.values()),
-        "sgd_updates": sum(
-            len(path["used_ids"]) for value in fitted.values() for path in value["paths"]
-        ),
-        "policy_selection_queries": "ranking_only",
-        "final_evaluated_after_both_reference_conditions_complete": True,
-        "independent_scipy_checks": native_reference_checks,
-        "separate_refit_checks": 6,
-        "exploratory_play": {
-            "condition": PLAY_CONDITION,
-            "query_index": PLAY_QUERY,
-            "budget": PLAY_BUDGET,
-            "refits": len(play_result["refits"]["theta"]),
-            "selected_loss_change": float(play_result["loss_changes"][0, 0]),
-        },
-        "conditions": {},
-    }
-if MAIN:
-    for condition in ["clean", "corrupted"]:
-        fits, measured = fitted[condition], results[condition]
-        actual, prediction = measured["loo_loss_changes"], measured["removal_predictions"][0]
-        native_summary["conditions"][condition] = {
-            "final_correct": int(measured["baseline"]["correct"].sum()),
-            "final_loss": float(measured["baseline"]["losses"].mean()),
-            "influence_wrong_sign": int(((actual > 0) != (prediction > 0)).sum()),
-            "train_query_pairs": actual.numel(),
-            "per_query_influence_spearman": per_query_spearman(actual, prediction).tolist(),
-            "max_refit_gradient": max(
-                float(fits[key]["gradient_norms"][-1].max())
-                for key in ("base", "loo", "perturbations", "deletions")
-            ),
-            "max_ghost_error": max(
-                path["checkpoints"]["ghost_max_error"] for path in measured["paths"]
-            ),
-            "rolled_residual_control_mean_errors": ghost_control_errors[condition],
-            "rankers": len(fits["rankers"]),
-            "deletion_policies": len(fits["policies"]),
-            "gallery_query_ids": [query_data["ids"][i] for i in gallery_queries],
-        }
-if MAIN:
-    (OUTPUT / "native_summary.json").write_text(
-        json.dumps(native_summary, indent=2, allow_nan=False) + "\n"
-    )
-if MAIN:
-    print("Saved the full study and editable-query results.")
-
