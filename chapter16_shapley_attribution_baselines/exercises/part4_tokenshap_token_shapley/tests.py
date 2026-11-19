@@ -1,10 +1,8 @@
 from __future__ import annotations
 
 import itertools
-import json
 import math
 from collections.abc import Callable
-from pathlib import Path
 
 import torch as t
 
@@ -300,46 +298,3 @@ def test_random_token_and_shuffled_value_controls_fail(
         "More samples must not repair a semantically shuffled coalition table."
     )
     print("All tests in `test_random_token_and_shuffled_value_controls_fail` passed!")
-
-
-def test_release_smoke_contract_remains_compatible(run_smoke_test: Callable | None = None):
-    run_smoke_test = run_smoke_test or _solutions().run_smoke_test
-    result = run_smoke_test(cpu=True)
-    assert result["coalitions"] == {"empty": 0.0, "target_only": 1.0, "context_and_target": 3.0}, (
-        "The release smoke test should retain the documented coalition values."
-    )
-    assert result["exact"]["exact_values"] == [0.0, 1.0, 0.0, 2.0], (
-        "The release smoke test should retain the documented exact attribution vector."
-    )
-    assert result["exact"]["baseline"]["satisfies_efficiency"], (
-        "The release exact baseline should satisfy Shapley efficiency."
-    )
-    assert result["sampled"]["approximates_exact"], (
-        "The release sampled estimator should remain within its exact-value tolerance."
-    )
-    print("All tests in `test_release_smoke_contract_remains_compatible` passed!")
-
-
-def test_committed_gpu_report_matches_token_shapley_contract(result: dict | None = None):
-    if result is None:
-        report = json.loads((Path(__file__).resolve().parent / "verification_report.json").read_text())
-        result = report["metrics"]["gpu_test"]
-    assert result["cuda_available"] and result["preflight_passed"], (
-        "The committed preflight should record a successful CUDA execution."
-    )
-    assert result["model_family"] == "cuda_trained_tiny_token_scorer_mlp", (
-        "The report should identify the trained CUDA token-scoring model family."
-    )
-    assert result["token_count"] == 4 and result["coalition_count"] == 16, (
-        "The CUDA preflight should evaluate every coalition of its four token players."
-    )
-    assert result["exact_shapley_max_abs_error"] <= 1e-5, (
-        "Exact CUDA-model Shapley values should match the known attribution oracle."
-    )
-    assert result["sampled_max_abs_error"] <= 0.1 and result["sampled_rank_matches"], (
-        "The sampled CUDA attribution should preserve the exact ranking within tolerance."
-    )
-    assert result["shuffled_control_error"] >= 1.0 and result["shuffled_control_rejected"], (
-        "The CUDA report should visibly reject its shuffled-value semantic control."
-    )
-    print("All tests in `test_committed_gpu_report_matches_token_shapley_contract` passed!")

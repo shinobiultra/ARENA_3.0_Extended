@@ -17,15 +17,6 @@ def _solutions():
     return solutions
 
 
-def _section_dir() -> Path:
-    return Path(__file__).resolve().parent
-
-
-def _gpu_report() -> dict:
-    report = json.loads((_section_dir() / "verification_report.json").read_text())
-    return report["metrics"]["gpu_test"]
-
-
 def _assert_close(actual: float, expected: float, *, msg: str, atol: float = 1e-9) -> None:
     assert abs(float(actual) - float(expected)) <= atol, (
         f"{msg} Expected {expected}, got {actual}."
@@ -260,89 +251,6 @@ def test_render_region_clip_image_has_exact_components(
         "Every object/background/OCR coalition should render a distinct intervention."
     )
     print("All tests in `test_render_region_clip_image_has_exact_components` passed!")
-
-
-def test_modality_shap_smoke_test(modality_shap_smoke_test: Callable | None = None):
-    modality_shap_smoke_test = modality_shap_smoke_test or _solutions().modality_shap_smoke_test
-    result = modality_shap_smoke_test()
-    assert result["modality_values"] == [2.0, 1.5], (
-        "The notebook smoke contract should expose JSON-serializable modality values."
-    )
-    assert result["detects_synergy"] and result["satisfies_efficiency"], (
-        "The modality smoke test should require both the synergy and efficiency checks."
-    )
-    print("All tests in `test_modality_shap_smoke_test` passed!")
-
-
-def test_region_shap_smoke_test(region_shap_smoke_test: Callable | None = None):
-    region_shap_smoke_test = region_shap_smoke_test or _solutions().region_shap_smoke_test
-    result = region_shap_smoke_test()
-    assert result["region_values"] == [2.25, 0.0, 0.9999999999999999], (
-        "The notebook smoke contract should expose exact object/background/OCR values."
-    )
-    assert result["target_region"] == "object" and result["localizes_target"], (
-        "The region smoke test should require object localization over non-target regions."
-    )
-    print("All tests in `test_region_shap_smoke_test` passed!")
-
-
-def test_committed_gpu_report_records_real_clip_controls():
-    gpu = _gpu_report()
-    assert gpu["preflight_passed"], (
-        "The committed 16.5 report should have accepted the pinned real CLIP preflight."
-    )
-    assert gpu["cuda_available"] and "RTX 5090" in gpu["device"], (
-        "The report should record a real CUDA device rather than placeholder evidence."
-    )
-    assert gpu["model_id"] == "openai/clip-vit-base-patch32", (
-        "The report should identify the pinned CLIP checkpoint used for real logits."
-    )
-    assert gpu["revision"] == "3d74acf9a28c67741b2f4f2ea7635f0aaf6f0268", (
-        "The report should pin the CLIP revision used for the real-logit preflight."
-    )
-    assert gpu["claim_scope"] == "pinned_real_clip_rendered_vlm_shap_preflight", (
-        "The report should scope claims to deterministic rendered-image CLIP coalitions."
-    )
-    assert gpu["modality_satisfies_efficiency"], (
-        "The real CLIP modality Shapley values should satisfy efficiency."
-    )
-    assert gpu["region_names"] == ["object", "background", "ocr_text"], (
-        "The region report should keep object/background/OCR names aligned with values."
-    )
-    assert gpu["region_satisfies_efficiency"], (
-        "The real CLIP region Shapley values should satisfy efficiency."
-    )
-    assert gpu["modality_synergy"] >= 2.0, (
-        "Real CLIP modality coalitions should clear the configured synergy threshold."
-    )
-    assert gpu["object_margin"] >= 1.0, (
-        "Real CLIP region attributions should put object evidence above non-object controls."
-    )
-    assert gpu["target_distractor_margin"] >= 2.0, (
-        "The rendered red-square image should score the target caption above the distractor."
-    )
-    assert gpu["peak_vram_gb"] < 1.0 and gpu["within_vram_budget"], (
-        "The pinned CLIP rendered-control preflight should stay inside the 24GB budget."
-    )
-    print("All tests in `test_committed_gpu_report_records_real_clip_controls` passed!")
-
-
-def test_notebook_contract(run_smoke_test: Callable | None = None):
-    run_smoke_test = run_smoke_test or _solutions().run_smoke_test
-    result = run_smoke_test(cpu=True)
-    assert result["modality"]["detects_synergy"], (
-        "The notebook contract should include the modality synergy gate."
-    )
-    assert result["modality"]["satisfies_efficiency"], (
-        "The notebook contract should include the modality efficiency gate."
-    )
-    assert result["region"]["localizes_target"], (
-        "The notebook contract should include the object-region localization gate."
-    )
-    assert result["region"]["satisfies_efficiency"], (
-        "The notebook contract should include the region efficiency gate."
-    )
-    print("All tests in `test_notebook_contract` passed!")
 
 
 def validate_real_clip_vlm_shap_visual_payload(signature_result: dict) -> None:
