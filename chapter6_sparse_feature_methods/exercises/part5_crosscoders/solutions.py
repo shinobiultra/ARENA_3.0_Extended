@@ -1,7 +1,6 @@
 # %%
 
 
-import json
 import sys
 from dataclasses import dataclass
 from pathlib import Path
@@ -16,10 +15,8 @@ from IPython.display import display
 
 chapter = "chapter6_sparse_feature_methods"
 section = "part5_crosscoders"
-legacy_section = "part4_crosscoders_model_diffing"
 root_dir = Path(__file__).resolve().parents[3]
 exercises_dir = root_dir / chapter / "exercises"
-section_dir = exercises_dir / legacy_section  # preserve historical lookup identity
 canonical_section_dir = exercises_dir / section
 asset_dir = canonical_section_dir / "media"
 MAIN = __name__ == "__main__"
@@ -1076,20 +1073,5 @@ if MAIN:
         "orthogonal_reduction": play_intervention.orthogonal_reduction,
     })
     display(pd.DataFrame(behavior_baseline_table(play_trained.model, play_data, play_match)))
-
-# %%
-
-def run_gpu_test(max_vram_gb: float = 24.0):
-    """Optional parent-run CUDA preflight; this notebook does not call it."""
-
-    import part4_crosscoders_model_diffing.solutions as solutions
-
-    return solutions.run_gpu_test(max_vram_gb=max_vram_gb)
-
-
-def run_full_experiment(max_vram_gb: float = 24.0):
-    """Verification entry point for the parent GPU runner."""
-
-    return run_gpu_test(max_vram_gb=max_vram_gb)
 
 # %%

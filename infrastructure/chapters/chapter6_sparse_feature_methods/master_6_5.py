@@ -65,7 +65,7 @@ r'''
 r'''
 **Scope.** This lesson retains the full synthetic paired-activation study, including student-built
 crosscoder training, planted-feature matching, behavior baselines and targeted interventions. It does not establish acausal across-layer or real base/chat crosscoders, BatchTopK,
-complete-shrinkage/latent-decoupling studies, or a real base/fine-tuned learned-crosscoder replication. The separate pinned GELU-1L/SoLU-1L preflight is separate context.
+complete-shrinkage/latent-decoupling studies, or a real base/fine-tuned learned-crosscoder replication.
 '''
 
 # ! CELL TYPE: markdown
@@ -101,7 +101,7 @@ r'''
 
 ### ☆ Bonus
 
-Keep optional real-model context separate and investigate the anomaly prompts.
+Investigate the anomaly prompts.
 '''
 
 # ! CELL TYPE: markdown
@@ -112,7 +112,7 @@ r'''
 By the end of this notebook, you will have shown that a small learned sparse crosscoder can recover planted shared and model-specific features from paired activations, predict
 held-out model-behavior deltas, and pass a targeted ablation test that same-norm random and orthogonal controls fail.
 
-The lesson takes 60-90 minutes and needs no GPU; the CPU signature run takes about 5-15 seconds. The optional TransformerLens preflight needs a CUDA GPU.
+The lesson takes 60-90 minutes and needs no GPU; the CPU signature run takes about 5-15 seconds.
 
 ## Core Question
 
@@ -144,7 +144,6 @@ result should visibly show the learned crosscoder recovering those owners and ma
 # ! FILTERS: []
 # ! TAGS: []
 
-import json
 import sys
 from dataclasses import dataclass
 from pathlib import Path
@@ -159,7 +158,6 @@ from IPython.display import display
 
 chapter = "chapter6_sparse_feature_methods"
 section = "part5_crosscoders"
-legacy_section = "part4_crosscoders_model_diffing"
 # FILTERS: ~python
 root_dir = next(p for p in [Path.cwd(), *Path.cwd().parents] if (p / chapter).exists())
 # END FILTERS
@@ -167,7 +165,6 @@ root_dir = next(p for p in [Path.cwd(), *Path.cwd().parents] if (p / chapter).ex
 root_dir = Path(__file__).resolve().parents[3]
 # END FILTERS
 exercises_dir = root_dir / chapter / "exercises"
-section_dir = exercises_dir / legacy_section  # preserve historical lookup identity
 canonical_section_dir = exercises_dir / section
 asset_dir = canonical_section_dir / "media"
 # FILTERS: python
@@ -2510,14 +2507,6 @@ if MAIN:
 
 # ! CELL TYPE: markdown
 # ! FILTERS: []
-# ! TAGS: [html]
-
-r'''
-<img src="media/crosscoder_legacy_cell_18_output_0.png" width="1100">
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
 # ! TAGS: []
 
 r'''
@@ -2573,14 +2562,6 @@ if MAIN:
 
 # ! CELL TYPE: markdown
 # ! FILTERS: []
-# ! TAGS: [html]
-
-r'''
-<img src="media/crosscoder_legacy_cell_20_output_1.png" width="1100">
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
 # ! TAGS: []
 
 r'''
@@ -2612,14 +2593,6 @@ if MAIN:
     fig.tight_layout()
     fig.savefig(asset_dir / "crosscoder_behavior_auc_baselines.png", dpi=180, bbox_inches="tight")
     plt.show()
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: [html]
-
-r'''
-<img src="media/crosscoder_legacy_cell_22_output_1.png" width="1100">
-'''
 
 # ! CELL TYPE: markdown
 # ! FILTERS: []
@@ -2682,14 +2655,6 @@ if MAIN:
     fig.tight_layout()
     fig.savefig(asset_dir / "crosscoder_intervention_bars.png", dpi=180, bbox_inches="tight")
     plt.show()
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: [html]
-
-r'''
-<img src="media/crosscoder_legacy_cell_26_output_1.png" width="1100">
-'''
 
 # ! CELL TYPE: markdown
 # ! FILTERS: []
@@ -2788,33 +2753,6 @@ r'''
 # ! TAGS: []
 
 r'''
-## GPU entry points
-
-These wrappers are not executed in the learner notebook. They refresh the optional pinned TransformerLens preflight, which does not replace the visible learned-crosscoder result above.
-'''
-
-# ! CELL TYPE: code
-# ! FILTERS: []
-# ! TAGS: []
-
-def run_gpu_test(max_vram_gb: float = 24.0):
-    """Optional parent-run CUDA preflight; this notebook does not call it."""
-
-    import part4_crosscoders_model_diffing.solutions as solutions
-
-    return solutions.run_gpu_test(max_vram_gb=max_vram_gb)
-
-
-def run_full_experiment(max_vram_gb: float = 24.0):
-    """Verification entry point for the parent GPU runner."""
-
-    return run_gpu_test(max_vram_gb=max_vram_gb)
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ## Anomaly Hunt
 
 Try to produce one negative result and explain it. Good targets:
@@ -2824,15 +2762,9 @@ Try to produce one negative result and explain it. Good targets:
 - too many latents can split one planted feature across several learned latents;
 - an SVD direction can get decent AUC while still failing the sparse ownership story.
 
-## Optional Real Paired-Model Evidence
-
-The existing `solutions.run_gpu_test(max_vram_gb=24.0)` path loads pinned TransformerLens `gelu-1l` and `solu-1l` checkpoints and
-runs a bounded paired residual-delta preflight. Treat that as real-model context, not the signature result of this notebook. The signature result above is the learned sparse
-crosscoder with exact planted ground truth.
-
 ## Limitations
 
 This section proves the method on a small planted model organism. It does not prove that a large base-vs-chat crosscoder has clean features, that dense SVD directions are useless,
-or that the optional TransformerLens preflight is a full trained-crosscoder replication. Those are follow-up experiments for the parent GPU pass.
+or that a real base-vs-chat model pair behaves like the planted pair. Those are follow-up experiments.
 '''
 
