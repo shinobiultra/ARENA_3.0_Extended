@@ -1,4 +1,4 @@
-"""Data, loading and plotting helpers for [12.3] Mini VLM from Scratch.
+"""Data, loading and plotting helpers for [12.3] Build a Mini VLM on SigLIP and GPT-2.
 
 Nothing in here is part of the method you're learning: it's the scene renderer (the "world" we ask
 questions about), model-loading helpers, and plotting code. All of the VLM logic (projector, input
@@ -151,6 +151,39 @@ def make_counterfactual_pairs(n: int, seed: int) -> list[tuple[Scene, Scene, int
     return pairs
 
 
+def make_shape_pairs(n: int, seed: int) -> list[tuple[Scene, Scene, int]]:
+    """
+    `n` triples (clean scene, corrupted scene, index) for questions about SHAPE: scenes with one or two objects, and the
+    corrupted scene is the clean one with object `index` changed to a shape that no object in the scene has. Colours,
+    positions, sizes and noise are identical.
+    """
+    rng = np.random.default_rng(seed)
+    pairs = []
+    for _ in range(n):
+        scene = sample_scene(rng, n_objects=int(rng.choice([1, 2])))
+        index = int(rng.integers(len(scene.objects)))
+        unused = [shape for shape in SHAPES if shape not in {o.shape for o in scene.objects}]
+        corrupt = copy.deepcopy(scene)
+        corrupt.objects[index].shape = str(rng.choice(unused))
+        pairs.append((scene, corrupt, index))
+    return pairs
+
+
+def pair_bootstrap_band(per_pair, n_boot: int = 1000, level: float = 0.95, seed: int = 0):
+    """
+    Pair-bootstrap band for a mean over counterfactual pairs. `per_pair` has shape (pairs, ...): one row per pair, for
+    example that pair's recovery at every layer. Pairs are resampled with replacement as whole rows, `n_boot` times, so
+    values that belong to the same pair stay together. Returns (mean, low, high), each of shape `per_pair.shape[1:]`;
+    low and high are the central `level` of the resampled means.
+    """
+    values = t.as_tensor(per_pair, dtype=t.float64).cpu()
+    n = values.shape[0]
+    generator = t.Generator().manual_seed(seed)
+    resampled = values[t.randint(0, n, (n_boot, n), generator=generator)].mean(dim=1)  # (n_boot, ...)
+    tail = (1 - level) / 2
+    return values.mean(dim=0), resampled.quantile(tail, dim=0), resampled.quantile(1 - tail, dim=0)
+
+
 # ---------------------------------------------------------------------------------------------
 # Model loading and tokenisation plumbing
 # ---------------------------------------------------------------------------------------------
@@ -185,11 +218,13 @@ def tokenize_prompts(model, prompts: list[str]) -> tuple[t.Tensor, t.Tensor]:
 
 
 def load_qwen(device: t.device | str):
-    """Qwen3-VL-2B-Instruct (bf16, eval mode) and its processor."""
+    """Qwen3-VL-2B-Instruct (bf16, eval mode, eager attention so that attention patterns can be read) and its processor."""
     from transformers import AutoModelForImageTextToText, AutoProcessor
 
     processor = AutoProcessor.from_pretrained("Qwen/Qwen3-VL-2B-Instruct", revision="89644892e4d85e24eaac8bacfd4f463576704203")
-    model = AutoModelForImageTextToText.from_pretrained("Qwen/Qwen3-VL-2B-Instruct", revision="89644892e4d85e24eaac8bacfd4f463576704203", dtype=t.bfloat16).to(device).eval()
+    model = AutoModelForImageTextToText.from_pretrained(
+        "Qwen/Qwen3-VL-2B-Instruct", revision="89644892e4d85e24eaac8bacfd4f463576704203", dtype=t.bfloat16, attn_implementation="eager"
+    ).to(device).eval()
     model.requires_grad_(False)
     return model, processor
 
@@ -235,6 +270,13 @@ def qwen_cache_layer_inputs(model, inputs) -> dict[int, t.Tensor]:
         for handle in handles:
             handle.remove()
     return cache
+
+
+def qwen_attention_patterns(model, inputs) -> t.Tensor:
+    """Run Qwen once and return its attention patterns as one float tensor of shape (layer, head, query, key)."""
+    with t.no_grad():
+        attentions = model(**inputs, output_attentions=True).attentions
+    return t.stack([layer[0] for layer in attentions]).float()
 
 
 # ---------------------------------------------------------------------------------------------
@@ -548,32 +590,37 @@ def plot_bars(
     plt.show()
 
 
-def plot_relative_depth_curves(
-    panels: dict[str, tuple[dict[str, list[float]], list[int], int]], controls: tuple[str, ...] = ()
+def plot_signature_recovery(
+    models: dict[str, tuple[dict[str, t.Tensor], list[int], int]], sets: list[str], controls: tuple[str, ...] = (), title: str = ""
 ) -> None:
     """
-    One panel per model. panels[title] = (curves, layers, n_layers), where curves[name] has one value per entry of
-    `layers`. The x-axis is relative depth layer / n_layers, so models with different depths can be compared.
+    The recovery-against-depth figure. models[name] = (recovery, layers, n_layers), where recovery[set] has shape
+    (len(layers), pairs): the recovery of every pair at each layer. One colour per token set, one line style per model, and a
+    pair-bootstrap band around every mean. The x-axis is relative depth, layer / (n_layers - 1), so models of different depth overlay.
     """
-    fig, axes = plt.subplots(1, len(panels), figsize=(6.4 * len(panels), 4.2), sharey=True, squeeze=False)
-    palette = [BLUE, ORANGE, GREEN, RED, PURPLE]
-    control_palette = [GREY, "#8c564b", "#bcbd22", "#17becf"]
-    for ax, (title, (curves, layers, n_layers)) in zip(axes[0], panels.items()):
-        i = j = 0
-        for name, values in curves.items():
-            xs = [layer / n_layers for layer in layers]
-            if name in controls:
-                ax.plot(xs, values, "--s", color=control_palette[j % 4], label=name, markersize=3.5)
-                j += 1
-            else:
-                ax.plot(xs, values, "-o", color=palette[i % 5], label=name, markersize=4)
-                i += 1
-        ax.set_title(title, fontsize=10)
-        ax.set_xlabel("relative depth (layer / number of layers)")
-        ax.set_ylim(-0.05, 1.08)
-        ax.grid(alpha=0.3)
-    axes[0, 0].set_ylabel("recovery (0 = corrupted answer, 1 = clean answer)")
-    axes[0, 0].legend(fontsize=8)
+    colours = {name: c for name, c in zip(sets, [BLUE, RED, GREEN, GREY, ORANGE, PURPLE])}
+    styles = [("-", "o"), ("--", "s")]
+    fig, ax = plt.subplots(figsize=(9, 5))
+    for (model_name, (recovery, layers, n_layers)), (linestyle, marker) in zip(models.items(), styles):
+        xs = [layer / (n_layers - 1) for layer in layers]
+        for name in sets:
+            mean, low, high = pair_bootstrap_band(recovery[name].T)  # resample pairs: rows of (pairs, layers)
+            kind = (0, (3, 2)) if name in controls and linestyle == "--" else linestyle
+            ax.plot(xs, mean.numpy(), linestyle=kind, marker=marker, markersize=4, color=colours[name], lw=1.6)
+            ax.fill_between(xs, low.numpy(), high.numpy(), color=colours[name], alpha=0.18, lw=0)
+    set_handles = [plt.Line2D([], [], color=colours[name], lw=2, label=name) for name in sets]
+    model_handles = [
+        plt.Line2D([], [], color="k", ls=ls, marker=m, markersize=4, lw=1.4, label=model_name)
+        for model_name, (ls, m) in zip(models, styles)
+    ]
+    legend_sets = ax.legend(handles=set_handles, title="patched tokens", fontsize=8, loc="upper right")
+    ax.add_artist(legend_sets)
+    ax.legend(handles=model_handles, title="model", fontsize=8, loc="center right")
+    ax.set_ylim(-0.1, 1.12)
+    ax.set_xlabel("relative depth: layer / (number of layers - 1)")
+    ax.set_ylabel("recovery (0 = corrupted answer, 1 = clean answer)")
+    ax.set_title(title, fontsize=10)
+    ax.grid(alpha=0.3)
     plt.tight_layout()
     plt.show()
 

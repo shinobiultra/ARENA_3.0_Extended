@@ -377,6 +377,39 @@ def test_attention_mass(attention_mass: Callable):
     print("All tests in `test_attention_mass` passed!")
 
 
+def test_top_attention_mask(top_attention_mask: Callable):
+    # 2 layers, 2 heads, 8 positions: BOS (0), five image tokens (1-5), one question token (6), the answer position (7).
+    # Every row of the answer position's attention sums to 1.
+    patterns = t.zeros(2, 2, 8, 8)
+    image_attention = {  # attention from position 7 to the five image tokens, per (layer, head)
+        (0, 0): [0.10, 0.02, 0.20, 0.03, 0.05],
+        (0, 1): [0.10, 0.02, 0.20, 0.03, 0.05],
+        (1, 0): [0.05, 0.02, 0.01, 0.30, 0.12],
+        (1, 1): [0.05, 0.02, 0.01, 0.30, 0.12],
+    }
+    for (layer, head), values in image_attention.items():
+        patterns[layer, head, 7, 0] = 0.3  # the BOS token soaks up the most attention of any single key
+        patterns[layer, head, 7, 1:6] = t.tensor(values)
+        patterns[layer, head, 7, 6] = 1 - 0.3 - sum(values)
+    patterns[:, :, 6, 2] = 0.9  # a different query position strongly attends to image token 1
+    before = patterns.clone()
+    # Averaged over layers and heads the five image tokens get 0.075, 0.02, 0.105, 0.165, 0.085: best are 3, 2, 4, 0, 1.
+    cases = {
+        0: [False] * 5,
+        1: [False, False, False, True, False],
+        2: [False, False, True, True, False],
+        3: [False, False, True, True, True],
+        5: [True] * 5,
+    }
+    for k, expected in cases.items():
+        out = top_attention_mask(patterns, 7, slice(1, 6), k)
+        assert out.dtype == t.bool, f"Expected a boolean mask, got {out.dtype}"
+        assert tuple(out.shape) == (5,), f"Expected one entry per image token, shape (5,), got {tuple(out.shape)}"
+        assert out.tolist() == expected, f"k={k}: expected {expected}, got {out.tolist()}"
+    assert t.equal(patterns, before), "top_attention_mask must not modify the patterns"
+    print("All tests in `test_top_attention_mask` passed!")
+
+
 def _random_inputs(model: HookedTransformer, batch: int, seq: int, seed: int) -> t.Tensor:
     g = t.Generator().manual_seed(seed)
     tokens = t.randint(0, 5000, (batch, seq), generator=g).to(model.cfg.device)
@@ -423,7 +456,7 @@ def test_logit_diff_recovery(logit_diff_recovery: Callable):
     clean = t.tensor([[3.0, 0.0, 1.0], [0.0, 2.0, 5.0]])
     corrupt = t.tensor([[0.0, 4.0, 1.0], [1.0, 0.0, 1.0]])
     clean_ids, corrupt_ids = t.tensor([0, 2]), t.tensor([1, 0])
-    # logit differences: clean runs 3 and 4; corrupted runs -4 and 0
+    # logit differences: clean runs 3 and 5; corrupted runs -4 and 0
     out = logit_diff_recovery(clean, clean, corrupt, clean_ids, corrupt_ids)
     t.testing.assert_close(out, t.ones(2), msg="Patched = clean should give recovery 1")
     out = logit_diff_recovery(corrupt, clean, corrupt, clean_ids, corrupt_ids)
@@ -435,6 +468,37 @@ def test_logit_diff_recovery(logit_diff_recovery: Callable):
     out = logit_diff_recovery(patched, clean, corrupt, clean_ids, corrupt_ids)
     t.testing.assert_close(out[0], t.tensor(4.5 / 7), msg="Example 0 should be (0.5 + 4) / (3 + 4)")
     assert out.shape == (2,), f"Expected one recovery per example, got shape {tuple(out.shape)}"
+
+    def expect_error(patched, clean, corrupt, message):
+        try:
+            logit_diff_recovery(patched, clean, corrupt, t.zeros(len(clean), dtype=t.long), t.ones(len(clean), dtype=t.long))
+        except ValueError:
+            return
+        raise AssertionError(message)
+
+    def cohort(gaps, patched_ld=None):
+        """Logits for a cohort where the clean-minus-corrupt gap of pair i is gaps[i] (clean id 0, corrupt id 1)."""
+        n = len(gaps)
+        clean_run, corrupt_run = t.zeros(n, 3), t.zeros(n, 3)
+        clean_run[:, 0] = t.as_tensor(gaps, dtype=t.float32)  # logit difference of the clean run = the gap
+        patched_run = t.zeros(n, 3)
+        patched_run[:, 0] = clean_run[:, 0] if patched_ld is None else t.as_tensor(patched_ld, dtype=t.float32)
+        return patched_run, clean_run, corrupt_run
+
+    # One bad pair stops the whole cohort: pair 7 has gap 4 and pair 9 has gap 0, so nothing may be returned.
+    gaps = [2.0, 3.0, 5.0, 1.0, 6.0, 2.5, 3.5, 4.0, 2.0, 0.0]
+    expect_error(*cohort(gaps), "A pair with clean-minus-corrupt gap 0 (pair 9) must stop the whole cohort before any mean")
+    # A reversed gap is also an error ...
+    expect_error(*cohort([2.0, 3.0, -1.0, 4.0]), "A reversed gap (clean run below corrupted run) must raise")
+    # ... and so is a gap that is not a finite number, or a patched run that is not
+    expect_error(*cohort([2.0, float("nan"), 4.0]), "A nan gap must raise")
+    expect_error(*cohort([2.0, float("inf"), 4.0]), "An infinite gap must raise")
+    expect_error(*cohort([2.0, 3.0, 4.0], patched_ld=[1.0, float("nan"), 2.0]), "A nonfinite patched logit must raise")
+    # A tiny positive gap is a real gap: keep it. Recovery above 1 or below 0 is a result, not an error.
+    out = logit_diff_recovery(*cohort([1e-6, 2.0], patched_ld=[0.5e-6, 3.0]), t.zeros(2, dtype=t.long), t.ones(2, dtype=t.long))
+    t.testing.assert_close(out, t.tensor([0.5, 1.5]), msg="A gap of 1e-6 is valid; recovery 1.5 must not be clipped")
+    out = logit_diff_recovery(*cohort([2.0, 4.0], patched_ld=[-1.0, 4.0]), t.zeros(2, dtype=t.long), t.ones(2, dtype=t.long))
+    t.testing.assert_close(out, t.tensor([-0.5, 1.0]), msg="Recovery below 0 must be returned as it is")
     print("All tests in `test_logit_diff_recovery` passed!")
 
 
@@ -454,13 +518,27 @@ def test_patching_sweep(patching_sweep: Callable, model: HookedTransformer):
     corrupt_ids = corrupt_logits.argmax(-1)
     assert (clean_ids != corrupt_ids).all(), "test setup: the two runs should have different top tokens"
     none = t.zeros(batch, seq, dtype=t.bool, device=clean.device)
-    masks = {"nothing": none, "everything": t.ones_like(none)}
+    partial = none.clone()
+    partial[0, 2:6] = True
+    partial[1, 5] = True
+    partial[3, 9:11] = True
+    masks = {"nothing": none, "everything": t.ones_like(none), "partial": partial}
     curves = patching_sweep(model, corrupt, clean_resids, masks, clean_logits, corrupt_logits, clean_ids, corrupt_ids, answer_pos, [0, 5, 11])
     assert set(curves) == set(masks), f"Expected one curve per mask, got {sorted(curves)}"
-    assert all(len(v) == 3 for v in curves.values()), "Each curve should have one value per layer in `layers`"
-    assert all(isinstance(x, float) for v in curves.values() for x in v), "Return Python floats"
-    assert np.allclose(curves["nothing"], 0, atol=1e-3), f"Patching nothing should recover 0, got {curves['nothing']}"
-    assert np.allclose(curves["everything"], 1, atol=1e-3), f"Patching everything should recover 1, got {curves['everything']}"
+    for name, values in curves.items():
+        assert tuple(values.shape) == (3, batch), f"`{name}`: expected one recovery per layer and pair, shape (3, {batch}), got {tuple(values.shape)}"
+    assert t.allclose(curves["nothing"], t.zeros(3, batch), atol=1e-3), f"Patching nothing should recover 0, got {curves['nothing']}"
+    assert t.allclose(curves["everything"], t.ones(3, batch), atol=1e-3), f"Patching everything should recover 1, got {curves['everything']}"
+    # At layer 0 a partial patch is the same as feeding the mixed embeddings through the model: work the recovery out by hand
+    with t.no_grad():
+        mixed_logits = answer_logits(t.where(partial[..., None], clean, corrupt))
+    rows = t.arange(batch)
+
+    def logit_diff(logits):
+        return logits[rows, clean_ids] - logits[rows, corrupt_ids]
+
+    expected = (logit_diff(mixed_logits) - logit_diff(corrupt_logits)) / (logit_diff(clean_logits) - logit_diff(corrupt_logits))
+    t.testing.assert_close(curves["partial"][0], expected, atol=2e-3, rtol=2e-3, msg="Layer-0 recovery of the partial patch, pair by pair")
     print("All tests in `test_patching_sweep` passed!")
 
 

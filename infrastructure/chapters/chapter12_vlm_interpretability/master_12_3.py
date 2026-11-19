@@ -5,11 +5,12 @@
 r'''
 ```python
 [
-    {"title": "A World to Ask Questions About", "icon": "1-circle-fill", "subtitle": "(15%)"},
-    {"title": "Building the VLM", "icon": "2-circle-fill", "subtitle": "(20%)"},
-    {"title": "Training and Modality Controls", "icon": "3-circle-fill", "subtitle": "(20%)"},
+    {"title": "A World to Ask Questions About", "icon": "1-circle-fill", "subtitle": "(10%)"},
+    {"title": "Building the VLM", "icon": "2-circle-fill", "subtitle": "(15%)"},
+    {"title": "Training and Modality Controls", "icon": "3-circle-fill", "subtitle": "(15%)"},
     {"title": "Where Does the Answer Come From?", "icon": "4-circle-fill", "subtitle": "(30%)"},
     {"title": "Is a Real VLM Doing the Same?", "icon": "5-circle-fill", "subtitle": "(10%)"},
+    {"title": "Held-out Quiz", "icon": "bullseye", "subtitle": "(15%)"},
     {"title": "Bonus", "icon": "star", "subtitle": "(5%)"},
 ]
 ```
@@ -20,7 +21,7 @@ r'''
 # ! TAGS: []
 
 r'''
-# [12.3] Mini VLM from Scratch
+# [12.3] Build a Mini VLM on SigLIP and GPT-2
 '''
 
 # ! CELL TYPE: markdown
@@ -45,7 +46,7 @@ r'''
 
 r'''
 Here is a picture: a blue circle in the top-right corner, a yellow triangle in the bottom-left, and a green square in the bottom-right. Here are three questions about it, and the
-answers of the model you'll build in this section (from the executed play cell below, choosing the highest-probability valid answer):
+answers of the model you'll build (you'll run this scene yourself at the end of Part 3, and we take the highest-probability valid answer):
 
 ```
 Question: What colour is the circle? Answer:                  blue
@@ -53,11 +54,16 @@ Question: How many shapes are there? Answer:                  three
 Question: Is the circle at the top or the bottom? Answer:     top
 ```
 
-The model that produces these answers is a **vision-language model** (VLM), assembled from three pieces: a frozen image encoder (SigLIP), a small language model (GPT-2 Small), and
-a thin trained **projector** that translates one into the other. This is the recipe of LLaVA (Liu et al., 2023), shrunk until it trains in a few minutes on one GPU. The image is
-cut into patches, the patches are embedded by the vision encoder, and the projector turns them into a short sequence of **image tokens** that sit in the language model's context
-window *in front of* the question. From then on the language model treats them like any other tokens: it attends to them, moves their contents around, and eventually writes an
-answer. Qwen-VL, InternVL, PaliGemma and LLaVA all work this way; the differences are in the details and in the scale.
+Some numbers about this model, all on held-out scenes. It names the colour of a shape correctly 99.9% of the time. Show it a blank image instead and the same colour questions
+get 19% right, and the best any model could do without seeing the image is 16% (one in six, give or take). And one result won't behave: asking whether a shape is on the left or the
+right, the model is stuck at 84%, and we don't know why. You'll measure all of these, and find out which part of the network is responsible for the ones that work.
+
+The model is a **vision-language model** (VLM), assembled from three pieces: a frozen image encoder (SigLIP), a small language model (GPT-2 Small), and a thin trained
+**projector** that translates one into the other. The encoder and the language model are both pretrained and we don't change the encoder at all; **what you build is the projector, the
+image tokens, the training and the controls.** This is the recipe of LLaVA (Liu et al., 2023), shrunk until it trains in a few minutes on one GPU. The image is cut into patches,
+the patches are embedded by the vision encoder, and the projector turns them into a short sequence of **image tokens** that sit in the language model's context window *in front of*
+the question. From then on the language model treats them like any other tokens: it attends to them, moves their contents around, and eventually writes an answer. Qwen-VL,
+InternVL, PaliGemma and LLaVA all work this way; the differences are in the details and in the scale.
 
 That design raises questions that a text-only transformer never has to ask:
 
@@ -76,19 +82,23 @@ and you will check that they do:
 - **blank and noise images**, and **shuffled image-question pairs** (the right question with someone else's image);
 - a **text-only model** trained on the same questions with no image at all, and the best an image-blind guesser could do in principle;
 - a **random, untrained projector**;
-- for the interpretability experiments: **random vectors**, **background tokens**, **same-size random sets of tokens**, and **other objects' tokens**.
-
-By the end you will have built the whole pipeline (data, vision features, projector, input assembly, training loop, evaluation) and produced these pictures: the VLM's accuracy next
-to every control; what a logit lens makes of image tokens; which heads, and which layers, read the object's tokens; an activation-patching curve showing that the object's few image
-tokens recover most of the answer contrast through layers 0–8 and that the answer then moves to the last position; and matching experiments on a real 2B-parameter VLM (Qwen3-VL),
-where a similar broad pattern appears.
+- for the interpretability experiments: **random vectors**, **background tokens**, **same-size random sets of tokens**, **other objects' tokens** and the **tokens the answer position attends to most**.
 
 You'll also find things that don't match the tidy story. The logit lens does not cleanly show colour words at the object's tokens, and background tokens carry some decodable colour
 information despite having much smaller mean patching effects. Reporting those honestly is part of the exercise.
 
-**Prerequisites.** You should be comfortable with TransformerLens hooks and the residual stream ([1.2] Intro to Mech Interp), a basic PyTorch training loop ([0.3]), and activation
-patching ([1.3]). Section [7.1] (logit lens and Patchscopes) is useful background, and [12.1] (CLIP and SigLIP from Scratch) explains the vision encoder we use here, though you
-don't need it: we treat SigLIP as a frozen feature extractor.
+**In this section you will:**
+
+- build a projector that turns image patches into GPT-2 tokens, and train it;
+- test the VLM against blank, noise, shuffled, random-projector, text-only and image-only controls;
+- find where the answer comes from with lenses, attention and patching, against same-size background controls;
+- check whether Qwen3-VL shows the same pattern. The signature result is one figure: how much of the answer's contrast patching restores at each depth, for the object's tokens, the answer position and
+  three controls, in your mini VLM and in Qwen3-VL on top of each other.
+
+**Prerequisites.** You should be comfortable with TransformerLens hooks and the residual stream ([1.2 Intro to Mech Interp](https://learn.arena.education/chapter1_transformer_interp/02_intro_mech_interp/)),
+a basic PyTorch training loop, and activation patching ([1.4.1 Indirect Object Identification](https://learn.arena.education/chapter1_transformer_interp/21_ioi/)). Section
+[7.1](../../../chapter7_activation_to_language/exercises/part1_lenses_patchscopes/7.1_Logit_Lens_Tuned_Lens_and_Patchscopes_exercises.ipynb) (logit lens and Patchscopes) is useful background, and
+[12.1](../part1_clip_siglip/12.1_CLIP_and_SigLIP_from_Scratch_exercises.ipynb) (CLIP and SigLIP from Scratch) explains the vision encoder we use here, though you don't need it: we treat SigLIP as a frozen feature extractor.
 '''
 
 # ! CELL TYPE: markdown
@@ -125,43 +135,57 @@ and compare the untrained VLM with uniform-chance and image-blind baselines.
 ### 3️⃣ Training and Modality Controls
 
 You'll train the projector alone (with GPT-2 frozen), then the projector and GPT-2 together, and compare. Then comes the question that matters: is the trained model *using the
-image*? You'll evaluate it on blank images, noise images, shuffled image-question pairs, a random projector and a text-only model, and plot all of them next to the trained VLM.
+image*? You'll evaluate it on blank images, noise images, shuffled image-question pairs, a random projector and a text-only model, and plot all of them next to the trained VLM. Last,
+you'll take the question away and keep the picture, to see how much of the answer the image alone can give.
 
 > ##### Learning Objectives
 >
 > - Implement a VLM training loop with frozen and trainable parameter groups
 > - Build the standard modality controls (blank, noise, shuffled, random projector, text-only) and check that each one fails
 > - Read a VLM's accuracy against the best image-blind baseline instead of against zero
-> - See what a model does when its image carries no information
+> - See what a model does when its image carries no information, and what it can still do when the question is missing
 
 ### 4️⃣ Where Does the Answer Come From?
 
 You'll open up the trained model with four tools of increasing strength: a logit lens on image tokens (what do they decode to?), attention from the answer position (what does it
 read?), activation patching of image tokens (what is *sufficient* to change the answer?), and attention knockout (which routes are *necessary*?). Every tool is run against a
-control: background tokens, same-size random token sets, random vectors.
+control: background tokens, same-size random token sets, random vectors, and the tokens the answer position attends to most.
 
 > ##### Learning Objectives
 >
 > - Apply the logit lens to image tokens, and see why a decoding that looks at the whole vocabulary can miss information that a restricted decoding finds
 > - Measure attention from the answer position to a token set, and compare to a same-size random control
-> - Implement activation patching on image tokens with clean/corrupted counterfactual scenes, and read the layer-by-layer recovery curve
+> - Implement activation patching on image tokens with clean/corrupted counterfactual scenes, and read the layer-by-layer recovery curve, stopping on any pair whose clean and corrupted answers do not differ
+> - Compare the object's tokens with the tokens the answer position attends to most
 > - Use attention knockout to test which information routes the model needs, and tell "decodable", "attended", "sufficient" and "necessary" apart
 
 ### 5️⃣ Is a Real VLM Doing the Same?
 
-You'll repeat the modality controls and the patching experiment on Qwen3-VL-2B-Instruct, a real VLM with a 28-layer language model, on exactly the same scenes, and compare the
-shape of the two recovery curves.
+You'll repeat the modality controls and the patching experiment on Qwen3-VL-2B-Instruct, a real VLM with a 28-layer language model, on exactly the same scenes, and draw the
+lesson's signature figure: the two recovery curves on one relative-depth axis, with uncertainty bands.
 
 > ##### Learning Objectives
 >
 > - Run forced-choice evaluation and modality controls on a real VLM
 > - Implement activation patching on a Hugging Face model with forward pre-hooks
-> - Compare a toy and a real VLM on a relative-depth axis, and identify the architectural details (such as DeepStack) that complicate the comparison
+> - Compare a toy and a real VLM on a relative-depth axis, with a band showing how much the answer depends on which counterfactual pairs you drew, and identify the architectural details (such as DeepStack) that complicate the comparison
+
+### 🎯 Held-out Quiz
+
+Four experiments we ran on your mini VLM and didn't show you. Each changes one thing in a call you made. You'll predict each result and write down why, then see what really
+happened and what a good mental model would have said.
+
+> ##### Learning Objectives
+>
+> - Predict the result of a change to a run or an experiment from results you've already measured
+> - Name the result your prediction rests on, and notice when a result you trusted stops at the edge of what you tested
+> - Find the places where your picture of "the answer lives in the object's tokens" is too narrow
 
 ### ☆ Bonus
 
-Suggestions for going further: the original two-stage LLaVA recipe, why *left or right* is the hardest question for a flattened image, LoRA instead of full fine-tuning, a frozen
-random projector, compositional generalisation, language priors versus evidence, and the papers behind everything in this section.
+What this lesson doesn't show, and suggestions for going further: the original two-stage LLaVA recipe, why *left or right* is the hardest question for a flattened image, LoRA
+instead of full fine-tuning, a frozen random projector, compositional generalisation, language priors versus evidence, a tuned lens for image tokens, scaling up, and the papers
+behind everything in this section.
 '''
 
 # ! CELL TYPE: markdown
@@ -170,6 +194,8 @@ random projector, compositional generalisation, language priors versus evidence,
 
 r'''
 ## Setup code
+
+SETUP_LINE_PLACEHOLDER
 '''
 
 # ! CELL TYPE: code
@@ -181,26 +207,6 @@ from IPython import get_ipython
 ipython = get_ipython()
 ipython.run_line_magic("load_ext", "autoreload")
 ipython.run_line_magic("autoreload", "2")
-
-# ! CELL TYPE: code
-# ! FILTERS: [colab]
-# ! TAGS: [master-comment]
-
-# import os
-# import sys
-#
-# IN_COLAB = "google.colab" in sys.modules
-#
-# if IN_COLAB:
-#     # Install dependencies, and download this chapter's exercise files from the ARENA extension repo
-#     %pip install transformer_lens==2.16.1 jaxtyping einops
-#     repo, branch, chapter = "ARENA_3.0_Extended", "main", "chapter12_vlm_interpretability"
-#     if not os.path.exists(f"/content/{chapter}"):
-#         !wget -P /content https://github.com/shinobiultra/{repo}/archive/refs/heads/{branch}.zip
-#         !unzip -q /content/{branch}.zip '{repo}-{branch}/{chapter}/exercises/*' -d /content
-#         !mv /content/{repo}-{branch}/{chapter} /content/{chapter}
-#         !rm -r /content/{branch}.zip /content/{repo}-{branch}
-#     os.chdir(f"/content/{chapter}/exercises")
 
 # ! CELL TYPE: code
 # ! FILTERS: []
@@ -709,8 +715,8 @@ r'''
 ### What does SigLIP see?
 
 Each of the 196 patch embeddings is a 768-dimensional vector. To get a feel for what they hold, we colour each patch by its **top three principal components** (PCA fit jointly over
-the patches of all the scenes shown, so a colour means the same thing in every panel). If SigLIP's patch embeddings are doing their job, patches covering a shape should look
-different from background patches, and different from each other when the shapes differ.
+the patches of all the scenes shown, so a colour means the same thing in every panel; PCA is built from scratch in 0.7 Foundations Toolkit, Part 2). If SigLIP's patch embeddings
+are doing their job, patches covering a shape should look different from background patches, and different from each other when the shapes differ.
 '''
 
 # ! CELL TYPE: code
@@ -1375,9 +1381,11 @@ instruction-following data.
 We'll compare the two regimes directly, from the same starting point (pretrained GPT-2, freshly initialised projector):
 
 - **(A) projector only.** GPT-2 is frozen at its pretrained weights. The projector has about 3 million parameters. This is like LLaVA's stage 1, except that we train on questions and answers instead of captions.
-- **(B) projector and GPT-2 together.** About 127 million trainable parameters.
+- **(B) projector and GPT-2 together.** About 166 million trainable parameters. That counts everything the training loop can change: the projector's 3.0M, GPT-2 Small's 124M, and a second copy of
+  the 38.6M-entry unembedding matrix, because TransformerLens keeps the unembedding as its own parameter instead of tying it to the token embedding.
 
-The loss is the cross-entropy of the **answer token only**: we feed `[BOS, image tokens, question]`, read the logits at the last question token with `vlm_answer_logits`, and
+The loss is the cross-entropy of the **answer token only** (the score that is low when the model puts its probability on the right answer; 0.7 Foundations Toolkit, Part 1 builds it from
+scratch): we feed `[BOS, image tokens, question]`, read the logits at the last question token with `vlm_answer_logits`, and
 compare them with the right answer's token id. (We don't train the model to predict the question text, only the answer.) For the optimiser we use AdamW with a **one-cycle
 schedule** (linear warm-up over the first 10% of steps, then cosine decay) and **different learning rates for the two parameter groups**: $10^{-3}$ for the freshly initialised
 projector, $2 \times 10^{-4}$ for GPT-2 (small by projector standards, but large for a language model, because this is a short run on a tiny task). Matrix multiplies run in
@@ -1597,7 +1605,7 @@ lm_a = copy.deepcopy(gpt2)
 start = time.time()
 losses_a = train_vlm(lm_a, projector_a, train_features, train_scenes, n_steps=600, train_lm=False)
 n_trainable = sum(p.numel() for p in projector_a.parameters())
-print(f"(A) projector only: {n_trainable / 1e6:.1f}M trainable parameters, {time.time() - start:.0f}s, final loss {np.mean(losses_a[-50:]):.3f}")
+print(f"(A) projector only: {n_trainable / 1e6:.1f}M trainable parameters (projector), {time.time() - start:.0f}s, final loss {np.mean(losses_a[-50:]):.3f}")
 results_a = evaluate_vlm(lm_a, projector_a, test_features, test_questions)
 del lm_a
 t.cuda.empty_cache()
@@ -1609,7 +1617,7 @@ vlm = copy.deepcopy(gpt2)
 start = time.time()
 losses_b = train_vlm(vlm, projector, train_features, train_scenes, n_steps=1500, train_lm=True)
 n_trainable = sum(p.numel() for p in projector.parameters()) + sum(p.numel() for p in vlm.parameters())
-print(f"(B) projector + GPT-2: {n_trainable / 1e6:.0f}M trainable parameters, {time.time() - start:.0f}s, final loss {np.mean(losses_b[-50:]):.4f}")
+print(f"(B) projector + GPT-2: {n_trainable / 1e6:.0f}M trainable parameters (projector + GPT-2 incl. its separate unembedding), {time.time() - start:.0f}s, final loss {np.mean(losses_b[-50:]):.4f}")
 results_b = evaluate_vlm(vlm, projector, test_features, test_questions)
 vlm.requires_grad_(False)
 projector.requires_grad_(False)
@@ -1628,8 +1636,8 @@ r'''
 
 The times depend on your GPU (these are from an NVIDIA L40S).
 
-<pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace">(A) projector only: 3.0M trainable parameters, 55s, final loss 0.338
-(B) projector + GPT-2: 166M trainable parameters, 182s, final loss 0.0600
+<pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace">(A) projector only: 3.0M trainable parameters (projector), 55s, final loss 0.338
+(B) projector + GPT-2: 166M trainable parameters (projector + GPT-2 incl. its separate unembedding), 182s, final loss 0.0600
                         colour  shape  count  horizontal  vertical
 (A) projector only       0.615  0.991  1.000       0.741     0.775
 (B) projector + GPT-2    0.999  1.000  0.998       0.844     0.990
@@ -1689,8 +1697,8 @@ the image-blind floor:
 5. **Text-only model.** GPT-2 fine-tuned on the same questions and answers with **no image tokens at all**, with the same optimiser and a shorter schedule (it has less to learn). This measures how far one can get from question text alone, as a trained model rather than as an analytic bound.
 6. **Best image-blind guess**, which we computed in Part 1.
 
-Make a prediction for each before running anything: what does a model that never uses the image say, and what do you expect from the shuffled pairs in particular, for `count`
-questions? (Hint for the last one: if the shuffled scene happens to contain the same number of objects, the answer is still right.)
+**Make a prediction first:** what accuracy will the shuffled image-question pairs get on `count` questions, compared with the best image-blind guess of 0.41? (Hint: if the shuffled scene
+happens to contain the same number of objects, the answer is still right.)
 '''
 
 # ! CELL TYPE: markdown
@@ -1753,25 +1761,74 @@ Now we build all the controls and evaluate. For the text-only baseline we train 
 the projector is passed for the API but never used).
 '''
 
+# ! CELL TYPE: code
+# ! FILTERS: []
+# ! TAGS: [main]
+
+n_test = len(test_scenes)
+blank_features = extract_patch_features(siglip, utils.render_scenes([Scene([], background=235)])).expand(n_test, -1, -1)
+noise_features = extract_patch_features(siglip, utils.noise_images(n_test, seed=0))
+shuffled_features = test_features[derangement(n_test, seed=0).to(device)]
+
+t.manual_seed(0)
+random_projector = Projector().to(device)
+text_only_lm = copy.deepcopy(gpt2)
+losses_text = train_vlm(text_only_lm, Projector().to(device), train_features, train_scenes, n_steps=400, train_lm=True, use_image=False)
+text_only_lm.requires_grad_(False)
+
+all_results = {
+    "trained VLM (B)": results_b,
+    "projector only (A)": results_a,
+    "blank image": evaluate_vlm(vlm, projector, blank_features, test_questions),
+    "noise image": evaluate_vlm(vlm, projector, noise_features, test_questions),
+    "shuffled image-question pairs": evaluate_vlm(vlm, projector, shuffled_features, test_questions),
+    "random projector": evaluate_vlm(vlm, random_projector, test_features, test_questions),
+    "text-only model": evaluate_vlm(text_only_lm, projector, test_features, test_questions, use_image=False),
+}
+display(pd.DataFrame(all_results).round(3).T)
+utils.plot_accuracy_by_condition(
+    all_results, IMAGE_BLIND, title="The trained VLM against every modality control (1,000 held-out questions per kind)"
+)
+
+# ! CELL TYPE: markdown
+# ! FILTERS: []
+# ! TAGS: [html]
+
+r'''
+<img src="media/accuracy_controls.png" width="900">
+'''
+
 # ! CELL TYPE: markdown
 # ! FILTERS: []
 # ! TAGS: []
 
 r'''
-## Remove the question, keep the true image
+<details>
+<summary>Expected output</summary>
 
-The controls above remove or mispair the image. Now remove the **question text**, including the queried object's identity. The model receives the true image and the same literal `
-Answer:` readout cue for every question kind and every target. It receives neither the answer nor the candidate vocabulary; candidates are applied only to score the model's logits.
-This is an image-only input with a fixed readout cue, not a separately trained image-only model.
+<pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace">FILL_CONTROLS</pre>
 
-An image can reveal several possible answers. A randomly selected target is unidentifiable when several objects differ, but count does not need a target at all. For each actual
-scene and kind, enumerate the answers for **every** possible target using `question_and_answer`, count their multiplicities, and take the largest count divided by the number of
-objects. This target-blind oracle assumes perfect scene knowledge and a uniformly sampled target. It must handle repeated shapes/colours and shared sides instead of assuming every
-answer is distinct. It is an analytic upper bound in expectation under the generator, not a promise about a finite sample or the model.
+</details>
 
-Record separate numeric ranges for full-question and image-only accuracy for all five kinds, split into one-object and multiple-object scenes. Explain which questions remain
-answerable from the image alone, what the candidate-restricted scorer reveals to the evaluator, and why the fixed cue is out of the training distribution.
+<details>
+<summary>Help - how should I interpret this?</summary>
 
+CONTROLS_READING
+</details>
+
+## Keep the picture, take the question away
+
+Every control so far broke the image. Here is the opposite one: keep the **true image** and take the **question** away. For every question we give the model the same fixed text,
+just ` Answer:`. It knows an answer is due, but not whether you want a colour, a shape, a count or a position, and not which object you mean. We still score it afterwards with the
+candidate words of the right kind (six colours for a colour question, and so on), but the model never sees those words.
+
+What should happen? The image holds a lot, and a model that read it perfectly could still not know *which* object the question is about. With two objects of different colours, any
+fixed colour answer is right half the time; with three, one time in three. The best a perfect reader of the scene could do without the target is the **target-blind oracle**: for each
+scene and question kind, work out the answer for every object that could have been the target, and take the share of the most common answer. Count is special: every target gives the same
+count, so the oracle is 1 and a model that reads the image should not lose anything.
+
+Two things to keep in mind when you read the result. This is the trained VLM given a prompt it never saw, not a separately trained image-only model, so some of any drop comes from the odd
+prompt. And one scene gives one answer, not an average, so a model can beat the oracle on a few hundred scenes by luck.
 '''
 
 # ! CELL TYPE: markdown
@@ -1788,8 +1845,9 @@ r'''
 > You should spend up to 10-15 minutes on this exercise.
 > ```
 
-Enumerate the labels for every target, then return the most common label's probability under a uniform target. Reject an empty scene. Derive labels from the visible task function;
-do not hard-code `1 / len(scene.objects)`.
+Implement `target_blind_oracle(scene, kind)`. Use `question_and_answer` to get the answer to the question of this `kind` for **every** object in the scene as the target, count how often
+each answer occurs, and return the largest count divided by the number of objects. Answers that repeat (two objects on the left, for instance) must count twice, so don't
+assume that every answer is different, and don't hard-code `1 / len(scene.objects)`. An empty scene has no targets: raise a `ValueError`.
 '''
 
 # ! CELL TYPE: code
@@ -1819,12 +1877,20 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-<details><summary>Help - what does this oracle establish?</summary>
-For two objects of different colours the oracle is 1/2 for colour; if both are on the left it is 1 for horizontal position. It is 1 for count because every target produces the same
-count label. Repeated answer labels count separately. Our actual generator samples distinct shapes and colours but can share a horizontal or vertical side. The multiplicity
-calculation also checks scenes outside that uniqueness assumption.
+<details>
+<summary>Hint</summary>
+
+Build the list of answers with a loop over `range(len(scene.objects))`, calling `question_and_answer(scene, kind, target)[1]` for each. `Counter(answers).most_common(1)` gives the
+most frequent answer and how often it occurs.
 </details>
 
+<details>
+<summary>Help - what does this oracle tell us?</summary>
+
+For two objects of different colours the oracle is 1/2 for colour. If both objects are on the left it is 1 for horizontal position, and if they are on different sides it is 1/2. It is 1
+for count because every target produces the same count. Our generator gives every object in a scene a different shape and colour, but two objects can share a side, which is why the
+oracle has to count answers instead of assuming they are all different.
+</details>
 '''
 
 # ! CELL TYPE: markdown
@@ -1836,15 +1902,18 @@ r'''
 
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
-> Importance: 🔵🔵🔵⚪⚪
+> Importance: 🔵🔵⚪⚪⚪
 >
 > You should spend up to 10-15 minutes on this exercise.
 > ```
 
-Evaluate the trained model twice with the **same** images, original targets, labels and scoring candidates: first the original full prompts, then the fixed ` Answer:` cue. Replay
-the original question-set RNG independently to retain target indices; confirm these reconstruct the original prompts and labels. Keep question text/target metadata in the trace,
-never in image-only model input. Count correct rows across batches before dividing, including a short final batch. Store candidate logits, prediction, label, kind, object count and
-oracle per row, so a scalar cannot hide a changed condition.
+Implement `evaluate_readout_controls`. It scores the trained model twice on the same images, the same targets, the same answers and the same candidate words: first with each
+question's full prompt, then with the fixed ` Answer:` cue. It returns the accuracy of each condition for each question kind, and a list with one row per (condition, kind, scene) that
+records the prediction, the answer, the candidate logits, the number of objects in the scene and the oracle, so that we can group the results by object count afterwards.
+
+The questions come with the answers but not with the object each one was about, because `make_question_set` drew the targets inside. The helper `replay_question_targets` draws
+them again with the same random numbers; your function should check that `question_and_answer(scene, kind, target)` really reproduces each original prompt and answer.
+The model's input for the image-only condition is the cue and the image, nothing else. Count the correct answers over all batches before dividing, including a shorter last batch.
 '''
 
 # ! CELL TYPE: code
@@ -1852,14 +1921,14 @@ oracle per row, so a scalar cannot hide a changed condition.
 # ! TAGS: []
 
 def replay_question_targets(scenes: list[Scene], seed: int) -> dict[str, list[int]]:
-    """Metadata-only replay of make_question_set's kind-major uniform target draws."""
+    """Draws make_question_set's random targets again (same seed, same order): which object each question was about."""
     rng = np.random.default_rng(seed)
     return {kind: [int(rng.integers(len(scene.objects))) for scene in scenes] for kind in KINDS}
 
 
 @t.no_grad()
 def evaluate_readout_controls(model, projector, features, scenes, questions, targets, batch_size=250):
-    """Paired full-question/image-only scores and auditable per-example traces."""
+    """Accuracy of the full question and of the fixed ` Answer:` cue, plus one row per (condition, kind, scene)."""
     # EXERCISE
     # raise NotImplementedError()
     # END EXERCISE
@@ -1877,7 +1946,7 @@ def evaluate_readout_controls(model, projector, features, scenes, questions, tar
             ids = t.tensor([model.to_single_token(" " + word) for word in ANSWER_WORDS[kind]], device=model.cfg.device)
             fixed_scores[kind].append(logits[:, ids].float().cpu())
     fixed_scores = {kind: t.cat(rows) for kind, rows in fixed_scores.items()}
-    results, traces = {}, []
+    results, rows_out = {}, []
     for condition in ["full question", "image-only (fixed readout)"]:
         results[condition] = {}
         for kind, (prompts, answers) in questions.items():
@@ -1903,14 +1972,14 @@ def evaluate_readout_controls(model, projector, features, scenes, questions, tar
                     prediction = words[int(row.argmax())]
                     hit = prediction == answers[i]
                     correct += int(hit)
-                    traces.append(dict(condition=condition, scene_index=i, kind=kind,
+                    rows_out.append(dict(condition=condition, scene_index=i, kind=kind,
                         object_count=len(scenes[i].objects), target_index=targets[kind][i],
                         original_question=prompts[i], model_prompt=model_prompts[i],
                         answer=answers[i], prediction=prediction, correct=hit,
                         candidate_words=words, candidate_ids=candidate_ids.cpu().tolist(),
                         candidate_logits=row.tolist(), target_blind_oracle=target_blind_oracle(scenes[i], kind)))
             results[condition][kind] = correct / len(scenes)
-    return results, traces
+    return results, rows_out
     # END SOLUTION
 
 
@@ -1924,66 +1993,32 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-<details><summary>Help - is a failed image-only control enough?</summary>
-No. Removing the training question also changes the prompt distribution. Use the full-question counterpart and the existing shuffled-image/text-only controls together. Neither the
-readout cue nor the model receives the candidate answer words. The scorer still restricts output to the appropriate vocabulary; this is forced-choice evaluation, not unconstrained
-image captioning.
+<details>
+<summary>Hint</summary>
+
+Run the model once on all the images with the fixed cue, and keep the candidate logits of every kind; you can score all five kinds from those same logits. For the full-question
+condition, tokenise each kind's prompts and run in batches of `batch_size`. For each row of candidate logits, the prediction is the candidate word with the highest logit.
 </details>
 
-The original training schedules and six controls remain below. The extra evaluation uses the already trained model without an optimizer step. Its full-question scores should match
-`results_b`; every image-only input has exactly the same cue.
+<details>
+<summary>Help - is a failed image-only control enough?</summary>
+
+No. Removing the question also changes the prompt, so the drop mixes "the model cannot tell which object we mean" with "the model has never seen this prompt". Read it together with the
+shuffled-image and text-only controls above. The scorer restricts the output to the right candidate words; this is a forced choice, not free image captioning.
+</details>
 '''
 
 # ! CELL TYPE: code
 # ! FILTERS: []
 # ! TAGS: [main]
-
-n_test = len(test_scenes)
-blank_features = extract_patch_features(siglip, utils.render_scenes([Scene([], background=235)])).expand(n_test, -1, -1)
-noise_features = extract_patch_features(siglip, utils.noise_images(n_test, seed=0))
-shuffled_features = test_features[derangement(n_test, seed=0).to(device)]
-
-t.manual_seed(0)
-random_projector = Projector().to(device)
-text_only_lm = copy.deepcopy(gpt2)
-losses_text = train_vlm(text_only_lm, Projector().to(device), train_features, train_scenes, n_steps=400, train_lm=True, use_image=False)
-text_only_lm.requires_grad_(False)
 
 readout_targets = replay_question_targets(test_scenes, seed=0)
-readout_accuracy, readout_traces = evaluate_readout_controls(
+readout_accuracy, readout_rows = evaluate_readout_controls(
     vlm, projector, test_features, test_scenes, test_questions, readout_targets)
-assert all(abs(readout_accuracy["full question"][kind] - results_b[kind]) < 1e-6 for kind in KINDS)
-all_results = {
-    "trained VLM (B)": results_b,
-    "projector only (A)": results_a,
-    "blank image": evaluate_vlm(vlm, projector, blank_features, test_questions),
-    "noise image": evaluate_vlm(vlm, projector, noise_features, test_questions),
-    "shuffled image-question pairs": evaluate_vlm(vlm, projector, shuffled_features, test_questions),
-    "random projector": evaluate_vlm(vlm, random_projector, test_features, test_questions),
-    "text-only model": evaluate_vlm(text_only_lm, projector, test_features, test_questions, use_image=False),
-    "image-only (fixed readout)": readout_accuracy["image-only (fixed readout)"],
-}
-display(pd.DataFrame(all_results).round(3).T)
-utils.plot_accuracy_by_condition(
-    all_results, IMAGE_BLIND, title="The trained VLM against every modality control (1,000 held-out questions per kind)"
-)
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: [html]
-
-r'''
-<img src="media/accuracy_controls.png" width="900">
-'''
-
-# ! CELL TYPE: code
-# ! FILTERS: []
-# ! TAGS: [main]
-
-readout_table = pd.DataFrame(readout_traces)
+assert all(abs(readout_accuracy["full question"][kind] - results_b[kind]) < 1e-6 for kind in KINDS)  # same numbers as regime (B)
+display(pd.DataFrame({**all_results, "image-only (fixed readout)": readout_accuracy["image-only (fixed readout)"]}).round(3).T)
+readout_table = pd.DataFrame(readout_rows)
 display(readout_table.groupby(["condition", "kind", "object_count"])[["correct", "target_blind_oracle"]].mean().round(3))
-
-
 
 # ! CELL TYPE: markdown
 # ! FILTERS: []
@@ -1993,37 +2028,15 @@ r'''
 <details>
 <summary>Expected output</summary>
 
-<pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace">                               colour  shape  count  horizontal  vertical
-trained VLM (B)                 0.999  1.000  0.998       0.844     0.990
-projector only (A)              0.615  0.991  1.000       0.741     0.775
-blank image                     0.192  0.340  0.236       0.512     0.509
-noise image                     0.168  0.326  0.236       0.507     0.509
-shuffled image-question pairs   0.195  0.330  0.358       0.506     0.494
-random projector                0.208  0.341  0.237       0.512     0.530
-text-only model                 0.159  0.341  0.410       0.512     0.491
-image-only (fixed readout)       0.528  0.542  0.998       0.702     0.735</pre>
+<pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace">FILL_READOUT</pre>
 
 </details>
 
 <details>
-<summary>Help - how should I interpret this figure?</summary>
+<summary>Help - how should I interpret this?</summary>
 
-The trained model is well above the blank/noise/shuffled-image/random-projector/text-only controls. The **image-only fixed-readout** condition still receives the true image: its
-colour/shape/count/horizontal/vertical accuracies are 52.8%/54.2%/99.8%/70.2%/73.5%, compared with 99.9%/100.0%/99.8%/84.4%/99.0% with the question. Count is a target-independent
-positive control: the image determines its number of objects without selecting a target, and its score is unchanged. Removing the question reduces target-dependent accuracy without
-removing visual information. Horizontal full-question accuracy remains the conspicuous weakness (0.844).
-
-The grouped table explains why image-only need not fall to the image-blind floor. Mini VLM colour accuracy is 91.9% for 236 single-object scenes, 50.0% for 410 two-object scenes
-and 29.9% for 354 three-object scenes. Under uniform hidden-target sampling, a perfect scene reader's expected best colour agreement is 1, 1/2 and 1/3 respectively. Side labels can
-repeat, so use the actual scene's multiplicity oracle for horizontal/vertical questions. These are conditional expected comparisons, not deterministic finite-sample ceilings:
-two-object horizontal accuracy is 66.8% against a 65.4% mean expected oracle. A single realized label per scene can exceed that expectation by chance.
-
-The fixed ` Answer:` cue is outside the training question distribution. The model receives neither task kind nor scoring candidates. The difference from a full question combines
-loss of task/target instructions with a readout-distribution change; it does not isolate target selection alone or show that the visual representation lacks information. The old
-mismatched-image, text-only and patching controls remain necessary context. Blank/noise count scores (0.236) are below the text-only model (0.410). None of these synthetic controls
-establishes natural-image or new-template generalization.
+READOUT_READING
 </details>
-'''
 
 # ! CELL TYPE: markdown
 # ! FILTERS: []
@@ -2104,7 +2117,6 @@ def answer_probabilities(model, projector, features, prompts: list[str], kind: s
 
 gallery_rng = np.random.default_rng(5)
 gallery_idx = gallery_rng.choice(n_test, size=8, replace=False)
-gallery_kinds = [KINDS[i % 5] if i % 5 != 2 else KINDS[2] for i in range(8)]
 gallery_kinds = [KINDS[k] for k in gallery_rng.integers(0, 5, size=8)]
 gallery_captions = []
 for i, kind in zip(gallery_idx, gallery_kinds):
@@ -2255,9 +2267,9 @@ attention between groups of tokens in windows of layers and find that image info
 in lower and middle layers and to the last position in later ones. We'll reproduce the flavour of both, at toy
 scale first and on a real model in section 5️⃣.
 
-**Predict before you look.** The answer is read at position 59 (the final `:`), and image tokens are at positions 1-49. Write down predictions for what you will see: At which
-layers will the answer position attend to the object's tokens? If you copy the *object tokens'* residual stream from a run on a differently coloured scene, at which layers will
-that change the answer, and at which layers will it stop working? What about copying *background* tokens?
+The answer is read at position 59 (the final `:`), and image tokens are at positions 1-49.
+
+**Make a prediction first:** in which layers of GPT-2 will the answer position put most of its attention on the object's image tokens: the early layers, the middle ones or the last few?
 '''
 
 # ! CELL TYPE: markdown
@@ -2457,7 +2469,7 @@ background tokens: 39.6 on average</pre>
 
 ## The logit lens on image tokens
 
-In [7.1] we decoded the residual stream of *text* tokens by applying the final layer norm and the unembedding:
+In [7.1](../../../chapter7_activation_to_language/exercises/part1_lenses_patchscopes/7.1_Logit_Lens_Tuned_Lens_and_Patchscopes_exercises.ipynb) we decoded the residual stream of *text* tokens by applying the final layer norm and the unembedding:
 
 $$
 \text{LogitLens}(x_\ell) = \text{LN}_f(x_\ell)\, W_U + b_U .
@@ -2884,7 +2896,7 @@ r'''
 </details>
 
 <details>
-<summary>Help - how should I interpret this figure?</summary>
+<summary>Help - how should I interpret this?</summary>
 
 Early on, the answer position attends substantially to question tokens while giving little mass to image tokens. Object attention rises in the last layers, with a mean peak near
 layer 10; the matched background control stays small. Individual heads are much more concentrated: L10.H0 and L9.H9 put about 0.92 mass on object tokens versus 0.01 on the
@@ -2932,11 +2944,101 @@ across the five examples. The head was selected for high mean object attention o
 validation set or evidence that every head localizes the object.
 </details>
 
+## The tokens the answer position reads most
+
+One more set of tokens will serve as a control in the patching experiments below: the **image tokens that the answer position attends to most**. If attention told the whole story, patching
+*those* tokens should work as well as patching the object's. If the object's tokens work better, then the position that is read most is not always the one that carries the content of the answer.
+We keep as many tokens as the object has (call it $k$), so that the comparison with the object's tokens and with the same-size random background is fair.
+
+To score each image token, we average the attention that the answer position pays to it over all layers and all heads.
+'''
+
+# ! CELL TYPE: markdown
+# ! FILTERS: []
+# ! TAGS: []
+
+r'''
+### Exercise - the most-attended tokens
+
+> ```yaml
+> Difficulty: 🔴🔴⚪⚪⚪
+> Importance: 🔵🔵🔵⚪⚪
+>
+> You should spend up to 10 minutes on this exercise.
+> ```
+
+Implement `top_attention_mask`. It takes the attention patterns of **one example**, shape `(layer, head, query, key)`, a query position, a `slice` saying which key positions are image
+tokens, and a number `k`. Average the attention from the query position over layers and heads for each image token, and return a boolean mask over the image tokens (one entry per
+token in the slice, not over the whole sequence) with exactly the `k` best-attended tokens set to `True`.
+'''
+
+# ! CELL TYPE: code
+# ! FILTERS: []
+# ! TAGS: []
+
+def top_attention_mask(
+    patterns: Float[Tensor, "layer head query key"], query_pos: int, image_slice: slice, k: int
+) -> Bool[Tensor, " image_token"]:
+    """The k image tokens (keys in image_slice) with the highest attention from query_pos, averaged over layers and heads."""
+    # EXERCISE
+    # raise NotImplementedError()
+    # END EXERCISE
+    # SOLUTION
+    scores = patterns[:, :, query_pos, image_slice].mean(dim=(0, 1))  # (image_token,)
+    mask = t.zeros_like(scores, dtype=t.bool)
+    mask[scores.topk(k).indices] = True
+    return mask
+    # END SOLUTION
+
+
+# HIDE
+if MAIN:
+    tests.test_top_attention_mask(top_attention_mask)
+# END HIDE
+
+# ! CELL TYPE: markdown
+# ! FILTERS: []
+# ! TAGS: []
+
+r'''
+<details>
+<summary>Hint</summary>
+
+`patterns[:, :, query_pos, image_slice]` has shape `(layer, head, image_token)`. Average it over the first two dimensions, and use `scores.topk(k).indices` to find the best tokens. Only the image
+tokens compete: the BOS token (position 0) usually soaks up a lot of attention, and it must not take a place in the mask.
+</details>
+
+Let's see how often the most-attended tokens are the object's own: for each of the 200 analysis questions, the fraction of the object's tokens that are among the $k$ best-attended ones.
+'''
+
+# ! CELL TYPE: code
+# ! FILTERS: []
+# ! TAGS: [main]
+
+a_patterns = [t.stack([a_cache["pattern", layer][b] for layer in range(N_LAYERS)]) for b in range(N_ANALYSIS)]  # each (layer, head, query, key)
+a_top = t.stack([top_attention_mask(a_patterns[b], ANSWER_POS, IMAGE_SLICE, int(a_masks["object"][b].sum())) for b in range(N_ANALYSIS)])
+overlap = ((a_top & a_masks["object"]).sum(1) / a_masks["object"].sum(1)).float()
+print(f"fraction of the object's tokens that are among the most-attended: {overlap.mean():.2f} on average (a random choice of the same size would give {(a_masks['object'].sum(1) / N_IMAGE_TOKENS).float().mean():.2f})")
+
+# ! CELL TYPE: markdown
+# ! FILTERS: []
+# ! TAGS: []
+
+r'''
+<details>
+<summary>Expected output</summary>
+
+<pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace">FILL_TOPOVERLAP</pre>
+
+</details>
+
+OVERLAP_READING
+
 ## Activation patching on image tokens
 
 Attention is a statement about *where information could flow*; it isn't a statement about what the answer *depends on*. (An attention head can look at a token and move nothing
 useful from it, and the question gets answered by something else.) To test dependence we have to **intervene**, which is what activation patching does. You've seen it for text in
-[1.3]; here the same idea applies to image tokens, and the setup is particularly clean.
+[1.4.1 Indirect Object Identification](https://learn.arena.education/chapter1_transformer_interp/21_ioi/); here the same idea applies to image tokens, and the setup is particularly clean.
 
 **Counterfactual pairs.** We build 100 *pairs of scenes* that differ in exactly one thing: the **colour of the queried object**. Everything else (geometry, background, noise) is
 identical. We ask the same question ("What colour is the circle?") on both, and the model answers correctly on each (we'll check). The *clean* scene is the one with the original
@@ -2957,8 +3059,11 @@ $$
 so that 0 means "the patch did nothing" and 1 means "the patch fully restored the clean behaviour".
 
 Because the two scenes differ only in the object's colour, **the object's image tokens are where the two scenes differ** (roughly: SigLIP is a transformer with global attention, so
-some of the difference leaks into other tokens, a point we'll come back to). So our prediction is that patching the object's tokens restores the answer, patching background tokens
-does not, and that patching the *answer position* only starts to matter once the information has been moved there.
+some of the difference leaks into other tokens, a point we'll come back to). That suggests patching the object's tokens should restore the answer, patching background tokens should not,
+and patching the *answer position* should only start to matter once the information has been moved there.
+
+**Make a prediction first:** if you patch the object's tokens with the clean run's values at layer 4, what fraction of the clean-versus-corrupted logit difference will come back, and what
+fraction will the same number of random background tokens restore?
 '''
 
 # ! CELL TYPE: code
@@ -2980,9 +3085,13 @@ with t.no_grad():
     clean_embeds = build_input_embeddings(vlm, projector(clean_features), pair_tokens)
     corrupt_embeds = build_input_embeddings(vlm, projector(corrupt_features), pair_tokens)
     _, clean_cache = vlm.run_with_cache(
-        clean_embeds, start_at_layer=0, stop_at_layer=N_LAYERS, names_filter=lambda name: name.endswith("resid_pre")
+        clean_embeds,
+        start_at_layer=0,
+        stop_at_layer=N_LAYERS,
+        names_filter=lambda name: name.endswith("resid_pre") or name.endswith("hook_pattern"),
     )
     clean_resids = {layer: clean_cache["resid_pre", layer] for layer in range(N_LAYERS)}  # layer -> (100, 60, 768)
+    clean_patterns = [t.stack([clean_cache["pattern", layer][b] for layer in range(N_LAYERS)]) for b in range(len(pairs))]  # each (layer, head, query, key)
     clean_logits = vlm.unembed(vlm.ln_final(vlm(clean_embeds, start_at_layer=0, stop_at_layer=N_LAYERS)[:, ANSWER_POS]))
     corrupt_logits = vlm.unembed(vlm.ln_final(vlm(corrupt_embeds, start_at_layer=0, stop_at_layer=N_LAYERS)[:, ANSWER_POS]))
 
@@ -3106,6 +3215,12 @@ r'''
 Implement `logit_diff_recovery`. Given the patched, clean and corrupted answer logits (each `(batch, d_vocab)`) and the token ids of the clean and corrupted answers (each
 `(batch,)`), compute the logit difference $\text{LD} = \text{logit}[\text{clean id}] - \text{logit}[\text{corrupt id}]$ for each of the three runs and return the recovery
 $(\text{LD}_{\text{patched}} - \text{LD}_{\text{corrupted}}) / (\text{LD}_{\text{clean}} - \text{LD}_{\text{corrupted}})$ per example, shape `(batch,)`.
+
+There is a trap in the denominator. If a pair's clean run does not beat its corrupted run by a real margin (a gap of zero, or a clean run that is actually *below* the corrupted one), the
+ratio is infinite, undefined or the wrong sign, and one such pair would quietly wreck the mean of the whole batch. So **before computing anything else**, raise a `ValueError` if any pair
+in the batch has a clean-minus-corrupted gap that is zero, negative or not a finite number, or if any recovery comes out not finite. Stop the whole batch: don't drop the bad pairs or
+replace them by zero, because then the mean no longer describes the pairs you chose. A tiny positive gap is still a gap, so don't add a threshold, and recovery above 1 or below 0 is a real result
+(a patch can overshoot), so don't clip it.
 '''
 
 # ! CELL TYPE: code
@@ -3128,7 +3243,14 @@ def logit_diff_recovery(
         rows = t.arange(len(logits), device=logits.device)
         return logits[rows, clean_ids] - logits[rows, corrupt_ids]
 
-    return (logit_diff(patched_logits) - logit_diff(corrupt_logits)) / (logit_diff(clean_logits) - logit_diff(corrupt_logits))
+    gap = logit_diff(clean_logits) - logit_diff(corrupt_logits)
+    bad = ~(t.isfinite(gap) & (gap > 0))
+    if bad.any():
+        raise ValueError(f"Pairs {bad.nonzero().flatten().tolist()} have a clean-minus-corrupted gap that is zero, negative or not finite: {gap[bad].tolist()}")
+    recovery = (logit_diff(patched_logits) - logit_diff(corrupt_logits)) / gap
+    if not t.isfinite(recovery).all():
+        raise ValueError(f"Recovery is not finite for pairs {(~t.isfinite(recovery)).nonzero().flatten().tolist()}")
+    return recovery
     # END SOLUTION
 
 
@@ -3146,7 +3268,15 @@ r'''
 <summary>Hint</summary>
 
 Write a small inner function `logit_diff(logits)` that returns `logits[rows, clean_ids] - logits[rows, corrupt_ids]` with `rows = t.arange(len(logits))`, and call it on all three
-tensors.
+tensors. Compute the gap `logit_diff(clean_logits) - logit_diff(corrupt_logits)` first, and raise if `t.isfinite(gap) & (gap > 0)` is false for any pair. `t.isfinite` is also what to
+use on the final recovery.
+</details>
+
+<details>
+<summary>Help - the test says a bad pair did not stop the batch</summary>
+
+Check that you raise (and don't just filter or fix). The test builds a batch of ten pairs where pair 7 has a gap of 4 and pair 9 has a gap of 0: the right behaviour is an error for the whole
+batch, not eight good numbers and two repairs. It also checks that a gap of $10^{-6}$ is accepted and that a recovery of 1.5 is returned unchanged.
 </details>
 '''
 
@@ -3165,8 +3295,8 @@ r'''
 > ```
 
 Implement `patching_sweep`, which produces the curves for the main figure. Given a dictionary of position masks (name → boolean `(batch, seq)`), loop over layers and over masks,
-use `patched_answer_logits` and `logit_diff_recovery`, and return, for every mask name, a list with the **mean recovery over the batch** at each layer. Run everything under
-`t.no_grad()`.
+use `patched_answer_logits` and `logit_diff_recovery`, and return, for every mask name, a tensor of shape `(len(layers), batch)` with the **recovery of every pair** at each layer. (We keep
+every pair's recovery, not only the mean, because the uncertainty bands in the final figure come from resampling pairs.) Run everything under `t.no_grad()`.
 '''
 
 # ! CELL TYPE: code
@@ -3184,8 +3314,8 @@ def patching_sweep(
     corrupt_ids: Int[Tensor, " batch"],
     answer_pos: int,
     layers: list[int],
-) -> dict[str, list[float]]:
-    """For each named position mask: the mean (over the batch) recovery from patching it at each layer in `layers`."""
+) -> dict[str, Float[Tensor, "layer batch"]]:
+    """For each named position mask: the recovery of every pair (shape (len(layers), batch)) from patching it at each layer in `layers`."""
     # EXERCISE
     # raise NotImplementedError()
     # END EXERCISE
@@ -3195,9 +3325,8 @@ def patching_sweep(
         for layer in layers:
             for name, mask in masks.items():
                 patched = patched_answer_logits(model, corrupt_embeds, clean_resids[layer], layer, mask, answer_pos)
-                recovery = logit_diff_recovery(patched, clean_logits, corrupt_logits, clean_ids, corrupt_ids)
-                curves[name].append(recovery.mean().item())
-    return curves
+                curves[name].append(logit_diff_recovery(patched, clean_logits, corrupt_logits, clean_ids, corrupt_ids))
+    return {name: t.stack(rows) for name, rows in curves.items()}
     # END SOLUTION
 
 
@@ -3215,11 +3344,12 @@ r'''
 <summary>Hint</summary>
 
 `clean_resids[layer]` is the clean run's `resid_pre` at that layer. For each `(layer, name)`: `patched = patched_answer_logits(model, corrupt_embeds, clean_resids[layer], layer,
-mask, answer_pos)`, then `logit_diff_recovery(patched, ...)` has shape `(batch,)`: take its mean and append it to `curves[name]`.
+mask, answer_pos)`, then `logit_diff_recovery(patched, ...)` has shape `(batch,)`: append it to `curves[name]`, and at the end stack each list into a `(layer, batch)` tensor with `t.stack`.
 </details>
 
 Now the position sets. All masks have shape `(100, 60)`: one row per pair, one column per sequence position. For the image-token sets we use the same constructions as before (the
-object's tokens, the same-size random control, the other objects' tokens), and we add three more: **all image tokens** (an upper bound: this replaces the whole image, so it should
+object's tokens, the same-size random control, the other objects' tokens), and we add four more: the **highest-attention tokens** (the $k$ image tokens that the answer position attends to most
+in the clean run, found with your `top_attention_mask`, with $k$ the number of the object's tokens), **all image tokens** (an upper bound: this replaces the whole image, so it should
 recover everything until the information has left), **the question tokens** (positions 50-58) and **the answer position** (59).
 '''
 
@@ -3228,6 +3358,9 @@ recover everything until the information has left), **the question tokens** (pos
 # ! TAGS: [main]
 
 p_masks = token_set_masks(clean_scenes, pair_targets, seed=1)
+p_masks["highest attention"] = t.stack(
+    [top_attention_mask(clean_patterns[b], ANSWER_POS, IMAGE_SLICE, int(p_masks["object"][b].sum())) for b in range(len(pairs))]
+)
 
 
 def seq_mask(token_mask: Tensor | None = None, positions: slice | None = None) -> Tensor:
@@ -3244,18 +3377,20 @@ patch_sets = {
     "object tokens": seq_mask(p_masks["object"]),
     "same-size random background": seq_mask(p_masks["random background"]),
     "other objects": seq_mask(p_masks["other objects"]),
+    "highest-attention tokens": seq_mask(p_masks["highest attention"]),
     "all image tokens": seq_mask(t.ones_like(p_masks["object"])),
     "question tokens (50-58)": seq_mask(positions=slice(1 + N_IMAGE_TOKENS, ANSWER_POS)),
     "answer position (59)": seq_mask(positions=slice(ANSWER_POS, ANSWER_POS + 1)),
 }
-patch_curves = patching_sweep(
+patch_recovery = patching_sweep(  # name -> (layer, pair): the recovery of every pair at every layer
     vlm, corrupt_embeds, clean_resids, patch_sets, clean_logits, corrupt_logits, clean_ids, corrupt_ids, ANSWER_POS, list(range(N_LAYERS))
 )
+patch_curves = {name: values.mean(dim=1).tolist() for name, values in patch_recovery.items()}  # the mean over the 100 pairs
 utils.plot_layer_curves(
     patch_curves,
     "Patching clean -> corrupted: fraction of the logit difference recovered",
     "recovery (0 = corrupted answer, 1 = clean answer)",
-    controls=("same-size random background", "other objects", "all image tokens"),
+    controls=("same-size random background", "other objects", "highest-attention tokens", "all image tokens"),
     ylim=(-0.05, 1.08),
 )
 print(pd.DataFrame(patch_curves, index=[f"{layer}" for layer in range(N_LAYERS)]).T.round(2).to_string())
@@ -3287,7 +3422,7 @@ answer position (59)         0.00  0.00  0.00  0.00 -0.00 -0.00 -0.00 -0.00 -0.0
 </details>
 
 <details>
-<summary>Help - how should I interpret this figure?</summary>
+<summary>Help - how should I interpret this?</summary>
 
 On 100 recolouring pairs, patching the target object's tokens recovers about 0.89 of the clean-versus-corrupt logit gap through layers 0–8, against about 0.02 for same-size random
 background and about 0 for other objects. All image tokens recover 1.00 there. Object recovery then falls to 0.18 at layer 11 while answer-position recovery rises to 0.78;
@@ -3777,7 +3912,7 @@ If you have a small GPU: the model is about 4.4 GB in bfloat16, so the rest of t
 # ! TAGS: [main]
 
 # Free what we no longer need (rerun the earlier cells if you want these back), then load Qwen
-for name in ["text_only_lm", "train_features", "a_cache", "image_resid", "a_embeds", "clean_cache", "clean_resids", "clean_embeds", "corrupt_embeds"]:
+for name in ["text_only_lm", "train_features", "a_cache", "a_patterns", "image_resid", "a_embeds", "clean_cache", "clean_patterns", "clean_resids", "clean_embeds", "corrupt_embeds"]:
     globals().pop(name, None)
 t.cuda.empty_cache()
 qwen, qwen_processor = utils.load_qwen(device)
@@ -3869,11 +4004,8 @@ r'''
 `model(**inputs).logits[0, -1]` is the vocabulary logits at the last position of the single example; index it with `candidate_ids`.
 </details>
 
-Before the revised Qwen controls, record a range for true-image accuracy and image-only accuracy separately on single-object and multi-object scenes, with an
-explanation of target ambiguity. The image-only input has no question text; six colour candidates exist only in the scorer.
-
 Now the modality controls, on Qwen. For 100 test scenes with a random target object each, we ask "What colour is the {shape}?" with four different images: the **true scene**, a
-**blank** image, a **noise** image, and a **shuffled** image (the scene of a different question, using your `derangement`). Each Qwen call runs a 2B-parameter model, so this takes
+**blank** image, a **noise** image, and a **shuffled** image (the scene of a different question, using your `derangement`). As in Part 3 we add one more: the true scene with the question taken away (an empty question; the six colour words are only used to score the answer). Each Qwen call runs a 2B-parameter model, so this takes
 about a minute.
 '''
 
@@ -4060,11 +4192,26 @@ For our purposes this has one consequence. If we patch the clean residual stream
 DeepStack features on top, because the DeepStack features come from the vision encoder, not from the residual stream. So a patch at layers 0-2 is incomplete, and we expect lower
 recovery there than at layer 3. From layer 3 on, the residual stream is all that matters, which is what the second oracle in the test checks.
 </details>
+'''
 
-Now the sweep. For 20 of the 100 pairs, at every third layer, we patch five sets of positions: the object's tokens, the same-size random background tokens (the control), the other
-objects' tokens, all image tokens, and the last position of the prompt. The image tokens are the 64 positions where `input_ids == image_token_id` (in raster order of the $8 \times
-8$ grid), so the same token sets can be built for Qwen's grid. We keep only the pairs where Qwen answers both the clean and the corrupted scene correctly. This is about 1,000
-forward passes of a 2B model, so allow a minute or two.
+# ! CELL TYPE: markdown
+# ! FILTERS: []
+# ! TAGS: []
+
+r'''
+### Exercise - which layers to patch
+
+> ```yaml
+> Difficulty: 🔴⚪⚪⚪⚪
+> Importance: 🔵🔵⚪⚪⚪
+>
+> You should spend up to 5 minutes on this exercise.
+> ```
+
+A 28-layer model has 28 places to patch, and for each place we run the model once per token set and per pair. To keep the sweep affordable we patch **every third layer, and always the last
+one**: layers 0, 3, 6, ..., 27 for Qwen's 28 layers. Implement `qwen_layer_schedule(num_layers)`, which returns that list. Each layer must appear **exactly once**: when the last layer is
+itself a multiple of three (as 27 is) a naive "every third layer, then add the last" lists it twice, and that layer's runs would be counted double. A model with no layers should raise
+a `ValueError`.
 '''
 
 # ! CELL TYPE: code
@@ -4073,9 +4220,14 @@ forward passes of a 2B model, so allow a minute or two.
 
 def qwen_layer_schedule(num_layers: int) -> list[int]:
     """Every third layer plus the final layer, each intervention exactly once."""
+    # EXERCISE
+    # raise NotImplementedError()
+    # END EXERCISE
+    # SOLUTION
     if num_layers < 1:
         raise ValueError("A model must contain at least one layer")
     return list(dict.fromkeys([*range(0, num_layers, 3), num_layers - 1]))
+    # END SOLUTION
 
 
 # HIDE
@@ -4083,16 +4235,33 @@ if MAIN:
     tests.test_qwen_layer_schedule(qwen_layer_schedule)
 # END HIDE
 
+# ! CELL TYPE: markdown
+# ! FILTERS: []
+# ! TAGS: []
+
+r'''
+<details>
+<summary>Hint</summary>
+
+`range(0, num_layers, 3)` gives every third layer starting at 0. Add `num_layers - 1`, and remove repeats while keeping the order: `list(dict.fromkeys(layers))` does that.
+</details>
+
+Now the sweep. For 20 of the 100 pairs, at every third layer, we patch six sets of positions: the object's tokens, the same-size random background tokens (a control), the other
+objects' tokens, the **highest-attention tokens** (the $k$ image tokens that the last position attends to most, averaged over all layers and heads, with $k$ the number of the object's tokens;
+this needs Qwen's attention patterns, which `utils.qwen_attention_patterns` returns), all image tokens, and the last position of the prompt, where Qwen's answer is read. The image tokens
+are the 64 positions where `input_ids == image_token_id` (in raster order of the $8 \times 8$ grid), so the same token sets can be built for Qwen's grid. We keep only the pairs where Qwen
+answers both the clean and the corrupted scene correctly, and we compute every pair's recovery with your `logit_diff_recovery`, which stops if any kept pair has no contrast. This is about
+1,200 forward passes of a 2B model, so allow a minute or two.
+'''
+
 # ! CELL TYPE: code
 # ! FILTERS: []
 # ! TAGS: [main]
 
 qwen_layers = qwen_layer_schedule(N_QWEN_LAYERS)
-qwen_set_names = ["object tokens", "same-size random background", "other objects", "all image tokens", "last position"]
-qwen_recovery = {name: np.zeros(len(qwen_layers)) for name in qwen_set_names}
-qwen_pair_traces = []
-qwen_pair_selection = []
-n_valid = 0
+qwen_set_names = ["object tokens", "same-size random background", "other objects", "highest-attention tokens", "all image tokens", "answer position"]
+qwen_patched = {name: [[] for _ in qwen_layers] for name in qwen_set_names}  # name -> layer -> one (6,) vector of colour logits per kept pair
+qwen_clean_logits, qwen_corrupt_logits, qwen_clean_idx, qwen_corrupt_idx = [], [], [], []
 for k in tqdm(range(20)):
     clean_scene, corrupt_scene, idx = pairs[k]
     obj = clean_scene.objects[idx]
@@ -4100,51 +4269,48 @@ for k in tqdm(range(20)):
     inputs_clean = utils.qwen_inputs(qwen_processor, utils.render_scene(clean_scene), question, device)
     inputs_corrupt = utils.qwen_inputs(qwen_processor, utils.render_scene(corrupt_scene), question, device)
     clean_ci, corrupt_ci = list(COLOURS).index(obj.colour), list(COLOURS).index(corrupt_scene.objects[idx].colour)
-    lc, lk = qwen_forced_choice(qwen, inputs_clean, qwen_colour_ids), qwen_forced_choice(qwen, inputs_corrupt, qwen_colour_ids)
-    qwen_pair_selection.append(dict(pair_index=k, target_index=idx,
-        clean_colour=obj.colour, corrupt_colour=corrupt_scene.objects[idx].colour,
-        clean_candidate_logits=lc.float().cpu().tolist(), corrupt_candidate_logits=lk.float().cpu().tolist(),
-        kept=int(lc.argmax()) == clean_ci and int(lk.argmax()) == corrupt_ci))
+    lc, lk = qwen_forced_choice(qwen, inputs_clean, qwen_colour_ids).float(), qwen_forced_choice(qwen, inputs_corrupt, qwen_colour_ids).float()
     if int(lc.argmax()) != clean_ci or int(lk.argmax()) != corrupt_ci:
         continue  # keep only pairs the model gets right on both scenes
-    n_valid += 1
+    qwen_clean_logits.append(lc)
+    qwen_corrupt_logits.append(lk)
+    qwen_clean_idx.append(clean_ci)
+    qwen_corrupt_idx.append(corrupt_ci)
     cache = utils.qwen_cache_layer_inputs(qwen, inputs_clean)
     seq = inputs_clean["input_ids"].shape[1]
     image_positions = (inputs_clean["input_ids"][0] == qwen.config.image_token_id).nonzero().flatten()
+    image_slice = slice(int(image_positions[0]), int(image_positions[-1]) + 1)
     obj_mask = t.tensor(utils.qwen_object_token_mask(obj).flatten(), device=device)[None]
     occupied = t.tensor(np.any([utils.qwen_object_token_mask(o).flatten() for o in clean_scene.objects], axis=0), device=device)[None]
     token_sets = {
         "object tokens": obj_mask[0],
         "same-size random background": random_background_mask(obj_mask, occupied, seed=k)[0],
         "other objects": (occupied & ~obj_mask)[0],
+        "highest-attention tokens": top_attention_mask(utils.qwen_attention_patterns(qwen, inputs_clean), seq - 1, image_slice, int(obj_mask.sum())),
         "all image tokens": t.ones_like(obj_mask[0]),
     }
     for name in qwen_set_names:
         positions = t.zeros(seq, dtype=t.bool, device=device)
-        if name == "last position":
+        if name == "answer position":
             positions[-1] = True
         else:
             positions[image_positions[token_sets[name]]] = True
         for li, layer in enumerate(qwen_layers):
-            logits = qwen_patched_logits(qwen, inputs_corrupt, layer, positions, cache[layer])[qwen_colour_ids].float()
-            ld = lambda lg: (lg[clean_ci] - lg[corrupt_ci]).item()
-            denominator = ld(lc.float()) - ld(lk.float())
-            if not np.isfinite(denominator) or denominator <= 0:
-                raise ValueError("Selected pair has an invalid recovery denominator")
-            recovery = (ld(logits) - ld(lk.float())) / denominator
-            if not np.isfinite(recovery):
-                raise ValueError("Nonfinite intervention recovery")
-            qwen_recovery[name][li] += recovery
-            qwen_pair_traces.append(dict(pair_index=k, layer=layer, token_set=name,
-                target_index=idx, clean_colour=obj.colour, corrupt_colour=corrupt_scene.objects[idx].colour,
-                clean_logit_difference=ld(lc.float()), corrupt_logit_difference=ld(lk.float()),
-                patched_logit_difference=ld(logits), denominator=denominator, recovery=recovery,
-                positions=positions.nonzero().flatten().cpu().tolist()))
+            qwen_patched[name][li].append(qwen_patched_logits(qwen, inputs_corrupt, layer, positions, cache[layer])[qwen_colour_ids].float())
+n_valid = len(qwen_clean_idx)
 if n_valid == 0:
-    raise ValueError("No correctly answered counterfactual pairs; do not publish undefined recovery")
-qwen_recovery = {name: (values / n_valid).tolist() for name, values in qwen_recovery.items()}
+    raise ValueError("No correctly answered counterfactual pairs, so recovery is undefined")
+# One recovery for every kept pair, from the same function as the mini VLM: shape (layer, pair).
+qwen_recovery = {
+    name: t.stack([
+        logit_diff_recovery(t.stack(rows), t.stack(qwen_clean_logits), t.stack(qwen_corrupt_logits), t.tensor(qwen_clean_idx), t.tensor(qwen_corrupt_idx))
+        for rows in per_layer
+    ])
+    for name, per_layer in {name: [[row.cpu() for row in rows] for rows in per_layer] for name, per_layer in qwen_patched.items()}.items()
+}
+qwen_recovery_mean = {name: values.mean(dim=1).tolist() for name, values in qwen_recovery.items()}
 print(f"{n_valid} of 20 pairs kept (both scenes answered correctly)")
-print(pd.DataFrame(qwen_recovery, index=qwen_layers).T.round(2).to_string())
+print(pd.DataFrame(qwen_recovery_mean, index=qwen_layers).T.round(2).to_string())
 
 # ! CELL TYPE: markdown
 # ! FILTERS: []
@@ -4154,46 +4320,53 @@ r'''
 <details>
 <summary>Expected output</summary>
 
-<pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace">20 of 20 pairs kept (both scenes answered correctly)
-                               0     3     6     9     12    15    18    21    24    27
-object tokens                0.62  0.72  0.72  0.72  0.69  0.68  0.63  0.54  0.18  0.00
-same-size random background  0.05  0.06  0.06  0.06  0.06  0.06  0.05  0.04  0.02  0.00
-other objects               -0.00  0.00 -0.00  0.00 -0.00  0.00 -0.00 -0.00 -0.00  0.00
-all image tokens             0.88  1.00  1.00  1.00  1.00  1.00  0.96  0.87  0.29  0.00
-last position                0.00 -0.00 -0.00 -0.00 -0.00  0.00  0.03  0.13  0.69  0.99</pre>
+<pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace">FILL_QWENSWEEP</pre>
 
 </details>
 
-And the comparison. The two models have different numbers of layers (12 and 28), so we plot the recovery against **relative depth**, `layer / (n_layers - 1)`: the first and last
-residual layers are at 0 and 1. The figure's abbreviated axis label says “layer / number of layers”; this is the precise normalization used by the executed code. The same sets, the
-same colours, the same y-axis.
+QWEN_SWEEP_READING
+
+## The signature figure
+
+We now have the same experiment on two very different models. The two have different numbers of layers (12 and 28), so we plot the recovery against **relative depth**, `layer / (n_layers - 1)`:
+the first layer is at 0 and the last at 1. The sets and the colours are the same for both models, and the y-axis too.
+
+One more thing before we draw it. Each curve is an average over 100 pairs for the mini VLM and only 20 for Qwen. Would a different set of pairs have given a different curve? We can ask the
+data itself, with a **pair bootstrap**: resample the pairs with replacement (as many as you started with), recompute the average, repeat a thousand times, and shade the middle 95% of those
+averages. A toy example: three pairs recover 0.9, 0.8 and 0.1. Their mean is 0.6. Drawing three pairs with replacement can give a mean as low as 0.1 (the 0.1 pair three times, one chance in 27) or as
+high as 0.9, so with so few pairs the band is wide; with a hundred it is narrow. Resampling whole pairs keeps one pair's numbers at all layers together. The trap: the band only knows about the
+pairs we drew. It does not cover scenes we never sampled, other questions, or another training seed. Go deeper: 0.7 Foundations Toolkit, Part 5.
 '''
 
 # ! CELL TYPE: code
 # ! FILTERS: []
 # ! TAGS: [main]
 
-mini_curves = {
-    "object tokens": patch_curves["object tokens"],
-    "same-size random background": patch_curves["same-size random background"],
-    "other objects": patch_curves["other objects"],
-    "all image tokens": patch_curves["all image tokens"],
-    "last position": patch_curves["answer position (59)"],
+signature_sets = ["object tokens", "answer position", "other objects", "same-size random background", "highest-attention tokens"]
+mini_recovery = {name: patch_recovery["answer position (59)" if name == "answer position" else name] for name in signature_sets}
+signature_models = {
+    f"mini VLM (GPT-2 Small, {N_LAYERS} layers, {len(pairs)} pairs)": (mini_recovery, list(range(N_LAYERS)), N_LAYERS),
+    f"Qwen3-VL-2B ({N_QWEN_LAYERS} layers, {n_valid} pairs)": (qwen_recovery, qwen_layers, N_QWEN_LAYERS),
 }
-utils.plot_relative_depth_curves(
-    {
-        f"mini VLM (GPT-2 Small, {N_LAYERS} layers)": (mini_curves, list(range(N_LAYERS)), N_LAYERS),
-        f"Qwen3-VL-2B ({N_QWEN_LAYERS} layers)": (qwen_recovery, qwen_layers, N_QWEN_LAYERS),
-    },
-    controls=("same-size random background", "other objects", "all image tokens"),
+utils.plot_signature_recovery(
+    signature_models,
+    signature_sets,
+    controls=("other objects", "same-size random background", "highest-attention tokens"),
+    title="Where is the answer? Recovery from patching each token set, mini VLM and Qwen3-VL (bands: 95% pair bootstrap)",
 )
+for model_name, (recovery, layers, n_layers) in signature_models.items():
+    print(model_name)
+    for name in ["object tokens", "highest-attention tokens", "answer position"]:
+        mean, low, high = utils.pair_bootstrap_band(recovery[name].T)
+        cells = [f"L{layer}: {mean[i]:.2f} [{low[i]:.2f}, {high[i]:.2f}]" for i, layer in enumerate(layers) if layer in (0, layers[len(layers) // 2], layers[-2], layers[-1])]
+        print(f"  {name:<26}" + "   ".join(cells))
 
 # ! CELL TYPE: markdown
 # ! FILTERS: []
 # ! TAGS: [html]
 
 r'''
-<img src="media/real_vs_mini_patching.png" width="900">
+<img src="media/signature_recovery.png" width="900">
 '''
 
 # ! CELL TYPE: markdown
@@ -4202,18 +4375,16 @@ r'''
 
 r'''
 <details>
-<summary>Help - how should I interpret this figure?</summary>
+<summary>Expected output</summary>
 
-All first 20 candidate counterfactual pairs are retained because both clean and corrupt forms are answered correctly. In Qwen, object patching recovers about 0.62–0.72 early,
-versus about 0.05–0.06 for matched background. Background recovery remains small and positive (about 0.04–0.06 over early/middle layers), not zero. All-image recovery is incomplete
-at the earliest sampled layer (0.88), reaches about 1.00 through the middle and falls late. An architectural explanation for that early shortfall would be a hypothesis, not an
-identified cause.
+<pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace">FILL_SIGNATURE</pre>
 
-Object recovery falls late (0.18 at layer 24, about 0 at 27) as last-position recovery rises (0.69 at 24, 0.99 at 27). This resembles the mini VLM's broad localization and late
-transfer, with weaker object-only recovery and different timing.
+</details>
 
-Recovery is a mean normalized clean-versus-corrupt logit-gap change, not accuracy. Qwen's 20 selected pairs and
-Mini VLM's 100 pairs have unequal precision, and averages without pair intervals do not establish shared circuits.
+<details>
+<summary>Help - how should I interpret this?</summary>
+
+SIGNATURE_READING
 </details>
 
 <details>
@@ -4221,32 +4392,18 @@ Mini VLM's 100 pairs have unequal precision, and averages without pair intervals
 
 The curves show a shared coarse pattern on this synthetic colour task: early object-localized information can restore the clean answer, and a late last-position state carries the
 answer. They do not identify equal heads, computations or routes, and the patching locations have different spatial resolutions and relative depths. Claiming the same algorithm
-would need matched tasks, broader independent examples, uncertainty estimates, finer component/path interventions and tests of competing mechanisms. Treat the resemblance as a
+would need matched tasks, broader independent examples, finer component/path interventions and tests of competing mechanisms. Treat the resemblance as a
 bounded replication of a causal pattern, not identity of algorithms.
 </details>
-'''
 
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ## Summary of 5️⃣
 
 - A pretrained 2B-parameter VLM, without our task-specific fine-tuning, answers these colour questions correctly. Its accuracy is near chance on blank, noise and shuffled images: correct image–question pairing matters.
-- Patching the clean residual stream into the corrupted run, **the object's image tokens recover much of the answer contrast** through the middle of the network, while the same number of random background tokens recovers about 0.05–0.06 and the other objects' tokens about zero. As in the mini VLM, the answer then moves to the last position in the later layers.
-- The two curves have the same shape on a relative-depth axis, but the details differ (where the hand-over
-  happens and how complete the object-only patch is), and the architecture adds complications (DeepStack in
-  the first three layers). That is a reasonable basis for saying that the qualitative picture of "object
-  tokens in the middle, last position at the end" is not an accident of our training run, and no basis for
-  saying the circuits are alike.
+- Patching the clean residual stream into the corrupted run, **the object's image tokens recover much of the answer contrast** through the middle of the network, while the same number of random background tokens and the other objects' tokens recover little. As in the mini VLM, the answer then moves to the last position in the later layers.
+- The two curves have the same shape on a relative-depth axis, but the details differ (where the hand-over happens and how complete the object-only patch is), and the architecture adds complications (DeepStack in the first three layers). That is a reasonable basis for saying that the qualitative picture of "object tokens in the middle, last position at the end" is not an accident of our training run, and no basis for saying the circuits are alike.
 
-That's the full loop: build a VLM from parts, check with controls that it uses the image, find which tokens and which layers matter, and check the findings on a real model.
-
-The scope is narrow: synthetic shapes, a fixed family of questions, one mini-VLM training seed, and a 20-pair real-model patching sweep. The plots report averages without
-pair-resampling intervals. They do not test natural-image reasoning, compositional holdouts, or a combined knockout of all candidate routes. The image-only ablation is a
-fixed-readout distribution shift, not a separately trained baseline. Count remains answerable without selecting a target; weak query-free Qwen performance also occurs on
-single-object scenes and cannot be attributed to ambiguity alone.
+That's the full loop: build a VLM from parts, check with controls that it uses the image, find which tokens and which layers matter, and check the findings on a real model. Before the quiz, a word about
+what it means to be right here: everything above is one training seed on synthetic shapes, with a 20-pair sweep on the real model. The Bonus lists what this lesson doesn't show.
 '''
 
 # ! CELL TYPE: code
@@ -4293,7 +4450,7 @@ Image tokens are laid out in raster order and GPT-2 sees only 1-D absolute posit
 
 ## LoRA instead of full fine-tuning
 
-Full fine-tuning updates all 124M parameters. Implement a LoRA adapter on the attention projections of GPT-2 (`W + (alpha/r) A B` with $A \in \mathbb{R}^{d \times r}$, $B \in
+Full fine-tuning updates all of GPT-2's weights. Implement a LoRA adapter on the attention projections of GPT-2 (`W + (alpha/r) A B` with $A \in \mathbb{R}^{d \times r}$, $B \in
 \mathbb{R}^{r \times d}$, $B$ initialised to zero) and train only the projector and the adapters. How small can the rank $r$ be before accuracy drops? Is the *interpretability*
 result (patching curve, attention heads) the same for the LoRA model? (Hugging Face's `peft` library does this for a `GPT2LMHeadModel`; writing the low-rank update yourself is a
 good exercise.)
