@@ -382,6 +382,70 @@ def test_zero_shot_probabilities(zero_shot_probabilities: Callable):
     print("All tests in `test_zero_shot_probabilities` passed!")
 
 
+_FAKE_PALETTE = {
+    "red": (255, 0, 0), "green": (0, 200, 0), "blue": (0, 0, 255), "yellow": (255, 255, 0),
+    "purple": (150, 0, 200), "orange": (255, 140, 0), "cyan": (0, 220, 220), "pink": (255, 150, 200),
+}
+
+
+class _FakeEncoder:
+    """A stand-in for a real encoder pair: it recognises the *colour* of a solid image and the colour *word* of a caption.
+
+    Images of a palette colour land exactly on that colour's caption. Noise images have no dominant colour, so they
+    all fall on the one caption nearest to grey.
+    """
+
+    def __init__(self, names: list[str]):
+        self.names = names
+        self.palette = t.tensor([_FAKE_PALETTE[n] for n in names], dtype=t.float32)
+        self.image_calls: list[int] = []
+
+    def embed_images(self, images):
+        self.image_calls.append(len(images))
+        assert len({im.size for im in images}) == 1, "All images passed to the encoder should have the same size"
+        mean_rgb = t.stack([t.tensor(np.asarray(im.convert("RGB")), dtype=t.float32).mean(dim=(0, 1)) for im in images])
+        nearest = t.cdist(mean_rgb, self.palette).argmin(dim=1)
+        return F.one_hot(nearest, len(self.names)).float() * 3.0 + 0.01
+
+    def embed_texts(self, texts):
+        ids = [self.names.index(text.split()[-1]) for text in texts]
+        return F.one_hot(t.tensor(ids), len(self.names)).float() * 2.0 + 0.01
+
+
+def test_real_retrieval_table(real_retrieval_table: Callable):
+    from PIL import Image
+
+    names = list(_FAKE_PALETTE)
+    n_per_class = 12
+    rng = np.random.default_rng(0)
+    labels = t.arange(len(names)).repeat_interleave(n_per_class)
+    images = [
+        Image.fromarray(np.clip(np.array(_FAKE_PALETTE[names[c]]) + rng.normal(0, 8, (16, 16, 3)), 0, 255).astype(np.uint8))
+        for c in labels.tolist()
+    ]
+    chance = 1 / len(names)
+    model = _FakeEncoder(names)
+    labels_before = labels.clone()
+    table = real_retrieval_table(model, images, labels, class_names=names)
+    expected_keys = ["real images", "shuffled labels (control)", "noise images (control)"]
+    assert list(table) == expected_keys, f"Expected the keys {expected_keys}, got {list(table)}"
+    assert all(isinstance(v, float) for v in table.values()), "Each entry should be a float (image-to-text R@1)"
+    assert table["real images"] == 1.0, f"The fake encoder gets every real image right, got {table['real images']}"
+    # The two controls must fall to chance (here 1/8; 96 images, so 0.30 is more than four standard deviations above it)
+    assert table["shuffled labels (control)"] < 0.30, (
+        f"Shuffled labels should fall to chance ({chance:.3f}), got {table['shuffled labels (control)']:.3f}. "
+        "Shuffle the labels on their own, so that images and captions are no longer paired."
+    )
+    assert table["noise images (control)"] < 0.30, (
+        f"Noise images should fall to chance ({chance:.3f}), got {table['noise images (control)']:.3f}. "
+        "The noise images must be uniform random pixels, not the real images."
+    )
+    assert t.equal(labels, labels_before), "Do not shuffle the caller's labels in place: shuffle a copy"
+    assert all(n == len(images) for n in model.image_calls), "Embed as many noise images as there are real images"
+    assert real_retrieval_table(_FakeEncoder(names), images, labels, class_names=names) == table, "The table should be reproducible: seed every random choice"
+    print("All tests in `test_real_retrieval_table` passed!")
+
+
 # ---------------------------------------------------------------------------------------------------------------------
 # Part 4: geometry
 # ---------------------------------------------------------------------------------------------------------------------

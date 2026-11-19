@@ -132,6 +132,13 @@ def to_pil(images: np.ndarray | list[np.ndarray]) -> list[Image.Image]:
     return [Image.fromarray(np.asarray(x)) for x in images]
 
 
+def noise_like(images: list[Image.Image], seed: int = 0) -> list[Image.Image]:
+    """Uniform random-pixel images with the same count and size as `images` (no objects in them at all)."""
+    width, height = images[0].size
+    pixels = np.random.default_rng(seed).integers(0, 256, size=(len(images), height, width, 3), dtype=np.uint8)
+    return to_pil(pixels)
+
+
 # ---------------------------------------------------------------------------------------------------------------------
 # Data
 # ---------------------------------------------------------------------------------------------------------------------
@@ -194,6 +201,11 @@ def load_cifar10_sample() -> tuple[np.ndarray, np.ndarray]:
 # ---------------------------------------------------------------------------------------------------------------------
 
 PRETRAINED_NAMES = {"CLIP": "openai/clip-vit-base-patch32", "SigLIP": "google/siglip-base-patch16-224"}
+# The exact checkpoint commits the lesson was written against, so that the numbers don't move if a repository is updated.
+PRETRAINED_REVISIONS = {
+    "CLIP": "3d74acf9a28c67741b2f4f2ea7635f0aaf6f0268",
+    "SigLIP": "7fd15f0689c79d79e38b1c2e2e2370a7bf2761ed",
+}
 
 
 @dataclass
@@ -248,8 +260,9 @@ def load_pretrained(kind: str, device: t.device | str = "cuda") -> PretrainedPai
     name = PRETRAINED_NAMES[kind]
     model_cls, processor_cls = (CLIPModel, CLIPProcessor) if kind == "CLIP" else (SiglipModel, SiglipProcessor)
     device = t.device(device)
-    model = model_cls.from_pretrained(name).to(device).eval().requires_grad_(False)
-    processor = processor_cls.from_pretrained(name)
+    revision = PRETRAINED_REVISIONS[kind]
+    model = model_cls.from_pretrained(name, revision=revision).to(device).eval().requires_grad_(False)
+    processor = processor_cls.from_pretrained(name, revision=revision)
     bias = model.logit_bias.item() if hasattr(model, "logit_bias") else None
     return PretrainedPair(
         name=name,

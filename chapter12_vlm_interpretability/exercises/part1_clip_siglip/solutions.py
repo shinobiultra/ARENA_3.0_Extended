@@ -717,15 +717,43 @@ if MAIN:
 
 # %%
 
+def real_retrieval_table(
+    model,
+    images: list[Image.Image],
+    labels: Int[Tensor, " n"],
+    class_names: list[str] = utils.CIFAR10_CLASSES,
+    seed: int = 0,
+) -> dict[str, float]:
+    """Image-to-text R@1 against all class captions, for real images, shuffled labels and noise images."""
+    text_emb = model.embed_texts([f"a photo of a {name}" for name in class_names])
+    class_ids = t.arange(len(class_names))
+    shuffled = labels[t.randperm(len(labels), generator=t.Generator().manual_seed(seed))]
+    real_emb = model.embed_images(images)
+    noise_emb = model.embed_images(utils.noise_like(images, seed))
+    conditions = {
+        "real images": (real_emb, labels),
+        "shuffled labels (control)": (real_emb, shuffled),
+        "noise images (control)": (noise_emb, labels),
+    }
+    return {
+        name: retrieval_metrics(similarity_logits(emb, text_emb, 1.0), lab, class_ids)["image_to_text"]
+        for name, (emb, lab) in conditions.items()
+    }
+
+
+if MAIN:
+    tests.test_real_retrieval_table(real_retrieval_table)
+
+# %%
+
 if MAIN:
     def class_means(sim: Tensor, image_labels: Tensor, n_classes: int = 10) -> Tensor:
         """Mean of each row-block of `sim`, grouped by image label: [n_images, n_texts] -> [n_classes, n_texts]."""
         return t.stack([sim[image_labels == c].mean(0) for c in range(n_classes)])
     
     
-    rng = np.random.default_rng(0)
-    noise_images = utils.to_pil(rng.integers(0, 256, size=cifar_images.shape, dtype=np.uint8))
-    shuffled_labels = labels[t.randperm(len(labels), generator=t.Generator().manual_seed(0))]
+    shuffled_labels = labels[t.randperm(len(labels), generator=t.Generator().manual_seed(0))]  # the shuffle the table uses at seed 0
+    noise_images = utils.noise_like(pil_images)  # the noise the table uses at seed 0
     
     text_emb, image_emb, noise_emb = {}, {}, {}
     for kind, pair in pairs.items():
@@ -733,15 +761,14 @@ if MAIN:
         image_emb[kind] = pair.embed_images(pil_images)
         noise_emb[kind] = pair.embed_images(noise_images)
     
-    mats, rows = {}, []
+    table = pd.DataFrame({kind: real_retrieval_table(pair, pil_images, labels) for kind, pair in pairs.items()}).T
+    display(table.rename_axis("image-to-text R@1").round(3))
+    
+    mats = {}
     for kind in pairs:
         for condition, emb, lab in [("real images", image_emb[kind], labels), ("shuffled labels (control)", image_emb[kind], shuffled_labels), ("noise images (control)", noise_emb[kind], labels)]:
-            cos = similarity_logits(emb, text_emb[kind], 1.0)
-            mats[f"{kind}: {condition}"] = class_means(cos, lab).numpy()
-            r = retrieval_metrics(cos, lab, class_ids)
-            rows.append({"model": kind, "condition": condition, "image-to-text R@1": r["image_to_text"], "text-to-image R@1": r["text_to_image"]})
+            mats[f"{kind}: {condition}"] = class_means(similarity_logits(emb, text_emb[kind], 1.0), lab).numpy()
     utils.plot_class_heatmaps(mats, class_names, captions_for(class_names, "{}"), "Mean cosine similarity between image classes (rows) and class captions (columns)")
-    display(pd.DataFrame(rows).set_index(["model", "condition"]).round(3))
 
 # %%
 
@@ -1159,6 +1186,7 @@ if MAIN:
         c1, c2 = rng.choice(COLOURS, 2, replace=False)
         c3 = rng.choice([c for c in COLOURS if c not in (c1, c2)])
         items.append((str(s1), str(c1), str(s2), str(c2), str(c3)))
+    items[0] = ("circle", "red", "square", "blue", "green")  # item 0 is the red circle and blue square from the opening puzzle
     scene_a = [utils.render_large_pair((s1, c1), (s2, c2), rng) for s1, c1, s2, c2, _ in items]
     scene_b = [utils.render_large_pair((s1, c2), (s2, c1), rng) for s1, c1, s2, c2, _ in items]
     caption_a = [f"a {c1} {s1} and a {c2} {s2}" for s1, c1, s2, c2, _ in items]
@@ -1198,6 +1226,17 @@ if MAIN:
         "control_accuracy": "wrong colour word: accuracy", "caption_cos_swap": "cos(caption A, swapped B)", "caption_cos_wrong_colour": "cos(caption A, wrong-colour C)",
     }).round(3))
     print("chance: text 0.25, image 0.25, group 0.167, pair accuracy 0.5")
+
+# %%
+
+if MAIN:
+    puzzle_star = factorial_images[COMBOS.index(("star", "purple", "plain"))]
+    utils.show_image_grid(
+        np.stack([puzzle_star, scene_a[0]]),
+        ["picture 1: pick the right caption out of 90", "picture 2: pick the right caption out of 2"],
+        ncols=2,
+        scale=3.2,
+    )
 
 # %%
 
@@ -1265,5 +1304,130 @@ if MAIN:
         "fraction of images preferring the correct caption",
         chance=0.5,
     )
+
+# %%
+
+if MAIN:
+    my_answers = {
+        "Q1a_softmax": "",  # "falls", "unchanged", "rises" or "depends"
+        "Q1a_sigmoid": "",
+        "Q1b": "",  # "a" to "e"
+        "Q2": "",  # e.g. "C < A = D < B"
+        "Q3": "",  # "a" to "e"
+        "Q4": "",  # "a" to "e"
+    }
+    my_reasons = {  # one sentence each: which result from this lesson are you relying on?
+        "Q1": "",
+        "Q2": "",
+        "Q3": "",
+        "Q4": "",
+    }
+    
+    sys.path.append(str(root_dir / "infrastructure" / "extension" / "learner"))
+    from quiz import Interval, Quiz, Ranking, Word
+    
+    quiz = Quiz(
+        {
+            "Q1a_softmax": Word("falls", points=1, choices=("falls", "unchanged", "rises", "depends")),
+            "Q1a_sigmoid": Word("unchanged", points=1, choices=("falls", "unchanged", "rises", "depends")),
+            "Q1b": Interval("c", points=2),
+            "Q2": Ranking("D < C < A = B"),
+            "Q3": Interval("a", points=5),
+            "Q4": Interval("d", points=5),
+        }
+    )
+    quiz.score(my_answers)
+
+# %%
+
+if MAIN:
+    Q1_LOGITS = t.tensor([[(((7 * i + 5 * j + 3) % 17) - 8) / 4 for j in range(5)] for i in range(4)])  # 4 images x 5 candidate captions
+    Q1_CORRECT = t.tensor([1, 2, 0, 1])  # the correct caption of each image, among the first three
+    Q1_ROWS = t.arange(4)
+    
+    
+    def q1_probabilities(kind: str) -> tuple[Tensor, Tensor]:
+        """Probability of each image's correct caption with 3 candidates, then with 5."""
+        before = zero_shot_probabilities(Q1_LOGITS[:, :3], kind)[Q1_ROWS, Q1_CORRECT]
+        after = zero_shot_probabilities(Q1_LOGITS, kind)[Q1_ROWS, Q1_CORRECT]
+        return before, after
+    
+    
+    for kind in ("softmax", "sigmoid"):
+        before, after = q1_probabilities(kind)
+        print(f"{kind}: probability of the correct caption, 3 candidates -> 5 candidates")
+        for i in range(4):
+            print(f"  image {i}: {before[i]:.3f} -> {after[i]:.3f}   ({100 * (after[i] - before[i]):+5.1f} points)")
+        print(f"  mean change: {100 * (after - before).mean():+.1f} percentage points\n")
+
+# %%
+
+if MAIN:
+    m = fresh_model(siglip=True)
+    hist = train_tiny_clip(m, train_images, CAPTION_IDS, train_classes, "siglip", "paired", lr=5e-3, seed=0)
+    r = evaluate_tiny(m, test_images, CAPTION_IDS, held_out_mask)
+    print(f"final loss {np.mean(hist['loss'][-50:]):.3f}   i2t R@1 {r['i2t']:.3f}")  # does it land on 5.151?
+
+# %%
+
+if MAIN:
+    def letter(value: float, edges: list[float]) -> str:
+        """Which of five intervals a-e the value falls in, for four ascending edges. A value that isn't a number falls in e."""
+        return "e" if not np.isfinite(value) else "abcde"[sum(value >= edge for edge in edges)]
+    
+    
+    quiz_runs = [("clip", 64, 2e-3, 2), ("clip", 64, 5e-3, 2), ("siglip", 64, 2e-3, 2), ("siglip", 64, 5e-3, 2),
+                 ("clip", 16, 5e-4, 3), ("siglip", 16, 5e-4, 3)]  # (loss, batch size, learning rate, seeds)
+    key_runs: dict[tuple[str, int, float], list[tuple[float, float]]] = {}  # (loss, batch size, lr) -> [(final loss, i2t R@1) per seed]
+    for loss_name, batch_size, lr, n_seeds in quiz_runs:
+        for seed in range(n_seeds):
+            m = fresh_model(seed, siglip=(loss_name == "siglip"))
+            hist = train_tiny_clip(m, train_images, CAPTION_IDS, train_classes, loss_name, "paired", batch_size=batch_size, lr=lr, seed=seed)
+            r = evaluate_tiny(m, test_images, CAPTION_IDS, held_out_mask)
+            final_loss = float(np.mean(hist["loss"][-50:]))
+            key_runs.setdefault((loss_name, batch_size, lr), []).append((final_loss, r["i2t"]))
+            print(f"{loss_name:<7} batch {batch_size:<3} lr {lr:.0e} seed {seed}   final loss {final_loss:.3f}   i2t R@1 {r['i2t']:.3f}")
+            del m
+    
+    mean_r1 = lambda key: float(np.mean([r1 for _, r1 in key_runs[key]]))
+    q2_means = {"A": mean_r1(("clip", 64, 2e-3)), "B": mean_r1(("clip", 64, 5e-3)), "C": mean_r1(("siglip", 64, 2e-3)), "D": mean_r1(("siglip", 64, 5e-3))}
+    q3_delta = mean_r1(("siglip", 16, 5e-4)) - mean_r1(("clip", 16, 5e-4))
+    q4_loss = float(np.mean([loss for loss, _ in key_runs[("siglip", 64, 5e-3)]]))
+    before, after = q1_probabilities("softmax")
+    q1_softmax_change = float(100 * (after - before).mean())
+    print("Q1b: mean change in the softmax probability: " + f"{q1_softmax_change:+.1f} points")
+    print("Q2: mean R@1 " + ", ".join(f"{name} {value:.3f}" for name, value in q2_means.items()))
+    print(f"Q3: mean R@1 SigLIP minus CLIP at batch 16: {q3_delta:+.3f}")
+    print(f"Q4: final loss of run D: {q4_loss:.3f}")
+    
+    # one figure of all the quiz's runs
+    base = {"clip": evaluate_tiny(runs["CLIP loss, paired captions"][0], test_images, CAPTION_IDS, held_out_mask)["i2t"],
+            "siglip": evaluate_tiny(runs["SigLIP loss, paired captions"][0], test_images, CAPTION_IDS, held_out_mask)["i2t"]}
+    groups = {"batch 64, lr 5e-4\n(Part 2)": {"clip": [base["clip"]], "siglip": [base["siglip"]]}}
+    for label, batch_size, lr in [("batch 16, lr 5e-4\n(Q3)", 16, 5e-4), ("batch 64, lr 2e-3\n(Q2: A, C)", 64, 2e-3), ("batch 64, lr 5e-3\n(Q2: B, D; Q4)", 64, 5e-3)]:
+        groups[label] = {loss: [r1 for _, r1 in key_runs[(loss, batch_size, lr)]] for loss in ("clip", "siglip")}
+    fig, ax = plt.subplots(figsize=(9, 3.8))
+    for offset, loss, colour, name in [(-0.18, "clip", "#4c72b0", "CLIP loss"), (0.18, "siglip", "#dd8452", "SigLIP loss")]:
+        for x, (label, values) in enumerate(groups.items()):
+            ax.bar(x + offset, np.mean(values[loss]), width=0.34, color=colour, alpha=0.35, label=name if x == 0 else None)
+            ax.scatter([x + offset] * len(values[loss]), values[loss], color=colour, s=18, zorder=3)
+    ax.axhline(1 / 120, color="grey", ls=":", lw=1)
+    ax.text(len(groups) - 0.5, 1 / 120 + 0.02, "chance (1/120)", ha="right", fontsize=8, color="grey")
+    ax.set_xticks(range(len(groups)), list(groups), fontsize=8)
+    ax.set(ylabel="image-to-text R@1", ylim=(0, 1.02), title="Tiny CLIP, 2,000 steps: bars are seed means, dots are single seeds")
+    ax.legend(loc="center left", bbox_to_anchor=(1.01, 0.5), fontsize=8)
+    plt.tight_layout()
+    plt.show()
+    
+    # the written key must still be what these runs produce
+    assert quiz.questions["Q1a_softmax"].key == ("falls" if (after < before - 1e-6).all() else "other"), "Q1a (softmax) key has drifted"
+    before, after = q1_probabilities("sigmoid")
+    assert quiz.questions["Q1a_sigmoid"].key == ("unchanged" if t.allclose(before, after) else "other"), "Q1a (sigmoid) key has drifted"
+    assert letter(-q1_softmax_change, [2, 5, 15, 30]) == quiz.questions["Q1b"].key, "Q1b key has drifted"
+    q2_order = Ranking.from_values(q2_means, eps=0.05)
+    assert q2_order.grade(quiz.questions["Q2"].key_text)[0] == q2_order.out_of, "Q2 key has drifted"
+    assert letter(q3_delta, [-0.20, -0.05, 0.05, 0.20]) == quiz.questions["Q3"].key, "Q3 key has drifted"
+    assert letter(q4_loss, [0.5, 2, 4.5, 5.5]) == quiz.questions["Q4"].key, "Q4 key has drifted"
+    print("The written key matches these runs.")
 
 # %%
