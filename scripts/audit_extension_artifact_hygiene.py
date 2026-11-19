@@ -62,14 +62,7 @@ REQUIRED_TRACKED_FIXTURE_PATHS = (
     "data/generated/refusal_proxy_prompts_v1/prompt_schema.json",
     "data/generated/refusal_proxy_prompts_v1/prompts.jsonl",
 )
-ALLOWED_BINARY_ARTIFACTS = {
-    "chapter16_shapley_attribution_baselines/exercises/"
-    "part8_shapley_mechinterp_agreement/artifacts/deletion_curves.png",
-    "chapter16_shapley_attribution_baselines/exercises/"
-    "part8_shapley_mechinterp_agreement/artifacts/insertion_curves.png",
-    "chapter16_shapley_attribution_baselines/exercises/"
-    "part8_shapley_mechinterp_agreement/artifacts/topk_overlap_heatmap.png",
-}
+ALLOWED_BINARY_ARTIFACTS: set[str] = set()
 STATIC_EXTENSION_ROOTS = (
     "arena_ext",
     "docs",
