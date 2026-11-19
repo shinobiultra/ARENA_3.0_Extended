@@ -49,6 +49,14 @@ separate post-nonlinearity units must change that comparison.
 # ! TAGS: []
 
 r'''
+**Prerequisites:** [16.2] KernelSHAP and PartitionSHAP and [8.1] Activation Patching Refresher.
+'''
+
+# ! CELL TYPE: markdown
+# ! FILTERS: []
+# ! TAGS: []
+
+r'''
 ## Content & Learning Objectives
 
 ### 1️⃣ ReLU token and hidden players

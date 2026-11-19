@@ -87,9 +87,16 @@ research, and learning to produce one, rather than to keep tweaking until someth
 Afterwards, you'll choose your own capstone project from a menu built on the rest of the course (chapters 5-18), or bring your own question, and write your own pre-registration
 using the templates at the end.
 
-**Prerequisites.** PyTorch basics ([0.1]-[0.3]), and the idea of activation patching from [1.4.1] Indirect Object Identification (or [8.1] Activation Patching Refresher in the
-extension). [0.6] How to Know When an Interpretability Result Is Fake is a natural companion: it catalogues the ways results go wrong, and this section builds a workflow that
+[0.6] How to Know When an Interpretability Result Is Fake is a natural companion: it catalogues the ways results go wrong, and this section builds a workflow that
 guards against them. For statistics, you need to know what a confidence interval is; we'll build everything else.
+'''
+
+# ! CELL TYPE: markdown
+# ! FILTERS: []
+# ! TAGS: []
+
+r'''
+**Prerequisites:** [0.3] Optimization and [1.4.1] Indirect Object Identification.
 '''
 
 # ! CELL TYPE: markdown

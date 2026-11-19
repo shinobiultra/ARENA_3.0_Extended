@@ -84,6 +84,14 @@ closely related to [1.3.4] / [7.3] Activation Oracles, which also train a decode
 # ! TAGS: []
 
 r'''
+**Prerequisites:** [7.3] Mini Activation Oracles and [6.1] SAE Variants.
+'''
+
+# ! CELL TYPE: markdown
+# ! FILTERS: []
+# ! TAGS: []
+
+r'''
 ## Content & Learning Objectives
 
 ### 1️⃣ The Concept Bottleneck

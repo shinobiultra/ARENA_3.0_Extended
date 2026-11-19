@@ -55,6 +55,14 @@ Importing the Python module binds definitions only. Call `initialize_runtime()` 
 # ! TAGS: []
 
 r'''
+**Prerequisites:** [1.2] Intro to Mech Interp.
+'''
+
+# ! CELL TYPE: markdown
+# ! FILTERS: []
+# ! TAGS: []
+
+r'''
 ## Content & Learning Objectives
 
 ### 1️⃣ Implement and test

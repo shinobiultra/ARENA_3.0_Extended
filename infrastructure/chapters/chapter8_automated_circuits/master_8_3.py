@@ -73,6 +73,14 @@ This section assumes you've done [8.2] (we import its IOI task and metric) and [
 # ! TAGS: []
 
 r'''
+**Prerequisites:** [8.2] Attribution Patching and EAP and [8.1] Activation Patching Refresher.
+'''
+
+# ! CELL TYPE: markdown
+# ! FILTERS: []
+# ! TAGS: []
+
+r'''
 ## Content & Learning Objectives
 
 ### 1️⃣ Ground Truth and the Cost of Recall

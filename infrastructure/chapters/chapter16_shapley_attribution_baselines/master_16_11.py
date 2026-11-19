@@ -57,6 +57,8 @@ Two questions about training data need two different experiments: can subset mem
 
 The training subsets, seeds, queries, noise labels and evaluation images are reused across figures; counts of pairs, images, fits, seeds and epochs are different denominators.
 
+**Prerequisites:** [0.3] Optimization.
+
 ## Content & Learning Objectives
 
 ### 1️⃣ Datamodels

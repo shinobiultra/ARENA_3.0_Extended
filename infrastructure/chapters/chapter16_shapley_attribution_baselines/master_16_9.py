@@ -88,6 +88,14 @@ at the level of [0.3] Optimization and [0.4] Backprop. Everything runs on a CPU 
 # ! TAGS: []
 
 r'''
+**Prerequisites:** [16.1] Exact Shapley on Ground-Truth Games and [0.4] Backpropagation.
+'''
+
+# ! CELL TYPE: markdown
+# ! FILTERS: []
+# ! TAGS: []
+
+r'''
 ## Content & Learning Objectives
 
 ### 1️⃣ Data Shapley by Retraining

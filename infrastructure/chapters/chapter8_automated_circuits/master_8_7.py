@@ -75,6 +75,14 @@ construction are missing. This planted theorem does not establish those capabili
 # ! TAGS: []
 
 r'''
+**Prerequisites:** [6.4] Transcoders and Attribution Graphs.
+'''
+
+# ! CELL TYPE: markdown
+# ! FILTERS: []
+# ! TAGS: []
+
+r'''
 ## Content & Learning Objectives
 
 ### 1️⃣ Build and ablate the DAG

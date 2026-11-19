@@ -56,9 +56,17 @@ explicit RGB means and a one-step decoder. The code here does **not** run the tr
 does it establish results for a real VLM. The source-grounded bridge at the end states which tensors and
 controls transfer.
 
-Prerequisites: 12.1 for modality controls, 12.3 for visual-token assembly and patching, and 15.1 for LoRA. All default examples run on CPU in float64 without a download or optimizer.
+All default examples run on CPU in float64 without a download or optimizer.
 
 Before viewing the signature figure, predict: if projector and language adapters both reach perfect VQA, will both pass a language-only color-identity check? State the mechanism rather than treating VQA accuracy as a complete grounding metric.
+'''
+
+# ! CELL TYPE: markdown
+# ! FILTERS: []
+# ! TAGS: []
+
+r'''
+**Prerequisites:** [12.1] CLIP and SigLIP from Scratch, [12.3] Mini VLM from Scratch, and [15.1] LoRA and DoRA from Scratch.
 '''
 
 # ! CELL TYPE: markdown

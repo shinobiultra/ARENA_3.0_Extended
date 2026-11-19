@@ -52,6 +52,14 @@ answer three different attribution questions. Consider each question below befor
 # ! TAGS: []
 
 r'''
+**Prerequisites:** [16.2] KernelSHAP and PartitionSHAP.
+'''
+
+# ! CELL TYPE: markdown
+# ! FILTERS: []
+# ! TAGS: []
+
+r'''
 ## Content & Learning Objectives
 
 ### 1️⃣ TreeSHAP

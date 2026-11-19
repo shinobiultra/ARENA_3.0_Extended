@@ -72,8 +72,7 @@ rank-one linear adapter can change object color in an explicit image generator, 
 pixel-based color score increases while an equal-norm background adapter fails that score.
 You will see the images, singular-value spectrum and a behavior/side-effect matrix.
 
-Prerequisites: matrix multiplication, least squares and SVD from chapter 0; forward noising
-and the intervention vocabulary of 13.1–13.2. The decoder is deliberately transparent:
+The decoder is deliberately transparent:
 its known structure lets us ask whether an intervention is selective before involving a UNet.
 '''
 
@@ -88,6 +87,14 @@ The default path is a small, deterministic CPU organism with explicit weights an
 images. It teaches the named component operations and controls. It is not a trained diffusion
 model, a pretrained checkpoint, or a paper replication. No model download, GPU selection,
 training run or scientific sweep occurs.
+'''
+
+# ! CELL TYPE: markdown
+# ! FILTERS: []
+# ! TAGS: []
+
+r'''
+**Prerequisites:** [13.1] Diffusion Models and Cross-Attention Attribution and [13.2] Denoising-Time Causal Patching.
 '''
 
 # ! CELL TYPE: markdown

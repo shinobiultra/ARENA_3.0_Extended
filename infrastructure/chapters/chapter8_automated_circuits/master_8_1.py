@@ -87,6 +87,14 @@ here are the ground truth those faster methods try to approximate.
 # ! TAGS: []
 
 r'''
+**Prerequisites:** [1.4.1] Indirect Object Identification.
+'''
+
+# ! CELL TYPE: markdown
+# ! FILTERS: []
+# ! TAGS: []
+
+r'''
 ## Content & Learning Objectives
 
 ### 1️⃣ Tasks, metrics and the patching loop

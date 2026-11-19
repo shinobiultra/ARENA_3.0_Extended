@@ -54,7 +54,15 @@ KAN, **not** the released multilayer pykan pipeline. The sparse linear fit illus
 regularization, without BIMT neuron swapping. The tree is a transparent greedy baseline, without an OSDT
 global-optimality claim. Large/native model training and released-method qualification remain pending.
 
-Prerequisites: matrix calculus, least squares, basic optimization (0.3), and the distinction between observational fit and intervention evidence from 18.1. No model downloads or GPU are needed.
+No model downloads or GPU are needed.
+'''
+
+# ! CELL TYPE: markdown
+# ! FILTERS: []
+# ! TAGS: []
+
+r'''
+**Prerequisites:** [0.3] Optimization and [18.1] Concept Bottlenecks, Backpacks and Interchange Intervention Training.
 '''
 
 # ! CELL TYPE: markdown

@@ -83,6 +83,14 @@ This lesson runs on CPU and takes about 3 minutes, including the cached Mamba-13
 # ! TAGS: []
 
 r'''
+**Prerequisites:** [1.1] Transformers from Scratch and [0.3] Optimization.
+'''
+
+# ! CELL TYPE: markdown
+# ! FILTERS: []
+# ! TAGS: []
+
+r'''
 ## Content & Learning Objectives
 
 ### 1️⃣ Stable affine memory

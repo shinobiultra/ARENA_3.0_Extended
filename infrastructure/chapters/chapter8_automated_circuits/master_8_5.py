@@ -82,6 +82,14 @@ and record that changed configuration.
 # ! TAGS: []
 
 r'''
+**Prerequisites:** [8.4] ACDC and Circuit Metrics.
+'''
+
+# ! CELL TYPE: markdown
+# ! FILTERS: []
+# ! TAGS: []
+
+r'''
 ## Content & Learning Objectives
 
 ### 1️⃣ Resampling Ablations on a Toy

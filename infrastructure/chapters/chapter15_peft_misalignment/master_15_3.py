@@ -86,6 +86,14 @@ The BF16 comparison's .01 parity gate fails at .03125, although its behavior and
 # ! TAGS: []
 
 r'''
+**Prerequisites:** [15.1] LoRA and DoRA from Scratch.
+'''
+
+# ! CELL TYPE: markdown
+# ! FILTERS: []
+# ! TAGS: []
+
+r'''
 ## Content & Learning Objectives
 
 ### 1️⃣ Quantization and actual storage

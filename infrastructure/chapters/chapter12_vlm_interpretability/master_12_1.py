@@ -80,9 +80,16 @@ A recurring theme is **controls**. A retrieval matrix looks convincing whether o
 colour histogram, a text tower can memorise a lookup table, and an embedding space can look "structured" for boring reasons. So every result has a baseline which should fail,
 plotted on the same axes. When a control *doesn't* fail where we expect it to, we'll say so.
 
-**Prerequisites.** You should be comfortable with transformers at the level of [1.1] (attention, the residual stream, layernorm) and with a basic PyTorch training loop ([0.3]
-Optimization). Section [7.1] is not required, but its habit of pairing every result with a control is the habit we'll use here. We don't use TransformerLens: the towers we build
+Section [7.1] is not required, but its habit of pairing every result with a control is the habit we'll use here. We don't use TransformerLens: the towers we build
 are plain PyTorch modules.
+'''
+
+# ! CELL TYPE: markdown
+# ! FILTERS: []
+# ! TAGS: []
+
+r'''
+**Prerequisites:** [0.2] CNNs & ResNets and [1.1] Transformers from Scratch.
 '''
 
 # ! CELL TYPE: markdown

@@ -96,6 +96,14 @@ small enough to rerun while exploring.
 # ! TAGS: []
 
 r'''
+**Prerequisites:** [0.3] Optimization.
+'''
+
+# ! CELL TYPE: markdown
+# ! FILTERS: []
+# ! TAGS: []
+
+r'''
 ## Content & Learning Objectives
 
 ### 1️⃣ Build curvature and refit

@@ -67,6 +67,14 @@ r'''
 # ! TAGS: []
 
 r'''
+**Prerequisites:** [1.5.3] OthelloGPT.
+'''
+
+# ! CELL TYPE: markdown
+# ! FILTERS: []
+# ! TAGS: []
+
+r'''
 ## Content & Learning Objectives
 
 ### 1️⃣ Solve, decode state, then intervene

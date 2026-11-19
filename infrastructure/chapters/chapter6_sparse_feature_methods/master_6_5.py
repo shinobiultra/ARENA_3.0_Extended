@@ -73,6 +73,14 @@ complete-shrinkage/latent-decoupling studies, or a real base/fine-tuned learned-
 # ! TAGS: []
 
 r'''
+**Prerequisites:** [6.1] SAE Variants.
+'''
+
+# ! CELL TYPE: markdown
+# ! FILTERS: []
+# ! TAGS: []
+
+r'''
 ## Content & Learning Objectives
 
 ### 1️⃣ Specify the planted pair

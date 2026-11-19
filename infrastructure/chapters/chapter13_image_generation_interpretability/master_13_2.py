@@ -83,6 +83,14 @@ passing the color-transfer metric does not establish prompt or shape fidelity.
 # ! TAGS: []
 
 r'''
+**Prerequisites:** [13.1] Diffusion Models and Cross-Attention Attribution and [8.1] Activation Patching Refresher.
+'''
+
+# ! CELL TYPE: markdown
+# ! FILTERS: []
+# ! TAGS: []
+
+r'''
 ## Content & Learning Objectives
 
 ### 1️⃣ Exact toy ground truth

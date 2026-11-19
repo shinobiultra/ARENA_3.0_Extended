@@ -43,7 +43,15 @@ public corridor transitions; it does not reproduce Dreamer, TD-MPC2 or IRIS benc
 full image tokenization, native simulator performance and robotics safety remain distinct pending work. We
 will state every approximation at the point it enters.
 
-Prerequisites: transformer attention (1.1), categorical distributions and autograd, temporal-difference targets, 14.3 planning. No external environment, checkpoint, GPU or network is needed.
+No external environment, checkpoint, GPU or network is needed.
+'''
+
+# ! CELL TYPE: markdown
+# ! FILTERS: []
+# ! TAGS: []
+
+r'''
+**Prerequisites:** [14.3] Action-Conditioned World Models and Latent Planning and [2.2.1] DQN.
 '''
 
 # ! CELL TYPE: markdown

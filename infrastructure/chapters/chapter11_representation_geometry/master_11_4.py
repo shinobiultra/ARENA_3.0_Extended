@@ -60,6 +60,14 @@ readouts and behavior, not a single “erasure score”.
 # ! TAGS: []
 
 r'''
+**Prerequisites:** [11.1] PCA, SVD and Geometry Controls.
+'''
+
+# ! CELL TYPE: markdown
+# ! FILTERS: []
+# ! TAGS: []
+
+r'''
 ## Content & Learning Objectives
 
 ### 1️⃣ Specify what “removed” means

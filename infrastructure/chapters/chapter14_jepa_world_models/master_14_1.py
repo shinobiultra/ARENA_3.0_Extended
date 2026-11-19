@@ -60,6 +60,14 @@ semantic-template generalization.
 # ! TAGS: []
 
 r'''
+**Prerequisites:** [0.2] CNNs & ResNets and [1.1] Transformers from Scratch.
+'''
+
+# ! CELL TYPE: markdown
+# ! FILTERS: []
+# ! TAGS: []
+
+r'''
 ## Content & Learning Objectives
 
 ### 1️⃣ Specify the image world

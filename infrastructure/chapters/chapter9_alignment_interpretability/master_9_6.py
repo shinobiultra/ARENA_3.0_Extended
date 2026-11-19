@@ -47,6 +47,14 @@ counterfactual gives a negative localization result.
 # ! TAGS: []
 
 r'''
+**Prerequisites:** [8.1] Activation Patching Refresher.
+'''
+
+# ! CELL TYPE: markdown
+# ! FILTERS: []
+# ! TAGS: []
+
+r'''
 ## Content & Learning Objectives
 
 ### 1️⃣ Derive a precise write

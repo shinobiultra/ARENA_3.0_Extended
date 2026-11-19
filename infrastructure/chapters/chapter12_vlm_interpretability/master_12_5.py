@@ -46,6 +46,14 @@ change it?
 # ! TAGS: []
 
 r'''
+**Prerequisites:** [12.3] Mini VLM from Scratch.
+'''
+
+# ! CELL TYPE: markdown
+# ! FILTERS: []
+# ! TAGS: []
+
+r'''
 ## Content & Learning Objectives
 
 ### 1️⃣ Construct question and image inputs

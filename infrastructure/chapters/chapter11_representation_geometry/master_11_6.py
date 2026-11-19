@@ -66,14 +66,21 @@ figure places a real cyclic code beside an equally pretty projection of seven eq
 one-hot states, then compares circular rotation with a single chord and a matched-size
 orthogonal intervention. It ends in decoded weekday tokens, not just a feature cloud.
 
-Prerequisites: original ARENA 0.1/0.3 (arrays and least squares), 1.2 (residual streams and
-interventions), and 11.1 (PCA and controls). The entire default lesson uses deterministic
+The entire default lesson uses deterministic
 NumPy float64 CPU arrays; it fits small linear probes but loads no model or tokenizer.
 The calendar and place/date representations are *constructed*, so their known geometry
 provides ground truth rather than evidence of a learned LLM world model.
 
 Here a “microscope”
 means using a probe residual to propose and test a hypothesis about a known small organism.
+'''
+
+# ! CELL TYPE: markdown
+# ! FILTERS: []
+# ! TAGS: []
+
+r'''
+**Prerequisites:** [11.1] PCA, SVD and Geometry Controls.
 '''
 
 # ! CELL TYPE: markdown

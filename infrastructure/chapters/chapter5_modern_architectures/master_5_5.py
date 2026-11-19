@@ -101,6 +101,14 @@ the completed training cells take seconds on a typical laptop CPU.
 # ! TAGS: []
 
 r'''
+**Prerequisites:** [5.3] Mamba from Scratch.
+'''
+
+# ! CELL TYPE: markdown
+# ! FILTERS: []
+# ! TAGS: []
+
+r'''
 ## Content & Learning Objectives
 
 ### 1️⃣ Exact states and learned behavior

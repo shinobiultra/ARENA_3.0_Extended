@@ -102,6 +102,14 @@ ordinary plumbing from the transformer chapter. Every MoE mechanism and every CP
 # ! TAGS: []
 
 r'''
+**Prerequisites:** [5.1] Gemma from Scratch.
+'''
+
+# ! CELL TYPE: markdown
+# ! FILTERS: []
+# ! TAGS: []
+
+r'''
 ## Content & Learning Objectives
 
 ### 1️⃣ Route and admit tokens causally
