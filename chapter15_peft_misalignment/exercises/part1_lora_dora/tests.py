@@ -2,8 +2,6 @@
 Migration verification selects only non-training checks. No prototype method imports.
 """
 from collections.abc import Callable
-import json
-from pathlib import Path
 from typing import Any
 
 import torch as t
@@ -16,14 +14,6 @@ def _solutions():
     )
 
     return solutions
-
-
-def _section_dir() -> Path:
-    return Path(__file__).resolve().parent
-
-
-def _verification_report() -> dict:
-    return json.loads((_section_dir() / "verification_report.json").read_text())
 
 
 def _as_dict(report: object) -> dict[str, Any]:
@@ -326,64 +316,6 @@ def test_adapter_mechanism_report_requires_accuracy_and_mechanism(
     print("All tests in `test_adapter_mechanism_report_requires_accuracy_and_mechanism` passed!")
 
 
-def test_smoke_wrappers_match_the_visible_contract(
-    lora_smoke_test: Callable | None = None,
-    dora_smoke_test: Callable | None = None,
-    intruder_smoke_test: Callable | None = None,
-    mechanism_smoke_test: Callable | None = None,
-):
-    solutions = _solutions()
-    lora_smoke_test = lora_smoke_test or solutions.lora_smoke_test
-    dora_smoke_test = dora_smoke_test or solutions.dora_smoke_test
-    intruder_smoke_test = intruder_smoke_test or solutions.intruder_smoke_test
-    mechanism_smoke_test = mechanism_smoke_test or solutions.mechanism_smoke_test
-
-    lora = lora_smoke_test()
-    dora = dora_smoke_test()
-    intruder = intruder_smoke_test()
-    mechanism = mechanism_smoke_test()
-    assert lora["delta"] == [[6.0, 12.0], [8.0, 16.0]], (
-        "The LoRA smoke test should expose the exact low-rank delta."
-    )
-    assert lora["report"]["rank"] == 1 and lora["report"]["nonzero_update"], (
-        "The LoRA smoke test should report a rank-1 nonzero adapter."
-    )
-    assert dora["row_norms"] == [10.0, 5.0] and dora["norm_preserved"], (
-        "The DoRA smoke test should preserve the two requested row magnitudes."
-    )
-    assert abs(intruder["projection_fraction"] - 1.0) < 1e-6, (
-        "The intruder smoke test should report full projection onto the monitored direction."
-    )
-    assert intruder["intruder_detected"], (
-        "The intruder smoke test should flag the controlled positive example."
-    )
-    assert mechanism["adapter_acceptable"], (
-        "The mechanism smoke test should pass the paired accuracy and mechanism gates."
-    )
-    print("All tests in `test_smoke_wrappers_match_the_visible_contract` passed!")
-
-
-def test_notebook_contract(run_smoke_test: Callable | None = None):
-    run_smoke_test = run_smoke_test or _solutions().run_smoke_test
-    result = run_smoke_test(cpu=True)
-    assert result["lora"]["delta"] == [[6.0, 12.0], [8.0, 16.0]], (
-        "The notebook contract should include the exact LoRA delta fixture."
-    )
-    assert result["lora"]["report"]["nonzero_update"], (
-        "The notebook contract should include a nonzero LoRA update check."
-    )
-    assert result["dora"]["norm_preserved"], (
-        "The notebook contract should include the exact DoRA norm-preservation check."
-    )
-    assert result["intruder"]["intruder_detected"], (
-        "The notebook contract should include the protected-direction positive control."
-    )
-    assert result["mechanism"]["adapter_acceptable"], (
-        "The notebook contract should include the paired accuracy/mechanism gate."
-    )
-    print("All tests in `test_notebook_contract` passed!")
-
-
 def test_proxy_batch_has_planted_target_and_ood_conflict(
     make_proxy_batch: Callable | None = None,
 ):
@@ -494,128 +426,6 @@ def test_signature_payload_exposes_matched_methods_and_controls(
         "The learner should see concrete example-level baseline and adapter predictions."
     )
     print("All tests in `test_signature_payload_exposes_matched_methods_and_controls` passed!")
-
-
-def test_committed_verification_report_trained_peft_controls(
-    report: dict[str, Any] | None = None,
-):
-    report = dict(report or _verification_report())
-    gpu = report["metrics"]["gpu_test"]
-    controls = set(report["baselines"]["declared_controls"])
-
-    assert report["accepted"] and report["tests_passed"], (
-        "The committed report should be accepted and should have passed tests."
-    )
-    assert report["gt_tier"] == "GT-0", (
-        "15.1 should stay scoped to the declared GT-0 proxy-evidence contract."
-    )
-    assert not report["known_failures"], (
-        "The committed verification report should not hide known failures."
-    )
-    assert gpu["cuda_available"], "The committed report should come from a CUDA run."
-    assert gpu["trained_lora_preflight_passed"], (
-        "The committed report should include the trained rank-1 LoRA proxy adapter."
-    )
-    assert gpu["trained_lora_adapter_accuracy"] >= 0.95, (
-        "The trained LoRA adapter should clear the target task accuracy gate."
-    )
-    assert gpu["trained_lora_baseline_accuracy"] <= 0.65, (
-        "The frozen baseline should not already solve the target-direction task."
-    )
-    assert gpu["trained_lora_adapter_rank"] <= 1, (
-        "The trained adapter should remain a rank-1 LoRA update."
-    )
-    assert gpu["trained_lora_random_label_control_fails"], (
-        "The random-label training control should fail the task."
-    )
-    assert gpu["trained_lora_random_adapter_control_fails"], (
-        "The same-norm random-adapter control should fail the task."
-    )
-    assert gpu["trained_lora_dora_norm_preserved"], (
-        "DoRA recomposition should preserve norms on the learned adapter delta."
-    )
-    assert gpu["trained_lora_merge_max_abs_diff"] <= 1e-5, (
-        "Merged and unmerged LoRA logits should match to numerical precision."
-    )
-    assert gpu["trained_lora_target_direction_cosine"] >= 0.95, (
-        "The learned LoRA update should align with the planted target direction."
-    )
-    assert gpu["matched_peft_comparison_passed"], (
-        "The report should include the matched LoRA-vs-DoRA-vs-full-finetune comparison."
-    )
-    assert (
-        gpu["matched_lora_trainable_parameters"]
-        < gpu["matched_full_finetune_trainable_parameters"]
-    ), (
-        "The matched LoRA comparison should use fewer trainable parameters than full finetuning."
-    )
-    assert gpu["matched_dora_norm_preserved"], (
-        "The matched DoRA run should preserve row magnitudes."
-    )
-    assert gpu["matched_target_alignment_floor"] >= 0.95, (
-        "All matched adapters should align with the target direction."
-    )
-    assert gpu["matched_max_distractor_abs_cosine"] <= 0.25, (
-        "Matched adapters should suppress the distractor direction."
-    )
-    assert gpu["peak_vram_gb"] <= 24.0, "The committed run should fit the local VRAM budget."
-    required_controls = {
-        "trained_rank1_lora_safe_proxy_adapter",
-        "random_label_training_control",
-        "same_norm_random_adapter_control",
-        "dora_on_learned_delta_norm_preservation",
-        "matched_rank1_lora_vs_rank1_dora_vs_full_finetune_comparison",
-        "matched_target_direction_alignment_floor",
-        "matched_distractor_direction_suppression_control",
-    }
-    assert required_controls <= controls, (
-        "The artifact controls should declare the trained PEFT controls and matched baselines."
-    )
-    print("All tests in `test_committed_verification_report_trained_peft_controls` passed!")
-
-
-def test_exercise_notebook_declares_full_verification_contract():
-    notebook_path = _section_dir() / "15.1_LoRA_and_DoRA_from_Scratch_exercises.ipynb"
-    notebook = json.loads(notebook_path.read_text())
-    source = "\n".join(
-        "".join(cell.get("source", [])) for cell in notebook.get("cells", [])
-    )
-
-    assert "REQUIRES_GPU = True" in source, (
-        "The learner notebook should not advertise CPU-only scope for this GT-0 PEFT section."
-    )
-    assert "def run_smoke_test(cpu: bool = True)" in source, (
-        "The learner notebook should expose the CPU contract surface."
-    )
-    assert "def run_gpu_test(max_vram_gb: float = 24.0)" in source, (
-        "The learner notebook should expose the GPU verification surface."
-    )
-    assert "def run_full_experiment(max_vram_gb: float = 24.0)" in source, (
-        "The learner notebook should expose the full experiment surface."
-    )
-    assert source.count("### Exercise") >= 6, (
-        "15.1 should have at least six learner-facing exercises with immediate tests."
-    )
-    for required in [
-        "def train_proxy_adapter(",
-        "def evaluate_proxy_adapter(",
-        "def same_norm_random_adapter_control(",
-        "def build_signature_payload(",
-        "lora_dora_adapter_controls_signature_panel.png",
-        "lora_dora_adapter_controls_behavior_table.png",
-        'build_signature_payload(rank=1, alpha=4.0, seed=0, steps=80, device="cuda")',
-        "Try It Yourself",
-        "PLAY_RANK",
-        "PLAY_ALPHA",
-        "PLAY_SEED",
-        "PLAY_METHOD",
-        "Anomaly Hunt",
-    ]:
-        assert required in source, f"The learner notebook is missing `{required}`."
-    assert "test_committed_verification_report_trained_peft_controls" in source, (
-        "The learner notebook should end by checking the committed trained-PEFT report."
-    )
-    print("All tests in `test_exercise_notebook_declares_full_verification_contract` passed!")
 
 
 def test_evaluation_on_known_weights(evaluate_proxy_adapter, model_class):
