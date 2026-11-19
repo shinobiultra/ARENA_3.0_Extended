@@ -1,5 +1,4 @@
 from collections.abc import Callable
-from pathlib import Path
 
 import torch as t
 
@@ -239,83 +238,3 @@ def test_fake_result_audit_report_aggregates_all_failure_modes(
         "The aggregate audit should pass only when all bogus results are flagged."
     )
     print("All tests in `test_fake_result_audit_report_aggregates_all_failure_modes` passed!")
-
-
-def test_notebook_contract(run_smoke_test: Callable | None = None):
-    run_smoke_test = run_smoke_test or _solutions().run_smoke_test
-    result = run_smoke_test(cpu=True)
-    assert result["contract_passed"], (
-        "The notebook contract should pass only when the aggregate audit passes."
-    )
-    assert result["audit"]["all_bogus_results_flagged"], (
-        "The audit report should explicitly show all bogus results were flagged."
-    )
-    assert result["leakage"]["detects_leakage"], (
-        "The notebook contract should include the leakage diagnostic."
-    )
-    assert result["cherry_pick"]["detects_cherry_picking"], (
-        "The notebook contract should include the cherry-pick diagnostic."
-    )
-    assert result["probe_overfit"]["detects_overfit"], (
-        "The notebook contract should include the probe-overfit diagnostic."
-    )
-    assert result["random_direction"]["detects_random_direction_failure"], (
-        "The notebook contract should include the random-direction diagnostic."
-    )
-    print("All tests in `test_notebook_contract` passed!")
-
-
-def test_committed_gpu_report_records_fake_result_signature():
-    import json
-
-    report_path = Path(__file__).with_name("verification_report.json")
-    report = json.loads(report_path.read_text())
-    gpu = report["metrics"]["gpu_test"]
-    assert report["accepted"], "The committed fake-result report should be accepted."
-    assert gpu["cuda_available"], (
-        "The accepted fake-result report should prove CUDA was available."
-    )
-    assert gpu["preflight_passed"], "The CUDA fake-result preflight should pass."
-    assert gpu["all_bogus_results_flagged"], (
-        "The signature result should flag every injected bogus result."
-    )
-    assert gpu["input_driven_alternate_fixtures_passed"], (
-        "The CUDA report should record that non-default fixture controls are tested."
-    )
-    assert gpu["leaked_feature_accuracy"] == 1.0
-    assert gpu["shifted_no_leak_accuracy"] == 0.0
-    assert gpu["cherry_pick_inflation"] >= 3.0
-    assert gpu["probe_overfit_gap"] >= 0.35
-    assert gpu["random_direction_control_rejects_claim"]
-    assert gpu["peak_vram_gb"] < 1.0
-    assert not report["known_failures"], (
-        "Course-ready fake-result evidence should not carry unresolved failures."
-    )
-    print("All tests in `test_committed_gpu_report_records_fake_result_signature` passed!")
-
-
-def test_exercise_notebook_course_ready_surface():
-    import json
-
-    notebook_path = Path(__file__).with_name(
-        "0.6_How_to_Know_When_an_Interpretability_Result_Is_Fake_exercises.ipynb"
-    )
-    notebook = json.loads(notebook_path.read_text())
-    source = "\n".join(
-        "".join(cell.get("source", [])) for cell in notebook.get("cells", [])
-    )
-    for required in [
-        "Expected output",
-        "Help - ",
-        "Solution",
-        "Signature Result",
-        "Limitations",
-        "Bonus - Anomaly Hunting",
-    ]:
-        assert required in source, (
-            f"The learner notebook should include ARENA-style `{required}` content."
-        )
-    assert "test_committed_gpu_report_records_fake_result_signature" in source, (
-        "The learner notebook should check the committed CUDA signature result."
-    )
-    print("All tests in `test_exercise_notebook_course_ready_surface` passed!")

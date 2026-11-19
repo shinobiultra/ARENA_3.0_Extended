@@ -51,17 +51,14 @@ r'''
 
 r'''
 **Scope boundary.** The syllabus requests five variants including BatchTopK and a real
-residual-stream sparsity–fidelity frontier. BatchTopK is absent here. Four-way toy training plus one
-optional TopK Pythia preflight does not establish a five-way real residual benchmark, CE-loss
-recovery, interpretability spot checks or frontier-scale SAE training. The train-selected
-Pythia feature fails the held-out semantic criterion; preserve that negative result.
+residual-stream sparsity–fidelity frontier. BatchTopK is absent here. Four-way toy training does not establish a five-way real residual benchmark, CE-loss
+recovery, interpretability spot checks or frontier-scale SAE training.
 
 Original [1.5.4] Toy Models of Superposition & SAEs supplies the prerequisite arc; [1.3.3] and
 [1.4.2] connect released dictionaries to practical interpretation.
 
 The original reconstruction baseline is the train mean, despite the variable name
-`zero_baseline_mse`. The Pythia preflight separately uses literal zero and permuted-decoder
-controls. Keep those labels and cohorts distinct.
+`zero_baseline_mse`.
 '''
 
 # ! CELL TYPE: markdown
@@ -113,7 +110,7 @@ r'''
 By the end of this notebook, you will have trained four sparse autoencoder variants on the same
 exact planted dictionary and shown why reconstruction alone is not enough to claim feature recovery.
 
-The lesson takes 60-90 minutes and needs no GPU; the solved CPU signature run takes about 4 seconds. The optional Pythia path needs a CUDA GPU.
+The lesson takes 60-90 minutes and needs no GPU; the solved CPU signature run takes about 4 seconds.
 
 ## Core Question
 
@@ -1577,60 +1574,6 @@ semantic feature? What does a single TopK preflight establish?
 # ! TAGS: []
 
 r'''
-## Optional Real Pythia Path
-
-The section-local `reference.run_gpu_test(max_vram_gb=24.0)` is an actual experiment path. It loads
-`EleutherAI/pythia-70m-deduped` at revision `e93a9faa9c77e5d09219f6c868bfc7a1bd65593c`, extracts
-final-token hidden states from 64 generated train prompts and 16 topic-disjoint held-out prompts,
-normalizes using train statistics, and trains a width-256 TopK-16 SAE for 800 steps. It measures
-held-out reconstruction against zero and permuted-decoder controls, freezes feature selection on
-train labels before held-out AUC, and checks decoder-direction and vocabulary-logit effects. The
-pinned run deliberately records the train-selected feature's held-out failure as a negative result;
-it does not turn training-set separation into a semantic-feature claim.
-
-The CPU notebook does not substitute synthetic values for this path.
-
-```bash
-.venv/bin/python -c "from chapter6_sparse_feature_methods.exercises.part1_sae_variants.solutions import run_gpu_test; print(run_gpu_test())"
-```
-'''
-
-# ! CELL TYPE: code
-# ! FILTERS: []
-# ! TAGS: []
-
-if MAIN:
-    real_model_config = {
-        "model": reference.PYTHIA_SAE_MODEL_ID,
-        "revision": reference.PYTHIA_SAE_REVISION,
-        "hidden_layer": reference.PYTHIA_SAE_HIDDEN_LAYER,
-        "train_prompts": 64,
-        "heldout_prompts": 16,
-        "sae_width": reference.PYTHIA_SAE_WIDTH,
-        "topk": reference.PYTHIA_SAE_TOPK,
-        "training_steps": reference.PYTHIA_SAE_TRAINING_STEPS,
-        "executed_in_this_cpu_notebook": False,
-    }
-if MAIN:
-    display(pd.DataFrame([real_model_config]).T.rename(columns={0: "value"}))
-
-# ! CELL TYPE: code
-# ! FILTERS: []
-# ! TAGS: []
-
-def run_gpu_test(max_vram_gb: float = 24.0):
-    """Parent-owned optional CUDA path; never called by the CPU lesson."""
-    return reference.run_gpu_test(max_vram_gb=max_vram_gb)
-
-
-def run_full_experiment(max_vram_gb: float = 24.0):
-    return run_gpu_test(max_vram_gb=max_vram_gb)
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ## Limitations
 
 - The planted score is a known linear projection, not a language-model behavior.
@@ -1638,7 +1581,6 @@ r'''
 - The four sparsity coefficients are not perfectly comparable: TopK fixes L0 directly, while the other objectives trade units of reconstruction against different penalties.
 - Decoder cosine above `0.8` is a transparent recovery criterion, not a universal interpretability threshold.
 - Feature zero is chosen before training; the AUC exercise validates recovery of that known cause and does not automate semantic labeling.
-- The Pythia path is a small final-token preflight. It does not establish clean semantic features, full-scale SAE quality, or generated-text steering.
 
 ## Reading
 
@@ -1648,35 +1590,3 @@ r'''
 - [Jumping Ahead: Improving Reconstruction Fidelity with JumpReLU Sparse Autoencoders](https://arxiv.org/abs/2407.14435)
 - [Pythia: A Suite for Analyzing Large Language Models Across Training and Scaling](https://arxiv.org/abs/2304.01373)
 '''
-
-# ! CELL TYPE: code
-# ! FILTERS: []
-# ! TAGS: []
-
-# EXERCISE
-# def run_smoke_test(cpu: bool = True) -> dict:
-#     assert cpu, "the learner smoke test is CPU-only"
-#     smoke = run_student_comparison(steps=250, train_examples=1024, heldout_examples=512)
-#     return {
-#         "variants": reference.comparison_rows(smoke),
-#         "zero_baseline_mse": smoke.zero_baseline_mse,
-#         "true_l0": smoke.true_l0,
-#     }
-
-
-# # tests.test_notebook_contract(run_smoke_test)
-# END EXERCISE
-# SOLUTION
-def run_smoke_test(cpu: bool = True) -> dict:
-    assert cpu, "the learner smoke test is CPU-only"
-    smoke = run_student_comparison(steps=250, train_examples=1024, heldout_examples=512)
-    return {
-        "variants": reference.comparison_rows(smoke),
-        "zero_baseline_mse": smoke.zero_baseline_mse,
-        "true_l0": smoke.true_l0,
-    }
-
-
-if MAIN:
-    tests.test_notebook_contract(run_smoke_test)
-# END SOLUTION

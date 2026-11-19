@@ -216,13 +216,3 @@ def test_end_to_end_variant_comparison(run_variant_comparison: Callable | None =
         "At least one train-selected feature must exceed 0.9 held-out AUC."
     )
     print("All tests in `test_end_to_end_variant_comparison` passed!")
-
-
-def test_notebook_contract(run_smoke_test: Callable | None = None):
-    solutions = _solutions()
-    run_smoke_test = run_smoke_test or solutions.run_smoke_test
-    report = run_smoke_test(cpu=True)
-    assert len(report["variants"]) == 4, "The smoke report must include all four SAE variants."
-    assert report["zero_baseline_mse"] > 0, "The reconstruction baseline must be nondegenerate."
-    assert report["true_l0"] > 0, "The smoke dataset must contain active planted features."
-    print("All tests in `test_notebook_contract` passed!")

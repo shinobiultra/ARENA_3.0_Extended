@@ -1280,105 +1280,6 @@ r'''
 # ! TAGS: []
 
 r'''
-## Runtime entry points
-
-The following CUDA callbacks and dependency diagnostics are available after explicit runtime initialization.
-'''
-
-# ! CELL TYPE: code
-# ! FILTERS: []
-# ! TAGS: []
-
-def run_gpu_test(max_vram_gb: float = 24.0) -> dict:
-    """Run a real CUDA tensor check plus environment and budget reporting."""
-
-    report = get_environment_report()
-    budget = estimate_gemma_1b_smoke_budget()
-    package_check = uv_pip_check_report()
-    with tempfile.TemporaryDirectory() as tmpdir:
-        activation_store = activation_store_smoke_test(Path(tmpdir))
-    if not report.cuda_available:
-        return {
-            "cuda_available": False,
-            "gpu_name": report.gpu_name,
-            "python_version": report.python,
-            "python_major_minor": ".".join(report.python.split(".")[:2]),
-            "torch_version": report.torch,
-            "torchvision_version": torchvision.__version__,
-            "cuda_version": report.cuda_version,
-            "bf16_supported": report.bf16_supported,
-            "estimated_total_gb": budget.total_gb,
-            "peak_vram_gb": 0.0,
-            "fits_budget": False,
-            "within_vram_budget": False,
-            "gpu_tensor_test_passed": False,
-            "uv_pip_check_passed": package_check["passed"],
-            "uv_pip_check_returncode": package_check["returncode"],
-            "uv_pip_check_output": package_check["output"],
-            "activation_store_num_records": activation_store["num_records"],
-            "activation_store_names": activation_store["names"],
-            "warnings": report.warnings(budget.total_gb),
-        }
-
-    t.cuda.reset_peak_memory_stats()
-    t.manual_seed(1234)
-    dtype = t.bfloat16 if report.bf16_supported else t.float16
-    x = t.randn(1024, 1024, device="cuda", dtype=dtype)
-    y = x @ x.T
-    t.cuda.synchronize()
-    mean_abs = float(y.float().abs().mean().item())
-    diag_mean = float(y.diagonal().float().mean().item())
-    finite = bool(t.isfinite(y).all().item())
-    peak_vram_gb = t.cuda.max_memory_allocated() / 1024**3
-    tensor_test_passed = (
-        finite
-        and list(y.shape) == [1024, 1024]
-        and str(dtype) == "torch.bfloat16"
-        and mean_abs > 1.0
-        and diag_mean > 100.0
-    )
-    return {
-        "cuda_available": report.cuda_available,
-        "gpu_name": report.gpu_name,
-        "gpu_total_memory_gb": report.gpu_total_memory_gb,
-        "python_version": report.python,
-        "python_major_minor": ".".join(report.python.split(".")[:2]),
-        "torch_version": report.torch,
-        "torchvision_version": torchvision.__version__,
-        "cuda_version": report.cuda_version,
-        "bf16_supported": report.bf16_supported,
-        "estimated_total_gb": budget.total_gb,
-        "peak_vram_gb": peak_vram_gb,
-        "fits_budget": budget.fits(max_vram_gb),
-        "within_vram_budget": peak_vram_gb <= max_vram_gb,
-        "gpu_tensor_test_passed": tensor_test_passed,
-        "gpu_matmul_shape": list(y.shape),
-        "gpu_matmul_dtype": str(dtype),
-        "gpu_matmul_finite": finite,
-        "gpu_matmul_mean_abs": mean_abs,
-        "gpu_matmul_diag_mean": diag_mean,
-        "uv_pip_check_passed": package_check["passed"],
-        "uv_pip_check_returncode": package_check["returncode"],
-        "uv_pip_check_output": package_check["output"],
-        "activation_store_num_records": activation_store["num_records"],
-        "activation_store_names": activation_store["names"],
-        "warnings": report.warnings(budget.total_gb),
-    }
-
-# ! CELL TYPE: code
-# ! FILTERS: []
-# ! TAGS: []
-
-def run_full_experiment(max_vram_gb: float = 24.0) -> dict:
-    """Run the validated infrastructure readiness check."""
-
-    return run_gpu_test(max_vram_gb=max_vram_gb)
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ## Limitations and scope gaps
 
 The existing syllabus also names TransformerLens/HF/nnsight same-checkpoint logit and hook equivalence, BF16/int8/int4 checkpoint loading and interpretability survival under quantization, measured parameter/KV/activation peaks and large-model feasibility. Those studies are not implemented or established by this source. The synthetic logits compare tensors, not model implementations. The original estimator applies its chosen dtype to all counted storage, so an int4 arithmetic budget does not establish real cache dtype, quantization metadata, kernels or memory use. Disk writes are single-writer and not crash-atomic. A finite BF16 matmul and passed dependency check establish only their narrow readiness gate.
@@ -1388,8 +1289,6 @@ The existing syllabus also names TransformerLens/HF/nnsight same-checkpoint logi
 # ! FILTERS: [colab-soln]
 # ! TAGS: [keep-main,master-comment]
 
-# GT_TIER = "GT-1"
-# EXERCISE_ID = "1_6_local_frontier_ml_infrastructure"
 # DIFFICULTY = 3
 # IMPORTANCE = 5
 # EXPECTED_RUNTIME = "seconds for toy contracts; minutes for the local CUDA runtime report"
@@ -1483,23 +1382,4 @@ The existing syllabus also names TransformerLens/HF/nnsight same-checkpoint logi
 # assert contract["activation_store"]["num_records"] == 2
 # tests.test_notebook_contract(solutions.run_smoke_test)
 # contract
-
-# ! CELL TYPE: code
-# ! FILTERS: [colab-soln]
-# ! TAGS: [keep-main,master-comment]
-
-# report = json.loads((section_dir / "verification_report.json").read_text())
-# gpu = report["metrics"]["gpu_test"]
-# assert report["accepted"]
-# assert gpu["cuda_available"]
-# assert gpu["gpu_tensor_test_passed"]
-# assert gpu["gpu_matmul_dtype"] == "torch.bfloat16"
-# assert gpu["peak_vram_gb"] < 1.0
-# print("python_major_minor:", gpu["python_major_minor"])
-# print("torch_version:", gpu["torch_version"])
-# print("cuda_version:", gpu["cuda_version"])
-# print("peak_vram_gb:", gpu["peak_vram_gb"])
-# 
-# tests.test_committed_gpu_report_records_cuda_runtime_and_no_fallback()
-# tests.test_exercise_notebook_course_ready_surface()
 

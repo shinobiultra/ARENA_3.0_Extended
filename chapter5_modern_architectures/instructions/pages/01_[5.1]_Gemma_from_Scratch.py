@@ -16,7 +16,6 @@ metadata = [
     {'title': 'Assemble and trace the decoder', 'icon': '2-circle-fill', 'subtitle': ''},
     {'title': 'Read controls and parity', 'icon': '3-circle-fill', 'subtitle': ''},
     {'title': 'Predict changed conditions', 'icon': '4-circle-fill', 'subtitle': ''},
-    {'title': 'Bonus', 'icon': 'star', 'subtitle': ''},
 ]
 chapter_name = 'chapter5_modern_architectures'
 chapter_name_long = 'Chapter 5 - Modern Architectures'

@@ -18,8 +18,6 @@ def primitives(monkeypatch):
     monkeypatch.setattr(t.optim,'AdamW',forbidden)
     monkeypatch.setattr(t.cuda,'init',forbidden)
     monkeypatch.setattr(module,'train_state_tracker_cpu',forbidden)
-    monkeypatch.setattr(module,'run_gpu_test',forbidden)
-    monkeypatch.setattr(module,'run_full_experiment',forbidden)
     t.set_default_dtype(t.float32)
     yield module
     t.set_rng_state(state);t.set_default_dtype(dtype)

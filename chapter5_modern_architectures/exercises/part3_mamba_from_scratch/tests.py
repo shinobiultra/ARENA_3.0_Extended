@@ -458,30 +458,6 @@ def test_state_intervention_is_causal(
     print("All tests in `test_state_intervention_is_causal` passed!")
 
 
-def test_notebook_contract(run_smoke_test: Callable | None = None):
-    run_smoke_test = run_smoke_test or _solutions().run_smoke_test
-    report = run_smoke_test(cpu=True)
-    assert report["scan_parity"]["passed"], (
-        "Recurrent and associative selective scans must agree."
-    )
-    assert report["block_step_parity"]["passed"], (
-        "Full block execution and recurrent token stepping must agree."
-    )
-    assert report["lm_cache_parity"]["passed"], (
-        "The tiny stacked LM cache must reproduce full logits."
-    )
-    assert report["cpu_mamba_130m_mapped_tensor_count"] == 243, (
-        "The notebook contract must include strict real-checkpoint weight mapping."
-    )
-    assert report["cpu_mamba_130m_greedy_tokens_match"], (
-        "The notebook contract must include exact official/custom greedy-token parity."
-    )
-    assert report["memory_benchmark"]["convolution_long_delay_mae"] >= 0.9, (
-        "The signature control must expose the finite convolution's long-delay failure."
-    )
-    print("All tests in `test_notebook_contract` passed!")
-
-
 def test_selective_parameters_literal(project_fn, discretize_fn, expand_fn):
     import math
     x_proj=nn.Linear(1,3,bias=False);dt_proj=nn.Linear(1,1,bias=True)

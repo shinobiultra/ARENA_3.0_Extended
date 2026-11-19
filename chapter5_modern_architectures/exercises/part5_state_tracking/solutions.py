@@ -824,23 +824,3 @@ if MAIN:
     plt.show()
 
 # %%
-
-import importlib
-
-
-def _release_solution_module():
-    return importlib.import_module("chapter5_modern_architectures.exercises.part4_mamba_state_tracking.solutions")
-
-
-def run_gpu_test(max_vram_gb: float = 24.0) -> dict:
-    """Run the section's pinned CUDA verification contract."""
-    return _release_solution_module().run_gpu_test(max_vram_gb=max_vram_gb)
-
-
-def run_full_experiment(max_vram_gb: float = 24.0) -> dict:
-    """Run the full experiment used for the checked-in release evidence."""
-    return _release_solution_module().run_full_experiment(
-        max_vram_gb=max_vram_gb
-    )
-
-# %%

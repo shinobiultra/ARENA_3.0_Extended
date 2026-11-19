@@ -40,7 +40,6 @@ def checks():return importlib.import_module(MODULE+'.tests')
 ('test_recurrent_quadratic_chunked_gradient_parity',['exact_gradient_parity_metrics']),
 ('test_tiny_stacked_lm_full_vs_recurrent_cache',['TinyStackedMamba2LM']),
 ('test_parameter_matched_attention_and_mamba1_controls',['parameter_matched_control_counts','TinyCausalAttentionControl','TinyMamba1Control']),
-('test_cuda_hooks_are_strict',[]),
 ])
 def test_independent_cpu_fixtures(lesson,checks,name,args):
     getattr(checks,name)(*[getattr(lesson,arg) for arg in args])

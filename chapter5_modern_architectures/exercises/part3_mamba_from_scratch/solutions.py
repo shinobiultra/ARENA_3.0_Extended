@@ -30,8 +30,6 @@ if str(exercises_dir) not in sys.path:
 
 import part3_mamba_from_scratch.tests as tests
 
-EXERCISE_ID = "5_3_mamba_from_scratch"
-GT_TIER = "GT-1"
 DIFFICULTY = 4
 IMPORTANCE = 5
 EXPECTED_RUNTIME = "about 3 minutes CPU including cached Mamba-130M parity"
@@ -1108,30 +1106,5 @@ def parity_error(length: int, dtype: t.dtype) -> float:
 if MAIN:
     for dtype in (t.float32, t.float64):
         print(dtype, {n: f"{parity_error(n, dtype):.2e}" for n in (32, 128, 512, 2048)})
-
-# %%
-
-import importlib
-
-
-def _release_solution_module():
-    return importlib.import_module(
-        "chapter5_modern_architectures.exercises.part3_mamba_from_scratch.historical_release"
-    )
-
-
-def run_gpu_test(max_vram_gb: float = 24.0) -> dict:
-    """Run the separately maintained CUDA release contract; never called here."""
-    return _release_solution_module().run_gpu_test(max_vram_gb=max_vram_gb)
-
-
-def run_full_experiment(max_vram_gb: float = 24.0) -> dict:
-    return _release_solution_module().run_full_experiment(max_vram_gb=max_vram_gb)
-
-# %%
-
-def run_smoke_test(cpu: bool = True):
-    """Delegate explicit historical report reproduction to the exact old module."""
-    return _release_solution_module().run_smoke_test(cpu=cpu)
 
 # %%
