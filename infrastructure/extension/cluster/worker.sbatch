@@ -1,8 +1,12 @@
 #!/bin/bash
-# One long-running Julia (Würzburg) job that executes extension section builds on request (see worker.py).
+# The Julia (Würzburg) worker job: executes extension section builds on request (see worker.py).
 #
-#   sbatch infrastructure/extension/cluster/worker.sbatch          # from ~/projects/arena-extended/repo
+#   sbatch --qos=normal --time=<about 2x the batch's expected total> infrastructure/extension/cluster/worker.sbatch
 #   touch ~/projects/arena-extended/queue/STOP                     # to end it early, once running builds finish
+#
+# Run sbatch from ~/projects/arena-extended/repo. remote_build.sh queues builds for it. Each lesson
+# gets 30 minutes; the worker exits after 30 minutes with an empty queue, releasing its GPUs.
+# Keep --qos=normal: the account's default QOS (computervision) preempts other users' jobs.
 #SBATCH --job-name=arena-worker
 #SBATCH --account=computervision
 #SBATCH --partition=gpu_computervision
