@@ -5,10 +5,11 @@
 r'''
 ```python
 [
-    {"title": "Two Ways to Match Images and Text", "icon": "1-circle-fill", "subtitle": "(15%)"},
-    {"title": "A Tiny CLIP from Scratch", "icon": "2-circle-fill", "subtitle": "(30%)"},
+    {"title": "Two Ways to Match Images and Text", "icon": "1-circle-fill", "subtitle": "(10%)"},
+    {"title": "A Tiny CLIP from Scratch", "icon": "2-circle-fill", "subtitle": "(25%)"},
     {"title": "The Real CLIP and SigLIP", "icon": "3-circle-fill", "subtitle": "(20%)"},
-    {"title": "The Geometry of the Joint Space", "icon": "4-circle-fill", "subtitle": "(30%)"},
+    {"title": "The Geometry of the Joint Space", "icon": "4-circle-fill", "subtitle": "(25%)"},
+    {"title": "Held-out Quiz", "icon": "bullseye", "subtitle": "(15%)"},
     {"title": "Bonus", "icon": "star", "subtitle": "(5%)"},
 ]
 ```
@@ -43,7 +44,11 @@ r'''
 # ! TAGS: []
 
 r'''
-Here are two pictures. The first is a purple star on a plain background. The second shows a red circle on the left and a blue square on the right.
+Here are two pictures.
+
+<img src="media/puzzle_pictures.png" width="700">
+
+The first is a purple star on a plain background. The second shows a red circle on the left and a blue square on the right.
 
 For the first picture we ask a pretrained model which of ninety captions fits best, captions such as `"a purple star"`, `"a purple striped star"`, `"a purple dotted heart"` and `"a
 green star"`. For the second picture we ask a much easier-sounding question: which of *two* captions is correct,
@@ -52,14 +57,18 @@ green star"`. For the second picture we ask a much easier-sounding question: whi
 "a red circle and a blue square"          "a blue circle and a red square"
 ```
 
-The model we'll use is **SigLIP**, and on the test set we'll build in Part 4 it picks the right caption out of ninety 98% of the time, getting the right colour, the right shape
-*and* the right pattern. On the second question, with the same kind of shapes and almost the same words, it does no better than a coin flip (it prefers the right caption in 55% of
-cases). **CLIP**, its predecessor, does worse on the first (78%) and just as badly on the second (53%).
+The model we'll use is **SigLIP**, and on the test set we'll build in Part 4 it picks the right caption out of ninety SIGLIP_90% of the time, getting the right colour, the right shape
+*and* the right pattern. On the second question, with the same kind of shapes and almost the same words, it does no better than a coin flip (it prefers the right caption in SIGLIP_PAIR% of
+cases). **CLIP**, its predecessor, does worse on the first (CLIP_90%) and just as badly on the second (CLIP_PAIR%).
 
 These are the two models we'll take apart in this section. They are **dual encoders**: an image tower and a text tower which each map their input to a point in one shared vector
 space, trained so that an image and its caption land close together. Nothing else. There is no cross-attention between the two modalities, no decoder, and no generation. Almost
 every vision-language system built since 2021 either uses such a model directly (retrieval, zero-shot classification, image search, dataset filtering) or contains one as its eyes:
 the image encoder of many open multimodal LLMs is a SigLIP or a CLIP ViT, and many of the text-to-image models you'll meet in chapter 13 are conditioned on CLIP text embeddings.
+
+What we build from scratch is a **tiny CLIP**: a ViT and a text transformer with about TINY_PARAMS parameters in all, trained on 120 classes of coloured shapes (24 of them held out) for 2,000 steps. The real
+checkpoints, `openai/clip-vit-base-patch32` and `google/siglip-base-patch16-224`, are loaded frozen at pinned revisions and probed, never trained. The data are a 200-image sample of CIFAR-10 in
+this repository, two photographs that come with scikit-learn, and synthetic shapes and clothing captions that we generate.
 
 The central design difference we will study is the **loss** used to train them. Our tiny controlled experiments let us examine that choice under specified settings. The pretrained
 checkpoints also differ in architecture, patch size, embedding dimension and training data, so their performance comparison does not isolate the causal effect of the loss. CLIP
@@ -71,18 +80,18 @@ distribution.
 
 In this section you will:
 
-- implement both losses from scratch, check them against independent oracles, and work out why one needs a bias term and the other doesn't;
-- build a **tiny CLIP** (a small ViT and a small causal text transformer, trained from scratch on synthetic coloured shapes) and watch an image-caption retrieval matrix go from noise to a clean diagonal. The signature result of the section is that matrix, shown next to its **controls**: the same model trained on randomly paired captions, and an untrained model;
-- load the real checkpoints, check your loss functions against the models' own outputs, and measure zero-shot retrieval with noise-image and shuffled-caption controls;
-- map the **geometry** of the joint space: the *modality gap* between images and captions, colour/shape/pattern **directions** shared between the two towers, steering an image embedding along them, how text embeddings of clothing descriptions decompose into object, colour, material and style, and finally why **compositionality** (binding a colour to the right object) fails.
+- build CLIP's softmax loss and SigLIP's sigmoid loss from scratch, check them against independent oracles, and work out why one needs a bias term and the other doesn't;
+- train a tiny CLIP and read its 120 × 120 retrieval heatmap, the signature result of the section, against its **controls**: the same model trained on randomly paired captions, and an untrained model;
+- check real CLIP and SigLIP on CIFAR-10 with a retrieval table you build, next to shuffled-label and noise-image controls;
+- measure the **modality gap** between images and captions, steer an image embedding with attribute directions, and watch both models fail at colour binding.
 
 A recurring theme is **controls**. A retrieval matrix looks convincing whether or not the model has learned anything about the pictures: captions can be guessed from the image's
 colour histogram, a text tower can memorise a lookup table, and an embedding space can look "structured" for boring reasons. So every result has a baseline which should fail,
 plotted on the same axes. When a control *doesn't* fail where we expect it to, we'll say so.
 
-**Prerequisites.** You should be comfortable with transformers at the level of [1.1] (attention, the residual stream, layernorm) and with a basic PyTorch training loop ([0.3]
-Optimization). Section [7.1] is not required, but its habit of pairing every result with a control is the habit we'll use here. We don't use TransformerLens: the towers we build
-are plain PyTorch modules.
+**Prerequisites.** You should be comfortable with transformers at the level of [1.1 Transformers from Scratch](https://learn.arena.education/chapter1_transformer_interp/01_transformers/) (attention, the residual stream, layernorm)
+and with a basic PyTorch training loop ([0.3 Optimization](https://learn.arena.education/chapter0_fundamentals/03_optimization/)). Section [7.1 Logit Lens, Tuned Lens and Patchscopes](../../../chapter7_activation_to_language/exercises/part1_lenses_patchscopes/7.1_Logit_Lens_Tuned_Lens_and_Patchscopes_exercises.ipynb)
+is optional, but its habit of pairing every result with a control is the habit we'll use here. We don't use TransformerLens: the towers we build are plain PyTorch modules.
 '''
 
 # ! CELL TYPE: markdown
@@ -120,13 +129,13 @@ Then you'll swap the loss for the sigmoid one and compare.
 
 ### 3️⃣ The Real CLIP and SigLIP
 
-You'll load OpenAI's CLIP ViT-B/32 and Google's SigLIP base, check your own similarity and loss code against the checkpoints' official logits, and measure zero-shot retrieval on
-real photographs. You'll then test what the loss change did to the models' *outputs* by asking them about things that aren't there.
+You'll load OpenAI's CLIP ViT-B/32 and Google's SigLIP base, check your own similarity and loss code against the checkpoints' official logits, and build the retrieval table that
+measures zero-shot retrieval on real photographs, next to its controls. You'll then test what the loss change did to the models' *outputs* by asking them about things that aren't there.
 
 > ##### Learning Objectives
 >
 > - Reproduce a checkpoint's official logits from its embeddings, learned scale and (for SigLIP) bias
-> - Measure zero-shot classification and retrieval on real images, with shuffled-caption and noise-image controls
+> - Implement a retrieval table for real images, with shuffled-label and noise-image controls, and read it for both models
 > - Compare softmax and sigmoid confidence on out-of-domain captions and on noise, and see which loss lets a model abstain
 > - Apply the checkpoint to your own images
 
@@ -144,9 +153,20 @@ both models bind colours to objects, and checking whether that's a limit of the 
 > - Partition the variance of text embeddings into additive factors, with a shuffled-label null
 > - Score a model on Winoground-style binding tests, and check an architecture-versus-data explanation by training a tiny model on two-object scenes
 
+### 🎯 Held-out Quiz
+
+Four experiments we ran on your tiny CLIP and didn't show you. Each changes one thing in a run you made. You'll predict each result and write down why, then see what really
+happened and what a good mental model would have said.
+
+> ##### Learning Objectives
+>
+> - Predict the result of a change to a training run from results you've already measured
+> - Name the result your prediction rests on, and notice when a paper's claim and your own runs disagree
+> - Find the place where your picture of the softmax and sigmoid losses breaks
+
 ### ☆ Bonus
 
-Hard negatives (NegCLIP), the batch-size and temperature dependence of both losses, SigLIP 2, more attributes, probing for binding, and further reading.
+What this lesson doesn't show, hard negatives (NegCLIP), what to look at when the batch size, temperature and learning rate change, more attributes, probing for binding, and further reading.
 '''
 
 # ! CELL TYPE: markdown
@@ -155,6 +175,8 @@ Hard negatives (NegCLIP), the batch-size and temperature dependence of both loss
 
 r'''
 ## Setup code
+
+SETUP_LINE
 '''
 
 # ! CELL TYPE: code
@@ -166,26 +188,6 @@ from IPython import get_ipython
 ipython = get_ipython()
 ipython.run_line_magic("load_ext", "autoreload")
 ipython.run_line_magic("autoreload", "2")
-
-# ! CELL TYPE: code
-# ! FILTERS: [colab]
-# ! TAGS: [master-comment]
-
-# import os
-# import sys
-#
-# IN_COLAB = "google.colab" in sys.modules
-#
-# if IN_COLAB:
-#     # Install dependencies, and download this chapter's exercise files from the ARENA extension repo
-#     %pip install transformers jaxtyping einops
-#     repo, branch, chapter = "ARENA_3.0_Extended", "main", "chapter12_vlm_interpretability"
-#     if not os.path.exists(f"/content/{chapter}"):
-#         !wget -P /content https://github.com/shinobiultra/{repo}/archive/refs/heads/{branch}.zip
-#         !unzip -q /content/{branch}.zip '{repo}-{branch}/{chapter}/exercises/*' -d /content
-#         !mv /content/{repo}-{branch}/{chapter} /content/{chapter}
-#         !rm -r /content/{branch}.zip /content/{repo}-{branch}
-#     os.chdir(f"/content/{chapter}/exercises")
 
 # ! CELL TYPE: code
 # ! FILTERS: []
@@ -335,7 +337,14 @@ r'''
 r'''
 ## InfoNCE: the CLIP loss
 
-CLIP treats each row of $S$ as the logits of an $N$-way classification problem. Image $i$ is shown the $N$ captions in the batch, and the correct "class" is caption $i$:
+CLIP treats each row of $S$ as the logits of an $N$-way classification problem. Image $i$ is shown the $N$ captions in the batch, and the correct "class" is caption $i$.
+
+> **First, cross-entropy.** A classifier turns its scores into probabilities with a softmax, and cross-entropy charges it $-\ln p$, where $p$ is the probability it gave the *right* option.
+> With four options: if it gives the right one 0.7, the loss is $-\ln 0.7 = 0.36$; if it shrugs and gives every option 0.25, the loss is $\ln 4 = 1.39$; if it gives the right one 0.01, the
+> loss is $4.6$. Being right costs almost nothing, a shrug costs $\ln N$, and being confidently wrong costs a lot. The trap to remember: the loss only looks at the probability of the right
+> option, but a softmax makes that probability depend on every other option's score. Go deeper: 0.7 Foundations Toolkit, Part 1.
+
+The loss for the rows, averaged over the batch, is
 
 $$
 \mathcal{L}_{i \to t} = -\frac{1}{N} \sum_{i=1}^{N} \log \frac{\exp(S_{ii})}{\sum_{j=1}^{N} \exp(S_{ij})}
@@ -1333,7 +1342,7 @@ r'''
 > You should spend up to 15-20 minutes on this exercise.
 > ```
 
-You've implemented attention in [1.1]; here it is again with one extra option. Complete the `forward` method of `SelfAttention`. The layer has one linear map `qkv` that produces
+You've implemented attention in [1.1](https://learn.arena.education/chapter1_transformer_interp/01_transformers/); here it is again with one extra option. Complete the `forward` method of `SelfAttention`. The layer has one linear map `qkv` that produces
 queries, keys and values together, and one output projection `out`:
 
 1. `self.qkv(x)` has shape `(batch, seq, 3 * d_model)`. Reshape it to `(batch, seq, 3, n_heads, head_dim)` and split off $Q$, $K$, $V$ (the factor 3 is the *slowest* of the last three axes), each of shape `(batch, n_heads, seq, head_dim)` after moving the head axis forward.
@@ -2378,7 +2387,7 @@ We'll use two pretrained dual encoders, both loaded through 🤗 Transformers:
 - **CLIP ViT-B/32** (`openai/clip-vit-base-patch32`), from Radford et al. (2021), [*Learning Transferable Visual Models From Natural Language Supervision*](https://arxiv.org/abs/2103.00020): trained with the softmax InfoNCE loss on 400 million web image-text pairs.
 - **SigLIP base** (`google/siglip-base-patch16-224`), from Zhai et al. (2023), [*Sigmoid Loss for Language Image Pre-Training*](https://arxiv.org/abs/2303.15343): the same recipe with the sigmoid loss, trained on the WebLI dataset.
 
-Both are ViT-B-sized dual encoders, and they have exactly the structure of the tiny model you've just built, with a vision transformer, a text transformer, and two linear
+Both are loaded at a pinned revision (a fixed commit of the model repository), so the numbers below don't move if a repository is updated. Both are ViT-B-sized dual encoders, and they have exactly the structure of the tiny model you've just built, with a vision transformer, a text transformer, and two linear
 projections into a shared space. We'll load them behind a small helper from `utils.py` which does the plumbing (tokenisation, resizing and normalisation, batching) and returns the
 *raw* embeddings plus the learned logit scale and bias. Everything after that is your code.
 '''
@@ -2550,14 +2559,96 @@ if MAIN:
 r'''
 ## Zero-shot retrieval on real photographs, with controls
 
-Now the real measurement. For each model, we embed the 200 CIFAR images and the ten captions `"a photo of a {class}"`, form the logit matrix, and ask for image-to-text and
-text-to-image R@1 using the function you wrote in Part 2. We also draw the same kind of picture as in Part 2, but at the level of classes: the $10 \times 10$ matrix whose entry
-$(c, j)$ is the *mean cosine similarity* between the images of class $c$ and caption $j$.
+Now the real measurement. For each model, we embed the 200 CIFAR images and the ten captions `"a photo of a {class}"`, form the logit matrix, and ask for image-to-text R@1 using the
+function you wrote in Part 2. Two controls, each with the same pipeline:
 
-Two controls, each with the same pipeline:
-
-- **Shuffled labels.** The same images and captions, but each image is assigned to a random class (a random permutation of the 200 labels). The class-mean matrix has to be flat, and R@1 has to fall to chance (0.10).
+- **Shuffled labels.** The same images and captions, but each image is assigned to a random class (a random permutation of the 200 labels). R@1 has to fall to chance (0.10).
 - **Noise images.** 200 images of uniform random pixels, with the CIFAR labels attached. These contain no objects at all, so nothing should be recognised.
+
+You'll build this table yourself, so that the controls are part of the measurement and not an afterthought.
+'''
+
+# ! CELL TYPE: markdown
+# ! FILTERS: []
+# ! TAGS: []
+
+r'''
+### Exercise - implement `real_retrieval_table`
+
+> ```yaml
+> Difficulty: 🔴🔴⚪⚪⚪
+> Importance: 🔵🔵🔵🔵⚪
+>
+> You should spend up to 10-15 minutes on this exercise.
+> ```
+
+Implement `real_retrieval_table(model, images, labels)`. `model` is one of the loaded pairs: it has `embed_images` (a list of PIL images in, raw embeddings out) and `embed_texts` (a list of
+strings in, raw embeddings out). `images` is a list of PIL images and `labels` holds their class indices. Score every image against the captions `"a photo of a {name}"`, one per class,
+with plain cosine similarity (`similarity_logits` with scale 1) and your `retrieval_metrics`, and return a dict of image-to-text R@1 with three entries, in this order:
+
+- `"real images"`: the images with their true labels;
+- `"shuffled labels (control)"`: the same images, with the labels shuffled by a random permutation drawn from `t.Generator().manual_seed(seed)`;
+- `"noise images (control)"`: `utils.noise_like(images, seed)` (uniform random pixels, the same number and size as the real images) with the true labels attached.
+
+Don't change `labels` in place, and embed each set of images only once.
+'''
+
+# ! CELL TYPE: code
+# ! FILTERS: []
+# ! TAGS: []
+
+def real_retrieval_table(
+    model,
+    images: list[Image.Image],
+    labels: Int[Tensor, " n"],
+    class_names: list[str] = utils.CIFAR10_CLASSES,
+    seed: int = 0,
+) -> dict[str, float]:
+    """Image-to-text R@1 against all class captions, for real images, shuffled labels and noise images."""
+    # EXERCISE
+    # raise NotImplementedError()
+    # END EXERCISE
+    # SOLUTION
+    text_emb = model.embed_texts([f"a photo of a {name}" for name in class_names])
+    class_ids = t.arange(len(class_names))
+    shuffled = labels[t.randperm(len(labels), generator=t.Generator().manual_seed(seed))]
+    real_emb = model.embed_images(images)
+    noise_emb = model.embed_images(utils.noise_like(images, seed))
+    conditions = {
+        "real images": (real_emb, labels),
+        "shuffled labels (control)": (real_emb, shuffled),
+        "noise images (control)": (noise_emb, labels),
+    }
+    return {
+        name: retrieval_metrics(similarity_logits(emb, text_emb, 1.0), lab, class_ids)["image_to_text"]
+        for name, (emb, lab) in conditions.items()
+    }
+    # END SOLUTION
+
+
+# HIDE
+if MAIN:
+    tests.test_real_retrieval_table(real_retrieval_table)
+# END HIDE
+
+# ! CELL TYPE: markdown
+# ! FILTERS: []
+# ! TAGS: []
+
+r'''
+<details>
+<summary>Hint</summary>
+
+Embed the real images once and reuse them for the real and the shuffled condition: only the labels change between those two. Shuffle the labels *on their own*:
+`labels[t.randperm(len(labels), generator=g)]` with `g = t.Generator().manual_seed(seed)`.
+</details>
+
+<details>
+<summary>Help - my shuffled-label control scores well above chance.</summary>
+
+Then the images and the labels were shuffled together, so every image is still next to its own label and the pairing is intact. A control has to break the pairing: shuffle the labels
+alone, and keep the images in their original order.
+</details>
 '''
 
 # ! CELL TYPE: code
@@ -2569,9 +2660,8 @@ def class_means(sim: Tensor, image_labels: Tensor, n_classes: int = 10) -> Tenso
     return t.stack([sim[image_labels == c].mean(0) for c in range(n_classes)])
 
 
-rng = np.random.default_rng(0)
-noise_images = utils.to_pil(rng.integers(0, 256, size=cifar_images.shape, dtype=np.uint8))
-shuffled_labels = labels[t.randperm(len(labels), generator=t.Generator().manual_seed(0))]
+shuffled_labels = labels[t.randperm(len(labels), generator=t.Generator().manual_seed(0))]  # the shuffle the table uses at seed 0
+noise_images = utils.noise_like(pil_images)  # the noise the table uses at seed 0
 
 text_emb, image_emb, noise_emb = {}, {}, {}
 for kind, pair in pairs.items():
@@ -2579,15 +2669,14 @@ for kind, pair in pairs.items():
     image_emb[kind] = pair.embed_images(pil_images)
     noise_emb[kind] = pair.embed_images(noise_images)
 
-mats, rows = {}, []
+table = pd.DataFrame({kind: real_retrieval_table(pair, pil_images, labels) for kind, pair in pairs.items()}).T
+display(table.rename_axis("image-to-text R@1").round(3))
+
+mats = {}
 for kind in pairs:
     for condition, emb, lab in [("real images", image_emb[kind], labels), ("shuffled labels (control)", image_emb[kind], shuffled_labels), ("noise images (control)", noise_emb[kind], labels)]:
-        cos = similarity_logits(emb, text_emb[kind], 1.0)
-        mats[f"{kind}: {condition}"] = class_means(cos, lab).numpy()
-        r = retrieval_metrics(cos, lab, class_ids)
-        rows.append({"model": kind, "condition": condition, "image-to-text R@1": r["image_to_text"], "text-to-image R@1": r["text_to_image"]})
+        mats[f"{kind}: {condition}"] = class_means(similarity_logits(emb, text_emb[kind], 1.0), lab).numpy()
 utils.plot_class_heatmaps(mats, class_names, captions_for(class_names, "{}"), "Mean cosine similarity between image classes (rows) and class captions (columns)")
-display(pd.DataFrame(rows).set_index(["model", "condition"]).round(3))
 
 # ! CELL TYPE: markdown
 # ! FILTERS: []
@@ -2605,32 +2694,13 @@ r'''
 <details>
 <summary>Expected output</summary>
 
-<pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace">                                  image-to-text R@1  text-to-image R@1
-model  condition
-CLIP   real images                            0.880                1.0
-       shuffled labels (control)              0.135                0.2
-       noise images (control)                 0.100                0.1
-SigLIP real images                            0.905                1.0
-       shuffled labels (control)              0.140                0.0
-       noise images (control)                 0.100                0.0</pre>
+<pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace">FILL_RETRIEVAL_TABLE</pre>
 </details>
 
 <details>
 <summary>Help - how should I interpret these heatmaps and this table?</summary>
 
-**Real images.** Both models show a strong diagonal: the mean cosine between an image and its own class caption is higher than with any other class's caption. R@1 is 0.88 for CLIP
-and 0.905 for SigLIP (chance 0.10), and for text-to-image, the top-scoring image for each of the ten class captions has the right class (1.0) for both. The confusions are between
-semantically close classes: animals with animals (cat/dog, deer/horse) and vehicles with vehicles (automobile/truck, airplane/ship), which is a good sign that the models are using
-meaning, not a low-level shortcut.
-
-Notice the *scale* of the cosines: CLIP's matched cosines are about 0.25 and SigLIP's about 0.05 to 0.09 (the colour scale is shared across all six panels). The two models use very
-different parts of the cosine range, and their logit scale and bias compensate (CLIP: $100 \cos$; SigLIP: $117 \cos - 12.9$). Even CLIP's best cell is a cosine of 0.27: matched
-image-caption pairs are *not* close to 1. We'll see why in Part 4.
-
-**Controls.** With the image labels shuffled, the class-mean matrix is almost the same in every row, and R@1 falls to 0.135 and 0.14 (chance is 0.10; with 200 images, differences
-of 0.02 are noise). With noise images the matrix is again flat across rows, and R@1 is 0.10: that is exactly what you'd get if every noise image picked the *same* caption (20 of
-the 200 images belong to any one class). The noise panel isn't blank, however: it has *column* structure, meaning that some captions are more similar to every image than others.
-Hold on to that caption-specific bias: it comes back, with consequences, in the binding test.
+HELP_RETRIEVAL
 </details>
 '''
 
@@ -2705,8 +2775,9 @@ for every image:
 2. the same real images, but with ten captions about something else entirely: `"a photo of a piano"`, `"... a guitar"`, `"... a violin"`, and so on (the model *should* find nothing to be confident about);
 3. noise images with the ten correct captions (nothing to recognise).
 
-We read out CLIP with a softmax, SigLIP with a softmax (so we can separate the effect of the *model* from the effect of the *readout*), and SigLIP with a sigmoid. **Predict** which
-readouts can tell condition 1 from conditions 2 and 3.
+We read out CLIP with a softmax, SigLIP with a softmax (so we can separate the effect of the *model* from the effect of the *readout*), and SigLIP with a sigmoid.
+
+**Make a prediction first:** which of the three readouts can tell condition 1 from conditions 2 and 3?
 '''
 
 # ! CELL TYPE: code
@@ -3203,7 +3274,8 @@ unmatched pair is already a logit gap of 66, enough to make the loss essentially
 gap would be a logit gap of only 9, and the loss keeps rewarding matching pairs for coinciding.
 
 Does the gap matter for retrieval? Not here: 0.942 against 0.958. It is a property of the geometry the loss *allows*, not something that retrieval needs. Real CLIP sits at the
-clamp of 100, which is consistent with its large gap; SigLIP's scale is 117 with a bias of $-12.9$. Next we ask what happens to the real models when we move the clouds.
+clamp of 100 and has a large gap, but that is a correlation across two models that differ in much more than their temperature: only our tiny experiment varies the temperature on its own.
+(The Bonus has a reading line on *Mind the Gap*, which explains the cone effect behind it.) SigLIP's scale is 117 with a bias of $-12.9$. Next we ask what happens to the real models when we move the clouds.
 </details>
 '''
 
@@ -4000,6 +4072,7 @@ for _ in range(150):
     c1, c2 = rng.choice(COLOURS, 2, replace=False)
     c3 = rng.choice([c for c in COLOURS if c not in (c1, c2)])
     items.append((str(s1), str(c1), str(s2), str(c2), str(c3)))
+items[0] = ("circle", "red", "square", "blue", "green")  # item 0 is the red circle and blue square from the opening puzzle
 scene_a = [utils.render_large_pair((s1, c1), (s2, c2), rng) for s1, c1, s2, c2, _ in items]
 scene_b = [utils.render_large_pair((s1, c2), (s2, c1), rng) for s1, c1, s2, c2, _ in items]
 caption_a = [f"a {c1} {s1} and a {c2} {s2}" for s1, c1, s2, c2, _ in items]
@@ -4079,6 +4152,37 @@ images and the same sentence structure, with a smaller change to the words. So t
 colours. It's specific to *which* object has which colour. This matches the additive picture from the last section: swapping two words leaves the sum of the
 words unchanged.
 </details>
+'''
+
+# ! CELL TYPE: markdown
+# ! FILTERS: []
+# ! TAGS: []
+
+r'''
+## Back to the two pictures
+
+Here are the two pictures from the start of the section. The purple star is the first rendering of its combination in the factorial test set, and the red circle and blue square is the first item
+of the synthetic Winoground: the same images that the 90-way retrieval and the binding table above were scored on.
+'''
+
+# ! CELL TYPE: code
+# ! FILTERS: []
+# ! TAGS: [main]
+
+puzzle_star = factorial_images[COMBOS.index(("star", "purple", "plain"))]
+utils.show_image_grid(
+    np.stack([puzzle_star, scene_a[0]]),
+    ["picture 1: pick the right caption out of 90", "picture 2: pick the right caption out of 2"],
+    ncols=2,
+    scale=3.2,
+)
+
+# ! CELL TYPE: markdown
+# ! FILTERS: []
+# ! TAGS: [html]
+
+r'''
+<img src="media/puzzle_pictures.png" width="700">
 '''
 
 # ! CELL TYPE: markdown
@@ -4248,9 +4352,10 @@ r'''
   direction to an image embedding turns a red shape into its blue counterpart (SigLIP: 100% for $\alpha \ge 0.75$; CLIP: up to 91%), with random-direction and
   wrong-attribute controls at 0%, and a direction estimated from three shapes works on the other two.
 - **Captions add up.** 91 to 94% of the variance of clothing-caption embeddings is explained by additive effects of object, colour, material and style (against under 1% per factor for shuffled labels), with colour the largest.
-- **Binding fails, and it is a property of the training distribution rather than of the architecture.** Both real models are at chance on colour binding (pair
-  accuracy 0.53/0.55, group score 0.02/0.04) while getting the easy control 100% right; their swapped captions have cosine 0.98 and both images usually pick the
-  same caption. A tiny CLIP trained on two-object scenes binds on held-out pairs (0.98).
+- **Binding fails in both real models, and a tiny CLIP binds when its training data demands it.** Both real models are at chance on colour binding (pair
+  accuracy BIND_PAIR, group score BIND_GROUP) while getting the easy control 100% right; their swapped captions have cosine 0.98 and both images usually pick the
+  same caption. A tiny CLIP trained on two-object scenes binds on held-out pairs (0.98). That rules out one explanation, that a dual encoder can't bind by construction. It doesn't show that the
+  training data is the whole story for the real models.
 
 We've gone from a loss function to a picture of what the shared space looks like and doesn't represent. The later sections of this chapter build on these encoders: a
 vision-language model sees through a CLIP-like image tower, and the failure modes we measured here (additive embeddings, the gap, binding) are the first things to check when it
@@ -4262,13 +4367,346 @@ misbehaves.
 # ! TAGS: []
 
 r'''
-## What we did not show
+# 🎯 Held-out Quiz
+'''
 
-- Our images are flat-coloured shapes with a few nuisance variations. Real photographs have clutter, occlusion, lighting and text, and we haven't tested the real models' geometry on them.
-- We looked at two checkpoints, and each tiny model was trained from a single seed. Numbers such as 0.71 on held-out combinations, or 0.175 for the sigmoid loss with the CLIP-style initialisation, will move with the seed; the qualitative pattern is what we'd trust (the controls tell you how large a difference has to be before it means something).
-- The temperature experiment varies one factor in one tiny setting. It reproduces the *direction* of the effect Liang et al. describe, and doesn't test their explanation of it.
-- The binding test is about colours on two objects in fixed positions. It shows that these two models fail *this* test with the small caption change we made; it isn't a statement about all compositional reasoning. And the tiny CLIP's success tells you what is *possible* for the architecture when the data demands it, not why web-scale data doesn't.
-- "Directions" are difference-of-means vectors. They show that attributes are linearly accessible and shared between the towers; they don't show that the models *use* a single direction internally.
+# ! CELL TYPE: markdown
+# ! FILTERS: []
+# ! TAGS: []
+
+r'''
+You've trained the tiny CLIP with both losses at one batch size and one learning rate. You've seen the shuffled-caption controls sit at losses of 4.159 and 5.151, and you've watched the
+sigmoid loss need its $-10$ bias. We trained the same model on the same data fourteen more times, changing one thing each time, and we haven't shown you any of those runs. Before you see
+them, predict them.
+
+This is how Stanford's CS 312 *[Deep Learning Alchemy](https://deep-learning-alchemy.github.io/)* tests understanding: if you understand a system, you can say what it will do in a setting you
+haven't tried. A wrong answer here isn't a failure. It's the most useful thing that can happen in this lesson, because it shows you exactly which part of your picture is off.
+
+**How it works.**
+
+1. Each question shows its change as a diff against a call you ran in this lesson.
+2. Write your answers, and one sentence of reasoning for each, in the answer cell. The reasoning should name a result from this lesson. Don't run any new experiments first.
+3. Run `quiz.score(my_answers)`, then open the **Reveal** dropdowns. Each has the real numbers and what a good mental model would have said.
+
+**Difficulty** says how far a question takes you from what you ran:
+
+- **Easy** means something you built, used on a case it was designed for.
+- **Medium** means one knob turned beyond the range you ran.
+- **Hard** means a regime you never saw, or a number rather than a direction.
+
+**Scoring.** An interval question gives full points for the right interval and half for a neighbouring one. A ranking gives one point for every pair of runs you put in the right order. Write `=`
+when you think two runs land within 0.05 of each other. There are 20 points in total. The score is for you: it isn't saved or sent anywhere. Expect to get around half.
+
+> ```yaml
+> Importance: 🔵🔵🔵🔵⚪
+>
+> You should spend up to 25-30 minutes on this quiz.
+> ```
+
+**The baseline.** Q2, Q3 and Q4 change this call from Part 2, which you ran once with each loss:
+
+```python
+m = fresh_model(siglip=(loss_name == "siglip"))
+hist = train_tiny_clip(m, train_images, CAPTION_IDS, train_classes, loss_name, "paired", steps=2000, batch_size=64, lr=5e-4, seed=0)
+```
+
+It gave an image-to-text R@1 of BASE_CLIP with the CLIP loss and BASE_SIG with the SigLIP loss (BASE_CLIP_HO and BASE_SIG_HO on held-out combinations). Chance is 1/120 = 0.008.
+'''
+
+# ! CELL TYPE: markdown
+# ! FILTERS: []
+# ! TAGS: []
+
+r'''
+## Q1. More candidates, same logits &nbsp;·&nbsp; Easy &nbsp;·&nbsp; 4 points
+
+**From the lesson.** In Part 3 you wrote `zero_shot_probabilities(logits, kind)`. It turns a logit matrix into match probabilities, with a softmax over each row for CLIP or an elementwise
+sigmoid for SigLIP.
+
+**This question changes.** Four images were scored against three candidate captions, c0 to c2. We add two more captions, c3 and c4, and recompute. The logits of the original pairs don't
+change. The correct caption for each image is in bold.
+
+```diff
+- probs = zero_shot_probabilities(logits[:, :3], kind)   # 3 candidate captions
++ probs = zero_shot_probabilities(logits, kind)          # 5: two new captions added
+```
+
+|         |    c0     |    c1    |    c2     | c3 (new) | c4 (new) |
+| ------- | :-------: | :------: | :-------: | :------: | :------: |
+| image 0 |   −1.25   | **0.00** |   1.25    |  −1.75   |  −0.50   |
+| image 1 |   0.50    |   1.75   | **−1.25** |   0.00   |   1.25   |
+| image 2 | **−2.00** |  −0.75   |   0.50    |   1.75   |  −1.25   |
+| image 3 |   −0.25   | **1.00** |   −2.00   |  −0.75   |   0.50   |
+
+**(a)** For each kind (`"softmax"`, `"sigmoid"`), what happens to the probability of each image's correct caption? It **falls** for every image, is **unchanged** for every image, **rises**
+for every image, or **depends** on the image.
+
+**(b)** The mean change in the *softmax* probability of the correct caption, over the four images, is in:
+
+| a | b | c | d | e |
+|---|---|---|---|---|
+| 0 to −2 points | −2 to −5 points | −5 to −15 points | −15 to −30 points | below −30 points |
+
+## Q2. Turning up the learning rate &nbsp;·&nbsp; Medium &nbsp;·&nbsp; 6 points
+
+**From the lesson.** At the learning rate you used ($5 \times 10^{-4}$), both losses reach an R@1 of about 0.95.
+
+**This question changes.** It changes only the peak learning rate, to 4× and 10× the one you used. The schedule, 2,000 steps and batch size 64 stay the same. There are two seeds per run.
+
+```diff
+- hist = train_tiny_clip(m, train_images, CAPTION_IDS, train_classes, loss_name, "paired", steps=2000, batch_size=64, lr=5e-4, seed=0)
++ hist = train_tiny_clip(m, train_images, CAPTION_IDS, train_classes, loss_name, "paired", steps=2000, batch_size=64, lr=lr, seed=seed)
++ # A: loss_name="clip",   lr=2e-3        B: loss_name="clip",   lr=5e-3
++ # C: loss_name="siglip", lr=2e-3        D: loss_name="siglip", lr=5e-3
++ # two seeds each; we compare the mean final image-to-text R@1
+```
+
+**Rank A, B, C and D** by mean final R@1, lowest first, for example `C < A = D < B`. Use `=` for runs within 0.05 of each other.
+
+## Q3. Smaller batches &nbsp;·&nbsp; Medium &nbsp;·&nbsp; 5 points
+
+**From the lesson.** At batch size 64 the two losses were level: BASE_CLIP for CLIP and BASE_SIG for SigLIP. The SigLIP paper (Zhai et al., 2023) reports that the sigmoid loss is at least on par with
+softmax, and does particularly well at small batch sizes.
+
+**This question changes.** The batch size drops from 64 to 16 for both losses. Everything else is as in Part 2, including the bias initialisation of $-10$. There are three seeds per loss.
+
+```diff
+- ..., steps=2000, batch_size=64, lr=5e-4, seed=0)
++ ..., steps=2000, batch_size=16, lr=5e-4, seed=seed)   # three seeds per loss
+```
+
+Let $\Delta$ = mean R@1 (SigLIP) − mean R@1 (CLIP). $\Delta$ is in:
+
+| a | b | c | d | e |
+|---|---|---|---|---|
+| below −0.20 | −0.20 to −0.05 | −0.05 to +0.05 | +0.05 to +0.20 | above +0.20 |
+
+## Q4. Where does the broken run end up? &nbsp;·&nbsp; Hard &nbsp;·&nbsp; 5 points
+
+**This question changes.** Take run D from Q2: the SigLIP loss at 10× the learning rate. What is its final training loss, the mean of the last 50 steps?
+
+| a | b | c | d | e |
+|---|---|---|---|---|
+| below 0.5 | 0.5 to 2 | 2 to 4.5 | 4.5 to 5.5 | above 5.5, or the loss becomes NaN |
+
+## Your answers
+
+Fill in the cell below, every answer and one sentence of reasoning for each, before you open any Reveal. Then run it: `quiz.score` prints your score.
+'''
+
+# ! CELL TYPE: code
+# ! FILTERS: []
+# ! TAGS: [main]
+
+my_answers = {
+    "Q1a_softmax": "",  # "falls", "unchanged", "rises" or "depends"
+    "Q1a_sigmoid": "",
+    "Q1b": "",  # "a" to "e"
+    "Q2": "",  # e.g. "C < A = D < B"
+    "Q3": "",  # "a" to "e"
+    "Q4": "",  # "a" to "e"
+}
+my_reasons = {  # one sentence each: which result from this lesson are you relying on?
+    "Q1": "",
+    "Q2": "",
+    "Q3": "",
+    "Q4": "",
+}
+
+sys.path.append(str(root_dir / "infrastructure" / "extension" / "learner"))
+from quiz import Interval, Quiz, Ranking, Word
+
+quiz = Quiz(
+    {
+        "Q1a_softmax": Word("falls", points=1, choices=("falls", "unchanged", "rises", "depends")),
+        "Q1a_sigmoid": Word("unchanged", points=1, choices=("falls", "unchanged", "rises", "depends")),
+        "Q1b": Interval("c", points=2),
+        "Q2": Ranking("D < C < A = B"),
+        "Q3": Interval("a", points=5),
+        "Q4": Interval("d", points=5),
+    }
+)
+quiz.score(my_answers)
+
+# ! CELL TYPE: markdown
+# ! FILTERS: []
+# ! TAGS: []
+
+r'''
+## Reveal
+
+Q1's reveal runs your own `zero_shot_probabilities` from Part 3, so it is live and instant:
+'''
+
+# ! CELL TYPE: code
+# ! FILTERS: []
+# ! TAGS: [main]
+
+Q1_LOGITS = t.tensor([[(((7 * i + 5 * j + 3) % 17) - 8) / 4 for j in range(5)] for i in range(4)])  # 4 images x 5 candidate captions
+Q1_CORRECT = t.tensor([1, 2, 0, 1])  # the correct caption of each image, among the first three
+Q1_ROWS = t.arange(4)
+
+
+def q1_probabilities(kind: str) -> tuple[Tensor, Tensor]:
+    """Probability of each image's correct caption with 3 candidates, then with 5."""
+    before = zero_shot_probabilities(Q1_LOGITS[:, :3], kind)[Q1_ROWS, Q1_CORRECT]
+    after = zero_shot_probabilities(Q1_LOGITS, kind)[Q1_ROWS, Q1_CORRECT]
+    return before, after
+
+
+for kind in ("softmax", "sigmoid"):
+    before, after = q1_probabilities(kind)
+    print(f"{kind}: probability of the correct caption, 3 candidates -> 5 candidates")
+    for i in range(4):
+        print(f"  image {i}: {before[i]:.3f} -> {after[i]:.3f}   ({100 * (after[i] - before[i]):+5.1f} points)")
+    print(f"  mean change: {100 * (after - before).mean():+.1f} percentage points\n")
+
+# ! CELL TYPE: markdown
+# ! FILTERS: []
+# ! TAGS: []
+
+r'''
+<details>
+<summary>Reveal - Q1: more candidates, same logits</summary>
+
+<pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace">FILL_Q1</pre>
+
+Q1_REVEAL
+</details>
+
+<details>
+<summary>Reveal - Q2: turning up the learning rate</summary>
+
+Q2_REVEAL
+</details>
+
+<details>
+<summary>Reveal - Q3: smaller batches</summary>
+
+Q3_REVEAL
+</details>
+
+<details>
+<summary>Reveal - Q4: where does the broken run end up?</summary>
+
+Q4_REVEAL
+</details>
+
+## What this quiz tested
+
+QUIZ_TESTED
+
+## Try it yourself - reproduce one result
+
+Pick the question you got most wrong and reproduce it. Q4 is the cheapest: one SigLIP run at 10× the learning rate takes 10-40 seconds.
+'''
+
+# ! CELL TYPE: code
+# ! FILTERS: []
+# ! TAGS: [main]
+
+m = fresh_model(siglip=True)
+hist = train_tiny_clip(m, train_images, CAPTION_IDS, train_classes, "siglip", "paired", lr=5e-3, seed=0)
+r = evaluate_tiny(m, test_images, CAPTION_IDS, held_out_mask)
+print(f"final loss {np.mean(hist['loss'][-50:]):.3f}   i2t R@1 {r['i2t']:.3f}")  # does it land on 5.151?
+
+# ! CELL TYPE: markdown
+# ! FILTERS: []
+# ! TAGS: []
+
+r'''
+<details>
+<summary>Expected output</summary>
+
+<pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace">FILL_TRYIT</pre>
+</details>
+
+## The runs behind this quiz
+
+Every number in the reveals above comes from the next cell, which reruns all 14 runs, about QUIZ_MINUTES minutes in total. You don't need to run it. It's here so that you can check any answer,
+and so that the quiz can never drift from the code: the cell ends by checking that the answers written in the key above are still the ones these runs produce.
+'''
+
+# ! CELL TYPE: code
+# ! FILTERS: []
+# ! TAGS: [main]
+
+def letter(value: float, edges: list[float]) -> str:
+    """Which of five intervals a-e the value falls in, for four ascending edges. A value that isn't a number falls in e."""
+    return "e" if not np.isfinite(value) else "abcde"[sum(value >= edge for edge in edges)]
+
+
+quiz_runs = [("clip", 64, 2e-3, 2), ("clip", 64, 5e-3, 2), ("siglip", 64, 2e-3, 2), ("siglip", 64, 5e-3, 2),
+             ("clip", 16, 5e-4, 3), ("siglip", 16, 5e-4, 3)]  # (loss, batch size, learning rate, seeds)
+key_runs: dict[tuple[str, int, float], list[tuple[float, float]]] = {}  # (loss, batch size, lr) -> [(final loss, i2t R@1) per seed]
+for loss_name, batch_size, lr, n_seeds in quiz_runs:
+    for seed in range(n_seeds):
+        m = fresh_model(seed, siglip=(loss_name == "siglip"))
+        hist = train_tiny_clip(m, train_images, CAPTION_IDS, train_classes, loss_name, "paired", batch_size=batch_size, lr=lr, seed=seed)
+        r = evaluate_tiny(m, test_images, CAPTION_IDS, held_out_mask)
+        final_loss = float(np.mean(hist["loss"][-50:]))
+        key_runs.setdefault((loss_name, batch_size, lr), []).append((final_loss, r["i2t"]))
+        print(f"{loss_name:<7} batch {batch_size:<3} lr {lr:.0e} seed {seed}   final loss {final_loss:.3f}   i2t R@1 {r['i2t']:.3f}")
+        del m
+
+mean_r1 = lambda key: float(np.mean([r1 for _, r1 in key_runs[key]]))
+q2_means = {"A": mean_r1(("clip", 64, 2e-3)), "B": mean_r1(("clip", 64, 5e-3)), "C": mean_r1(("siglip", 64, 2e-3)), "D": mean_r1(("siglip", 64, 5e-3))}
+q3_delta = mean_r1(("siglip", 16, 5e-4)) - mean_r1(("clip", 16, 5e-4))
+q4_loss = float(np.mean([loss for loss, _ in key_runs[("siglip", 64, 5e-3)]]))
+before, after = q1_probabilities("softmax")
+q1_softmax_change = float(100 * (after - before).mean())
+print("Q1b: mean change in the softmax probability: " + f"{q1_softmax_change:+.1f} points")
+print("Q2: mean R@1 " + ", ".join(f"{name} {value:.3f}" for name, value in q2_means.items()))
+print(f"Q3: mean R@1 SigLIP minus CLIP at batch 16: {q3_delta:+.3f}")
+print(f"Q4: final loss of run D: {q4_loss:.3f}")
+
+# one figure of all the quiz's runs
+base = {"clip": evaluate_tiny(runs["CLIP loss, paired captions"][0], test_images, CAPTION_IDS, held_out_mask)["i2t"],
+        "siglip": evaluate_tiny(runs["SigLIP loss, paired captions"][0], test_images, CAPTION_IDS, held_out_mask)["i2t"]}
+groups = {"batch 64, lr 5e-4\n(Part 2)": {"clip": [base["clip"]], "siglip": [base["siglip"]]}}
+for label, batch_size, lr in [("batch 16, lr 5e-4\n(Q3)", 16, 5e-4), ("batch 64, lr 2e-3\n(Q2: A, C)", 64, 2e-3), ("batch 64, lr 5e-3\n(Q2: B, D; Q4)", 64, 5e-3)]:
+    groups[label] = {loss: [r1 for _, r1 in key_runs[(loss, batch_size, lr)]] for loss in ("clip", "siglip")}
+fig, ax = plt.subplots(figsize=(9, 3.8))
+for offset, loss, colour, name in [(-0.18, "clip", "#4c72b0", "CLIP loss"), (0.18, "siglip", "#dd8452", "SigLIP loss")]:
+    for x, (label, values) in enumerate(groups.items()):
+        ax.bar(x + offset, np.mean(values[loss]), width=0.34, color=colour, alpha=0.35, label=name if x == 0 else None)
+        ax.scatter([x + offset] * len(values[loss]), values[loss], color=colour, s=18, zorder=3)
+ax.axhline(1 / 120, color="grey", ls=":", lw=1)
+ax.text(len(groups) - 0.5, 1 / 120 + 0.02, "chance (1/120)", ha="right", fontsize=8, color="grey")
+ax.set_xticks(range(len(groups)), list(groups), fontsize=8)
+ax.set(ylabel="image-to-text R@1", ylim=(0, 1.02), title="Tiny CLIP, 2,000 steps: bars are seed means, dots are single seeds")
+ax.legend(loc="lower left", fontsize=8)
+plt.tight_layout()
+plt.show()
+
+# the written key must still be what these runs produce
+assert quiz.questions["Q1a_softmax"].key == ("falls" if (after < before - 1e-6).all() else "other"), "Q1a (softmax) key has drifted"
+before, after = q1_probabilities("sigmoid")
+assert quiz.questions["Q1a_sigmoid"].key == ("unchanged" if t.allclose(before, after) else "other"), "Q1a (sigmoid) key has drifted"
+assert letter(-q1_softmax_change, [2, 5, 15, 30]) == quiz.questions["Q1b"].key, "Q1b key has drifted"
+assert Ranking.from_values(q2_means, eps=0.05).key_text == quiz.questions["Q2"].key_text, "Q2 key has drifted"
+assert letter(q3_delta, [-0.20, -0.05, 0.05, 0.20]) == quiz.questions["Q3"].key, "Q3 key has drifted"
+assert letter(q4_loss, [0.5, 2, 4.5, 5.5]) == quiz.questions["Q4"].key, "Q4 key has drifted"
+print("The written key matches these runs.")
+
+# ! CELL TYPE: markdown
+# ! FILTERS: []
+# ! TAGS: [html]
+
+r'''
+<img src="media/quiz_runs.png" width="900">
+'''
+
+# ! CELL TYPE: markdown
+# ! FILTERS: []
+# ! TAGS: []
+
+r'''
+<details>
+<summary>Help - how should I read this figure?</summary>
+
+QUIZ_FIGURE_READING
+</details>
 '''
 
 # ! CELL TYPE: markdown
@@ -4277,6 +4715,20 @@ r'''
 
 r'''
 # ☆ Bonus
+'''
+
+# ! CELL TYPE: markdown
+# ! FILTERS: []
+# ! TAGS: []
+
+r'''
+## What this lesson doesn't show
+
+- Our images are flat-coloured shapes with a few nuisance variations. Real photographs have clutter, occlusion, lighting and text, and we haven't tested the real models' geometry on them.
+- We looked at two checkpoints, and each tiny model was trained from a single seed. Numbers such as 0.71 on held-out combinations, or 0.175 for the sigmoid loss with the CLIP-style initialisation, will move with the seed; the qualitative pattern is what we'd trust (the controls tell you how large a difference has to be before it means something).
+- The temperature experiment varies one factor in one tiny setting. It reproduces the *direction* of the effect Liang et al. describe, and doesn't test their explanation of it.
+- The binding test is about colours on two objects in fixed positions. It shows that these two models fail *this* test with the small caption change we made; it isn't a statement about all compositional reasoning. And the tiny CLIP's success tells you what is *possible* for the architecture when the data demands it, not why web-scale data doesn't.
+- "Directions" are difference-of-means vectors. They show that attributes are linearly accessible and shared between the towers; they don't show that the models *use* a single direction internally.
 '''
 
 # ! CELL TYPE: markdown
@@ -4306,16 +4758,12 @@ The text-to-image half is unchanged. Try this in the tiny two-object world:
 
 ## Batch size, temperature and the learning rate
 
-- Sweep the batch size (8, 16, 32, 64, 96) at a fixed number of steps for both losses. The SigLIP paper reports that the sigmoid loss is at least on par with
-  softmax, particularly at small batch sizes. In our exploratory runs of this tiny world the opposite happened at the smallest sizes: at a batch size of 16 the
-  sigmoid model reached image-to-text R@1 of 0.57, 0.63 and 0.73 for three seeds, against 0.93, 0.86 and 0.92 for the softmax model, while at 32 the two were
-  level (0.94 against 0.93, one seed). Check this yourself, and then find out what changes with the batch size for the sigmoid loss: its positive-to-negative
-  ratio, the scale of its gradient, or both?
+- Sweep the batch size (8, 16, 32, 64, 96) at a fixed number of steps for both losses, with several seeds each, and plot image-to-text R@1 against batch size. The SigLIP paper reports that
+  the sigmoid loss is at least on par with softmax, particularly at small batch sizes. Does your sweep agree, and how much does the answer depend on the seed? Then find out what
+  changes with the batch size for the sigmoid loss: its positive-to-negative ratio, the scale of its gradient, or both?
 - The shuffled-caption control for SigLIP sat at a loss of 5.151, not at $\log 64 = 4.159$. Derive it: if the model can't tell pairs apart, the best it can do is give every pair the same logit $z$, and the loss is $\text{softplus}(-z) + (N-1)\,\text{softplus}(z)$. Minimise over $z$ and check that you get 5.151 for $N = 64$.
-- The sigmoid loss was more fragile than InfoNCE in our exploratory runs when we raised the learning rate (the main runs use $5 \times 10^{-4}$). At $2 \times
-  10^{-3}$ the SigLIP runs degraded (R@1 0.80 and 0.58 for two seeds, CLIP 0.96 and 0.97); at $5 \times 10^{-3}$ both SigLIP seeds ended at that same loss of
-  5.151 with R@1 0.008 while CLIP still trained (0.96 and 0.98). Reproduce this, then look at the embeddings of a stuck model: what are the image-image cosines?
-  Does a longer warmup help?
+- Raise the learning rate (the main runs use $5 \times 10^{-4}$) in steps, for both losses, and compare how each one degrades. Then look at the embeddings of a model that got stuck: what are
+  its image-image cosines? Does a longer warmup help?
 - Give the logit bias and scale their own, higher learning rate (as many CLIP reimplementations do for the temperature). Does the CLIP-style initialisation ($b = 0$) from Part 2 then catch up with the paper's without needing three times as many steps?
 
 ## SigLIP's scale and bias
@@ -4326,7 +4774,7 @@ match probability for SigLIP ($s\cos + b = 0$). Compare with the mean matched co
 ## More attributes, and what the models don't know
 
 - Extend the factorial test set with a size attribute (small/large) and with **counting** ("one star", "three stars"), and measure retrieval and the attribute directions for them. Which attributes have a direction on which the image and caption towers agree?
-- Typographic attacks: render the *word* "circle" on an image of a square. Which does each model prefer, `"a square"` or `"a circle"`? Does it depend on the loss? (Goh et al., 2021, found CLIP neurons that respond to text and to its concept alike.)
+- Typographic attacks: render the *word* "circle" on an image of a square. Which does each model prefer, `"a square"` or `"a circle"`? Section [12.2 Typographic Attacks and SAE Features in a Toy Two-Tower Model](../part2_clip_saes_typographic/12.2_Typographic_Attacks_and_SAE_Features_in_a_Toy_Two-Tower_Model_exercises.ipynb) takes this topic on.
 - Position: use the same two-object scenes but swap the *positions* of the shapes (`"a circle to the left of a square"` against `"a square to the left of a circle"`), keeping the colours. Is spatial order harder or easier for the real models than colour binding?
 - Probe for binding: train linear probes (with shuffled-label controls) to read "colour of the circle" from the image embeddings of the two-object scenes, and from the caption embeddings of their captions. When the real models fail the Winoground test, is the information missing from the embeddings, or present but not used by the dot product?
 
@@ -4344,7 +4792,7 @@ match probability for SigLIP ($s\cos + b = 0$). Compare with the mean matched co
 - van den Oord et al. (2018), [*Representation Learning with Contrastive Predictive Coding*](https://arxiv.org/abs/1807.03748). Where InfoNCE comes from; Zhang et al. (2020), [*ConVIRT*](https://arxiv.org/abs/2010.00747), the medical-imaging precursor of CLIP.
 - Dosovitskiy et al. (2021), [*An Image is Worth 16x16 Words*](https://arxiv.org/abs/2010.11929). The vision transformer.
 - Wang & Isola (2020), [*Understanding Contrastive Representation Learning through Alignment and Uniformity on the Hypersphere*](https://arxiv.org/abs/2005.10242). A cleaner theory of what InfoNCE optimises.
-- Liang et al. (2022), [*Mind the Gap*](https://arxiv.org/abs/2203.02053). The modality gap and the cone effect.
+- Liang et al. (2022), [*Mind the Gap*](https://arxiv.org/abs/2203.02053). The reading for Part 4: the cone effect, which already separates images from captions at random initialisation, together with the contrastive temperature, explains the modality gap this lesson measures.
 - Thrush et al. (2022), [*Winoground*](https://arxiv.org/abs/2204.03162), and Yuksekgonul et al. (2023), [*When and why vision-language models behave like bags-of-words*](https://arxiv.org/abs/2210.01936). Compositionality benchmarks and the hard-negative fix.
 - Goh et al. (2021), [*Multimodal Neurons in Artificial Neural Networks*](https://distill.pub/2021/multimodal-neurons/). An interpretability study of CLIP's units, including its typographic quirks.
 - Cherti et al. (2023), [*Reproducible scaling laws for contrastive language-image learning*](https://arxiv.org/abs/2212.07143). How these models behave as data and compute grow (OpenCLIP).

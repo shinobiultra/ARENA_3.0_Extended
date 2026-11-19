@@ -12,10 +12,11 @@ import streamlit_antd_components as sac
 #     ...
 # ]
 metadata = [
-    {'title': 'Two Ways to Match Images and Text', 'icon': '1-circle-fill', 'subtitle': '(15%)'},
-    {'title': 'A Tiny CLIP from Scratch', 'icon': '2-circle-fill', 'subtitle': '(30%)'},
+    {'title': 'Two Ways to Match Images and Text', 'icon': '1-circle-fill', 'subtitle': '(10%)'},
+    {'title': 'A Tiny CLIP from Scratch', 'icon': '2-circle-fill', 'subtitle': '(25%)'},
     {'title': 'The Real CLIP and SigLIP', 'icon': '3-circle-fill', 'subtitle': '(20%)'},
-    {'title': 'The Geometry of the Joint Space', 'icon': '4-circle-fill', 'subtitle': '(30%)'},
+    {'title': 'The Geometry of the Joint Space', 'icon': '4-circle-fill', 'subtitle': '(25%)'},
+    {'title': 'Held-out Quiz', 'icon': 'bullseye', 'subtitle': '(15%)'},
     {'title': 'Bonus', 'icon': 'star', 'subtitle': '(5%)'},
 ]
 chapter_name = 'chapter12_vlm_interpretability'
