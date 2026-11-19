@@ -2418,70 +2418,6 @@ def run_cpu_release(
     }
 
 
-def run_smoke_test(cpu: bool = True) -> dict[str, Any]:
-    """Compatibility hook for the generic verifier's visible-reference CPU release."""
-
-    if not cpu:
-        return run_gpu_test()
-    result = run_cpu_release(
-        implementation=reference_learner_functions(),
-        make_figure=False,
-        require_distinct_from_reference=False,
-    )
-    stress = result["quantization_stress"]
-    oracle = result["bnb_cpu_oracle"]
-    smoke = {
-        "notebook_id": "15_3_qlora_from_scratch",
-        "cpu": result["execution_device"] == "cpu",
-        "nf4_codebook_matches_bitsandbytes": result["nf4_codebook"]
-        == nf4_codebook().tolist(),
-        "nested_nf4_codebook_values_exact": oracle["audit"]["nf4_codebook_exact"],
-        "nested_dynamic_codebook_values_exact": oracle["audit"]["dynamic_codebook_exact"],
-        "nested_quant_state_all_finite": oracle["audit"]["all_state_tensors_finite"],
-        "toy_nf4_mse": result["toy_error"]["mse"],
-        "nested_scale_max_abs_error": result["nested_scale_max_abs_error"],
-        "double_bits_per_parameter": result["storage_accounting"]["double_bits_per_parameter"],
-        "paper_amortized_double_bits_per_parameter": result["storage_accounting"][
-            "paper_amortized_double_bits_per_parameter"
-        ],
-        "actual_linear4bit_bits_per_parameter": (
-            8
-            * oracle["storage"]["actual_tensor_bytes_including_codebooks"]
-            / oracle["storage"]["original_numel"]
-        ),
-        "actual_linear4bit_includes_codebooks": (
-            oracle["storage"]["actual_tensor_bytes_including_codebooks"]
-            > oracle["storage"]["tail_aware_formula_bytes_excluding_codebooks"]
-        ),
-        "ste_gradient": result["ste_gradient"],
-        "dequantized_base_max_diff": oracle["dequantized_base_max_diff"],
-        "base_weight_has_no_gradient": oracle["base_weight_has_no_gradient"],
-        "lora_a_gradient_norm": oracle["lora_a_gradient_norm"],
-        "lora_b_gradient_norm": oracle["lora_b_gradient_norm"],
-        "outlier_block_size_damage_ratio": (
-            stress["outlier"]["128"]["non_outlier_mse"]
-            / stress["outlier"]["8"]["non_outlier_mse"]
-        ),
-        "train_examples": result["dataset"]["train_examples"],
-        "heldout_examples": result["dataset"]["template_transfer_examples"],
-        "ood_examples": result["dataset"]["unseen_subject_ood_examples"],
-        "marker_swap_examples": result["dataset"]["marker_swap_examples"],
-        "marker_removed_examples": result["dataset"]["marker_removed_examples"],
-        "name_only_template_transfer_accuracy": result["dataset"]["name_only_baselines"]["template_transfer"]["accuracy"],
-        "name_only_ood_accuracy": result["dataset"]["name_only_baselines"]["unseen_subject_ood"]["accuracy"],
-        "model_id": MODEL_ID,
-        "model_revision": MODEL_REVISION,
-        "checks": result["checks"],
-        "implementation_provenance": result["implementation_provenance"],
-        "nf4_codebook": result["nf4_codebook"],
-        "toy_indices": result["toy_indices"],
-        "toy_absmax": result["toy_absmax"],
-    }
-    smoke["tests_passed"] = all(smoke["checks"].values())
-    smoke["accepted"] = smoke["tests_passed"]
-    return smoke
-
-
 def _comparison_acceptance(result: dict[str, Any]) -> dict[str, Any]:
     summary = result["summary"]
     seed_runs = result["seed_runs"]
@@ -2743,34 +2679,6 @@ def run_cuda_release(
         batch_size=batch_size,
         seeds=DEFAULT_EXPERIMENT_SEEDS,
         require_distinct_from_reference=True,
-    )
-    return _comparison_acceptance(result)
-
-
-def run_gpu_test(max_vram_gb: float = 24.0) -> dict[str, Any]:
-    """Generic-verifier hook using the visible section-owned reference implementation."""
-
-    result = run_real_comparison(
-        implementation=reference_learner_functions(),
-        max_vram_gb=max_vram_gb,
-        steps=32,
-        batch_size=12,
-        seeds=DEFAULT_EXPERIMENT_SEEDS,
-        require_distinct_from_reference=False,
-    )
-    return _comparison_acceptance(result)
-
-
-def run_full_experiment(max_vram_gb: float = 24.0) -> dict[str, Any]:
-    """Generic release-scale hook; CUDA-only, measured, and fail-closed."""
-
-    result = run_real_comparison(
-        implementation=reference_learner_functions(),
-        max_vram_gb=max_vram_gb,
-        steps=96,
-        batch_size=16,
-        seeds=DEFAULT_EXPERIMENT_SEEDS,
-        require_distinct_from_reference=False,
     )
     return _comparison_acceptance(result)
 

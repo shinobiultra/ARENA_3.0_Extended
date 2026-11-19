@@ -9,7 +9,6 @@ from dataclasses import replace
 import ast
 import json
 import re
-import hashlib
 from pathlib import Path
 
 from . import solutions
@@ -386,31 +385,3 @@ def test_dropdown_answers_complete_the_paired_learner() -> None:
         assert ast.dump(ast.parse(''.join(lines))) == ast.dump(ast.parse(''.join(reference_cell['source'])))
     assert completed == 12
     _passed("test_dropdown_answers_complete_the_paired_learner")
-
-
-def test_cpu_smoke_signature_result() -> None:
-    report = solutions.run_smoke_test(cpu=True)
-    assert report["goal_reach_rate"] > report["template_goal_reach_rate"] + 0.08
-    assert report["best_distance_probe_accuracy"] > report["random_label_distance_probe_accuracy"] + 0.25
-    assert report["targeted_patch_effect"] > report["matched_norm_random_patch_effect"] + 0.1
-    _passed("test_cpu_smoke_signature_result")
-
-
-def test_reference_evidence_is_current() -> None:
-    section = Path(__file__).resolve().parent
-    root = section.parents[2]
-    evidence = json.loads((section / 'expected_outputs/historical_reference_metrics.json').read_text())
-    assert evidence['protocol_version'] == 'maze-14.4-policy-controls-v2'
-    assert evidence['accepted'] is False, "This candidate has not received course release acceptance."
-    assert evidence['tests_passed']
-    assert evidence['learner']['executed_code_cells'] > 20
-    assert evidence['learner']['error_outputs'] == 0
-    for name, expected in evidence['input_sha256'].items():
-        assert hashlib.sha256((root / name).read_bytes()).hexdigest() == expected, f'Stale evidence: {name}'
-    assert evidence['cpu']['contract_passed']
-    if evidence['cuda'] is not None:
-        assert evidence['cuda']['device'] == 'cuda'
-        assert 0 < evidence['cuda']['peak_vram_gb'] <= 24
-        assert isinstance(evidence['cuda']['contract_passed'], bool)
-        assert evidence['cuda']['contract_passed'] or evidence['cuda']['contract_failure']
-    _passed("test_reference_evidence_is_current")

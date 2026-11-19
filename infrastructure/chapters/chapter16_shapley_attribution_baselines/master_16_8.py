@@ -149,7 +149,7 @@ Before calculating anything, predict: if you remove `RED` from the full prompt, 
 r'''
 ## Setup
 
-The primary result is generated from the code in this notebook. No verification report is loaded. The toy contract runs in seconds; the local real-model path takes minutes and needs a GPU.
+The primary result is generated from the code in this notebook. The toy contract runs in seconds; the local real-model path takes minutes and needs a GPU.
 
 
 <details><summary>Expected output</summary>
@@ -176,13 +176,10 @@ import numpy as np
 import torch as t
 
 chapter = "chapter16_shapley_attribution_baselines"
-relu_legacy_section = "part6_shap_vs_activation_patching"
 if MAIN:
     root_dir = next(p for p in [Path.cwd(), *Path.cwd().parents] if (p / chapter).exists())
 if MAIN:
     exercises_dir = root_dir / chapter / "exercises"
-if MAIN:
-    relu_legacy_section_dir = exercises_dir / relu_legacy_section
 if MAIN:
     canonical_dir = exercises_dir / "part8_shap_vs_patching"
 if MAIN:
@@ -210,9 +207,7 @@ HIDDEN_LABELS = (
 DIRECT_WEIGHTS = (1.0, 0.6, 0.25, 0.0)
 DEFAULT_INTERACTION_STRENGTH = 2.4
 GATE_THRESHOLD = 1.0
-EXERCISE_ID = "16_6_shap_vs_activation_patching"
-GT_TIER = "GT-0"
-EXPECTED_RUNTIME = "45-75 minutes on CPU; optional release preflight uses CUDA"
+EXPECTED_RUNTIME = "45-75 minutes on CPU"
 REQUIRES_GPU = True
 MAIN = __name__ == "__main__"
 
@@ -229,13 +224,10 @@ def initialize_lesson_plumbing():
     callbacks, then defaults before the three tensor-default callbacks.
     """
     global root_dir, exercises_dir, canonical_dir
-    global relu_legacy_section_dir, agreement_legacy_section_dir
     global asset_path, artifact_dir, asset_dir
     root_dir = next(p for p in [Path.cwd(), *Path.cwd().parents] if (p / chapter).exists())
     exercises_dir = root_dir / chapter / "exercises"
     canonical_dir = exercises_dir / "part8_shap_vs_patching"
-    relu_legacy_section_dir = exercises_dir / "part6_shap_vs_activation_patching"
-    agreement_legacy_section_dir = exercises_dir / "part8_shapley_mechinterp_agreement"
     asset_path = canonical_dir / "media" / "shap_vs_activation_patching_exact_signature.png"
     artifact_dir = canonical_dir / "artifacts"
     asset_dir = canonical_dir / "media"
@@ -1740,10 +1732,6 @@ r'''
   is not studied here.
 - The matched-random distribution is five-dimensional and seeded; real activation spaces require
   more seeds, task examples, and distribution-preserving corruptions.
-- The repository's CUDA model-organism preflight is supporting release evidence. It is not the
-  notebook's signature result and does not upgrade this exact toy claim into a large-model claim.
-  The parent release runner owns its refresh; the notebook neither loads nor summarizes
-  `verification_report.json`.
 '''
 
 
@@ -1759,29 +1747,6 @@ model as the agreement control and a nonlinear trained model as the interaction-
 It requires CUDA and has no CPU fallback. The parent runner owns any refresh; this notebook only
 exposes the entry point.
 '''
-
-
-# ! CELL TYPE: code
-# ! FILTERS: []
-# ! TAGS: [keep-main]
-
-def relu_run_gpu_test(max_vram_gb: float = 24.0):
-    from chapter16_shapley_attribution_baselines.exercises.part6_shap_vs_activation_patching import solutions as relu_reference
-    """Parent-owned optional CUDA path; never called by this CPU notebook."""
-    return relu_reference.run_gpu_test(max_vram_gb=max_vram_gb)
-
-
-def relu_run_full_experiment(max_vram_gb: float = 24.0):
-    return relu_run_gpu_test(max_vram_gb=max_vram_gb)
-if MAIN:
-
-
-    print({
-        "method": "trained additive and nonlinear finite neural games",
-        "requires_cuda": True,
-        "executed_in_this_notebook": False,
-        "large_transformer_claimed": False,
-    })
 
 
 # ! CELL TYPE: markdown
@@ -1895,13 +1860,10 @@ import torch as t
 from IPython.display import Image, display
 
 chapter = "chapter16_shapley_attribution_baselines"
-agreement_legacy_section = "part8_shapley_mechinterp_agreement"
 if MAIN:
     root_dir = next(p for p in [Path.cwd(), *Path.cwd().parents] if (p / chapter).exists())
 if MAIN:
     exercises_dir = root_dir / chapter / "exercises"
-if MAIN:
-    agreement_legacy_section_dir = exercises_dir / agreement_legacy_section
 if MAIN:
     canonical_dir = exercises_dir / "part8_shap_vs_patching"
 if MAIN:
@@ -4601,8 +4563,7 @@ does not prove that SHAP, TokenSHAP, activation patching, EAP, SAE feature circu
 agree on arbitrary transformers or VLMs. Large models add distribution shift, non-comparable player
 sets, correlated features, layer norm effects, and intervention artifacts.
 
-The later CUDA report for this section trains a finite neural coalition game and checks the same
-metrics on all 16 binary inputs, but that remains a controlled model organism. A real
+A real
 TransformerLens IOI or subject-verb agreement replication would need token-level attribution,
 activation/path patching over named components, and faithfulness/minimality/completeness checks in
 the same player-space bridge.
@@ -4614,124 +4575,7 @@ the same player-space bridge.
 3. Add an inhibitory edge with a large negative value and check whether top-k overlap by signed score hides it.
 4. Replace the finite circuit with a tiny trained MLP and compare feature ablation with hidden-unit ablation.
 5. Use a small TransformerLens task and build an agreement matrix where TokenSHAP players are input tokens and mechanistic players are heads or edges.
-
-## Appendix: Report Boundary
-
-The committed `verification_report.json` is supporting evidence only. It records the earlier CUDA
-finite-game preflight so the parent task can serialize GPU reruns later; it is not the signature
-result of this notebook.
 '''
-
-
-# ! CELL TYPE: code
-# ! FILTERS: []
-# ! TAGS: [keep-main]
-
-# EXERCISE
-# def run_smoke_test(cpu: bool = True) -> dict:
-#     """Return the fast CPU contract for this notebook."""
-#     _ = cpu
-#     # YOUR CODE HERE
-#     raise NotImplementedError()
-
-
-# if MAIN:
-#     agreement_tests.test_notebook_contract(run_smoke_test)
-
-# def agreement_load_verification_evidence() -> dict:
-#     """Load the pinned release report without treating it as lesson evidence."""
-#     import json
-
-#     return json.loads((agreement_legacy_section_dir / "verification_report.json").read_text())
-
-
-# def agreement_run_gpu_test(max_vram_gb: float = 24.0) -> dict:
-#     """Run the explicit CUDA preflight; never called by the CPU lesson."""
-#     from chapter16_shapley_attribution_baselines.exercises.part8_shapley_mechinterp_agreement import solutions as reference
-
-#     return reference.run_gpu_test(max_vram_gb=max_vram_gb)
-
-
-# def agreement_run_full_experiment(max_vram_gb: float = 24.0) -> dict:
-#     """Run the complete release experiment through the section implementation."""
-#     from chapter16_shapley_attribution_baselines.exercises.part8_shapley_mechinterp_agreement import solutions as reference
-
-#     return reference.run_full_experiment(max_vram_gb=max_vram_gb)
-
-
-# END EXERCISE
-# SOLUTION
-def run_smoke_test(cpu: bool = True) -> dict:
-    """Return the fast CPU contract for this notebook."""
-    _ = cpu
-    return {
-        "additive_agreement": additive_agreement_smoke_test(),
-        "xor_disagreement": xor_disagreement_smoke_test(),
-        "data_player_bridge": data_player_bridge_report(),
-    }
-
-
-# HIDE
-if MAIN:
-    agreement_tests.test_notebook_contract(run_smoke_test)
-    agreement_tests.test_committed_gpu_report_records_agreement_and_controls()
-    agreement_tests.test_notebooks_have_arena_learner_surface()
-
-# END HIDE
-
-
-def agreement_load_verification_evidence() -> dict:
-    """Load the pinned release report without treating it as lesson evidence."""
-    import json
-
-    return json.loads((agreement_legacy_section_dir / "verification_report.json").read_text())
-
-
-def agreement_run_gpu_test(max_vram_gb: float = 24.0) -> dict:
-    """Run the explicit CUDA preflight; never called by the CPU lesson."""
-    from chapter16_shapley_attribution_baselines.exercises.part8_shapley_mechinterp_agreement import solutions as reference
-
-    return reference.run_gpu_test(max_vram_gb=max_vram_gb)
-
-
-def agreement_run_full_experiment(max_vram_gb: float = 24.0) -> dict:
-    """Run the complete release experiment through the section implementation."""
-    from chapter16_shapley_attribution_baselines.exercises.part8_shapley_mechinterp_agreement import solutions as reference
-
-    return reference.run_full_experiment(max_vram_gb=max_vram_gb)
-# HIDE
-if MAIN:
-
-    report_path = agreement_legacy_section_dir / "verification_report.json"
-
-# END HIDE
-# HIDE
-if MAIN:
-    report = __import__("json").loads(report_path.read_text())
-
-# END HIDE
-# HIDE
-if MAIN:
-    gpu = report["metrics"]["gpu_test"]
-
-# END HIDE
-# HIDE
-if MAIN:
-    agreement_utils.print_report(
-        "Report appendix only",
-        {
-            "accepted": report["accepted"],
-            "gt_tier": report["gt_tier"],
-            "model_family": gpu["model_family"],
-            "spearman_correlation": gpu["spearman_correlation"],
-            "topk_overlap": gpu["topk_overlap"],
-            "shuffled_control_rejected": gpu["shuffled_control_rejected"],
-        },
-    )
-# END HIDE
-
-# END SOLUTION
-
 
 # ! CELL TYPE: markdown
 # ! FILTERS: []

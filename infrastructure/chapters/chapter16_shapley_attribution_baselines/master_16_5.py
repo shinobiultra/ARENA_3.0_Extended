@@ -1235,7 +1235,7 @@ Second-order SII summarizes how two players interact after averaging over contex
 r'''
 ## Connection to the pinned neural game
 
-The release preflight trains a four-input MLP on all 16 binary rows of a different exact rule. Its planted interactions are `+2.2` for `(0,2)` and `-1.5` for `(1,3)`. The learner code below computes the target matrix directly; the serialized CUDA job separately checks that ablations of the trained model recover it.
+A four-input MLP trained on all 16 binary rows of a different exact rule has planted interactions `+2.2` for `(0,2)` and `-1.5` for `(1,3)`. The learner code below computes the target matrix directly.
 '''
 
 # ! CELL TYPE: markdown
@@ -1258,38 +1258,6 @@ if MAIN:
 
 if MAIN:
     display(toy_pd.DataFrame([{'pair': pair, 'exact target SII': float(neural_target_sii[pair])} for pair in toy_itertools.combinations(range(4), 2)]))
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-The existing pinned CUDA evidence reports fit MSE `1.102e-12`, interaction-matrix maximum error `4.520e-7`, largest spurious interaction `6.606e-7`, `shapiq` parity error `1.180e-8`, and shuffled-label interaction error `4.383`. These values support only this complete four-feature model organism. They are not the notebook's signature result.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-## Release verification appendix
-
-The learner result above is complete without a release report. Course release tooling separately imports the section's serialized CUDA entrypoints to check that a trained four-input MLP reproduces another exact interaction game. These definitions preserve that interface; they are supporting verification, not an exercise, implementation shortcut, or signature result.
-'''
-
-# ! CELL TYPE: code
-# ! FILTERS: []
-# ! TAGS: []
-
-if MAIN:
-    verification_report_path = section_dir / 'verification_report.json'
-
-def run_gpu_test(max_vram_gb: float=24.0) -> dict:
-    from part3_shapley_interactions_shapiq.solutions import run_gpu_test as run
-    return run(max_vram_gb=max_vram_gb)
-
-def run_full_experiment(max_vram_gb: float=24.0) -> dict:
-    return run_gpu_test(max_vram_gb=max_vram_gb)
 
 # ! CELL TYPE: markdown
 # ! FILTERS: []
@@ -1552,7 +1520,6 @@ from chapter16_shapley_attribution_baselines.exercises.part16_shapley_taylor_fai
 
 from chapter16_shapley_attribution_baselines.exercises.part16_shapley_taylor_faith_shap.interaction_reference import _preserve_execution_state, _reference_check_impl, _validate_exact_suite, validate_reference_payload
 
-from chapter16_shapley_attribution_baselines.exercises.part16_shapley_taylor_faith_shap.run_native import persist_completed, persist_prepared, write_notebook_summary
 
 from chapter16_shapley_attribution_baselines.exercises.part16_shapley_taylor_faith_shap.interaction_study import _METHOD_FIRST_LEAVES, _SHARED_GAME_LEAVES, _background_records, _clone_state, _combine_game_blocks, _derived_seed, _direct_full_context_four, _empirical_reference_plan, _evaluate_backgrounds, _evaluate_primary, _exact_suite, _fit_one_mlp, _fit_ridge, _float_tensor, _group_weighted_mean_abs, _int_tensor, _localization_statistics, _logical_hybrid_row, _pair_ranks, _performance, _require_disjoint_ids, _require_methods, _rows, _storage_plan, _training_normalization, _validate_fitted, _within_size_permutations, coalition_masks, exact_dividend_play, nearest_training_diagnostics, pair_indices
 
@@ -1571,8 +1538,6 @@ if MAIN:
 if MAIN:
     FIGURE_DIR = allocation_Path(allocation_os.environ.get('ARENA_INTERACTION_OUTPUT_DIRECTORY', './figures'))
 
-if MAIN:
-    native_directory = FIGURE_DIR / 'native'
 
 def allocation_show_figure(figure, stem: str):
     """Display one result and retain the exact PNG used by the draft execution."""
@@ -3407,7 +3372,7 @@ This keeps the held-out comparison useful even when the explanation rankings loo
 <summary>How leakage is prevented, and what is retained</summary>
 
 Training, exact fixtures, primary explanation games, method outputs, and complete explanation-side
-pair orders are fixed and persisted before audit access. The local display defaults are content-blind:
+pair orders are fixed before audit access. The local display defaults are content-blind:
 `clean_0`, explanation source ID `0`, pair `(0,1)`, primary donor ID `173`, and full context mask
 `252`. No audit value chooses a model, row, pair, donor, background, tolerance, or plot.
 
@@ -3854,8 +3819,6 @@ def prepare_study(fitted: allocation_Mapping[str, allocation_Any], train: alloca
 if MAIN:
     prepared = prepare_study(fitted, train, explain, methods=allocation_methods, reference=reference_methods, manifest=manifest)
 
-if MAIN:
-    persist_prepared(native_directory, fitted, prepared)
 
 if MAIN:
     assert prepared['phase'] == 'prepared_before_audit'
@@ -4060,8 +4023,7 @@ if MAIN:
 
 r'''
 The fixed native payload uses the content-blind explanation-row defaults declared before audit
-access. The persistence boundary retains the complete scientific arrays and reference result before
-any editable post-study reuse.
+access.
 '''
 
 # ! CELL TYPE: code
@@ -4153,11 +4115,7 @@ if MAIN:
 if MAIN:
     allocation_play = native_play(evaluated, methods=allocation_methods)
 
-if MAIN:
-    publication_summary = persist_completed(native_directory, fitted, prepared, evaluated, reference_result, diagnostics, allocation_play, timings={})
 
-if MAIN:
-    write_notebook_summary(FIGURE_DIR, native_directory, publication_summary)
 
 if MAIN:
     print('Complete games, controls and reference checks retained. Read the figures below.')

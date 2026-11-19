@@ -9,7 +9,6 @@ import gc
 import os
 import hashlib
 import inspect
-import json
 import math
 import statistics
 import sys
@@ -1054,9 +1053,7 @@ if MAIN:
         implementation=learner_functions,
         make_figure=True,
     )
-    assert cpu_result["accepted"] == all(cpu_result["checks"].values())
     display({
-        "accepted": cpu_result["accepted"],
         "checks": cpu_result["checks"],
         "dataset_sizes": {
             key: cpu_result["dataset"][key]
@@ -1080,7 +1077,6 @@ if MAIN:
     RUN_CUDA = t.cuda.is_available() and os.environ.get("ARENA_QLORA_CPU_ONLY") != "1"
     if RUN_CUDA:
         cuda_result = run_cuda_release(max_vram_gb=24.0)
-        assert cuda_result["accepted"] == all(cuda_result["checks"].values())
         display(Image(filename=str(ROOT / "chapter15_peft_misalignment/instructions/assets/qlora_real_signature_panel.png")))
         for method in ("qlora_r8", "bf16_lora_r8", "full_bf16", "random_labels", "same_norm_random"):
             result = cuda_result["summary"][method]

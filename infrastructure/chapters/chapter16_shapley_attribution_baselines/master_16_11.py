@@ -117,7 +117,7 @@ most interesting result is where a convincing prediction stops working.
 
 You should be comfortable with the training loops in original ARENA
 [0.3 Optimization](../../../chapter0_fundamentals/exercises/part3_optimization/0.3_Optimization_exercises.ipynb).
-[16.9 Influence Functions and TracIn](../part9_influence_and_tracin/README.md)
+[16.10 Influence Functions and TracIn](../part10_influence_tracin/16.10_Influence_Functions_and_TracIn_exercises.ipynb)
 provides a useful comparison: it differentiates an optimum or follows one
 training path; here we learn from many complete training runs.
 
@@ -133,8 +133,6 @@ download needs an internet connection; subsequent runs use checked source bytes.
 from pathlib import Path as dm_Path
 
 from types import SimpleNamespace as dm_SimpleNamespace
-
-import hashlib as dm_hashlib
 
 import json as dm_json
 
@@ -1520,12 +1518,6 @@ if MAIN:
     dm_prepared = prepare_study(dm_train, query, designs, dm_methods, NATIVE)
 
 if MAIN:
-    dm_boundary = {'phase': dm_prepared['phase'], 'prepared_sha256': dm_hashlib.sha256((NATIVE / 'prepared.pt').read_bytes()).hexdigest(), 'test_subset_responses_seen': False, 'counterfactual_responses_seen': False}
-
-if MAIN:
-    (dm_OUTPUT / 'selection_boundary.json').write_text(dm_json.dumps(dm_boundary, indent=2) + '\n')
-
-if MAIN:
     print('3,456 classifier fits complete. All paths and deletion masks fixed; test responses still unseen.')
 
 # ! CELL TYPE: markdown
@@ -2440,7 +2432,7 @@ datamodel need to represent it?
 - [The authors' Datamodels implementation](https://github.com/MadryLab/datamodels).
   Its separation between subset training and regression is useful when scaling
   beyond the CPU-sized experiment here.
-- [16.9 Influence Functions and TracIn](../part9_influence_and_tracin/README.md).
+- [16.10 Influence Functions and TracIn](../part10_influence_tracin/16.10_Influence_Functions_and_TracIn_exercises.ipynb).
   Compare the estimands: local upweight derivatives, checkpoint gradient
   agreement, and a learned predictor of complete subset retraining outcomes.
 '''
@@ -2449,28 +2441,10 @@ datamodel need to represent it?
 # ! FILTERS: []
 # ! TAGS: []
 
-from chapter16_shapley_attribution_baselines.exercises.part10_datamodels.run_native import reference_checks as dm_reference_checks
+from chapter16_shapley_attribution_baselines.exercises.part10_datamodels.datamodel_study import reference_checks as dm_reference_checks
 
 if MAIN:
     references = dm_reference_checks(data, dm_prepared, dm_evaluated)
-
-if MAIN:
-    gradient_values = [fit['gradient_norm'].max() for values in dm_prepared['subset_fits'].values() for fit in values.values()]
-
-if MAIN:
-    gradient_values += [value['fit']['gradient_norm'].max() for value in dm_evaluated['test'].values()]
-
-if MAIN:
-    gradient_values += [dm_evaluated['base_fit']['gradient_norm'].max(), counterfactual['fit']['gradient_norm'].max()]
-
-if MAIN:
-    dm_summary = {'native_directory': str(NATIVE), 'classifier_refits': 10753, 'separate_refits': 6, 'independent_scipy_optima': 10, 'independent_lasso_fits': 12, 'play_refits': 18, 'train_images': 128, 'query_images': 64, 'heldout_subsets_per_fraction': 256, 'selection_used_test_responses': False, 'max_classifier_gradient': float(dm_torch.stack(gradient_values).max()), 'base_query_correct': int((dm_evaluated['base_margin'] > 0).sum())}
-
-if MAIN:
-    (dm_OUTPUT / 'native_summary.json').write_text(dm_json.dumps(dm_summary, indent=2) + '\n')
-
-if MAIN:
-    (dm_OUTPUT / 'reference_checks.json').write_text(dm_json.dumps(references, indent=2) + '\n')
 
 if MAIN:
     print('Independent classifier and Lasso checks passed. All native fits and figures are saved.')
@@ -2528,8 +2502,8 @@ known set of label errors and investigate how reliably the map finds them.
 
 You should be comfortable with minibatch training and PyTorch autograd from
 original ARENA [0.3 Optimization](../../../chapter0_fundamentals/exercises/part3_optimization/0.3_Optimization_exercises.ipynb).
-[16.9 Influence and TracIn](../part9_influence_and_tracin/README.md) and
-[16.10 Datamodels](../part10_datamodels/README.md) ask related questions about
+[16.10 Influence and TracIn](../part10_influence_tracin/16.10_Influence_Functions_and_TracIn_exercises.ipynb) and
+Part 1 (Datamodels) of this lesson ask related questions about
 training data. Here we begin with the history of one training run rather than
 an optimum derivative or a regression across many subsets.
 
@@ -2549,8 +2523,6 @@ source bytes locally.
 from pathlib import Path as cart_Path
 
 from types import SimpleNamespace as cart_SimpleNamespace
-
-import hashlib as cart_hashlib
 
 import json as cart_json
 
@@ -2587,9 +2559,9 @@ if MAIN:
 
 from chapter16_shapley_attribution_baselines.exercises.part11_dataset_cartography import cartography_methods_tests as cart_tests
 
-from chapter16_shapley_attribution_baselines.exercises.part11_dataset_cartography.cartography_data import load_training, load_evaluation
+from chapter16_shapley_attribution_baselines.exercises.part11_dataset_cartography.cartography_data import load_training, load_evaluation, data_manifest as cart_data_manifest
 
-from chapter16_shapley_attribution_baselines.exercises.part11_dataset_cartography.run_native import validate_freeze, reference_checks as cart_reference_checks, summarize
+from chapter16_shapley_attribution_baselines.exercises.part11_dataset_cartography.cartography_study import reference_checks as cart_reference_checks
 
 if MAIN:
     cart_torch.set_num_threads(4)
@@ -2612,7 +2584,7 @@ def cart_show_figure(figure, name):
     cart_plt.close(figure)
 
 if MAIN:
-    validate_freeze()
+    assert cart_data_manifest() == cart_json.loads((cart_ROOT / 'chapter16_shapley_attribution_baselines/exercises/part11_dataset_cartography/data_manifest.json').read_text())
 
 if MAIN:
     cart_train = load_training()
@@ -4313,12 +4285,6 @@ if MAIN:
     cart_prepared = retrain_selections(cart_train, mapping, cart_methods, native_directory)
 
 if MAIN:
-    cart_boundary = {'phase': cart_prepared['phase'], 'heldout_predictions_computed': False, 'mapping_sha256': cart_hashlib.sha256((native_directory / 'mapping.pt').read_bytes()).hexdigest(), 'prepared_sha256': cart_hashlib.sha256((native_directory / 'prepared.pt').read_bytes()).hexdigest()}
-
-if MAIN:
-    (cart_OUTPUT / 'before_evaluation.json').write_text(cart_json.dumps(cart_boundary, indent=2) + '\n')
-
-if MAIN:
     print('All selections and 120 fresh refits saved. Holdout predictions have not been computed.')
 
 # ! CELL TYPE: code
@@ -4852,19 +4818,7 @@ if MAIN:
     checks = cart_reference_checks(cart_train, mapping, cart_methods)
 
 if MAIN:
-    (cart_OUTPUT / 'reference_checks.json').write_text(cart_json.dumps(checks, indent=2) + '\n')
-
-if MAIN:
-    cart_summary = summarize(mapping, cart_prepared, cart_evaluated, cart_play, native_directory)
-
-if MAIN:
-    (cart_OUTPUT / 'native_summary.json').write_text(cart_json.dumps(cart_summary, indent=2) + '\n')
-
-if MAIN:
     print('Separate full training and independent NumPy coordinate checks passed.')
-
-if MAIN:
-    print(f"Frozen experiment: {cart_summary['main_training_runs']} real training runs, {cart_summary['main_optimizer_updates']} optimizer updates, plus two separate checks and two play fits.")
 
 # ! CELL TYPE: markdown
 # ! FILTERS: []

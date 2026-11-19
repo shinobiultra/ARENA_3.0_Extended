@@ -102,8 +102,6 @@ def tree_curriculum_namespace():
     namespace = globals()
     names = {'FEATURE_NAMES': 'tree_FEATURE_NAMES',
      'FIGURE_DIR': 'tree_FIGURE_DIR',
-     'NATIVE_DIR': 'NATIVE_DIR',
-     'OUTPUT_ROOT': 'OUTPUT_ROOT',
      'RUN_OUTPUT': 'tree_RUN_OUTPUT',
      'SAVE_FIGURES': 'tree_SAVE_FIGURES',
      '_as_query': '_as_query',
@@ -149,7 +147,6 @@ def tree_curriculum_namespace():
      'name': 'name',
      'native_play': 'tree_native_play',
      'path_cardinality_diagnostic': 'path_cardinality_diagnostic',
-     'persist_completed': 'tree_persist_completed',
      'plots': 'tree_plots',
      'prepare_study': 'tree_prepare_study',
      'prepared': 'tree_prepared',
@@ -162,12 +159,10 @@ def tree_curriculum_namespace():
      'row': 'row',
      'run_diagnostics': 'tree_run_diagnostics',
      'saabas': 'saabas',
-     'save_payload': 'tree_save_payload',
      'section': 'tree_section',
      'section_dir': 'tree_section_dir',
      'show_figure': 'tree_show_figure',
      'size': 'size',
-     'summary': 'tree_summary',
      'tests': 'tree_tests',
      'tiny_game': 'tiny_game',
      'tiny_masks': 'tiny_masks',
@@ -181,8 +176,6 @@ def tree_curriculum_namespace():
      'tree_predict': 'tree_predict',
      'tree_shap': 'tree_shap',
      'unwind_path': 'unwind_path',
-     'write_before_audit': 'tree_write_before_audit',
-     'write_notebook_summary': 'tree_write_notebook_summary',
      '_DEFAULT_METHODS': 'tree__DEFAULT_METHODS'}
     shared = ['Any',
      'DecisionTreeRegressor',
@@ -208,7 +201,6 @@ def tree_curriculum_namespace():
     result = {name: namespace[name] for name in shared if name in namespace}
     result.update({name: namespace[target] for name, target in names.items() if target in namespace})
     return result
-
 
 # ! CELL TYPE: code
 # ! FILTERS: []
@@ -312,12 +304,10 @@ def deep_curriculum_namespace():
      'make_model': 'make_model',
      'methods': 'deep_curriculum_methods',
      'min_fixture': 'min_fixture',
-     'native_dir': 'native_dir',
      'native_play': 'deep_native_play',
      'near_zero': 'near_zero',
      'near_zero_fixture': 'near_zero_fixture',
      'paired_forward': 'paired_forward',
-     'persist_completed': 'deep_persist_completed',
      'play': 'play',
      'plots': 'deep_plots',
      'prepare_study': 'deep_prepare_study',
@@ -332,22 +322,18 @@ def deep_curriculum_namespace():
      'reveal_cancel_groups': 'reveal_cancel_groups',
      'root_dir': 'deep_root_dir',
      'run_diagnostics': 'deep_run_diagnostics',
-     'save_payload': 'deep_save_payload',
      'section': 'deep_section',
      'section_dir': 'deep_section_dir',
      'seed': 'deep_seed',
      'show_figure': 'deep_show_figure',
      'single_reference': 'single_reference',
-     'summary': 'deep_summary',
      'tests': 'deep_tests',
      'threshold': 'threshold',
      'threshold_fixture': 'deep_threshold_fixture',
      'threshold_play': 'deep_threshold_play',
      'tiny_play': 'deep_tiny_play',
      'train': 'deep_train',
-     'validate_reference': 'deep_validate_reference',
-     'write_before_audit': 'deep_write_before_audit',
-     'write_notebook_summary': 'deep_write_notebook_summary'}
+     'validate_reference': 'deep_validate_reference'}
     shared = ['Any',
      'DecisionTreeRegressor',
      'GradientBoostingRegressor',
@@ -372,7 +358,6 @@ def deep_curriculum_namespace():
     result = {name: namespace[name] for name in shared if name in namespace}
     result.update({name: namespace[target] for name, target in names.items() if target in namespace})
     return result
-
 
 # ! CELL TYPE: code
 # ! FILTERS: []
@@ -477,7 +462,6 @@ def gradient_curriculum_namespace():
      'audit': 'gradient_audit',
      'background_check': 'background_check',
      'background_order': 'gradient_background_order',
-     'before_audit': 'before_audit',
      'chapter': 'gradient_chapter',
      'convergence_check': 'convergence_check',
      'deep_methods': 'deep_methods',
@@ -518,15 +502,12 @@ def gradient_curriculum_namespace():
      'load_split': 'gradient_load_split',
      'methods': 'gradient_methods',
      'models': 'models',
-     'native_directory': 'native_directory',
      'native_play': 'gradient_native_play',
      'noise_check': 'noise_check',
      'noise_fixture': 'noise_fixture',
      'noisy_expected_gradient_samples': 'noisy_expected_gradient_samples',
      'path_check': 'path_check',
      'path_fixture': 'path_fixture',
-     'persist_completed': 'gradient_persist_completed',
-     'persist_prepared': 'persist_prepared',
      'plots': 'gradient_plots',
      'prepare_study': 'gradient_prepare_study',
      'prepared': 'gradient_prepared',
@@ -551,7 +532,6 @@ def gradient_curriculum_namespace():
      'seed': 'gradient_seed',
      'show_figure': 'gradient_show_figure',
      'summarize_expected_gradients': 'summarize_expected_gradients',
-     'summary': 'gradient_summary',
      'tensor_mapping_sha256': 'tensor_mapping_sha256',
      'tests': 'gradient_tests',
      'threshold_fixture': 'gradient_threshold_fixture',
@@ -559,8 +539,7 @@ def gradient_curriculum_namespace():
      'tiny_play': 'gradient_tiny_play',
      'train': 'gradient_train',
      'validate_reference': 'gradient_validate_reference',
-     'verify_16_14_reproduction': 'verify_16_14_reproduction',
-     'write_notebook_summary': 'gradient_write_notebook_summary'}
+     'verify_16_14_reproduction': 'verify_16_14_reproduction'}
     shared = ['Any',
      'DecisionTreeRegressor',
      'GradientBoostingRegressor',
@@ -585,7 +564,6 @@ def gradient_curriculum_namespace():
     result = {name: namespace[name] for name in shared if name in namespace}
     result.update({name: namespace[target] for name, target in names.items() if target in namespace})
     return result
-
 
 # ! CELL TYPE: code
 # ! FILTERS: []
@@ -3104,7 +3082,7 @@ def tree_prepare_study(fitted, train, explain):
 r'''
 The audit evaluator uses the already saved orderings, retains all random deletion orders and
 alternate backgrounds, and computes performance for every model. Defining it does not load audit
-rows; the explicit load remains below the persisted boundary.
+rows; the explicit load comes after the rankings are fixed.
 '''
 
 
@@ -3200,404 +3178,14 @@ r'''
 ### Fit, prepare, and cross the audit boundary
 
 The next two cells make the split boundary visible. The first loads only training and explanation
-rows, fits all 18 models, fixes feature rankings, and persists that prepared state. The literal
+rows, fits all 18 models, and fixes feature rankings. The literal
 audit load appears only in the following cell.
 '''
 
 
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Visible supporting scientific function: `DETERMINISTIC_ARTIFACTS`
-'''
-
-
 # ! CELL TYPE: code
 # ! FILTERS: []
 # ! TAGS: [keep-main]
-
-tree_helper_run_native_DETERMINISTIC_ARTIFACTS = (
-    "fitted.pt",
-    "prepared.pt",
-    "evaluated.pt",
-    "diagnostics.pt",
-    "reference.pt",
-    "play.pt",
-)
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Visible supporting scientific function: `TIMING_ARTIFACT`
-'''
-
-
-# ! CELL TYPE: code
-# ! FILTERS: []
-# ! TAGS: [keep-main]
-
-tree_helper_run_native_TIMING_ARTIFACT = "timings.pt"
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Visible supporting scientific function: `digest`
-'''
-
-
-# ! CELL TYPE: code
-# ! FILTERS: []
-# ! TAGS: [keep-main]
-
-if MAIN:
-    from pathlib import Path
-if MAIN:
-    import hashlib
-
-def tree_helper_run_native_digest(path: Path) -> str:
-    return hashlib.sha256(path.read_bytes()).hexdigest()
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Visible supporting scientific function: `_without_sklearn`
-'''
-
-
-# ! CELL TYPE: code
-# ! FILTERS: []
-# ! TAGS: [keep-main]
-
-if MAIN:
-    from typing import Any
-if MAIN:
-    import numpy as np
-
-def tree_helper_run_native__without_sklearn(value: Any) -> Any:
-    """Copy a nested fitted payload while removing live sklearn estimators."""
-    if isinstance(value, dict):
-        return {key: tree_helper_run_native__without_sklearn(item) for key, item in value.items() if key != "sklearn"}
-    if isinstance(value, list):
-        return [tree_helper_run_native__without_sklearn(item) for item in value]
-    if isinstance(value, tuple):
-        return tuple(tree_helper_run_native__without_sklearn(item) for item in value)
-    if isinstance(value, np.ndarray):
-        return value.copy()
-    return value
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Visible supporting scientific function: `serializable_fitted`
-'''
-
-
-# ! CELL TYPE: code
-# ! FILTERS: []
-# ! TAGS: [keep-main]
-
-def tree_helper_run_native_serializable_fitted(fitted: dict) -> dict:
-    """Return fitted numerical/tree evidence without live sklearn estimators."""
-    return tree_helper_run_native__without_sklearn(fitted)
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Visible supporting scientific function: `save_payload`
-'''
-
-
-# ! CELL TYPE: code
-# ! FILTERS: []
-# ! TAGS: [keep-main]
-
-if MAIN:
-    from typing import Any
-if MAIN:
-    from pathlib import Path
-if MAIN:
-    import torch
-
-def tree_helper_run_native_save_payload(directory: Path, name: str, value: Any) -> Path:
-    """Persist a named course-owned payload; fitted.pt is stripped of sklearn objects."""
-    if Path(name).name != name or not name.endswith(".pt"):
-        raise ValueError("Payload names must be simple .pt filenames.")
-    path = Path(directory) / name
-    path.parent.mkdir(parents=True, exist_ok=True)
-    if name == "fitted.pt":
-        value = tree_helper_run_native_serializable_fitted(value)
-    torch.save(value, path)
-    return path
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Visible supporting scientific function: `_reference_scalars`
-'''
-
-
-# ! CELL TYPE: code
-# ! FILTERS: []
-# ! TAGS: [keep-main]
-
-if MAIN:
-    from typing import Any
-if MAIN:
-    import numpy as np
-
-def tree_helper_run_native__reference_scalars(value: Any, prefix: str = "") -> dict[str, int | float | bool | str]:
-    """Flatten scalar reference outcomes for the JSON summary; arrays remain in reference.pt."""
-    result: dict[str, int | float | bool | str] = {}
-    if isinstance(value, dict):
-        for key, item in value.items():
-            result.update(tree_helper_run_native__reference_scalars(item, f"{prefix}.{key}" if prefix else str(key)))
-    elif isinstance(value, (bool, str, int, float, np.bool_, np.integer, np.floating)):
-        result[prefix] = value.item() if isinstance(value, np.generic) else value
-    return result
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Visible supporting scientific function: `summarize`
-'''
-
-
-# ! CELL TYPE: code
-# ! FILTERS: []
-# ! TAGS: [keep-main]
-
-if MAIN:
-    from typing import Any
-
-def tree_helper_run_native_summarize(
-    fitted: dict,
-    prepared: dict,
-    evaluated: dict,
-    diagnostics: dict,
-    reference: dict,
-) -> dict[str, Any]:
-    models = fitted["models"]
-    component_trees = sum(len(item["ensemble"]["trees"]) for item in models.values())
-    exact_keys = [key for key, item in prepared["explanation"].items() if "game_path" in item]
-    clean = {key: value for key, value in evaluated["performance"].items() if "_clean_" in key}
-    shuffled = {
-        key: value for key, value in evaluated["performance"].items() if "_shuffled_" in key
-    }
-    return {
-        "model_fits": len(models),
-        "clean_fits": len(clean),
-        "shuffled_fits": len(shuffled),
-        "component_trees": component_trees,
-        "model_families": ["tree", "forest", "boost"],
-        "training_seeds": [161310, 161311, 161312],
-        "train_rows": len(fitted["train_ids"]),
-        "explanation_row_count": len(prepared["explain_ids"]),
-        "heldout_row_count": len(evaluated["audit_ids"]),
-        "rows_explained_per_model": len(prepared["explain_ids"]) + len(evaluated["audit_ids"]),
-        "model_row_explanations": len(models)
-        * (len(prepared["explain_ids"]) + len(evaluated["audit_ids"])),
-        "coalitions": 256,
-        "exact_models": len(exact_keys),
-        "exact_games": 2,
-        "background_rows": len(prepared["background_ids"]),
-        "background_variants": len(evaluated["backgrounds"]),
-        "deletion_models": len(evaluated["deletion"]),
-        "saabas_models": len(models),
-        "random_order_controls": 100,
-        "audit_used_for_selection": prepared["audit_used_for_selection"],
-        "audit_mse_clean": clean,
-        "audit_mse_shuffled": shuffled,
-        "training_mean_audit_mse": evaluated["mean_baseline_mse"],
-        "diagnostic_groups": sorted(diagnostics),
-        "reference_scalars": tree_helper_run_native__reference_scalars(reference),
-    }
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Visible supporting scientific function: `persist_completed`
-'''
-
-
-# ! CELL TYPE: code
-# ! FILTERS: []
-# ! TAGS: [keep-main]
-
-if MAIN:
-    from typing import Any
-if MAIN:
-    from pathlib import Path
-if MAIN:
-    import json
-
-def tree_helper_run_native_persist_completed(
-    directory: Path,
-    fitted: dict,
-    prepared: dict,
-    evaluated: dict,
-    diagnostics: dict,
-    reference: dict,
-    play: dict,
-) -> dict[str, Any]:
-    """Persist post-audit evidence, retaining timing in its own nondeterministic artifact."""
-    directory = Path(directory)
-    boundary_path = directory / "before_audit.json"
-    if not boundary_path.exists():
-        raise ValueError("Prepared evidence must be persisted before audit evaluation.")
-    boundary = json.loads(boundary_path.read_text())
-    if boundary.get("audit_loaded") is not False:
-        raise ValueError("The recorded preparation boundary is invalid.")
-    if tree_helper_run_native_digest(directory / "prepared.pt") != boundary.get("prepared_sha256"):
-        raise ValueError("Prepared evidence changed after the audit boundary.")
-    if diagnostics.keys() != {"mechanism", "timing"}:
-        raise ValueError("Diagnostics must retain separate mechanism and timing branches.")
-    tree_helper_run_native_save_payload(directory, "evaluated.pt", evaluated)
-    tree_helper_run_native_save_payload(directory, "diagnostics.pt", diagnostics["mechanism"])
-    tree_helper_run_native_save_payload(directory, tree_helper_run_native_TIMING_ARTIFACT, diagnostics["timing"])
-    tree_helper_run_native_save_payload(directory, "reference.pt", reference)
-    tree_helper_run_native_save_payload(directory, "play.pt", play)
-    summary = tree_helper_run_native_summarize(fitted, prepared, evaluated, diagnostics["mechanism"], reference)
-    (directory / "summary.json").write_text(json.dumps(summary, indent=2) + "\n")
-    expected = set(tree_helper_run_native_DETERMINISTIC_ARTIFACTS) | {tree_helper_run_native_TIMING_ARTIFACT}
-    present = {path.name for path in directory.glob("*.pt")}
-    if present != expected:
-        raise ValueError(f"Native artifact set mismatch: {sorted(present)}")
-    return summary
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Visible supporting scientific function: `write_before_audit`
-'''
-
-
-# ! CELL TYPE: code
-# ! FILTERS: []
-# ! TAGS: [keep-main]
-
-if MAIN:
-    from typing import Any
-if MAIN:
-    from pathlib import Path
-if MAIN:
-    import hashlib
-if MAIN:
-    import json
-if MAIN:
-    import numpy as np
-
-def tree_helper_run_native_write_before_audit(directory: Path, prepared: dict) -> dict[str, Any]:
-    """Seal already-saved fitted/prepared payloads before the audit split is loaded."""
-    directory = Path(directory)
-    if prepared.get("audit_used_for_selection") is not False:
-        raise ValueError("Prepared rankings must explicitly exclude the audit split.")
-    fitted_path = directory / "fitted.pt"
-    prepared_path = directory / "prepared.pt"
-    if not fitted_path.is_file() or not prepared_path.is_file():
-        raise ValueError("Save fitted.pt and prepared.pt before sealing the audit boundary.")
-    boundary = {
-        "phase": "prepared_before_audit",
-        "audit_loaded": False,
-        "fitted_sha256": tree_helper_run_native_digest(fitted_path),
-        "prepared_sha256": tree_helper_run_native_digest(prepared_path),
-        "explain_ids_sha256": hashlib.sha256(
-            np.asarray(prepared["explain_ids"]).tobytes()
-        ).hexdigest(),
-        "background_ids_sha256": hashlib.sha256(
-            np.asarray(prepared["background_ids"]).tobytes()
-        ).hexdigest(),
-    }
-    (directory / "before_audit.json").write_text(json.dumps(boundary, indent=2) + "\n")
-    return boundary
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Visible supporting scientific function: `write_notebook_summary`
-'''
-
-
-# ! CELL TYPE: code
-# ! FILTERS: []
-# ! TAGS: [keep-main]
-
-if MAIN:
-    from pathlib import Path
-if MAIN:
-    import json
-
-def tree_helper_run_native_write_notebook_summary(output_root: Path, native_directory: Path, summary: dict) -> Path:
-    """Write the small JSON index consumed by the fresh-kernel executor."""
-    output_root = Path(output_root).resolve()
-    native_directory = Path(native_directory).resolve()
-    native_directory.relative_to(output_root)
-    payload = dict(summary, native_directory=str(native_directory))
-    path = output_root / "native_summary.json"
-    path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(json.dumps(payload, indent=2) + "\n")
-    return path
-
-
-# ! CELL TYPE: code
-# ! FILTERS: []
-# ! TAGS: [keep-main]
-
-if MAIN:
-    refresh_tree_default_methods()
-    tree_persist_completed = tree_helper_run_native_persist_completed
-if MAIN:
-    refresh_tree_default_methods()
-    tree_save_payload = tree_helper_run_native_save_payload
-if MAIN:
-    refresh_tree_default_methods()
-    tree_write_before_audit = tree_helper_run_native_write_before_audit
-if MAIN:
-    refresh_tree_default_methods()
-    tree_write_notebook_summary = tree_helper_run_native_write_notebook_summary
-
-if MAIN:
-    refresh_tree_default_methods()
-    OUTPUT_ROOT = Path(
-        os.environ.get("ARENA_TREESHAP_OUTPUT_DIRECTORY", canonical_dir / "artifacts" / "tree")
-    )
-if MAIN:
-    refresh_tree_default_methods()
-    NATIVE_DIR = OUTPUT_ROOT / "native"
-if MAIN:
-    refresh_tree_default_methods()
-    NATIVE_DIR.mkdir(parents=True, exist_ok=True)
 
 if MAIN:
     refresh_tree_default_methods()
@@ -3613,24 +3201,14 @@ if MAIN:
     tree_prepared = tree_prepare_study(tree_fitted, tree_train, tree_explain)
 if MAIN:
     refresh_tree_default_methods()
-    tree_save_payload(NATIVE_DIR, "fitted.pt", tree_fitted)
-if MAIN:
-    refresh_tree_default_methods()
-    tree_save_payload(NATIVE_DIR, "prepared.pt", tree_prepared)
-if MAIN:
-    refresh_tree_default_methods()
-    tree_write_before_audit(NATIVE_DIR, tree_prepared)
-if MAIN:
-    refresh_tree_default_methods()
-    print("Prepared rankings saved before audit load:", not tree_prepared["audit_used_for_selection"])
-
+    print("Prepared rankings fixed before audit load:", not tree_prepared["audit_used_for_selection"])
 
 # ! CELL TYPE: markdown
 # ! FILTERS: []
 # ! TAGS: []
 
 r'''
-Expected: `Prepared rankings saved before audit load: True`. This ordering does not make the audit
+Expected: `Prepared rankings fixed before audit load: True`. This ordering does not make the audit
 set magically unbiased for every later question. It means only that the predeclared rankings and
 primary background were fixed without using audit rows or labels.
 '''
@@ -5207,24 +4785,6 @@ current library's explicit perturbation modes and output choices.
 Strength](https://archive.ics.uci.edu/dataset/165/concrete+compressive+strength), for the source
 data and measurement description.
 '''
-
-
-# ! CELL TYPE: code
-# ! FILTERS: []
-# ! TAGS: [keep-main]
-
-# Persist the complete visible run. All scientific computations occurred above.
-if MAIN:
-    refresh_tree_default_methods()
-    tree_summary = tree_persist_completed(
-        NATIVE_DIR, tree_fitted, tree_prepared, tree_evaluated, tree_diagnostics, tree_reference, default_play
-    )
-if MAIN:
-    refresh_tree_default_methods()
-    tree_write_notebook_summary(OUTPUT_ROOT, NATIVE_DIR, tree_summary)
-if MAIN:
-    refresh_tree_default_methods()
-    print("Saved notebook-native payloads to", NATIVE_DIR)
 
 
 # ! CELL TYPE: markdown
@@ -9221,17 +8781,8 @@ def deep_prepare_study(
 
 r'''
 The next boundary is scientific, not cosmetic. `prepare_study` fixes the background and rankings
-using train and explanation data. The executor persists both fitted and prepared payloads and their
-hashes before the following literal audit load. No audit outcome can affect those choices.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Visible supporting scientific function: `_serializable`
+using train and explanation data. The fitted and prepared states are both fixed before the following
+literal audit load. No audit outcome can affect those choices.
 '''
 
 
@@ -9239,171 +8790,8 @@ r'''
 # ! FILTERS: []
 # ! TAGS: [keep-main]
 
-if MAIN:
-    from typing import Any
-if MAIN:
-    import numpy as np
-if MAIN:
-    import torch
-
-def deep_helper_run_native__serializable(value: Any) -> Any:
-    """Copy numerical fit evidence while rejecting opaque live model objects."""
-    if isinstance(value, torch.nn.Module):
-        raise TypeError("Fitted evidence must store states, not live torch.nn.Module objects.")
-    if isinstance(value, dict):
-        return {key: deep_helper_run_native__serializable(item) for key, item in value.items()}
-    if isinstance(value, list):
-        return [deep_helper_run_native__serializable(item) for item in value]
-    if isinstance(value, tuple):
-        return tuple(deep_helper_run_native__serializable(item) for item in value)
-    if isinstance(value, np.ndarray):
-        return value.copy()
-    if isinstance(value, torch.Tensor):
-        return value.detach().cpu().clone()
-    return value
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Visible supporting scientific function: `serializable_fitted`
-'''
-
-
-# ! CELL TYPE: code
-# ! FILTERS: []
-# ! TAGS: [keep-main]
-
-def deep_helper_run_native_serializable_fitted(fitted: dict) -> dict:
-    """Return the full numerical fit payload without opaque PyTorch modules."""
-    return deep_helper_run_native__serializable(fitted)
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Visible supporting scientific function: `save_payload`
-'''
-
-
-# ! CELL TYPE: code
-# ! FILTERS: []
-# ! TAGS: [keep-main]
-
-if MAIN:
-    from typing import Any
-if MAIN:
-    from pathlib import Path
-if MAIN:
-    import torch
-
-def deep_helper_run_native_save_payload(directory: Path, name: str, value: Any) -> Path:
-    """Persist a named course-owned payload; fitted.pt contains states, not model objects."""
-    if Path(name).name != name or not name.endswith(".pt"):
-        raise ValueError("Payload names must be simple .pt filenames.")
-    path = Path(directory) / name
-    path.parent.mkdir(parents=True, exist_ok=True)
-    if name == "fitted.pt":
-        value = deep_helper_run_native_serializable_fitted(value)
-    torch.save(value, path)
-    return path
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Visible supporting scientific function: `digest`
-'''
-
-
-# ! CELL TYPE: code
-# ! FILTERS: []
-# ! TAGS: [keep-main]
-
-if MAIN:
-    from pathlib import Path
-if MAIN:
-    import hashlib
-
-def deep_helper_run_native_digest(path: Path) -> str:
-    return hashlib.sha256(path.read_bytes()).hexdigest()
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Visible supporting scientific function: `write_before_audit`
-'''
-
-
-# ! CELL TYPE: code
-# ! FILTERS: []
-# ! TAGS: [keep-main]
-
-if MAIN:
-    from typing import Any
-if MAIN:
-    from pathlib import Path
-if MAIN:
-    import hashlib
-if MAIN:
-    import json
-if MAIN:
-    import numpy as np
-
-def deep_helper_run_native_write_before_audit(directory: Path, prepared: dict) -> dict[str, Any]:
-    """Seal already-saved fitted/prepared payloads before the audit split is loaded."""
-    directory = Path(directory)
-    if prepared.get("audit_used_for_selection") is not False:
-        raise ValueError("Prepared rankings must explicitly exclude the audit split.")
-    fitted_path = directory / "fitted.pt"
-    prepared_path = directory / "prepared.pt"
-    if not fitted_path.is_file() or not prepared_path.is_file():
-        raise ValueError("Save fitted.pt and prepared.pt before sealing the audit boundary.")
-    boundary = {
-        "phase": "prepared_before_audit",
-        "audit_loaded": False,
-        "fitted_sha256": deep_helper_run_native_digest(fitted_path),
-        "prepared_sha256": deep_helper_run_native_digest(prepared_path),
-        "explain_ids_sha256": hashlib.sha256(
-            np.asarray(prepared["explain_ids"]).tobytes()
-        ).hexdigest(),
-        "background_ids_sha256": hashlib.sha256(
-            np.asarray(prepared["background_ids"]).tobytes()
-        ).hexdigest(),
-    }
-    (directory / "before_audit.json").write_text(json.dumps(boundary, indent=2) + "\n")
-    return boundary
-
-
-# ! CELL TYPE: code
-# ! FILTERS: []
-# ! TAGS: [keep-main]
-
-if MAIN:
-    deep_save_payload = deep_helper_run_native_save_payload
-if MAIN:
-    deep_write_before_audit = deep_helper_run_native_write_before_audit
-
-if MAIN:
-    native_dir = Path(deep_RUN_OUTPUT or canonical_dir / "artifacts" / "deep") / "native"
 if MAIN:
     deep_prepared = deep_prepare_study(deep_fitted, deep_train, deep_explain, deep_curriculum_methods)
-if MAIN:
-    deep_save_payload(native_dir, "fitted.pt", deep_fitted)
-if MAIN:
-    deep_save_payload(native_dir, "prepared.pt", deep_prepared)
-if MAIN:
-    deep_write_before_audit(native_dir, deep_prepared)
-
 
 # ! CELL TYPE: code
 # ! FILTERS: []
@@ -9705,255 +9093,6 @@ expensive donor-level check covers the first explanation and first audit row for
 and all 64 donors: 896 pair explanations and 7,168 coordinates. The exhaustive reference separately
 checks every one of the 1,904 model-row games.
 '''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Visible supporting scientific function: `DETERMINISTIC_ARTIFACTS`
-'''
-
-
-# ! CELL TYPE: code
-# ! FILTERS: []
-# ! TAGS: [keep-main]
-
-deep_helper_run_native_DETERMINISTIC_ARTIFACTS = (
-    "fitted.pt",
-    "prepared.pt",
-    "evaluated.pt",
-    "diagnostics.pt",
-    "reference.pt",
-    "play.pt",
-)
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Visible supporting scientific function: `TIMING_ARTIFACT`
-'''
-
-
-# ! CELL TYPE: code
-# ! FILTERS: []
-# ! TAGS: [keep-main]
-
-deep_helper_run_native_TIMING_ARTIFACT = "timings.pt"
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Visible supporting scientific function: `_loss_trace`
-'''
-
-
-# ! CELL TYPE: code
-# ! FILTERS: []
-# ! TAGS: [keep-main]
-
-if MAIN:
-    from typing import Any
-
-def deep_helper_run_native__loss_trace(item: dict) -> Any:
-    """Return a model's retained optimizer trace under the canonical field names."""
-    for name in ("loss_trace", "training_loss", "losses"):
-        if name in item:
-            return item[name]
-    return ()
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Visible supporting scientific function: `_reference_scalars`
-'''
-
-
-# ! CELL TYPE: code
-# ! FILTERS: []
-# ! TAGS: [keep-main]
-
-if MAIN:
-    from typing import Any
-if MAIN:
-    import numpy as np
-
-def deep_helper_run_native__reference_scalars(value: Any, prefix: str = "") -> dict[str, int | float | bool | str]:
-    """Flatten scalar reference outcomes for the JSON summary; arrays remain in reference.pt."""
-    result: dict[str, int | float | bool | str] = {}
-    if isinstance(value, dict):
-        for key, item in value.items():
-            result.update(deep_helper_run_native__reference_scalars(item, f"{prefix}.{key}" if prefix else str(key)))
-    elif isinstance(value, (bool, str, int, float, np.bool_, np.integer, np.floating)):
-        result[prefix] = value.item() if isinstance(value, np.generic) else value
-    return result
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Visible supporting scientific function: `summarize`
-'''
-
-
-# ! CELL TYPE: code
-# ! FILTERS: []
-# ! TAGS: [keep-main]
-
-if MAIN:
-    from typing import Any
-
-def deep_helper_run_native_summarize(
-    fitted: dict,
-    prepared: dict,
-    evaluated: dict,
-    diagnostics: dict,
-    reference: dict,
-) -> dict[str, Any]:
-    """Build a compact index; complete arrays remain in the six deterministic payloads."""
-    models = fitted["models"]
-    keys = list(models)
-    clean_keys = [key for key in keys if key.startswith("clean_")]
-    shuffled_keys = [key for key in keys if key.startswith("shuffled_")]
-    ridge_keys = [key for key in keys if key == "ridge" or models[key].get("kind") == "ridge"]
-    mlp_keys = [key for key in keys if key not in ridge_keys]
-    rows_per_model = len(prepared["explain_ids"]) + len(evaluated["audit_ids"])
-    optimizer_updates = sum(len(deep_helper_run_native__loss_trace(models[key])) for key in mlp_keys)
-    background_variants = evaluated.get("backgrounds", evaluated.get("background_variants", {}))
-    replacement = evaluated.get("replacement", evaluated.get("replacement_curves", {}))
-    return {
-        "model_fits": len(models),
-        "mlp_fits": len(mlp_keys),
-        "ridge_fits": len(ridge_keys),
-        "clean_fits": len(clean_keys),
-        "shuffled_fits": len(shuffled_keys),
-        "optimizer_updates": optimizer_updates,
-        "model_keys": keys,
-        "training_seeds": [161410, 161411, 161412],
-        "train_rows": len(fitted["train_ids"]),
-        "explanation_row_count": len(prepared["explain_ids"]),
-        "heldout_row_count": len(evaluated["audit_ids"]),
-        "rows_explained_per_model": rows_per_model,
-        "model_row_explanations": len(models) * rows_per_model,
-        "coalitions": 256,
-        "exact_models": len(models),
-        "exact_model_rows": len(models) * rows_per_model,
-        "coalition_values": len(models) * rows_per_model * 256,
-        "primary_hybrid_predictions": len(models)
-        * rows_per_model
-        * 256
-        * len(prepared["background_ids"]),
-        "attribution_coordinates_per_method": len(models) * rows_per_model * 8,
-        "background_rows": len(prepared["background_ids"]),
-        "background_variants": len(background_variants),
-        "replacement_models": len(replacement),
-        "random_order_controls": 100,
-        "pair_model_rows": len(models) * rows_per_model * len(prepared["background_ids"]),
-        "pair_local_values": len(models)
-        * rows_per_model
-        * len(prepared["background_ids"])
-        * 8,
-        "audit_used_for_selection": prepared["audit_used_for_selection"],
-        "diagnostic_groups": sorted(diagnostics),
-        "reference_scalars": deep_helper_run_native__reference_scalars(reference),
-    }
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Visible supporting scientific function: `persist_completed`
-'''
-
-
-# ! CELL TYPE: code
-# ! FILTERS: []
-# ! TAGS: [keep-main]
-
-if MAIN:
-    from typing import Any
-if MAIN:
-    from pathlib import Path
-if MAIN:
-    import json
-
-def deep_helper_run_native_persist_completed(
-    directory: Path,
-    fitted: dict,
-    prepared: dict,
-    evaluated: dict,
-    diagnostics: dict,
-    reference: dict,
-    play: dict,
-) -> dict[str, Any]:
-    """Persist post-audit evidence, retaining timing in its own nondeterministic artifact."""
-    directory = Path(directory)
-    boundary_path = directory / "before_audit.json"
-    if not boundary_path.exists():
-        raise ValueError("Prepared evidence must be persisted before audit evaluation.")
-    boundary = json.loads(boundary_path.read_text())
-    if boundary.get("audit_loaded") is not False:
-        raise ValueError("The recorded preparation boundary is invalid.")
-    if deep_helper_run_native_digest(directory / "prepared.pt") != boundary.get("prepared_sha256"):
-        raise ValueError("Prepared evidence changed after the audit boundary.")
-    if diagnostics.keys() != {"mechanism", "timing"}:
-        raise ValueError("Diagnostics must retain separate mechanism and timing branches.")
-    deep_helper_run_native_save_payload(directory, "evaluated.pt", evaluated)
-    deep_helper_run_native_save_payload(directory, "diagnostics.pt", diagnostics["mechanism"])
-    deep_helper_run_native_save_payload(directory, deep_helper_run_native_TIMING_ARTIFACT, diagnostics["timing"])
-    deep_helper_run_native_save_payload(directory, "reference.pt", reference)
-    deep_helper_run_native_save_payload(directory, "play.pt", play)
-    summary = deep_helper_run_native_summarize(fitted, prepared, evaluated, diagnostics["mechanism"], reference)
-    (directory / "summary.json").write_text(json.dumps(summary, indent=2) + "\n")
-    expected = set(deep_helper_run_native_DETERMINISTIC_ARTIFACTS) | {deep_helper_run_native_TIMING_ARTIFACT}
-    present = {path.name for path in directory.glob("*.pt")}
-    if present != expected:
-        raise ValueError(f"Native artifact set mismatch: {sorted(present)}")
-    return summary
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Visible supporting scientific function: `write_notebook_summary`
-'''
-
-
-# ! CELL TYPE: code
-# ! FILTERS: []
-# ! TAGS: [keep-main]
-
-if MAIN:
-    from pathlib import Path
-if MAIN:
-    import json
-
-def deep_helper_run_native_write_notebook_summary(output_root: Path, native_directory: Path, summary: dict) -> Path:
-    """Write the small JSON index consumed by the fresh-kernel executor."""
-    output_root = Path(output_root).resolve()
-    native_directory = Path(native_directory).resolve()
-    native_directory.relative_to(output_root)
-    payload = dict(summary, native_directory=str(native_directory))
-    path = output_root / "native_summary.json"
-    path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(json.dumps(payload, indent=2) + "\n")
-    return path
 
 
 # ! CELL TYPE: markdown
@@ -11651,10 +10790,6 @@ def deep_helper_deepshap_reference_validate_reference(
 
 if MAIN:
     deep_validate_reference = deep_helper_deepshap_reference_validate_reference
-if MAIN:
-    deep_persist_completed = deep_helper_run_native_persist_completed
-if MAIN:
-    deep_write_notebook_summary = deep_helper_run_native_write_notebook_summary
 
 if MAIN:
     deep_reference = deep_validate_reference(deep_fitted, deep_prepared, deep_evaluated, deep_train, deep_explain, deep_audit)
@@ -11662,18 +10797,6 @@ if MAIN:
     deep_diagnostics = deep_run_diagnostics(deep_curriculum_methods, include_timing=True)
 if MAIN:
     deep_fixed_play = deep_native_play(deep_fitted, deep_train, deep_audit, deep_curriculum_methods)
-if MAIN:
-    deep_summary = deep_persist_completed(
-        native_dir,
-        deep_fitted,
-        deep_prepared,
-        deep_evaluated,
-        deep_diagnostics,
-        deep_reference,
-        deep_fixed_play,
-    )
-if MAIN:
-    deep_write_notebook_summary(Path(deep_RUN_OUTPUT or canonical_dir / "artifacts" / "deep"), native_dir, deep_summary)
 
 if MAIN:
     print("Independent DeepExplainer averaged-vector parity:", deep_reference["status"])
@@ -11683,7 +10806,6 @@ if MAIN:
     print("Bounded donor coordinates checked:", deep_reference["counts"]["bounded_author_pair_coordinates"])
 if MAIN:
     print("Exact game rows checked:", deep_reference["counts"]["exact_game_model_rows"])
-
 
 # ! CELL TYPE: markdown
 # ! FILTERS: []
@@ -15080,7 +14202,7 @@ r'''
 ## The frozen-design real study
 
 > **Execution boundary.** The cells below reproduce all 21 section
-> 16.14 state hashes, persist the fitted and prepared study before the literal audit load, and then
+> 16.14 state hashes, fix the fitted and prepared study before the literal audit load, and then
 > evaluate every held-out recipe. This ordering keeps explanation-side choices separate from the
 > audit evidence.
 
@@ -16866,1117 +15988,16 @@ def gradient_prepare_study(
 # ! TAGS: []
 
 r'''
-The preparation boundary must persist model states, background identities, path schedules, and
+The preparation boundary must fix model states, background identities, path schedules, and
 global explanation-split rankings before the literal audit load. Audit values may evaluate those
 choices but may not revise them.
 '''
 
 
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Visible supporting scientific function: `EXTERNAL_DETERMINISTIC_ARTIFACT`
-'''
-
-
 # ! CELL TYPE: code
 # ! FILTERS: []
 # ! TAGS: [keep-main]
 
-gradient_helper_run_native_EXTERNAL_DETERMINISTIC_ARTIFACT = "replicate_samples.pt"
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Visible supporting scientific function: `SMALL_DETERMINISTIC_ARTIFACTS`
-'''
-
-
-# ! CELL TYPE: code
-# ! FILTERS: []
-# ! TAGS: [keep-main]
-
-gradient_helper_run_native_SMALL_DETERMINISTIC_ARTIFACTS = (
-    "fitted.pt",
-    "prepared.pt",
-    "evaluated.pt",
-    "reference.pt",
-    "diagnostics.pt",
-    "play.pt",
-)
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Visible supporting scientific function: `DETERMINISTIC_ARTIFACTS`
-'''
-
-
-# ! CELL TYPE: code
-# ! FILTERS: []
-# ! TAGS: [keep-main]
-
-if MAIN:
-    gradient_helper_run_native_DETERMINISTIC_ARTIFACTS = gradient_helper_run_native_SMALL_DETERMINISTIC_ARTIFACTS + (
-        gradient_helper_run_native_EXTERNAL_DETERMINISTIC_ARTIFACT,
-    )
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Visible supporting scientific function: `REPLICATE_SHAPE`
-'''
-
-
-# ! CELL TYPE: code
-# ! FILTERS: []
-# ! TAGS: [keep-main]
-
-gradient_helper_run_native_REPLICATE_SHAPE = (64, 3, 64, 2048, 8)
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Visible supporting scientific function: `REPLICATE_ELEMENTS`
-'''
-
-
-# ! CELL TYPE: code
-# ! FILTERS: []
-# ! TAGS: [keep-main]
-
-if MAIN:
-    import math
-
-if MAIN:
-    gradient_helper_run_native_REPLICATE_ELEMENTS = math.prod(gradient_helper_run_native_REPLICATE_SHAPE)
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Visible supporting scientific function: `TIMING_ARTIFACT`
-'''
-
-
-# ! CELL TYPE: code
-# ! FILTERS: []
-# ! TAGS: [keep-main]
-
-gradient_helper_run_native_TIMING_ARTIFACT = "timings.pt"
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Visible supporting scientific function: `_array`
-'''
-
-
-# ! CELL TYPE: code
-# ! FILTERS: []
-# ! TAGS: [keep-main]
-
-if MAIN:
-    from typing import Any, Iterator
-if MAIN:
-    import numpy as np
-if MAIN:
-    import torch
-
-def gradient_helper_run_native__array(value: Any) -> tuple[np.ndarray, str]:
-    if isinstance(value, np.ndarray):
-        array = value
-        kind = "numpy.ndarray"
-    elif isinstance(value, torch.Tensor):
-        if value.device.type != "cpu":
-            raise ValueError("Scientific payload tensors must be on CPU before persistence.")
-        array = value.detach().numpy()
-        kind = "torch.Tensor"
-    else:
-        raise TypeError(f"Expected NumPy array or Torch tensor, found {type(value).__name__}.")
-    if array.dtype.hasobject:
-        raise TypeError("Object arrays cannot enter deterministic evidence.")
-    if not array.flags.c_contiguous:
-        array = np.ascontiguousarray(array)
-    return array, kind
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Visible supporting scientific function: `HASH_CHUNK_BYTES`
-'''
-
-
-# ! CELL TYPE: code
-# ! FILTERS: []
-# ! TAGS: [keep-main]
-
-if MAIN:
-    gradient_helper_run_native_HASH_CHUNK_BYTES = 64 * 1024 * 1024
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Visible supporting scientific function: `_array_value_sha256`
-'''
-
-
-# ! CELL TYPE: code
-# ! FILTERS: []
-# ! TAGS: [keep-main]
-
-if MAIN:
-    from typing import Any, Iterator
-if MAIN:
-    import hashlib
-
-def gradient_helper_run_native__array_value_sha256(value: Any) -> str:
-    """Hash contiguous array bytes in bounded views, including multi-gigabyte arrays."""
-    array, _ = gradient_helper_run_native__array(value)
-    byte_view = memoryview(array).cast("B")
-    result = hashlib.sha256()
-    for start in range(0, len(byte_view), gradient_helper_run_native_HASH_CHUNK_BYTES):
-        result.update(byte_view[start : start + gradient_helper_run_native_HASH_CHUNK_BYTES])
-    return result.hexdigest()
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Visible supporting scientific function: `_array_identity`
-'''
-
-
-# ! CELL TYPE: code
-# ! FILTERS: []
-# ! TAGS: [keep-main]
-
-if MAIN:
-    from typing import Any, Iterator
-
-def gradient_helper_run_native__array_identity(value: Any) -> dict[str, Any]:
-    array, kind = gradient_helper_run_native__array(value)
-    return {
-        "kind": kind,
-        "shape": list(array.shape),
-        "dtype": str(array.dtype),
-        "elements": int(array.size),
-        "value_sha256": gradient_helper_run_native__array_value_sha256(value),
-    }
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Visible supporting scientific function: `manifest_path`
-'''
-
-
-# ! CELL TYPE: code
-# ! FILTERS: []
-# ! TAGS: [keep-main]
-
-if MAIN:
-    from pathlib import Path
-
-def gradient_helper_run_native_manifest_path(artifact: Path) -> Path:
-    return Path(artifact).with_suffix(".manifest.json")
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Visible supporting scientific function: `_external_reference`
-'''
-
-
-# ! CELL TYPE: code
-# ! FILTERS: []
-# ! TAGS: [keep-main]
-
-if MAIN:
-    from typing import Any, Iterator
-if MAIN:
-    from pathlib import Path
-
-def gradient_helper_run_native__external_reference(samples: Any, manifest: dict[str, Any]) -> dict[str, Any]:
-    identity = gradient_helper_run_native__array_identity(samples)
-    return {
-        "storage": "external_pt",
-        "artifact": gradient_helper_run_native_EXTERNAL_DETERMINISTIC_ARTIFACT,
-        "manifest": gradient_helper_run_native_manifest_path(Path(gradient_helper_run_native_EXTERNAL_DETERMINISTIC_ARTIFACT)).name,
-        "payload_path": "/sampling_replicates/samples",
-        **identity,
-        "artifact_sha256": manifest["artifact_sha256"],
-        "artifact_size_bytes": manifest["size_bytes"],
-    }
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Visible supporting scientific function: `_persisted_evaluated`
-'''
-
-
-# ! CELL TYPE: code
-# ! FILTERS: []
-# ! TAGS: [keep-main]
-
-if MAIN:
-    from typing import Any, Iterator
-
-def gradient_helper_run_native__persisted_evaluated(evaluated: dict[str, Any], reference: dict[str, Any]) -> dict[str, Any]:
-    """Shallow-copy only the route to the external sample leaf; do not copy arrays."""
-    result = dict(evaluated)
-    replicates = dict(result["sampling_replicates"])
-    replicates["samples"] = reference
-    result["sampling_replicates"] = replicates
-    return result
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Visible supporting scientific function: `BUDGETS`
-'''
-
-
-# ! CELL TYPE: code
-# ! FILTERS: []
-# ! TAGS: [keep-main]
-
-gradient_helper_run_native_BUDGETS = (8, 32, 128, 512, 2048)
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Visible supporting scientific function: `REPLICATE_MODELS`
-'''
-
-
-# ! CELL TYPE: code
-# ! FILTERS: []
-# ! TAGS: [keep-main]
-
-gradient_helper_run_native_REPLICATE_MODELS = ("clean_0", "shuffled_0", "ridge")
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Visible supporting scientific function: `_require_array`
-'''
-
-
-# ! CELL TYPE: code
-# ! FILTERS: []
-# ! TAGS: [keep-main]
-
-if MAIN:
-    from typing import Any, Iterator
-if MAIN:
-    import numpy as np
-
-def gradient_helper_run_native__require_array(value: Any, shape: tuple[int, ...], dtype: np.dtype, name: str) -> None:
-    array, _ = gradient_helper_run_native__array(value)
-    if array.shape != shape or array.dtype != dtype:
-        raise ValueError(f"{name} must have shape {shape} and dtype {dtype}.")
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Visible supporting scientific function: `_validate_replicate_branch`
-'''
-
-
-# ! CELL TYPE: code
-# ! FILTERS: []
-# ! TAGS: [keep-main]
-
-if MAIN:
-    from typing import Any, Iterator
-if MAIN:
-    import numpy as np
-
-def gradient_helper_run_native__validate_replicate_branch(replicates: dict[str, Any]) -> None:
-    """Require every declared schedule, split, estimate, and diagnostic array before save."""
-    required = {
-        "source_ids",
-        "row_split",
-        "split_labels",
-        "models",
-        "model_labels",
-        "budgets",
-        "replicate_seeds",
-        "baseline_index",
-        "alpha",
-        "samples",
-        "phi_prefix",
-        "se_prefix",
-        "q512",
-        "q512_error",
-        "coverage_95",
-        "coverage_rate",
-    }
-    if not isinstance(replicates, dict) or not required <= set(replicates):
-        raise ValueError("Sampling-replicate evidence is missing required complete branches.")
-    r, m, n, k, d = gradient_helper_run_native_REPLICATE_SHAPE
-    p = len(gradient_helper_run_native_BUDGETS)
-    if tuple(replicates["models"]) != gradient_helper_run_native_REPLICATE_MODELS:
-        raise ValueError("Sampling-replicate model order changed.")
-    if tuple(replicates["split_labels"]) != ("explanation", "audit"):
-        raise ValueError("Sampling-replicate split labels changed.")
-    gradient_helper_run_native__require_array(replicates["source_ids"], (n,), np.dtype("int64"), "replicate source_ids")
-    gradient_helper_run_native__require_array(replicates["row_split"], (n,), np.dtype("int64"), "replicate row_split")
-    split = gradient_helper_run_native__array(replicates["row_split"])[0]
-    if not np.array_equal(split, np.r_[np.zeros(n // 2), np.ones(n - n // 2)]):
-        raise ValueError("Replicate rows must retain explanation then audit split identity.")
-    gradient_helper_run_native__require_array(replicates["budgets"], (p,), np.dtype("int64"), "replicate budgets")
-    if not np.array_equal(gradient_helper_run_native__array(replicates["budgets"])[0], np.asarray(gradient_helper_run_native_BUDGETS)):
-        raise ValueError("Replicate budgets changed from the frozen nested prefixes.")
-    gradient_helper_run_native__require_array(replicates["replicate_seeds"], (r,), np.dtype("uint64"), "replicate seeds")
-    gradient_helper_run_native__require_array(replicates["baseline_index"], (r, n, k), np.dtype("int64"), "replicate donors")
-    gradient_helper_run_native__require_array(replicates["alpha"], (r, n, k), np.dtype("float64"), "replicate alphas")
-    gradient_helper_run_native__require_array(replicates["samples"], gradient_helper_run_native_REPLICATE_SHAPE, np.dtype("float64"), "replicate samples")
-    prefix_shape = (r, m, p, n, d)
-    gradient_helper_run_native__require_array(replicates["phi_prefix"], prefix_shape, np.dtype("float64"), "replicate means")
-    gradient_helper_run_native__require_array(replicates["se_prefix"], prefix_shape, np.dtype("float64"), "replicate SE")
-    gradient_helper_run_native__require_array(replicates["q512"], (m, n, d), np.dtype("float64"), "replicate q512")
-    gradient_helper_run_native__require_array(replicates["q512_error"], prefix_shape, np.dtype("float64"), "replicate errors")
-    gradient_helper_run_native__require_array(replicates["coverage_95"], prefix_shape, np.dtype("bool"), "replicate coverage")
-    gradient_helper_run_native__require_array(replicates["coverage_rate"], (m, p), np.dtype("float64"), "coverage rates")
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Visible supporting scientific function: `digest`
-'''
-
-
-# ! CELL TYPE: code
-# ! FILTERS: []
-# ! TAGS: [keep-main]
-
-if MAIN:
-    from pathlib import Path
-if MAIN:
-    import hashlib
-
-def gradient_helper_run_native_digest(path: Path) -> str:
-    """Stream a file SHA256 without materializing a large payload as bytes."""
-    result = hashlib.sha256()
-    with Path(path).open("rb") as handle:
-        while chunk := handle.read(gradient_helper_run_native_HASH_CHUNK_BYTES):
-            result.update(chunk)
-    return result.hexdigest()
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Visible supporting scientific function: `_verify_boundary`
-'''
-
-
-# ! CELL TYPE: code
-# ! FILTERS: []
-# ! TAGS: [keep-main]
-
-if MAIN:
-    from typing import Any, Iterator
-if MAIN:
-    from pathlib import Path
-if MAIN:
-    import json
-
-def gradient_helper_run_native__verify_boundary(directory: Path) -> dict[str, Any]:
-    boundary_path = directory / "before_audit.json"
-    if not boundary_path.is_file():
-        raise ValueError("Prepared evidence must be sealed before audit evaluation.")
-    boundary = json.loads(boundary_path.read_text())
-    if boundary.get("audit_loaded") is not False:
-        raise ValueError("The recorded preparation boundary is invalid.")
-    for name in ("fitted", "prepared"):
-        artifact = directory / f"{name}.pt"
-        manifest = gradient_helper_run_native_manifest_path(artifact)
-        if gradient_helper_run_native_digest(artifact) != boundary.get(f"{name}_sha256"):
-            raise ValueError(f"{name.title()} evidence changed after the audit boundary.")
-        if gradient_helper_run_native_digest(manifest) != boundary.get(f"{name}_manifest_sha256"):
-            raise ValueError(f"{name.title()} manifest changed after the audit boundary.")
-    return boundary
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Visible supporting scientific function: `_path`
-'''
-
-
-# ! CELL TYPE: code
-# ! FILTERS: []
-# ! TAGS: [keep-main]
-
-if MAIN:
-    from typing import Any, Iterator
-
-def gradient_helper_run_native__path(parent: str, item: Any) -> str:
-    token = str(item).replace("~", "~0").replace("/", "~1")
-    return f"{parent}/{token}" if parent else f"/{token}"
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Visible supporting scientific function: `_reject_live_modules`
-'''
-
-
-# ! CELL TYPE: code
-# ! FILTERS: []
-# ! TAGS: [keep-main]
-
-if MAIN:
-    from typing import Any, Iterator
-if MAIN:
-    import torch
-
-def gradient_helper_run_native__reject_live_modules(value: Any, path: str = "/") -> None:
-    if isinstance(value, torch.nn.Module):
-        raise TypeError(f"Payload {path} contains a live module; persist complete states instead.")
-    if isinstance(value, dict):
-        for key, item in value.items():
-            gradient_helper_run_native__reject_live_modules(item, gradient_helper_run_native__path(path.rstrip("/"), key))
-    elif isinstance(value, (list, tuple)):
-        for index, item in enumerate(value):
-            gradient_helper_run_native__reject_live_modules(item, gradient_helper_run_native__path(path.rstrip("/"), index))
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Visible supporting scientific function: `_write_manifest`
-'''
-
-
-# ! CELL TYPE: code
-# ! FILTERS: []
-# ! TAGS: [keep-main]
-
-if MAIN:
-    from typing import Any, Iterator
-if MAIN:
-    from pathlib import Path
-if MAIN:
-    import json
-
-def gradient_helper_run_native__write_manifest(path: Path, manifest: dict[str, Any]) -> Path:
-    path.write_text(json.dumps(manifest, indent=2, allow_nan=False) + "\n")
-    return path
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Visible supporting scientific function: `_scalar_record`
-'''
-
-
-# ! CELL TYPE: code
-# ! FILTERS: []
-# ! TAGS: [keep-main]
-
-if MAIN:
-    from typing import Any, Iterator
-if MAIN:
-    import hashlib
-if MAIN:
-    import numpy as np
-
-def gradient_helper_run_native__scalar_record(value: Any) -> dict[str, Any]:
-    if isinstance(value, np.generic):
-        return {
-            "kind": "numpy.scalar",
-            "dtype": str(value.dtype),
-            "value": gradient_helper_run_native__scalar_record(value.item()),
-        }
-    if value is None:
-        return {"kind": "none", "value": None}
-    if isinstance(value, bool):
-        return {"kind": "bool", "value": value}
-    if isinstance(value, int):
-        return {"kind": "int", "value": str(value)}
-    if isinstance(value, float):
-        return {"kind": "float", "value_hex": value.hex()}
-    if isinstance(value, str):
-        return {"kind": "str", "value": value}
-    if isinstance(value, bytes):
-        return {
-            "kind": "bytes",
-            "size_bytes": len(value),
-            "value_sha256": hashlib.sha256(value).hexdigest(),
-        }
-    raise TypeError(f"Unsupported deterministic payload leaf: {type(value).__name__}")
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Visible supporting scientific function: `_manifest_records`
-'''
-
-
-# ! CELL TYPE: code
-# ! FILTERS: []
-# ! TAGS: [keep-main]
-
-if MAIN:
-    from typing import Any, Iterator
-if MAIN:
-    import numpy as np
-if MAIN:
-    import torch
-
-def gradient_helper_run_native__manifest_records(value: Any, path: str = "") -> Iterator[dict[str, Any]]:
-    if isinstance(value, (np.ndarray, torch.Tensor)):
-        array, kind = gradient_helper_run_native__array(value)
-        yield {
-            "path": path or "/",
-            "kind": kind,
-            "dtype": str(array.dtype),
-            "shape": list(array.shape),
-            "elements": int(array.size),
-            "value_sha256": gradient_helper_run_native__array_value_sha256(value),
-        }
-        return
-    if isinstance(value, dict):
-        keys = list(value)
-        if not all(isinstance(key, (str, int)) and not isinstance(key, bool) for key in keys):
-            raise TypeError("Deterministic payload dictionaries require string or integer keys.")
-        yield {
-            "path": path or "/",
-            "kind": "dict",
-            "keys": [
-                {"kind": "str", "value": key}
-                if isinstance(key, str)
-                else {"kind": "int", "value": str(key)}
-                for key in keys
-            ],
-        }
-        for key in keys:
-            yield from gradient_helper_run_native__manifest_records(value[key], gradient_helper_run_native__path(path, key))
-        return
-    if isinstance(value, (list, tuple)):
-        yield {
-            "path": path or "/",
-            "kind": "tuple" if isinstance(value, tuple) else "list",
-            "length": len(value),
-        }
-        for index, item in enumerate(value):
-            yield from gradient_helper_run_native__manifest_records(item, gradient_helper_run_native__path(path, index))
-        return
-    yield {"path": path or "/", **gradient_helper_run_native__scalar_record(value)}
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Visible supporting scientific function: `payload_manifest`
-'''
-
-
-# ! CELL TYPE: code
-# ! FILTERS: []
-# ! TAGS: [keep-main]
-
-if MAIN:
-    from typing import Any, Iterator
-if MAIN:
-    from pathlib import Path
-
-def gradient_helper_run_native_payload_manifest(value: Any, artifact: Path) -> dict[str, Any]:
-    """Describe every payload leaf and bind it to the serialized artifact bytes."""
-    records = list(gradient_helper_run_native__manifest_records(value))
-    array_records = [record for record in records if "elements" in record]
-    return {
-        "schema_version": 1,
-        "artifact": Path(artifact).name,
-        "artifact_sha256": gradient_helper_run_native_digest(artifact),
-        "size_bytes": Path(artifact).stat().st_size,
-        "records": records,
-        "counts": {
-            "arrays": len(array_records),
-            "array_elements": sum(record["elements"] for record in array_records),
-            "records": len(records),
-        },
-    }
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Visible supporting scientific function: `save_payload`
-'''
-
-
-# ! CELL TYPE: code
-# ! FILTERS: []
-# ! TAGS: [keep-main]
-
-if MAIN:
-    from typing import Any, Iterator
-if MAIN:
-    from pathlib import Path
-if MAIN:
-    import torch
-
-def gradient_helper_run_native_save_payload(directory: Path, name: str, value: Any) -> tuple[Path, dict[str, Any]]:
-    """Direct-save a course-owned payload, then write its recursive identity."""
-    if Path(name).name != name or not name.endswith(".pt"):
-        raise ValueError("Payload names must be simple .pt filenames.")
-    gradient_helper_run_native__reject_live_modules(value)
-    path = Path(directory) / name
-    path.parent.mkdir(parents=True, exist_ok=True)
-    torch.save(value, path)
-    manifest = gradient_helper_run_native_payload_manifest(value, path)
-    gradient_helper_run_native__write_manifest(gradient_helper_run_native_manifest_path(path), manifest)
-    return path, manifest
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Visible supporting scientific function: `_sample_count`
-'''
-
-
-# ! CELL TYPE: code
-# ! FILTERS: []
-# ! TAGS: [keep-main]
-
-if MAIN:
-    from typing import Any, Iterator
-if MAIN:
-    import numpy as np
-if MAIN:
-    import torch
-
-def gradient_helper_run_native__sample_count(blocks: dict[str, Any]) -> int:
-    total = 0
-    for item in blocks.values():
-        mc = item.get("mc", item).get("samples") if isinstance(item, dict) else None
-        if isinstance(mc, (np.ndarray, torch.Tensor)):
-            total += int(mc.numel() if isinstance(mc, torch.Tensor) else mc.size)
-    return total
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Visible supporting scientific function: `summarize`
-'''
-
-
-# ! CELL TYPE: code
-# ! FILTERS: []
-# ! TAGS: [keep-main]
-
-if MAIN:
-    from typing import Any, Iterator
-
-def gradient_helper_run_native_summarize(
-    fitted: dict[str, Any],
-    prepared: dict[str, Any],
-    evaluated: dict[str, Any],
-    reference: dict[str, Any],
-    manifests: dict[str, dict[str, Any]],
-) -> dict[str, Any]:
-    """Build an index from actual 16.15 payload shapes, without outcome claims."""
-    models = fitted["models"]
-    replicate = evaluated["sampling_replicates"]["samples"]
-    identity = gradient_helper_run_native__array_identity(replicate)
-    return {
-        "study": "16.15_gradientshap_expected_gradients",
-        "phase": evaluated.get("phase"),
-        "model_keys": list(models),
-        "model_fits": len(models),
-        "optimizer_updates": sum(
-            len(item.get("loss_trace", ()))
-            for item in models.values()
-            if item.get("kind") != "ridge"
-        ),
-        "train_rows": len(fitted["train_ids"]),
-        "explanation_rows": len(prepared["explain_ids"]),
-        "audit_rows": len(evaluated["audit_ids"]),
-        "all_model_rows": len(models)
-        * (len(prepared["explain_ids"]) + len(evaluated["audit_ids"])),
-        "nested_budgets": list(gradient_helper_run_native_BUDGETS),
-        "quadrature_nodes": [256, 512],
-        "background_variants": len(evaluated.get("background_variants", {})),
-        "noise_variants": sum(
-            isinstance(name, str) and name.startswith("sigma_")
-            for name in evaluated.get("noise_variants", {})
-        ),
-        "sampling_replicates": int(identity["shape"][0]),
-        "replicate_sample_shape": identity["shape"],
-        "replicate_sample_dtype": identity["dtype"],
-        "replicate_sample_coordinates": identity["elements"],
-        "replicate_sample_sha256": identity["value_sha256"],
-        "primary_sample_coordinates": gradient_helper_run_native__sample_count(prepared.get("primary", {}))
-        + gradient_helper_run_native__sample_count(evaluated.get("audit_primary", {})),
-        "audit_used_for_selection": prepared["audit_used_for_selection"],
-        "reference_status": reference.get("status"),
-        "deterministic_artifacts": list(gradient_helper_run_native_DETERMINISTIC_ARTIFACTS),
-        "manifest_array_count": sum(item["counts"]["arrays"] for item in manifests.values()),
-        "manifest_array_elements": sum(
-            item["counts"]["array_elements"] for item in manifests.values()
-        ),
-    }
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Visible supporting scientific function: `persist_completed`
-'''
-
-
-# ! CELL TYPE: code
-# ! FILTERS: []
-# ! TAGS: [keep-main]
-
-if MAIN:
-    from typing import Any, Iterator
-if MAIN:
-    from pathlib import Path
-if MAIN:
-    import json
-if MAIN:
-    import numpy as np
-
-def gradient_helper_run_native_persist_completed(
-    directory: Path,
-    fitted: dict[str, Any],
-    prepared: dict[str, Any],
-    evaluated: dict[str, Any],
-    diagnostics: dict[str, Any],
-    reference: dict[str, Any],
-    play: dict[str, Any],
-    timings: dict[str, Any] | None = None,
-) -> dict[str, Any]:
-    """Persist all results and externalize only the complete replicate sample tensor."""
-    directory = Path(directory)
-    gradient_helper_run_native__verify_boundary(directory)
-    if evaluated.get("phase") != "evaluated_after_audit":
-        raise ValueError("Evaluated payload must declare phase='evaluated_after_audit'.")
-    if evaluated.get("audit_used_for_selection") is not False:
-        raise ValueError("Evaluation must preserve audit_used_for_selection=False.")
-    replicates = evaluated.get("sampling_replicates", {})
-    gradient_helper_run_native__validate_replicate_branch(replicates)
-    samples = replicates.get("samples")
-    array, _ = gradient_helper_run_native__array(samples)
-    if array.shape != gradient_helper_run_native_REPLICATE_SHAPE or array.dtype != np.dtype("float64"):
-        raise ValueError(
-            f"Replicate samples must be CPU float64 with exact shape {gradient_helper_run_native_REPLICATE_SHAPE}."
-        )
-
-    _, replicate_manifest = gradient_helper_run_native_save_payload(directory, gradient_helper_run_native_EXTERNAL_DETERMINISTIC_ARTIFACT, samples)
-    external = gradient_helper_run_native__external_reference(samples, replicate_manifest)
-    persisted_evaluation = gradient_helper_run_native__persisted_evaluated(evaluated, external)
-    manifests = {
-        "fitted.pt": json.loads(gradient_helper_run_native_manifest_path(directory / "fitted.pt").read_text()),
-        "prepared.pt": json.loads(gradient_helper_run_native_manifest_path(directory / "prepared.pt").read_text()),
-        gradient_helper_run_native_EXTERNAL_DETERMINISTIC_ARTIFACT: replicate_manifest,
-    }
-    for name, value in (
-        ("evaluated.pt", persisted_evaluation),
-        ("reference.pt", reference),
-        ("diagnostics.pt", diagnostics),
-        ("play.pt", play),
-    ):
-        _, manifests[name] = gradient_helper_run_native_save_payload(directory, name, value)
-    gradient_helper_run_native_save_payload(directory, gradient_helper_run_native_TIMING_ARTIFACT, timings or {})
-    summary = gradient_helper_run_native_summarize(fitted, prepared, evaluated, reference, manifests)
-    if summary["replicate_sample_coordinates"] != gradient_helper_run_native_REPLICATE_ELEMENTS:
-        raise ValueError("The full declared sampling-replicate array was not retained.")
-    (directory / "summary.json").write_text(json.dumps(summary, indent=2) + "\n")
-    inventory = {
-        "schema_version": 1,
-        "deterministic": {
-            name: {
-                "artifact_sha256": manifests[name]["artifact_sha256"],
-                "size_bytes": manifests[name]["size_bytes"],
-                "manifest": gradient_helper_run_native_manifest_path(Path(name)).name,
-                "manifest_sha256": gradient_helper_run_native_digest(gradient_helper_run_native_manifest_path(directory / name)),
-                "external_large_payload": name == gradient_helper_run_native_EXTERNAL_DETERMINISTIC_ARTIFACT,
-            }
-            for name in gradient_helper_run_native_DETERMINISTIC_ARTIFACTS
-        },
-        "timing": {
-            "artifact": gradient_helper_run_native_TIMING_ARTIFACT,
-            "artifact_sha256": gradient_helper_run_native_digest(directory / gradient_helper_run_native_TIMING_ARTIFACT),
-            "manifest": gradient_helper_run_native_manifest_path(Path(gradient_helper_run_native_TIMING_ARTIFACT)).name,
-            "manifest_sha256": gradient_helper_run_native_digest(gradient_helper_run_native_manifest_path(directory / gradient_helper_run_native_TIMING_ARTIFACT)),
-        },
-    }
-    (directory / "artifact_manifest.json").write_text(json.dumps(inventory, indent=2) + "\n")
-    present = {path.name for path in directory.glob("*.pt")}
-    expected = set(gradient_helper_run_native_DETERMINISTIC_ARTIFACTS) | {gradient_helper_run_native_TIMING_ARTIFACT}
-    if present != expected:
-        raise ValueError(f"Native artifact set mismatch: {sorted(present)}")
-    return summary
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Visible supporting scientific function: `_primary_background_ids`
-'''
-
-
-# ! CELL TYPE: code
-# ! FILTERS: []
-# ! TAGS: [keep-main]
-
-if MAIN:
-    from typing import Any, Iterator
-if MAIN:
-    import numpy as np
-
-def gradient_helper_run_native__primary_background_ids(prepared: dict[str, Any]) -> np.ndarray:
-    backgrounds = prepared.get("backgrounds", {})
-    primary = backgrounds.get("primary64", {})
-    for key in ("source_ids", "ids"):
-        if key in primary:
-            return np.asarray(primary[key], dtype=np.int64)
-    if "background_ids" in prepared:
-        return np.asarray(prepared["background_ids"], dtype=np.int64)
-    raise ValueError("Prepared payload must retain primary64 source IDs.")
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Visible supporting scientific function: `_require_reproduction_gate`
-'''
-
-
-# ! CELL TYPE: code
-# ! FILTERS: []
-# ! TAGS: [keep-main]
-
-if MAIN:
-    from typing import Any, Iterator
-
-def gradient_helper_run_native__require_reproduction_gate(prepared: dict[str, Any]) -> None:
-    reproduction = prepared.get("reproduction")
-    if not isinstance(reproduction, dict) or reproduction.get("status") != "PASS":
-        raise ValueError("Prepared attribution requires a passing 16.14 state reproduction gate.")
-    expected = reproduction.get("expected_model_state_hashes", {})
-    actual = reproduction.get("model_state_hashes", {})
-    state_hash_count = sum(
-        len(states) for states in expected.values() if isinstance(states, dict)
-    ) if isinstance(expected, dict) else 0
-    if state_hash_count != 21 or expected != actual:
-        raise ValueError("All 21 initial, standardized, and raw model hashes must match exactly.")
-    mismatches = reproduction.get("mismatches")
-    if not isinstance(mismatches, (list, tuple, dict)) or len(mismatches) != 0:
-        raise ValueError("A model-state mismatch must stop before GradientSHAP attribution.")
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Visible supporting scientific function: `write_before_audit`
-'''
-
-
-# ! CELL TYPE: code
-# ! FILTERS: []
-# ! TAGS: [keep-main]
-
-if MAIN:
-    from typing import Any, Iterator
-if MAIN:
-    from pathlib import Path
-if MAIN:
-    import json
-if MAIN:
-    import numpy as np
-
-def gradient_helper_run_native_write_before_audit(directory: Path, prepared: dict[str, Any]) -> dict[str, Any]:
-    """Seal fitted and prepared bytes before the literal audit load."""
-    directory = Path(directory)
-    if prepared.get("phase") != "prepared_before_audit":
-        raise ValueError("Prepared payload must declare phase='prepared_before_audit'.")
-    if prepared.get("audit_used_for_selection") is not False:
-        raise ValueError("Prepared rankings must explicitly exclude the audit split.")
-    gradient_helper_run_native__require_reproduction_gate(prepared)
-    files = [directory / "fitted.pt", directory / "prepared.pt"]
-    manifests = [gradient_helper_run_native_manifest_path(path) for path in files]
-    if not all(path.is_file() for path in files + manifests):
-        raise ValueError("Save fitted/prepared payloads and manifests before sealing audit.")
-    explain_ids = np.asarray(prepared["explain_ids"], dtype=np.int64)
-    background_ids = gradient_helper_run_native__primary_background_ids(prepared)
-    boundary = {
-        "schema_version": 1,
-        "phase": "prepared_before_audit",
-        "audit_loaded": False,
-        "fitted_sha256": gradient_helper_run_native_digest(files[0]),
-        "fitted_manifest_sha256": gradient_helper_run_native_digest(manifests[0]),
-        "prepared_sha256": gradient_helper_run_native_digest(files[1]),
-        "prepared_manifest_sha256": gradient_helper_run_native_digest(manifests[1]),
-        "explain_ids": gradient_helper_run_native__array_identity(explain_ids),
-        "background_ids": gradient_helper_run_native__array_identity(background_ids),
-        "state_hash_count": 21,
-    }
-    (directory / "before_audit.json").write_text(json.dumps(boundary, indent=2) + "\n")
-    return boundary
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Visible supporting scientific function: `persist_prepared`
-'''
-
-
-# ! CELL TYPE: code
-# ! FILTERS: []
-# ! TAGS: [keep-main]
-
-if MAIN:
-    from typing import Any, Iterator
-if MAIN:
-    from pathlib import Path
-
-def gradient_helper_run_native_persist_prepared(directory: Path, fitted: dict, prepared: dict) -> dict[str, Any]:
-    directory = Path(directory)
-    directory.mkdir(parents=True, exist_ok=True)
-    gradient_helper_run_native_save_payload(directory, "fitted.pt", fitted)
-    gradient_helper_run_native_save_payload(directory, "prepared.pt", prepared)
-    return gradient_helper_run_native_write_before_audit(directory, prepared)
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Visible supporting scientific function: `write_notebook_summary`
-'''
-
-
-# ! CELL TYPE: code
-# ! FILTERS: []
-# ! TAGS: [keep-main]
-
-if MAIN:
-    from pathlib import Path
-if MAIN:
-    import json
-
-def gradient_helper_run_native_write_notebook_summary(output_root: Path, native_directory: Path, summary: dict) -> Path:
-    output_root = Path(output_root).resolve()
-    native_directory = Path(native_directory).resolve()
-    native_directory.relative_to(output_root)
-    payload = dict(summary, native_directory=str(native_directory))
-    path = output_root / "native_summary.json"
-    path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(json.dumps(payload, indent=2) + "\n")
-    return path
-
-
-# ! CELL TYPE: code
-# ! FILTERS: []
-# ! TAGS: [keep-main]
-
-if MAIN:
-    gradient_persist_completed = gradient_helper_run_native_persist_completed
-if MAIN:
-    persist_prepared = gradient_helper_run_native_persist_prepared
-if MAIN:
-    gradient_write_notebook_summary = gradient_helper_run_native_write_notebook_summary
-
-if MAIN:
-    native_directory = canonical_dir / "artifacts" / "gradient" / "native"
 if MAIN:
     gradient_train = gradient_load_split("train")
 if MAIN:
@@ -17997,8 +16018,6 @@ if MAIN:
         methods=gradient_methods,
         deep_methods=deep_methods,
     )
-if MAIN:
-    before_audit = persist_prepared(native_directory, gradient_fitted, gradient_prepared)
 
 if MAIN:
     print("16.14 state reproduction:", reproduction["status"])
@@ -18009,9 +16028,6 @@ if MAIN:
     )
 if MAIN:
     print("Prepared phase:", gradient_prepared["phase"])
-if MAIN:
-    print("Audit loaded at this boundary:", before_audit["audit_loaded"])
-
 
 # ! CELL TYPE: code
 # ! FILTERS: []
@@ -20771,29 +18787,11 @@ if MAIN:
         methods=gradient_methods,
         deep_methods=deep_methods,
     )
-if MAIN:
-    gradient_summary = gradient_persist_completed(
-        native_directory,
-        gradient_fitted,
-        gradient_prepared,
-        gradient_evaluated,
-        gradient_diagnostics,
-        gradient_reference,
-        gradient_fixed_play,
-        timings={},
-    )
-if MAIN:
-    gradient_write_notebook_summary(canonical_dir / "artifacts" / "gradient", native_directory, gradient_summary)
 
 if MAIN:
     print("Reference parity:", gradient_reference["status"])
 if MAIN:
     print("Package vectors checked:", gradient_reference["counts"]["package_vectors"])
-if MAIN:
-    print("All model-row explanations:", gradient_summary["all_model_rows"])
-if MAIN:
-    print("Audit used for selection:", gradient_summary["audit_used_for_selection"])
-
 
 # ! CELL TYPE: code
 # ! FILTERS: []
@@ -21024,10 +19022,8 @@ def initialize_lesson_plumbing():
     global INDEPENDENT_BACKGROUND_SEEDS
     global Iterator
     global Mapping
-    global NATIVE_DIR
     global NOISE_SCHEDULE_SEED
     global NOISE_SIGMAS
-    global OUTPUT_ROOT
     global PATH_DISTANCE_SAMPLES
     global PRIMARY_BACKGROUND_SEED
     global PRIMARY_SCHEDULE_SEED
@@ -21123,20 +19119,14 @@ def initialize_lesson_plumbing():
     global deep_helper_deepshap_study_HIDDEN
     global deep_helper_deepshap_study_METHOD_NAMES
     global deep_helper_deepshap_study_MODEL_KEYS
-    global deep_helper_run_native_DETERMINISTIC_ARTIFACTS
-    global deep_helper_run_native_TIMING_ARTIFACT
     global deep_load_split
     global deep_methods
-    global deep_persist_completed
     global deep_plots
     global deep_plumbing_deepshap_data_source_data
     global deep_root_dir
-    global deep_save_payload
     global deep_section_dir
     global deep_tests
     global deep_validate_reference
-    global deep_write_before_audit
-    global deep_write_notebook_summary
     global display
     global functools
     global gradient_DTYPE
@@ -21193,18 +19183,8 @@ def initialize_lesson_plumbing():
     global gradient_helper_gradientshap_study_HIDDEN
     global gradient_helper_gradientshap_study_MODEL_KEYS
     global gradient_helper_gradientshap_study_RANDOM_ORDER_SEED
-    global gradient_helper_run_native_BUDGETS
-    global gradient_helper_run_native_DETERMINISTIC_ARTIFACTS
-    global gradient_helper_run_native_EXTERNAL_DETERMINISTIC_ARTIFACT
-    global gradient_helper_run_native_HASH_CHUNK_BYTES
-    global gradient_helper_run_native_REPLICATE_ELEMENTS
-    global gradient_helper_run_native_REPLICATE_MODELS
-    global gradient_helper_run_native_REPLICATE_SHAPE
-    global gradient_helper_run_native_SMALL_DETERMINISTIC_ARTIFACTS
-    global gradient_helper_run_native_TIMING_ARTIFACT
     global gradient_load_split
     global gradient_methods
-    global gradient_persist_completed
     global gradient_plots
     global gradient_plumbing_gradientshap_data_load_manifest
     global gradient_plumbing_gradientshap_data_tensor_mapping_sha256
@@ -21212,7 +19192,6 @@ def initialize_lesson_plumbing():
     global gradient_section_dir
     global gradient_tests
     global gradient_validate_reference
-    global gradient_write_notebook_summary
     global hashlib
     global itertools
     global json
@@ -21221,7 +19200,6 @@ def initialize_lesson_plumbing():
     global nn
     global np
     global os
-    global persist_prepared
     global pickle
     global plt
     global random
@@ -21236,8 +19214,6 @@ def initialize_lesson_plumbing():
     global tree_SAVE_FIGURES
     global tree_background_order
     global tree_exercises_dir
-    global tree_helper_run_native_DETERMINISTIC_ARTIFACTS
-    global tree_helper_run_native_TIMING_ARTIFACT
     global tree_helper_treeshap_reference_ADDENDUM_SHA256
     global tree_helper_treeshap_reference_ATOL
     global tree_helper_treeshap_reference_COMPILED_INTERVENTIONAL_ATOL
@@ -21247,15 +19223,11 @@ def initialize_lesson_plumbing():
     global tree_helper_treeshap_reference_MODEL_KEYS
     global tree_helper_treeshap_reference_RTOL
     global tree_load_split
-    global tree_persist_completed
     global tree_plots
     global tree_plumbing_treeshap_data_source_data
     global tree_root_dir
-    global tree_save_payload
     global tree_section_dir
     global tree_tests
-    global tree_write_before_audit
-    global tree_write_notebook_summary
 
     from pathlib import Path
     import itertools
@@ -21322,19 +19294,6 @@ def initialize_lesson_plumbing():
     tree_SAVE_FIGURES = os.environ.get(
             "ARENA_TREESHAP_SAVE_FIGURES", "1" if tree_RUN_OUTPUT else "0"
         ) == "1"
-    tree_helper_run_native_DETERMINISTIC_ARTIFACTS = (
-        "fitted.pt",
-        "prepared.pt",
-        "evaluated.pt",
-        "diagnostics.pt",
-        "reference.pt",
-        "play.pt",
-    )
-    tree_helper_run_native_TIMING_ARTIFACT = "timings.pt"
-    OUTPUT_ROOT = Path(
-            os.environ.get("ARENA_TREESHAP_OUTPUT_DIRECTORY", canonical_dir / "artifacts" / "tree")
-        )
-    NATIVE_DIR = OUTPUT_ROOT / "native"
     tree_helper_treeshap_reference_COMPILED_INTERVENTIONAL_ATOL = 2e-5
     tree_helper_treeshap_reference_COMPILED_INTERVENTIONAL_RTOL = 2e-6
     tree_helper_treeshap_reference_EXACT_KEYS = tuple(f"{family}_clean_0" for family in ("tree", "forest", "boost"))
@@ -21430,15 +19389,6 @@ def initialize_lesson_plumbing():
             + [f"shuffled_{index}" for index in range(3)]
             + ["ridge"]
         )
-    deep_helper_run_native_DETERMINISTIC_ARTIFACTS = (
-        "fitted.pt",
-        "prepared.pt",
-        "evaluated.pt",
-        "diagnostics.pt",
-        "reference.pt",
-        "play.pt",
-    )
-    deep_helper_run_native_TIMING_ARTIFACT = "timings.pt"
     deep_helper_deepshap_reference_AUTHOR_ATOL = 1e-7
     deep_helper_deepshap_reference_AUTHOR_RTOL = 1e-8
     deep_helper_deepshap_reference_BACKGROUND_ROWS = 64
@@ -21570,24 +19520,6 @@ def initialize_lesson_plumbing():
         "exact_shapley",
         "gradient_delta",
     )
-    gradient_helper_run_native_EXTERNAL_DETERMINISTIC_ARTIFACT = "replicate_samples.pt"
-    gradient_helper_run_native_SMALL_DETERMINISTIC_ARTIFACTS = (
-        "fitted.pt",
-        "prepared.pt",
-        "evaluated.pt",
-        "reference.pt",
-        "diagnostics.pt",
-        "play.pt",
-    )
-    gradient_helper_run_native_DETERMINISTIC_ARTIFACTS = gradient_helper_run_native_SMALL_DETERMINISTIC_ARTIFACTS + (
-            gradient_helper_run_native_EXTERNAL_DETERMINISTIC_ARTIFACT,
-        )
-    gradient_helper_run_native_REPLICATE_SHAPE = (64, 3, 64, 2048, 8)
-    gradient_helper_run_native_REPLICATE_ELEMENTS = math.prod(gradient_helper_run_native_REPLICATE_SHAPE)
-    gradient_helper_run_native_TIMING_ARTIFACT = "timings.pt"
-    gradient_helper_run_native_HASH_CHUNK_BYTES = 64 * 1024 * 1024
-    gradient_helper_run_native_BUDGETS = (8, 32, 128, 512, 2048)
-    gradient_helper_run_native_REPLICATE_MODELS = ("clean_0", "shuffled_0", "ridge")
     gradient_helper_gradientshap_reference_REFERENCE_SAMPLES = 128
     gradient_helper_gradientshap_reference_ALL_ROWS = 272
     gradient_helper_gradientshap_reference_AUTHOR_ATOL = 1e-10
@@ -21640,10 +19572,6 @@ def initialize_lesson_plumbing():
     initialize_helper_gradient_115_41_gradient_helper_gradientshap_reference_replay_draw_table()
     initialize_helper_gradient_115_42_gradient_helper_gradientshap_reference_captum_same_draw_reference()
     initialize_helper_gradient_115_45_gradient_helper_gradientshap_reference_shap_same_draw_reference()
-    tree_persist_completed = tree_helper_run_native_persist_completed
-    tree_save_payload = tree_helper_run_native_save_payload
-    tree_write_before_audit = tree_helper_run_native_write_before_audit
-    tree_write_notebook_summary = tree_helper_run_native_write_notebook_summary
     check_reference = tree_helper_treeshap_reference_check_reference
     _check_widths = deep_helper_deepshap_methods__check_widths
     _epsilon = deep_helper_deepshap_methods__epsilon
@@ -21670,11 +19598,7 @@ def initialize_lesson_plumbing():
     deep__validate_evaluation_inputs = deep_helper_deepshap_study__validate_evaluation_inputs
     deep__validate_fitted = deep_helper_deepshap_study__validate_fitted
     _validate_rankings = deep_helper_deepshap_study__validate_rankings
-    deep_save_payload = deep_helper_run_native_save_payload
-    deep_write_before_audit = deep_helper_run_native_write_before_audit
     deep_validate_reference = deep_helper_deepshap_reference_validate_reference
-    deep_persist_completed = deep_helper_run_native_persist_completed
-    deep_write_notebook_summary = deep_helper_run_native_write_notebook_summary
     _eg_float_tensor = gradient_helper_gradientshap_methods__eg_float_tensor
     _eg_index_tensor = gradient_helper_gradientshap_methods__eg_index_tensor
     _eg_model = gradient_helper_gradientshap_methods__eg_model
@@ -21704,9 +19628,6 @@ def initialize_lesson_plumbing():
     gradient__state_shapes = gradient_helper_gradientshap_study__state_shapes
     gradient__validate_evaluation_inputs = gradient_helper_gradientshap_study__validate_evaluation_inputs
     gradient__validate_fitted = gradient_helper_gradientshap_study__validate_fitted
-    gradient_persist_completed = gradient_helper_run_native_persist_completed
-    persist_prepared = gradient_helper_run_native_persist_prepared
-    gradient_write_notebook_summary = gradient_helper_run_native_write_notebook_summary
     REFERENCE_SAMPLES = gradient_helper_gradientshap_reference_REFERENCE_SAMPLES
     gradient_validate_reference = gradient_helper_gradientshap_reference_validate_reference
     deep_curriculum_methods = SimpleNamespace(

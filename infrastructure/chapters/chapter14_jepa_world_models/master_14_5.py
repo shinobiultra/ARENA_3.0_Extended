@@ -127,14 +127,13 @@ predicted.
 from __future__ import annotations
 
 import copy
-import json
 import math
 import os
 os.environ.setdefault("CUBLAS_WORKSPACE_CONFIG", ":4096:8")
 import random
 import sys
 from collections import deque
-from dataclasses import asdict, dataclass
+from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
@@ -146,8 +145,6 @@ from IPython.display import display
 from torch import Tensor, nn
 from torch.nn import functional as F
 
-GT_TIER = "GT-3"
-EXERCISE_ID = "14_4_maze_transformers_and_latent_planning"
 DIFFICULTY = 5
 IMPORTANCE = 5
 EXPECTED_RUNTIME = "2-3 hours; about 15-60 seconds for the CPU signature run"
@@ -290,7 +287,6 @@ plt.style.use("seaborn-v0_8-whitegrid")
 
 import copy
 
-import json
 
 import math
 
@@ -305,7 +301,7 @@ import sys
 
 from collections import deque
 
-from dataclasses import asdict, dataclass
+from dataclasses import dataclass
 
 from pathlib import Path
 
@@ -324,10 +320,6 @@ from IPython.display import display
 from torch import Tensor, nn
 
 from torch.nn import functional as F
-
-GT_TIER = "GT-3"
-
-EXERCISE_ID = "14_4_maze_transformers_and_latent_planning"
 
 DIFFICULTY = 5
 
@@ -1223,14 +1215,6 @@ if MAIN:
 
 if MAIN:
     plt.show()
-
-# ! CELL TYPE: markdown
-# ! FILTERS: [streamlit]
-# ! TAGS: []
-
-r'''
-<img src="../../../chapter14_jepa_world_models/exercises/part5_maze_transformers/media/maze_legacy_cell_10_output_0.png" width="1100">
-'''
 
 # ! CELL TYPE: markdown
 # ! FILTERS: []
@@ -5456,14 +5440,6 @@ if MAIN:
     print(f"saved: {signature_path}")
 
 # ! CELL TYPE: markdown
-# ! FILTERS: [streamlit]
-# ! TAGS: []
-
-r'''
-<img src="../../../chapter14_jepa_world_models/exercises/part5_maze_transformers/media/maze_legacy_cell_42_output_1.png" width="1100">
-'''
-
-# ! CELL TYPE: markdown
 # ! FILTERS: []
 # ! TAGS: []
 
@@ -5587,14 +5563,6 @@ if MAIN:
 if MAIN:
     print("actions:", [ACTION_NAMES[action] for action in play_rollout.actions])
 
-# ! CELL TYPE: markdown
-# ! FILTERS: [streamlit]
-# ! TAGS: []
-
-r'''
-<img src="../../../chapter14_jepa_world_models/exercises/part5_maze_transformers/media/maze_legacy_cell_45_output_0.png" width="1100">
-'''
-
 # ! CELL TYPE: code
 # ! FILTERS: [~python]
 # ! TAGS: []
@@ -5691,156 +5659,4 @@ state probes; it does not reproduce the paper's full-maze reconstruction or adja
 - Train on sizes 5 and 6, then test whether size 7 transfer becomes systematic.
 - Replace linear probes with causal distance-direction interventions and test path changes.
 '''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-## Inspectable reporting support
-
-The serialization and CPU/CUDA wrappers below call the inline methods above.
-
-```python
-def _serializable_report(artifacts: ExperimentArtifacts) -> dict[str, Any]:
-    return {
-        **artifacts.metrics,
-        "training": {
-            "train_loss": artifacts.training.train_loss,
-            "heldout_action_accuracy": artifacts.training.heldout_action_accuracy,
-            "checkpoint_epochs": artifacts.training.checkpoint_epochs,
-        },
-        "probes": asdict(artifacts.probes),
-        "patching": {
-            **asdict(artifacts.patching),
-            "heatmap": artifacts.patching.heatmap.tolist(),
-        },
-        "tests_passed": False,  # A model experiment does not execute the test suite.
-        "contract_passed": True,
-        "accepted": False,  # Release review and course wiring remain pending.
-    }
-
-
-def run_smoke_test(cpu: bool = True) -> dict[str, Any]:
-    if not cpu:
-        return run_gpu_test()
-    artifacts = run_signature_experiment(
-        device="cpu",
-        train_maze_count=260,
-        heldout_maze_count=70,
-        epochs=10,
-        d_model=56,
-    )
-    validate_experiment(artifacts)
-    report = _serializable_report(artifacts)
-    report.update({"cuda_available": False, "within_vram_budget": True})
-    return report
-
-
-def run_gpu_test(max_vram_gb: float = 24.0) -> dict[str, Any]:
-    if not t.cuda.is_available():
-        raise RuntimeError("14.4 GPU verification requires CUDA; CPU fallback is forbidden")
-    artifacts = run_signature_experiment(
-        device="cuda",
-        train_maze_count=900,
-        heldout_maze_count=180,
-        epochs=18,
-        d_model=72,
-    )
-    validate_experiment(artifacts, require_cuda=True, max_vram_gb=max_vram_gb)
-    report = _serializable_report(artifacts)
-    report.update(
-        {
-            "cuda_available": True,
-            "device": t.cuda.get_device_name(),
-            "gpu_name": t.cuda.get_device_name(),
-            "torch_version": t.__version__,
-            "cuda_version": t.version.cuda,
-            "within_vram_budget": artifacts.metrics["peak_vram_gb"] <= max_vram_gb,
-        }
-    )
-    return report
-
-
-def run_full_experiment(max_vram_gb: float = 24.0) -> dict[str, Any]:
-    return run_gpu_test(max_vram_gb=max_vram_gb)
-
-
-def save_report(report: dict[str, Any], path: str | Path) -> None:
-    Path(path).write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
-
-
-```
-'''
-
-# ! CELL TYPE: code
-# ! FILTERS: [python]
-# ! TAGS: []
-
-def _serializable_report(artifacts: ExperimentArtifacts) -> dict[str, Any]:
-    return {
-        **artifacts.metrics,
-        "training": {
-            "train_loss": artifacts.training.train_loss,
-            "heldout_action_accuracy": artifacts.training.heldout_action_accuracy,
-            "checkpoint_epochs": artifacts.training.checkpoint_epochs,
-        },
-        "probes": asdict(artifacts.probes),
-        "patching": {
-            **asdict(artifacts.patching),
-            "heatmap": artifacts.patching.heatmap.tolist(),
-        },
-        "tests_passed": False,  # A model experiment does not execute the test suite.
-        "contract_passed": True,
-        "accepted": False,  # Release review and course wiring remain pending.
-    }
-
-
-def run_smoke_test(cpu: bool = True) -> dict[str, Any]:
-    if not cpu:
-        return run_gpu_test()
-    artifacts = run_signature_experiment(
-        device="cpu",
-        train_maze_count=260,
-        heldout_maze_count=70,
-        epochs=10,
-        d_model=56,
-    )
-    validate_experiment(artifacts)
-    report = _serializable_report(artifacts)
-    report.update({"cuda_available": False, "within_vram_budget": True})
-    return report
-
-
-def run_gpu_test(max_vram_gb: float = 24.0) -> dict[str, Any]:
-    if not t.cuda.is_available():
-        raise RuntimeError("14.4 GPU verification requires CUDA; CPU fallback is forbidden")
-    artifacts = run_signature_experiment(
-        device="cuda",
-        train_maze_count=900,
-        heldout_maze_count=180,
-        epochs=18,
-        d_model=72,
-    )
-    validate_experiment(artifacts, require_cuda=True, max_vram_gb=max_vram_gb)
-    report = _serializable_report(artifacts)
-    report.update(
-        {
-            "cuda_available": True,
-            "device": t.cuda.get_device_name(),
-            "gpu_name": t.cuda.get_device_name(),
-            "torch_version": t.__version__,
-            "cuda_version": t.version.cuda,
-            "within_vram_budget": artifacts.metrics["peak_vram_gb"] <= max_vram_gb,
-        }
-    )
-    return report
-
-
-def run_full_experiment(max_vram_gb: float = 24.0) -> dict[str, Any]:
-    return run_gpu_test(max_vram_gb=max_vram_gb)
-
-
-def save_report(report: dict[str, Any], path: str | Path) -> None:
-    Path(path).write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
 

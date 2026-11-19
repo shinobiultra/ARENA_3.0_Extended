@@ -69,7 +69,7 @@ r'''
 
 r'''
 **Local-first extension.** This section is a safe-proxy PEFT interpretability lab. The learner trains and
-audits generated adapters; the CUDA report is supporting evidence, not the main lesson.
+audits generated adapters.
 '''
 
 # ! CELL TYPE: markdown
@@ -139,7 +139,7 @@ r'''
 
 ### ☆ Bonus
 
-Investigate the anomaly hunt and the verification hook.
+Investigate the anomaly hunt.
 '''
 
 # ! CELL TYPE: code
@@ -195,7 +195,6 @@ r'''
 # ! FILTERS: []
 # ! TAGS: []
 
-import json
 import math
 import sys
 from dataclasses import dataclass
@@ -228,10 +227,7 @@ if str(exercises_dir) not in sys.path:
     sys.path.append(str(exercises_dir))
 
 import part1_lora_dora.tests as tests
-from part1_lora_dora import historical_release as reference
 
-GT_TIER = "GT-0"
-EXERCISE_ID = "15_1_lora_dora_and_adapter_controls"
 DIFFICULTY = 3
 IMPORTANCE = 3
 EXPECTED_RUNTIME = "seconds on toy contract; minutes on local real-model path"
@@ -2810,109 +2806,6 @@ try:
 A good anomaly writeup should include the changed setting, the failed metric, the plot or table row that
 revealed it, and a hypothesis for why it happened.
 '''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-## CUDA Verification Hook
-
-The parent task owns GPU serialization. This notebook keeps the CUDA path visible, but do not run it in this
-subtask. The parent GPU step should run:
-
-```python
-run_full_experiment(max_vram_gb=24.0)
-```
-
-The committed report should still be treated as supporting evidence, not as the learner-facing result.
-'''
-
-# ! CELL TYPE: code
-# ! FILTERS: []
-# ! TAGS: []
-
-if MAIN:
-    verification_report_path = section_dir / "verification_report.json"
-if MAIN:
-    committed_evidence = json.loads(verification_report_path.read_text())
-if MAIN:
-    assert committed_evidence["notebook_id"] == EXERCISE_ID, (
-        "The committed evidence should belong to this PEFT exercise."
-    )
-
-def lora_smoke_test() -> dict:
-    lora_a = t.tensor([[1.0, 2.0]])
-    lora_b = t.tensor([[3.0], [4.0]])
-    delta = lora_delta(lora_a, lora_b, alpha=2.0)
-    return {
-        "delta": delta.tolist(),
-        "report": adapter_delta_report(lora_a, lora_b, alpha=2.0).__dict__,
-    }
-
-
-def dora_smoke_test() -> dict:
-    base_weight = t.tensor([[3.0, 4.0], [0.0, 2.0]])
-    adapter_delta = t.zeros_like(base_weight)
-    magnitude = t.tensor([10.0, 5.0])
-    report = dora_weight_report(base_weight, adapter_delta, magnitude)
-    return {
-        "row_norms": [round(value, 6) for value in report.row_norms.tolist()],
-        "max_norm_error": report.max_norm_error,
-        "norm_preserved": report.norm_preserved,
-    }
-
-
-def intruder_smoke_test() -> dict:
-    adapter_delta = t.tensor([[1.0, 0.0], [1.0, 0.0]])
-    protected_direction = t.tensor([1.0, 0.0])
-    return intruder_dimension_report(
-        adapter_delta,
-        protected_direction,
-        max_projection_fraction=0.5,
-    ).__dict__
-
-
-def mechanism_smoke_test() -> dict:
-    return adapter_mechanism_report(
-        adapter_accuracy=0.9,
-        baseline_accuracy=0.7,
-        adapter_mechanism_score=0.8,
-        baseline_mechanism_score=0.75,
-        min_accuracy_gain=0.1,
-        min_mechanism_delta=-0.02,
-    ).__dict__
-
-
-def run_smoke_test(cpu: bool = True) -> dict:
-    _ = cpu
-    return {
-        "lora": lora_smoke_test(),
-        "dora": dora_smoke_test(),
-        "intruder": intruder_smoke_test(),
-        "mechanism": mechanism_smoke_test(),
-    }
-
-
-def run_gpu_test(max_vram_gb: float = 24.0) -> dict:
-    return reference.run_gpu_test(max_vram_gb=max_vram_gb)
-
-
-def run_full_experiment(max_vram_gb: float = 24.0) -> dict:
-    return reference.run_full_experiment(max_vram_gb=max_vram_gb)
-
-
-if MAIN:
-    tests.test_smoke_wrappers_match_the_visible_contract(
-        lora_smoke_test,
-        dora_smoke_test,
-        intruder_smoke_test,
-        mechanism_smoke_test,
-    )
-if MAIN:
-    tests.test_notebook_contract(run_smoke_test)
-if MAIN:
-    tests.test_committed_verification_report_trained_peft_controls()
 
 # ! CELL TYPE: markdown
 # ! FILTERS: []

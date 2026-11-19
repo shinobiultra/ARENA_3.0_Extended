@@ -250,3 +250,101 @@ def deletion_play(
         actual_change=margin - margin[0],
         predicted_change=prediction,
     )
+
+
+def reference_checks(data: dict, prepared: dict, evaluated: dict | None) -> dict:
+    """Independent SciPy, scikit-learn and separately scheduled refits of the study."""
+    import numpy as np
+    from sklearn.linear_model import Lasso
+
+    from chapter16_shapley_attribution_baselines.exercises.part9_influence_and_tracin.attribution_reference import (
+        scipy_logistic_optimum,
+    )
+
+    checks = []
+    # Six independently scheduled fits establish batch scheduling parity.
+    for fraction in study.FRACTIONS:
+        masks = prepared["designs"][fraction]["train"]
+        theta = prepared["subset_fits"][fraction]["train"]["theta"]
+        for row in (0, 1):
+            separate = study.refit_masks(data["train"], masks[row : row + 1])["theta"][0]
+            difference = float((theta[row] - separate).abs().max())
+            if difference > 1e-8:
+                raise ValueError("Batch versus separate classifier refits disagree.")
+            checks.append(
+                dict(kind="separate_refit", fraction=fraction, row=row, max_error=difference)
+            )
+    candidates = []
+    for fraction in study.FRACTIONS:
+        for row in (0, 1, 2):
+            candidates.append(
+                (
+                    f"alpha={fraction}/train/{row}",
+                    prepared["designs"][fraction]["train"][row],
+                    prepared["subset_fits"][fraction]["train"]["theta"][row],
+                )
+            )
+    # The tenth independent optimum checks another training model in a
+    # preparation-only run, or the full-pool base in a complete run.
+    if evaluated is None:
+        candidates.append(
+            (
+                "alpha=0.5/validation/0",
+                prepared["designs"][0.5]["validation"][0],
+                prepared["subset_fits"][0.5]["validation"]["theta"][0],
+            )
+        )
+    else:
+        candidates.append(
+            ("full_pool", torch.ones(128, dtype=torch.bool), evaluated["base_fit"]["theta"][0])
+        )
+    for name, mask, theta in candidates:
+        expected, residual = scipy_logistic_optimum(
+            data["train"]["x"], data["train"]["y"], mask.double(), 0.02
+        )
+        difference = float((theta - expected).abs().max())
+        if difference > 1e-8:
+            raise ValueError("The classifier disagrees with the independent SciPy optimum.")
+        checks.append(
+            dict(kind="scipy", model=name, max_error=difference, gradient_residual=residual)
+        )
+    # The four gallery queries are fixed by source order, not by solver agreement.
+    gallery = (
+        torch.cat([torch.nonzero(data["query"]["y"] == label).flatten()[:2] for label in (0, 1)])
+        .sort()
+        .values.tolist()
+    )
+    for fraction in study.FRACTIONS:
+        x = prepared["designs"][fraction]["train"].double().numpy()
+        y = prepared["margins"][fraction]["train"].numpy()
+        fit = prepared["responses"][fraction]["lasso"]
+        for q in gallery:
+            index = fit["selected"][q]
+            penalty = fit["penalty"][index, q].item()
+            independent = Lasso(alpha=penalty, tol=1e-13, max_iter=100000).fit(x, y[:, q])
+            prediction = x @ fit["selected_weights"][:, q].numpy() + fit["selected_bias"][q].item()
+            expected = independent.predict(x)
+            difference = float(np.abs(prediction - expected).max())
+            objective = (
+                np.mean((prediction - y[:, q]) ** 2) / 2
+                + penalty * fit["selected_weights"][:, q].abs().sum().item()
+            )
+            expected_objective = (
+                np.mean((expected - y[:, q]) ** 2) / 2 + penalty * np.abs(independent.coef_).sum()
+            )
+            if difference > 1e-5 or abs(objective - expected_objective) > 1e-7:
+                raise ValueError(
+                    "Native Lasso predictions/objective disagree with independent coordinate descent."
+                )
+            checks.append(
+                dict(
+                    kind="sklearn_lasso",
+                    fraction=fraction,
+                    query=q,
+                    max_prediction_error=difference,
+                    objective_error=abs(objective - expected_objective),
+                )
+            )
+    return dict(
+        checks=checks, separate_refits=6, independent_scipy_optima=10, independent_lasso_fits=12
+    )
