@@ -4478,7 +4478,7 @@ The mean recovery over the 20 pairs, from patching the object's tokens at layer 
 
 | a | b | c | d | e |
 |---|---|---|---|---|
-| below 0.5 | 0.5 to 0.8 | 0.8 to 0.95 | 0.95 to 1.05 | above 1.05 |
+| below 0.5 | 0.5 to 0.8 | 0.8 to 0.9 | 0.9 to 1.0 | above 1.0 |
 
 ## Q2. A fourth object &nbsp;·&nbsp; Medium &nbsp;·&nbsp; 5 points
 
@@ -4563,9 +4563,9 @@ from quiz import Interval, Quiz, Ranking
 
 quiz = Quiz(
     {
-        "Q1": Interval("c", points=4),
+        "Q1": Interval("d", points=4),
         "Q2": Interval("a", points=5),
-        "Q3": Ranking("S < L < J"),
+        "Q3": Ranking("S < L = J"),
         "Q4": Interval("e", points=6),
     }
 )
@@ -4652,7 +4652,8 @@ def object_recovery_curve(pair_list: list, kind: str) -> Tensor:
     word = (lambda s, i: s.objects[i].colour) if kind == "colour" else (lambda s, i: s.objects[i].shape)
     prompts = [question_and_answer(s, kind, i)[0] for s, i in zip(clean_s, targets)]
     tokens, lens = utils.tokenize_prompts(vlm, prompts)
-    assert (lens == a_lens[0]).all(), "all prompts should have the same length"
+    assert (lens == lens[0]).all(), "all prompts should have the same length"
+    seq_q = 1 + N_IMAGE_TOKENS + int(lens[0])  # BOS, image tokens, question: the answer position is the last one
     ids_clean = t.tensor([vlm.to_single_token(" " + word(s, i)) for s, i in zip(clean_s, targets)], device=device)
     ids_corrupt = t.tensor([vlm.to_single_token(" " + word(s, i)) for s, i in zip(corrupt_s, targets)], device=device)
     with t.no_grad():
@@ -4660,12 +4661,12 @@ def object_recovery_curve(pair_list: list, kind: str) -> Tensor:
         embeds_corrupt = build_input_embeddings(vlm, projector(featurise(corrupt_s)), tokens)
         _, cache_q = vlm.run_with_cache(embeds_clean, start_at_layer=0, stop_at_layer=N_LAYERS, names_filter=lambda name: name.endswith("resid_pre"))
         resids = {layer: cache_q["resid_pre", layer] for layer in range(N_LAYERS)}
-        final = lambda x: vlm.unembed(vlm.ln_final(vlm(x, start_at_layer=0, stop_at_layer=N_LAYERS)[:, ANSWER_POS]))
+        final = lambda x: vlm.unembed(vlm.ln_final(vlm(x, start_at_layer=0, stop_at_layer=N_LAYERS)[:, seq_q - 1]))
         logits_clean, logits_corrupt = final(embeds_clean), final(embeds_corrupt)
     masks_q = t.tensor(np.stack([(utils.object_token_mask(c.objects[i]) | utils.object_token_mask(k.objects[i])).flatten() for c, k, i in zip(clean_s, corrupt_s, targets)]), device=device)
-    mask = t.zeros(n, SEQ_LEN, dtype=t.bool, device=device)
+    mask = t.zeros(n, seq_q, dtype=t.bool, device=device)
     mask[:, IMAGE_SLICE] = masks_q
-    curves = patching_sweep(vlm, embeds_corrupt, resids, {"object tokens": mask}, logits_clean, logits_corrupt, ids_clean, ids_corrupt, ANSWER_POS, list(range(N_LAYERS)))
+    curves = patching_sweep(vlm, embeds_corrupt, resids, {"object tokens": mask}, logits_clean, logits_corrupt, ids_clean, ids_corrupt, seq_q - 1, list(range(N_LAYERS)))
     return curves["object tokens"]
 
 
@@ -4733,7 +4734,7 @@ plt.tight_layout()
 plt.show()
 
 # the written key must still be what these runs produce
-assert letter(float(q1_mean[4]), [0.5, 0.8, 0.95, 1.05]) == quiz.questions["Q1"].key, "Q1 key has drifted"
+assert letter(float(q1_mean[4]), [0.5, 0.8, 0.9, 1.0]) == quiz.questions["Q1"].key, "Q1 key has drifted"
 assert letter(q2_accuracy, [0.02, 0.2, 0.5, 0.8]) == quiz.questions["Q2"].key, "Q2 key has drifted"
 assert Ranking.from_values(q3_runs, eps=0.02).key_text == quiz.questions["Q3"].key_text, "Q3 key has drifted"
 assert ("e" if q4_first is None else letter(q4_first, [4, 8, 10, 11])) == quiz.questions["Q4"].key, "Q4 key has drifted"
