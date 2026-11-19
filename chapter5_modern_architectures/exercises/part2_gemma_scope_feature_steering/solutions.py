@@ -4,7 +4,6 @@
 import sys
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Literal
 
 import torch as t
 import torch.nn.functional as F
@@ -14,17 +13,7 @@ root_dir = next(p for p in [Path.cwd(), *Path.cwd().parents] if (p / chapter).ex
 if str(root_dir) not in sys.path:
     sys.path.append(str(root_dir))
 
-from arena_ext.gemma_scope import (
-    GEMMA_SCOPE_2_1B_IT_LAYER13_SMALL,
-    gemma_base_model_access_report,
-    gemma_scope_artifact_preflight,
-    gemma_scope_real_activation_preflight,
-)
-
 MAIN = __name__ == "__main__"
-GEMMA_SCOPE_REPO_ID = GEMMA_SCOPE_2_1B_IT_LAYER13_SMALL.repo_id
-GEMMA_SCOPE_REVISION = GEMMA_SCOPE_2_1B_IT_LAYER13_SMALL.revision
-GEMMA_SCOPE_ARTIFACT_PATH = GEMMA_SCOPE_2_1B_IT_LAYER13_SMALL.artifact_path
 
 
 @dataclass(frozen=True)
@@ -389,148 +378,3 @@ def run_smoke_test(cpu: bool = True) -> dict:
     }
 
 
-def run_gpu_test(max_vram_gb: float = 24.0) -> dict:
-    if not t.cuda.is_available():
-        raise RuntimeError("Gemma Scope and Feature Steering GPU verification requires CUDA.")
-
-    device = t.device("cuda")
-    t.cuda.reset_peak_memory_stats()
-    activations = t.tensor(
-        [[[1.0, 0.0], [0.0, 1.0]], [[0.5, 0.5], [1.0, -1.0]]],
-        device=device,
-    )
-    reconstructed = activations + 0.01
-    feature_acts = t.tensor(
-        [[[1.0, 0.0, 0.0], [0.5, 2.0, 0.0]], [[0.0, 1.0, 0.0], [0.0, 3.0, 1.0]]],
-        device=device,
-    )
-    metrics = compute_sae_reconstruction_metrics(
-        activations=activations,
-        reconstructed_activations=reconstructed,
-        feature_acts=feature_acts,
-        clean_loss=1.0,
-        reconstructed_loss=1.1,
-        zero_ablation_loss=2.0,
-    )
-    feature_report = feature_detection_report(
-        t.tensor([0.9, 0.8, 0.1, 0.0], device=device),
-        t.tensor([1, 1, 0, 0], dtype=t.bool, device=device),
-    )
-    steering_report = steering_comparison_report(
-        baseline_scores=t.tensor([0.1, 0.2, 0.3], device=device),
-        steered_scores=t.tensor([0.7, 0.8, 0.9], device=device),
-        random_control_scores=t.tensor([0.2, 0.25, 0.2], device=device),
-    )
-    t.cuda.synchronize()
-    toy_peak_vram_gb = t.cuda.max_memory_allocated() / 1024**3
-    artifact_preflight = gemma_scope_artifact_preflight(max_vram_gb=max_vram_gb)
-    real_activation_preflight = gemma_scope_real_activation_preflight(
-        max_vram_gb=max_vram_gb
-    )
-    base_access = gemma_base_model_access_report()
-    peak_vram_gb = max(
-        toy_peak_vram_gb,
-        artifact_preflight["peak_vram_gb"],
-        real_activation_preflight["peak_vram_gb"],
-    )
-    return {
-        "cuda_available": True,
-        "device": t.cuda.get_device_name(0),
-        "reconstruction_mse": metrics.reconstruction_mse,
-        "l0": metrics.l0,
-        "feature_auc": feature_report.auc,
-        "steering_passes_control": steering_report.passes_control,
-        "gemma_scope_artifact_preflight_passed": artifact_preflight["preflight_passed"],
-        "gemma_scope_repo_id": artifact_preflight["repo_id"],
-        "gemma_scope_revision": artifact_preflight["revision"],
-        "gemma_scope_artifact_path": artifact_preflight["artifact_path"],
-        "gemma_scope_model_name": artifact_preflight["model_name"],
-        "gemma_scope_architecture": artifact_preflight["architecture"],
-        "gemma_scope_hook_point": artifact_preflight["hook_point_in"],
-        "gemma_scope_width": artifact_preflight["width"],
-        "gemma_scope_d_model": artifact_preflight["d_model"],
-        "gemma_scope_w_enc_shape": artifact_preflight["validation"]["tensor_shapes"][
-            "w_enc"
-        ],
-        "gemma_scope_w_dec_shape": artifact_preflight["validation"]["tensor_shapes"][
-            "w_dec"
-        ],
-        "gemma_scope_forward_passed": artifact_preflight["forward_passed"],
-        "gemma_scope_peak_vram_gb": artifact_preflight["peak_vram_gb"],
-        "gemma_scope_artifact_semantic_feature_claimed": artifact_preflight[
-            "semantic_feature_claimed"
-        ],
-        "gemma_scope_real_activation_preflight": real_activation_preflight,
-        "gemma_scope_real_activation_preflight_passed": real_activation_preflight[
-            "preflight_passed"
-        ],
-        "gemma_scope_real_activation_model_id": real_activation_preflight["model_id"],
-        "gemma_scope_real_activation_layer": real_activation_preflight["model_layer"],
-        "gemma_scope_real_activation_residual_shape": real_activation_preflight[
-            "residual_shape"
-        ],
-        "gemma_scope_real_activation_feature_score_shape": real_activation_preflight[
-            "feature_score_shape"
-        ],
-        "gemma_scope_real_activation_selected_feature_id": real_activation_preflight[
-            "selected_feature_id"
-        ],
-        "gemma_scope_real_activation_random_control_feature_id": real_activation_preflight[
-            "random_control_feature_id"
-        ],
-        "gemma_scope_real_activation_feature_auc": real_activation_preflight[
-            "feature_auc"
-        ],
-        "gemma_scope_real_activation_baseline_auc": real_activation_preflight[
-            "baseline_auc"
-        ],
-        "gemma_scope_real_activation_auc_margin": real_activation_preflight[
-            "auc_margin"
-        ],
-        "gemma_scope_real_activation_label_shuffle_auc": real_activation_preflight[
-            "label_shuffle_auc"
-        ],
-        "gemma_scope_real_activation_label_shuffle_control_passed": real_activation_preflight[
-            "label_shuffle_control_passed"
-        ],
-        "gemma_scope_real_activation_forward_passed": real_activation_preflight[
-            "real_activation_forward_passed"
-        ],
-        "gemma_scope_real_activation_peak_vram_gb": real_activation_preflight[
-            "peak_vram_gb"
-        ],
-        "gemma_scope_semantic_feature_claimed": real_activation_preflight[
-            "semantic_feature_claimed"
-        ],
-        "gemma3_base_access_report": base_access,
-        "gemma3_base_authenticated": base_access["authenticated"],
-        "gemma3_base_repo_listed": base_access["repo_listed"],
-        "gemma3_base_local_non_ref_file_count": base_access["local_non_ref_file_count"],
-        "gemma3_base_local_config_available": base_access["local_config_available"],
-        "gemma3_base_local_tokenizer_available": base_access["local_tokenizer_available"],
-        "gemma3_base_local_weight_available": base_access["local_weight_available"],
-        "gemma3_base_missing_local_patterns": base_access["missing_local_patterns"],
-        "gemma3_base_remote_config_available": base_access["remote_config_available"],
-        "gemma3_base_remote_tokenizer_available": base_access["remote_tokenizer_available"],
-        "gemma3_base_remote_weight_available": base_access["remote_weight_available"],
-        "gemma3_base_missing_remote_patterns": base_access["missing_remote_patterns"],
-        "gemma3_base_remote_ready_for_real_activations": base_access[
-            "remote_ready_for_real_activations"
-        ],
-        "gemma3_base_local_ready_for_real_activations": base_access[
-            "local_ready_for_real_activations"
-        ],
-        "gemma3_base_ready_for_real_activations": base_access[
-            "ready_for_real_activations"
-        ],
-        "gemma3_base_access_error_type": base_access["access_error_type"],
-        "gemma3_base_auth_error_type": base_access["auth_error_type"],
-        "peak_vram_gb": peak_vram_gb,
-        "within_vram_budget": peak_vram_gb <= max_vram_gb,
-    }
-
-
-def run_full_experiment(max_vram_gb: float = 24.0) -> dict:
-    """Run the validated experiment path used by the verification report."""
-
-    return run_gpu_test(max_vram_gb=max_vram_gb)

@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import math
-from pathlib import Path
 
 import torch as t
 
@@ -169,16 +168,3 @@ def make_ground_truth_organism() -> dict[str, object]:
     }
 
 
-def load_pinned_real_evidence(section_dir: Path) -> dict[str, object]:
-    """Load and strictly validate the committed real-model evidence."""
-
-    import json
-
-    report = json.loads((section_dir / "verification_report.json").read_text())
-    gpu = report["metrics"]["gpu_test"]
-    assert gpu["gemma_scope_repo_id"] == "google/gemma-scope-2-1b-it"
-    assert gpu["gemma_scope_revision"] == "b0fa29457c3601df0a70c48a15534c738d7c10e0"
-    assert gpu["gemma_scope_artifact_path"] == "resid_post/layer_13_width_16k_l0_small"
-    assert gpu["gemma_scope_real_activation_model_id"] == "google/gemma-3-1b-it"
-    assert gpu["gemma_scope_real_activation_preflight_passed"]
-    return gpu
