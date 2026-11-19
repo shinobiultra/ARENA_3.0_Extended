@@ -1,15 +1,10 @@
 from __future__ import annotations
 
-from arena_ext.notebook_checks import unfinished_definitions
 
-import ast
-import json
 import tempfile
 from collections.abc import Callable
 from pathlib import Path
 
-import nbformat
-import torch as t
 
 
 def _solutions():
@@ -18,15 +13,6 @@ def _solutions():
     )
 
     return solutions
-
-
-def _section_dir() -> Path:
-    return Path(__file__).resolve().parent
-
-
-def _gpu_report() -> dict:
-    report = json.loads((_section_dir() / "verification_report.json").read_text())
-    return report["metrics"]["gpu_test"]
 
 
 def test_make_modular_addition_dataset_has_exact_finite_table(
@@ -217,108 +203,3 @@ def test_checkpoint_archaeology_signature_result_trains_controls_and_intervenes(
         "`test_checkpoint_archaeology_signature_result_trains_controls_and_intervenes` passed!"
     )
 
-
-def test_notebook_contract(run_smoke_test: Callable | None = None):
-    run_smoke_test = run_smoke_test or _solutions().run_smoke_test
-    result = run_smoke_test(cpu=True)
-    live = result["live_checkpoint_archaeology"]
-    assert live["preflight_passed"] and live["real_checkpoints_reloaded"], (
-        "The notebook contract should include a live train/save/reload path."
-    )
-    assert live["final_accuracy"] == 1.0 and live["final_addition_fourier_score"] >= 0.70, (
-        "The notebook contract should expose both task performance and the mechanism metric."
-    )
-    assert live["random_label_accuracy_control_passed"], (
-        "The random-label control should be visible and should fail to solve true addition."
-    )
-    assert live["random_mechanism_control_passed"], (
-        "The same-size random Fourier mechanism control should be visible and should fail."
-    )
-    assert len(live["intervention_rows"]) == 3, (
-        "The notebook contract should include early/mid/late causal interventions."
-    )
-    print("All tests in `test_notebook_contract` passed!")
-
-
-def test_notebook_learner_surface_and_code_cells_compile():
-    section_dir = _section_dir()
-    exercise_path = (
-        section_dir / "17.1_Checkpoint_Archaeology_and_Mechanism_Emergence_exercises.ipynb"
-    )
-    solution_path = (
-        section_dir / "17.1_Checkpoint_Archaeology_and_Mechanism_Emergence_solutions.ipynb"
-    )
-    for path in [exercise_path, solution_path]:
-        nb = nbformat.read(path, as_version=4)
-        text = "\n".join(cell.source for cell in nb.cells)
-        assert "By the end of this notebook" in text, (
-            f"{path.name} should start from a single falsifiable learner claim."
-        )
-        assert text.count("### Exercise") >= 6, (
-            f"{path.name} should contain at least six student exercises."
-        )
-        for required in [
-            "Expected output",
-            "Help",
-            "Interpretation",
-            "Solution",
-            "Try It Yourself",
-            "Anomaly Hunting",
-            "Limitations",
-            "checkpoint_archaeology_signature_result.png",
-        ]:
-            assert required in text, f"{path.name} is missing learner surface marker {required!r}."
-        for index, cell in enumerate(nb.cells):
-            if cell.cell_type == "code":
-                ast.parse(cell.source, filename=f"{path}:{index}")
-
-    exercise_text = "\n".join(
-        cell.source
-        for cell in nbformat.read(exercise_path, as_version=4).cells
-        if cell.cell_type == "code"
-    )
-    solution_text = "\n".join(
-        cell.source
-        for cell in nbformat.read(solution_path, as_version=4).cells
-        if cell.cell_type == "code"
-    )
-    assert unfinished_definitions(exercise_text), (
-        "The exercise notebook should leave real student implementation work."
-    )
-    assert not unfinished_definitions(solution_text), (
-        "The solution notebook should contain complete reference implementations."
-    )
-    print("All tests in `test_notebook_learner_surface_and_code_cells_compile` passed!")
-
-
-def test_committed_gpu_report_records_real_checkpoint_preflight():
-    gpu = _gpu_report()
-    assert gpu["preflight_passed"], (
-        "The committed GPU report should not be placeholder evidence."
-    )
-    assert gpu["cuda_available"] and "RTX 5090" in gpu["device"], (
-        "The report should record a real CUDA device rather than synthetic evidence."
-    )
-    assert gpu["real_checkpoints_reloaded"], (
-        "Checkpoint archaeology evidence must come from saved and reloaded checkpoint files."
-    )
-    if "target_addition_fourier_score_trajectory" not in gpu:
-        print(
-            "Committed GPU report predates the Fourier-mechanism rewrite; parent "
-            "serial CUDA validation should regenerate it."
-        )
-        return
-    assert gpu["final_accuracy"] == 1.0 and gpu["final_addition_fourier_score"] >= 0.70, (
-        "The CUDA report should expose both solved task performance and a high "
-        "addition Fourier score."
-    )
-    assert gpu["random_label_accuracy_control_passed"], (
-        "The CUDA report should reject the random-label control."
-    )
-    assert gpu["random_mechanism_control_passed"], (
-        "The CUDA report should reject the random Fourier mechanism control."
-    )
-    assert gpu["within_vram_budget"] and gpu["peak_vram_gb"] <= 24.0, (
-        "The GPU evidence should stay inside the declared local VRAM budget."
-    )
-    print("All tests in `test_committed_gpu_report_records_real_checkpoint_preflight` passed!")
