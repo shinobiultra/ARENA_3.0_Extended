@@ -69,7 +69,11 @@ By the end of this notebook, you will have shown that a two-stage attention circ
 
 In a two-layer attention-only transformer, an earlier previous-token head can write the previous token into each position. A later head can match its current token against that stored key: at the first `D`, the stored previous token is `C`. You will implement this circuit and make it fail in two different ways.
 
-The checkpoint coordinate in this notebook is an **explicitly chosen circuit strength**, not optimizer time. These are deterministic constructed checkpoints, not a measured emergence trajectory. This distinction lets us test mechanism and measurement without inventing training evidence. A native study also calls for a trained two-layer model, phase-change analysis, training-time freezing, and public Pythia checkpoints; those native experiments remain pending.
+The checkpoint coordinate in this notebook is an **explicitly chosen circuit strength**, not optimizer time.
+These are deterministic constructed checkpoints, not a measured emergence trajectory. This distinction lets us
+test mechanism and measurement without inventing training evidence. A native study also calls for a trained
+two-layer model, phase-change analysis, training-time freezing, and public Pythia checkpoints; those native
+experiments remain pending.
 
 Prerequisites: [1.2] induction heads, attention matrix axes, NumPy matrix multiplication, and cross-entropy. Budget: roughly 90–120 minutes; the reference computation takes seconds on CPU.
 '''
@@ -418,9 +422,19 @@ r'''
 # ! TAGS: []
 
 r'''
-Queries are current one-hot tokens. Scores are $S=\beta EK^\top$, with inverse temperature $\beta$. The first matching key occurs at the position **after** the previous occurrence of the current token. We evaluate offsets 0 through p-2 within the first and second blocks, deliberately excluding each block-boundary transition so the early/repeated comparison uses matched within-block offsets. With three repeats, the final token of the second block does have an observed next-token target in the third block; it is excluded by this scoring convention, not because its target is missing. Only the final token of the entire sequence lacks an observed next-token target.
+Queries are current one-hot tokens. Scores are $S=\beta EK^\top$, with inverse temperature $\beta$. The first
+matching key occurs at the position **after** the previous occurrence of the current token. We evaluate
+offsets 0 through p-2 within the first and second blocks, deliberately excluding each block-boundary
+transition so the early/repeated comparison uses matched within-block offsets. With three repeats, the final
+token of the second block does have an observed next-token target in the third block; it is excluded by this
+scoring convention, not because its target is missing. Only the final token of the entire sequence lacks an
+observed next-token target.
 
-Prefix matching is the mean attention mass at the analytically known source $j=i-p+1$ for period $p$. This is an attention diagnostic, not a causal effect. The copying readout forms vocabulary logits $L=\alpha AE$. Cross-entropy uses the next token, never the current token. Our in-context improvement compares mean early-block loss to repeated-block loss on corresponding offsets. Units are nats/token; positive means lower repeated-context loss.
+Prefix matching is the mean attention mass at the analytically known source $j=i-p+1$ for period $p$. This is
+an attention diagnostic, not a causal effect. The copying readout forms vocabulary logits $L=\alpha AE$.
+Cross-entropy uses the next token, never the current token. Our in-context improvement compares mean
+early-block loss to repeated-block loss on corresponding offsets. Units are nats/token; positive means lower
+repeated-context loss.
 '''
 
 # ! CELL TYPE: markdown
@@ -969,7 +983,13 @@ r'''
 r'''
 <details><summary>Help - how should I interpret this?</summary>
 
-The stripe belongs one position **after** a previous token match. At high strength, the clean values copy the continuation; rotating value IDs leaves attention unchanged but predicts the wrong token. The zero-key control has causal-uniform attention. This separates attending correctly from copying correctly. At strength zero, rotated values happen to improve loss (.8668 versus 2.2255) because numeric token IDs are cyclically ordered: this control is not a universally useless readout. At strength one it has loss 8.0007 versus .0010 for clean copying, so it exposes the specific high-strength mechanism. This low-strength anomaly is a reason to inspect controls across the whole curve.
+The stripe belongs one position **after** a previous token match. At high strength, the clean values copy the
+continuation; rotating value IDs leaves attention unchanged but predicts the wrong token. The zero-key control
+has causal-uniform attention. This separates attending correctly from copying correctly. At strength zero,
+rotated values happen to improve loss (.8668 versus 2.2255) because numeric token IDs are cyclically ordered:
+this control is not a universally useless readout. At strength one it has loss 8.0007 versus .0010 for clean
+copying, so it exposes the specific high-strength mechanism. This low-strength anomaly is a reason to inspect
+controls across the whole curve.
 
 The horizontal coordinate was chosen by us, so a sharp change here is a property of a nonlinear readout, not evidence of a training phase transition.
 
@@ -1073,9 +1093,17 @@ r'''
 r'''
 ### Native checkpoint bridge
 
-A native adapter must cache **attention probabilities**, the previous-token head’s output, and logits on the same ordered tokens at every checkpoint. Feed these arrays into your visible `prefix_score`, `next_token_loss`, and `icl_gain`; record a matrix path diagnostic separately. Pythia checkpoints provide a source-grounded way to ask whether the same diagnostics co-occur across real optimization time, but a token/revision-matched analysis has not run here.
+A native adapter must cache **attention probabilities**, the previous-token head’s output, and logits on the
+same ordered tokens at every checkpoint. Feed these arrays into your visible `prefix_score`, `next_token_loss`,
+and `icl_gain`; record a matrix path diagnostic separately. Pythia checkpoints provide a source-grounded way
+to ask whether the same diagnostics co-occur across real optimization time, but a token/revision-matched
+analysis has not run here.
 
-For the two-layer attention-only training experiment, freeze data, optimizer, seed, checkpoint cadence, smoothing, onset threshold and loss-bump definition before execution. Compare normal training to the predeclared previous-token-head freeze and a matched unrelated-head freeze. Report train loss, repeated-context measurements on monitored DEV, and untouched TEST only if it really stayed unopened. A finite repeated-token fixture is a circuit diagnostic, not language-model generalization.
+For the two-layer attention-only training experiment, freeze data, optimizer, seed, checkpoint cadence,
+smoothing, onset threshold and loss-bump definition before execution. Compare normal training to the
+predeclared previous-token-head freeze and a matched unrelated-head freeze. Report train loss,
+repeated-context measurements on monitored DEV, and untouched TEST only if it really stayed unopened. A finite
+repeated-token fixture is a circuit diagnostic, not language-model generalization.
 
 **Anomaly hunt:** a head has high prefix score but no in-context improvement. Which of keys, values, output projection, scoring offsets or alternate routes would you inspect first? Your wrong-value control is a concrete counterexample to the claim that attention alone establishes function.
 

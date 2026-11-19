@@ -982,7 +982,10 @@ r'''
 r'''
 <details><summary>Help - how should I interpret this?</summary>
 
-Target contrast falls from0.56 to0.07, rather than to zero: the threshold placed0.1 of the color factor in the preserved residual. The nuisance feature control leaves target contrast0.56. Reconstruction replacement additionally removes right-object intensity and the stripe; preserving the residual avoids those changes. This image grid with pixel-level specificity scores is the primary signature result.
+Target contrast falls from0.56 to0.07, rather than to zero: the threshold placed0.1 of the color factor in the
+preserved residual. The nuisance feature control leaves target contrast0.56. Reconstruction replacement
+additionally removes right-object intensity and the stripe; preserving the residual avoids those changes. This
+image grid with pixel-level specificity scores is the primary signature result.
 
 </details>
 '''

@@ -41,7 +41,11 @@ A blue triangle is rejected by a classifier. You change its *triangle* concept t
 
 By the end of this notebook, you will have shown that a concept intervention, a fixed-sense language readout, and an interchange-trained causal readout have different promises. Your evidence will be a controlled intervention dashboard on exact finite tasks, with thresholded concepts, wrong-sense edits and wrong-subspace interchanges beside the intended operations.
 
-This is a CPU study edition. The bottleneck and Backpack computations are faithful small mathematical components with supplied parameters, **not trained image or language models**. The IIT component fits a two-parameter readout to a tiny analytic counterfactual dataset; it is not the paper’s neural benchmark or a DAS validation. You can inspect every number. The open question is when these components remain meaningful after learning them at scale.
+This is a CPU study edition. The bottleneck and Backpack computations are faithful small mathematical
+components with supplied parameters, **not trained image or language models**. The IIT component fits a
+two-parameter readout to a tiny analytic counterfactual dataset; it is not the paper’s neural benchmark or a
+DAS validation. You can inspect every number. The open question is when these components remain meaningful
+after learning them at scale.
 
 Prerequisites: array broadcasting, matrix multiplication, least squares and activation patching (1.2); causal abstraction and rotated subspaces (11.3) help with the final part.
 '''
@@ -126,7 +130,11 @@ r'''
 # ! TAGS: []
 
 r'''
-Our finite world has binary concepts $c=(\mathrm{blue},\mathrm{round})$ and label $y=\mathrm{round}$. An image encoder would estimate $g(x)$; here we supply its two scores so we can isolate the *bottleneck contract*. The downstream readout is $f(\hat c)=\hat c W+b$; weights have shape `[concept, output]` and concept arrays have shape `[batch, concept]`. A correction changes just one coordinate and then reruns the same readout. It does not change the input or retrain anything.
+Our finite world has binary concepts $c=(\mathrm{blue},\mathrm{round})$ and label $y=\mathrm{round}$. An image
+encoder would estimate $g(x)$; here we supply its two scores so we can isolate the *bottleneck contract*. The
+downstream readout is $f(\hat c)=\hat c W+b$; weights have shape `[concept, output]` and concept arrays have
+shape `[batch, concept]`. A correction changes just one coordinate and then reruns the same readout. It does
+not change the input or retrain anything.
 
 First implement an ordinary sigmoid. Stable evaluation matters even in teaching fixtures: `exp(1000)` need not overflow to teach a concept.
 '''
@@ -1288,7 +1296,11 @@ r'''
 
 <details><summary>Help - how should I interpret this?</summary>
 
-The observational map has errors of ±0.5 when donor a differs from base b, despite perfect fit on the correlated observations. The IIT map is zero to floating precision. A wrong-subspace patch is evaluated against the same a-interchange targets, so it must fail even though its values are mathematically legitimate b-interchanges. The Backpack control changes the wrong sense: in `bank river` it has a larger effect than the intended finance edit. That is a contextual weighting property, not random noise.
+The observational map has errors of ±0.5 when donor a differs from base b, despite perfect fit on the
+correlated observations. The IIT map is zero to floating precision. A wrong-subspace patch is evaluated
+against the same a-interchange targets, so it must fail even though its values are mathematically legitimate
+b-interchanges. The Backpack control changes the wrong sense: in `bank river` it has a larger effect than the
+intended finance edit. That is a contextual weighting property, not random noise.
 
 A surprising result is the leaky bottleneck’s perfect concept accuracy in part 1. Explain why neither that score nor an attractive non-contextual sense readout is sufficient evidence of intervention faithfulness. Each headline operation here is paired with a control designed to expose a particular failure.
 
@@ -1342,7 +1354,13 @@ You can now distinguish an accurate label, an interpretable-looking coordinate, 
 
 ## Limitations
 
-These finite examples establish component algebra and a leakage possibility. There is no pretrained language model, learned image-concept extractor, human concept validation, natural-text edit evaluation, learned contextualizer or independent evaluation dataset. The two-point least-squares IIT example uses a known alignment and complete analytic causal supervision. It does not run the released IIT training pipeline or DAS; full network training and the 11.3 alignment verification remain pending. All enumerated points and public expected outputs are seen teaching fixtures. A zero audit error on them is exact-task correctness, not generalization.
+These finite examples establish component algebra and a leakage possibility. There is no pretrained language
+model, learned image-concept extractor, human concept validation, natural-text edit evaluation, learned
+contextualizer or independent evaluation dataset. The two-point least-squares IIT example uses a known
+alignment and complete analytic causal supervision. It does not run the released IIT training pipeline or DAS;
+full network training and the 11.3 alignment verification remain pending. All enumerated points and public
+expected outputs are seen teaching fixtures. A zero audit error on them is exact-task correctness, not
+generalization.
 
 '''
 

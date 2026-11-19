@@ -75,7 +75,12 @@ of these issues concretely. By the end you'll have:
 - mapped what GPT-2's final-position activation contains, layer by layer, and built a behavioural test that actually tests something;
 - trained a verbaliser that turns an activation into four words like `tables currently with keys`, and a reconstructor (built from GPT-2 itself) that turns the words back into an activation which GPT-2 uses almost as well as the original;
 - trained the pair end-to-end through the discrete bottleneck with a policy gradient, and seen why it only works from a warm start;
-- compared the text bottleneck against honest baselines (a bag of words of the input sentence, PCA with the same number of dimensions, random text), and produced the section's signature picture: **reconstruction quality versus behaviour**, where the bag of words of the input reconstructs 70% of the variance but gets the verb wrong most of the time the subject and object disagree, while the best reconstruction from a two-word description like `plural past` explains only 17% of the variance and gets the verb right 99% of the time.
+- compared the text bottleneck against honest baselines (a bag of words of the input sentence, PCA with the
+  same number of dimensions, random text), and produced the section's signature picture: **reconstruction
+  quality versus behaviour**, where the bag of words of the input reconstructs 70% of the variance but gets
+  the verb wrong most of the time the subject and object disagree, while the best reconstruction from a
+  two-word description like `plural past` explains only 17% of the variance and gets the verb right 99% of the
+  time.
 
 This section assumes you're comfortable with TransformerLens hooks and activation patching ([1.2] Intro to Mech Interp, and the Patchscopes part of [7.1]). Part 3️⃣ uses a policy
 gradient with a KL penalty to a reference policy; you've seen both in [2.3] PPO and [2.4.1] RLHF, but we re-derive everything we need.
@@ -251,7 +256,13 @@ for example `"Earlier, the house behind the windows really"`. The factors are:
 - the **preposition**: `near`, `behind`, `beside` or `with`;
 - the **object**: a different one of the 16 nouns, singular or plural.
 
-The next word is a verb, and GPT-2 has to pick between `" is"`, `" are"`, `" was"` and `" were"`. The right choice depends on exactly two of the factors: the **number of the subject** and the **tense**. The object noun is an *attractor*: in `"the house behind the windows"`, the noun closest to the verb is plural, but the verb must agree with the singular subject. Getting this right requires the model to use word order, not just which words are present. (Subject-verb agreement across attractors is a classic test of syntax in language models; see [Linzen et al., 2016](https://arxiv.org/abs/1611.01368), and [Finlayson et al., 2021](https://arxiv.org/abs/2106.06087) for a causal analysis in GPT-2.)
+The next word is a verb, and GPT-2 has to pick between `" is"`, `" are"`, `" was"` and `" were"`. The right
+choice depends on exactly two of the factors: the **number of the subject** and the **tense**. The object noun
+is an *attractor*: in `"the house behind the windows"`, the noun closest to the verb is plural, but the verb
+must agree with the singular subject. Getting this right requires the model to use word order, not just which
+words are present. (Subject-verb agreement across attractors is a classic test of syntax in language models;
+see [Linzen et al., 2016](https://arxiv.org/abs/1611.01368), and
+[Finlayson et al., 2021](https://arxiv.org/abs/2106.06087) for a causal analysis in GPT-2.)
 
 Why end every sentence with `" really"`? Because we're going to study the activation at the **final position**, and we want everything in that activation to have been put there by
 the model from context. If the sentence ended with the object noun, the final-position activation would be dominated by the identity of that word. (As we'll see, the object still
@@ -2642,7 +2653,14 @@ r'''
 r'''
 ## A differentiable alternative: Gumbel-softmax with a straight-through estimator
 
-The other classic way through a discrete bottleneck is to make it (approximately) differentiable. The **Gumbel-max trick** says that if you add independent Gumbel noise $g_v = -\log(-\log u_v)$, $u_v \sim U(0,1)$, to the logits, the argmax is an exact sample from the softmax distribution. The **Gumbel-softmax** ([Jang et al., 2016](https://arxiv.org/abs/1611.01144); [Maddison et al., 2016](https://arxiv.org/abs/1611.00712)) replaces the argmax by a softmax with temperature $\tau$, which gives a differentiable "soft one-hot" vector. The **straight-through** version uses the hard one-hot in the forward pass (so the reconstructor sees real words), but the soft one-hot's gradient in the backward pass:
+The other classic way through a discrete bottleneck is to make it (approximately) differentiable. The **Gumbel-max
+trick** says that if you add independent Gumbel noise $g_v = -\log(-\log u_v)$, $u_v \sim U(0,1)$, to the
+logits, the argmax is an exact sample from the softmax distribution. The **Gumbel-softmax**
+([Jang et al., 2016](https://arxiv.org/abs/1611.01144);
+[Maddison et al., 2016](https://arxiv.org/abs/1611.00712)) replaces the argmax by a softmax with temperature
+$\tau$, which gives a differentiable "soft one-hot" vector. The **straight-through** version uses the hard
+one-hot in the forward pass (so the reconstructor sees real words), but the soft one-hot's gradient in the
+backward pass:
 
 $$
 y = \text{onehot}(\arg\max_v (\ell_v + g_v)) \;-\; \text{sg}\big[y_{soft}\big] \;+\; y_{soft}, \qquad y_{soft} = \text{softmax}((\ell + g)/\tau),
@@ -3697,9 +3715,26 @@ and a KL penalty to the warm start, with the reconstructor trained by regression
 
 **What's different.**
 
-- **The verbaliser is a full language model.** In the paper both halves are copies of the target model (Claude Haiku 3.5, Haiku 4.5 and Opus 4.6, and some open models), and the explanations are free-form text, several hundred tokens long. Ours writes at most four words from a 47-word vocabulary that only contains facts. A full language model can do things ours can't: it can *infer* things that aren't in the activation (the paper lists this "excessive expressivity" as a limitation), and it can confabulate plausible but false specifics. The paper reports that explanations are typically thematically faithful even when their specifics are wrong.
-- **There's no ground truth.** We checked every claim against the sentence's known factors. At scale, nobody knows what an activation "really" contains, so claims have to be validated indirectly: by checking them against the context, by noticing that claims which recur across several adjacent tokens are more likely to be true, and by downstream tasks. The paper evaluates NLAs by using them: NLA-equipped agents do better than baselines on an automated auditing task (finding out what's wrong with an intentionally misaligned model), NLA explanations surface evaluation awareness more often on evaluation transcripts than on real deployment traffic, and they reveal the model's plan for an upcoming rhyme in poetry, which the authors confirm with steering experiments.
-- **The activation contains far more than any short text.** In our toy, four words pin down the sentence completely; whatever the 4-word NLA misses is mostly the reconstructor's fault, not a limit of the text. At scale, an activation in the middle of a long document carries information about a great many things, and any finite explanation has to choose. That makes the budget experiment above the important one: what an NLA chooses to say is determined by what explains the most *variance*, and part 1️⃣ showed that this can be quite different from what the model *uses*.
+- **The verbaliser is a full language model.** In the paper both halves are copies of the target model (Claude
+  Haiku 3.5, Haiku 4.5 and Opus 4.6, and some open models), and the explanations are free-form text, several
+  hundred tokens long. Ours writes at most four words from a 47-word vocabulary that only contains facts. A
+  full language model can do things ours can't: it can *infer* things that aren't in the activation (the paper
+  lists this "excessive expressivity" as a limitation), and it can confabulate plausible but false specifics.
+  The paper reports that explanations are typically thematically faithful even when their specifics are wrong.
+- **There's no ground truth.** We checked every claim against the sentence's known factors. At scale, nobody
+  knows what an activation "really" contains, so claims have to be validated indirectly: by checking them
+  against the context, by noticing that claims which recur across several adjacent tokens are more likely to
+  be true, and by downstream tasks. The paper evaluates NLAs by using them: NLA-equipped agents do better than
+  baselines on an automated auditing task (finding out what's wrong with an intentionally misaligned model),
+  NLA explanations surface evaluation awareness more often on evaluation transcripts than on real deployment
+  traffic, and they reveal the model's plan for an upcoming rhyme in poetry, which the authors confirm with
+  steering experiments.
+- **The activation contains far more than any short text.** In our toy, four words pin down the sentence
+  completely; whatever the 4-word NLA misses is mostly the reconstructor's fault, not a limit of the text. At
+  scale, an activation in the middle of a long document carries information about a great many things, and any
+  finite explanation has to choose. That makes the budget experiment above the important one: what an NLA
+  chooses to say is determined by what explains the most *variance*, and part 1️⃣ showed that this can be
+  quite different from what the model *uses*.
 - **The numbers.** The paper's warm-started NLAs reach an FVE of about 0.3-0.4, and RL brings them to about 0.6-0.8, with FVE growing roughly linearly in the logarithm of the number of training steps. Ours goes from 0.5 to almost 0.9 in 600 steps, because the problem is tiny.
 - **Cost.** Joint RL on two full language models, sampling hundreds of tokens for every activation, is expensive. Our whole section runs in a few minutes on one GPU.
 
@@ -3750,7 +3785,10 @@ activation, an NLA trained at layer 4 should start talking about the object.
 Part 4️⃣ showed that the one-word NLA mostly spends its word on the subject, because that's the most variance, even though `plural past` style descriptions would preserve behaviour
 far better. What if the reward cared about behaviour?
 
-- Replace the reward with the negative KL divergence between GPT-2's next-token distribution with the original activation patched in and with the reconstruction patched in (in the activation's own sentence, or better, in a transplant partner). This is analogous to training sparse autoencoders end-to-end on downstream KL rather than on reconstruction MSE ([Braun et al., 2024](https://arxiv.org/abs/2405.12241)).
+- Replace the reward with the negative KL divergence between GPT-2's next-token distribution with the original
+  activation patched in and with the reconstruction patched in (in the activation's own sentence, or better,
+  in a transplant partner). This is analogous to training sparse autoencoders end-to-end on downstream KL
+  rather than on reconstruction MSE ([Braun et al., 2024](https://arxiv.org/abs/2405.12241)).
 - With a one-word budget, what does the verbaliser learn to say now? Can you find a mix of the two rewards which gets a good FVE *and* good behaviour?
 
 ## Make the verbaliser lie
@@ -3759,7 +3797,11 @@ With four words, REINFORCE from a warm start stayed (mostly) truthful with or wi
 penalty. Explore when the verbaliser lies, and whether the KL penalty helps:
 
 - For the 2-word NLA, compare $\beta = 0$, $0.05$ and $0.5$. How do noun accuracy, FVE and transplant accuracy change? Is there a $\beta$ that keeps the nouns right without hurting FVE?
-- Remove the prepositions and object nouns from what the teacher says (the verbaliser can still *write* the nouns), so that the object is unnameable in the warm-start language. The object still carries some variance. With $\beta = 0$, does the verbaliser start encoding it, e.g. by adding a second noun, or by repurposing the redundant `singular`/`plural`/`present`/`past` words? What happens to claim accuracy? Does $\beta > 0$ prevent it?
+- Remove the prepositions and object nouns from what the teacher says (the verbaliser can still *write* the
+  nouns), so that the object is unnameable in the warm-start language. The object still carries some variance.
+  With $\beta = 0$, does the verbaliser start encoding it, e.g. by adding a second noun, or by repurposing the
+  redundant `singular`/`plural`/`present`/`past` words? What happens to claim accuracy? Does $\beta > 0$
+  prevent it?
 - Can you get the Gumbel straight-through run to stay truthful by adding the KL penalty to its loss?
 
 ## Rescue the cold start
@@ -3780,7 +3822,11 @@ problem go away?
 - Williams (1992), *Simple statistical gradient-following algorithms for connectionist reinforcement learning*. The REINFORCE estimator.
 - Shao et al. (2024), [*DeepSeekMath*](https://arxiv.org/abs/2402.03300). Introduces GRPO, the group-baseline policy gradient used by the NLA paper.
 - Jang, Gu & Poole (2016), [*Categorical Reparameterization with Gumbel-Softmax*](https://arxiv.org/abs/1611.01144); Maddison, Mnih & Teh (2016), [*The Concrete Distribution*](https://arxiv.org/abs/1611.00712); Bengio, Léonard & Courville (2013), [*Estimating or Propagating Gradients Through Stochastic Neurons*](https://arxiv.org/abs/1308.3432) (the straight-through estimator).
-- Havrylov & Titov (2017), [*Emergence of Language with Multi-agent Games*](https://arxiv.org/abs/1705.11192), and Kottur et al. (2017), [*Natural Language Does Not Emerge 'Naturally' in Multi-Agent Dialog*](https://arxiv.org/abs/1706.08502). Two agents that communicate through discrete symbols, trained end-to-end: the cold-start version of an NLA. The symbols they invent are usually not human language.
+- Havrylov & Titov (2017), [*Emergence of Language with Multi-agent Games*](https://arxiv.org/abs/1705.11192),
+  and Kottur et al. (2017),
+  [*Natural Language Does Not Emerge 'Naturally' in Multi-Agent Dialog*](https://arxiv.org/abs/1706.08502).
+  Two agents that communicate through discrete symbols, trained end-to-end: the cold-start version of an NLA.
+  The symbols they invent are usually not human language.
 - Lewis et al. (2017), [*Deal or No Deal? End-to-End Learning for Negotiation Dialogues*](https://arxiv.org/abs/1706.05125), and Lu et al. (2020), [*Countering Language Drift with Seeded Iterated Learning*](https://arxiv.org/abs/2003.12694). Language models fine-tuned with RL drift away from human language unless something anchors them; the NLA paper's KL penalty is one such anchor.
 - Chen et al. (2024), [*SelfIE*](https://arxiv.org/abs/2403.10949), and Pan et al. (2024), [*LatentQA*](https://arxiv.org/abs/2412.08686). Supervised methods for getting a model to describe its own activations in words; compare with the activation oracles in [7.3].
 - Braun et al. (2024), [*Identifying Functionally Important Features with End-to-End Sparse Dictionary Learning*](https://arxiv.org/abs/2405.12241). The same "variance is not function" point for sparse autoencoders.

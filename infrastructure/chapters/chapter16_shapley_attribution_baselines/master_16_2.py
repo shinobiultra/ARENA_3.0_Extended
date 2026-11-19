@@ -102,7 +102,7 @@ You will:
 - implement exact Owen values for a declared partition;
 - test aligned, singleton, misaligned, and random partition controls.
 
-The visible results are generated in this notebook from the implemented methods. No verification report is used as teaching evidence.
+The visible results are generated in this notebook from the implemented methods.
 '''
 
 # ! CELL TYPE: code
@@ -1479,7 +1479,11 @@ The partition panels compare ordinary exact Shapley with aligned, singleton, mis
 # ! TAGS: []
 
 r'''
-At budget 24, forecast paired_kernel mean maximum player error minus uniform mean maximum player error over seeds 0–49, in attribution units. Also forecast the endpoint-preserving shuffled-value control and partition controls. For transfer, add a new four-way dividend on {0,1,2,3} of +0.8, freeze all other dividends/budgets/masks/seeds/groupings, and forecast the same gap and formerly aligned Owen error before running that new game.
+At budget 24, forecast paired_kernel mean maximum player error minus uniform mean maximum player error over
+seeds 0–49, in attribution units. Also forecast the endpoint-preserving shuffled-value control and partition
+controls. For transfer, add a new four-way dividend on {0,1,2,3} of +0.8, freeze all other
+dividends/budgets/masks/seeds/groupings, and forecast the same gap and formerly aligned Owen error before
+running that new game.
 '''
 
 # ! CELL TYPE: code
@@ -1874,38 +1878,6 @@ and masking behavior.
 # ! TAGS: []
 
 r'''
-## Verification Appendix
-
-The exercises and signature result run on CPU. The full verification entry point trains and evaluates the finite neural coalition-game preflight on CUDA; `verification_report.json`
-is supporting regression evidence, not the lesson.
-'''
-
-# ! CELL TYPE: code
-# ! FILTERS: []
-# ! TAGS: []
-
-from chapter16_shapley_attribution_baselines.exercises.part2_kernelshap_partition_shap_controls import solutions as reference
-
-def run_smoke_test(cpu: bool = True) -> dict:
-    return reference.run_smoke_test(cpu=cpu)
-
-def run_gpu_test(max_vram_gb: float = 24.0) -> dict:
-    return reference.run_gpu_test(max_vram_gb=max_vram_gb)
-
-def run_full_experiment(max_vram_gb: float = 24.0) -> dict:
-    return reference.run_full_experiment(max_vram_gb=max_vram_gb)
-
-if MAIN:
-    verification_summary = run_smoke_test(cpu=True)
-
-if MAIN:
-    verification_summary
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ## Try It Yourself — plot the changed estimate
 
 This additional CPU play recomputes both samplers, full-table regression and requested/aligned/singleton Owen controls from explicit
@@ -2000,4 +1972,3 @@ if MAIN:
 r'''
 <img src="media/kernelshap_live_play.png" width="1000">
 '''
-

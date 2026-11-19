@@ -31,9 +31,18 @@ r'''
 r'''
 Two representations predict each other perfectly. One encodes a moving object's colour and velocity; the other returns zero for every input. **Does zero prediction loss mean the representation learned the world?**
 
-By the end of this notebook, you will have shown why latent prediction needs both a diversity check and a task-related probe, using five concrete view-pair fixtures and shuffled/collapsed controls. You will implement the shared mechanics, build the views yourself and see which factors survive. Our primary result is the five-modality probe and prediction matrix, with actual spectrogram, motion and retrieval examples alongside it.
+By the end of this notebook, you will have shown why latent prediction needs both a diversity check and a
+task-related probe, using five concrete view-pair fixtures and shuffled/collapsed controls. You will implement
+the shared mechanics, build the views yourself and see which factors survive. Our primary result is the
+five-modality probe and prediction matrix, with actual spectrogram, motion and retrieval examples alongside
+it.
 
-The family resemblance is a question in embedding space: infer the representation of a target from a context. The exact encoders, masks, teacher updates, objectives and inference behavior differ substantially. An EMA teacher is useful in I-JEPA-like constructions but is **not a definition of every JEPA**. We test an EMA core as one organism, then fit small linear predictors with a fixed teacher to make the multi-modality comparison interpretable. These are tiny task-matched fixtures, not implementations or benchmark reproductions of all named papers.
+The family resemblance is a question in embedding space: infer the representation of a target from a context.
+The exact encoders, masks, teacher updates, objectives and inference behavior differ substantially. An EMA
+teacher is useful in I-JEPA-like constructions but is **not a definition of every JEPA**. We test an EMA core
+as one organism, then fit small linear predictors with a fixed teacher to make the multi-modality comparison
+interpretable. These are tiny task-matched fixtures, not implementations or benchmark reproductions of all
+named papers.
 
 Prerequisites: 14.1, matrix least squares, Fourier magnitude, simple gradient descent, and linear probes from chapter 11. Everything runs on CPU without downloads.
 '''
@@ -415,7 +424,11 @@ r'''
 r'''
 Now make the data genuinely different. The same two numeric factors index each fixture, but their meanings differ: intercept/slope, two tone amplitudes, content/motion, counts of two words, or two visual-channel intensities. These are deliberately recoverable factors, not a universal semantic ground truth across modalities.
 
-Every adapter returns a context vector and a target vector with four coordinates. Context and target are paired views, not necessarily adjacent tokens. Four-dimensional handcrafted inputs are the boundary of our small linear organism. We fit a two-dimensional fixed-teacher embedding and a context-to-target predictor. The point is to understand what a target makes predictable and how the control should fail; training a deep representation from raw data remains pending.
+Every adapter returns a context vector and a target vector with four coordinates. Context and target are
+paired views, not necessarily adjacent tokens. Four-dimensional handcrafted inputs are the boundary of our
+small linear organism. We fit a two-dimensional fixed-teacher embedding and a context-to-target predictor. The
+point is to understand what a target makes predictable and how the control should fail; training a deep
+representation from raw data remains pending.
 '''
 
 # ! CELL TYPE: markdown
@@ -783,9 +796,17 @@ r'''
 # ! TAGS: []
 
 r'''
-Use one predictor recipe for all adapters. Let a frozen target encoder be $E\in\mathbb R^{4\times2}$, so $Y=x_t E$. Fit an affine predictor from context to $Y$ by least squares. This exactly solves a restricted latent-MSE learning problem; it does not learn the encoder. We already exercised a gradient-based EMA update above, separately. Keeping those two experiments separate avoids pretending that a fixed-teacher regression is end-to-end JEPA training.
+Use one predictor recipe for all adapters. Let a frozen target encoder be $E\in\mathbb R^{4\times2}$, so
+$Y=x_t E$. Fit an affine predictor from context to $Y$ by least squares. This exactly solves a restricted
+latent-MSE learning problem; it does not learn the encoder. We already exercised a gradient-based EMA update
+above, separately. Keeping those two experiments separate avoids pretending that a fixed-teacher regression is
+end-to-end JEPA training.
 
-The same probe suite asks whether the two original factors can be linearly recovered from predicted target embeddings. Fit on alternating rows, report on the other rows, and preserve those as **public fitting/check fixtures**, not an independent dataset. Compare aligned pairs, shuffled fitting pairs, and a collapsed constant representation. Normalize mean squared error by the factor variance on the check rows: a constant mean predictor has normalized error around one; zero is exact recovery.
+The same probe suite asks whether the two original factors can be linearly recovered from predicted target
+embeddings. Fit on alternating rows, report on the other rows, and preserve those as **public fitting/check
+fixtures**, not an independent dataset. Compare aligned pairs, shuffled fitting pairs, and a collapsed
+constant representation. Normalize mean squared error by the factor variance on the check rows: a constant
+mean predictor has normalized error around one; zero is exact recovery.
 '''
 
 # ! CELL TYPE: markdown
@@ -971,7 +992,14 @@ r'''
 r'''
 <details><summary>Help - why might the shuffled control pass the probe?</summary>
 
-The executed reference gives normalized probe errors `[0,0,1.1]` in every row. The collapsed predictor uses the fitting-set mean, while the alternating check grid has a shifted mean, hence `1.1` rather than exactly `1`. In contrast, aligned latent-target MSE is numerical zero in every modality, and shuffled-pair latent MSE is positive. A linear predictor fit to shuffled pairs can still be an invertible map of the two input factors. A new supervised probe can undo that map. Therefore **a passing probe does not establish correct target prediction**. Look at the right panel, which compares predicted embeddings to their actual paired teacher targets. Conversely the collapsed-target column has zero latent loss by definition, but cannot recover varying factors. These two failures are complementary, not contradictory.
+The executed reference gives normalized probe errors `[0,0,1.1]` in every row. The collapsed predictor uses
+the fitting-set mean, while the alternating check grid has a shifted mean, hence `1.1` rather than exactly `1`.
+In contrast, aligned latent-target MSE is numerical zero in every modality, and shuffled-pair latent MSE is
+positive. A linear predictor fit to shuffled pairs can still be an invertible map of the two input factors. A
+new supervised probe can undo that map. Therefore **a passing probe does not establish correct target
+prediction**. Look at the right panel, which compares predicted embeddings to their actual paired teacher
+targets. Conversely the collapsed-target column has zero latent loss by definition, but cannot recover varying
+factors. These two failures are complementary, not contradictory.
 
 The fit/check split alternates the second factor's values; both subsets contain public examples from the same explicit grid. It tests interpolation of this finite family, not a generalization benchmark or semantic equivalence across modalities.
 
@@ -995,7 +1023,10 @@ r'''
 # ! TAGS: []
 
 r'''
-A representation can preserve a factor that the downstream task never uses. For the motion fixture, remove velocity by replacing the second position with the first. For a content intervention, shift the content channel while leaving positions intact. These deliberately off-manifold interventions test the handcrafted interface; a learned representation would require additional counterfactual checks.
+A representation can preserve a factor that the downstream task never uses. For the motion fixture, remove
+velocity by replacing the second position with the first. For a content intervention, shift the content
+channel while leaving positions intact. These deliberately off-manifold interventions test the handcrafted
+interface; a learned representation would require additional counterfactual checks.
 
 For vision-language prediction, compare each predicted answer embedding against all candidate teacher answer embeddings. Nearest Euclidean target retrieval is enough for the tiny fixture. It is not cosine retrieval in a released VL-JEPA, and we do not invoke a text decoder. The control permutes the candidate answer assignment, preserving embedding geometry while breaking semantic pairing.
 '''
@@ -1179,7 +1210,12 @@ print("new-tone latent squared error:",float(np.mean((play_prediction-play_targe
 r'''
 ## Interpreting the result and limitations
 
-The actual vision-answer retrieval is `1.0`, versus `0.0` under cyclic answer permutation. Removing displacement raises motion target MSE from numerical zero to `2.736429`. The target-only tone play yields latent squared error `0.0738`. The linear view maps make every pair exactly predictable from two factors. A successful factor probe therefore confirms this constructed organism's recoverability. It does not establish that end-to-end JEPA training discovers semantic factors or invariance on natural data. Fixed-target regression and the one-update EMA fixture are distinct evidence layers.
+The actual vision-answer retrieval is `1.0`, versus `0.0` under cyclic answer permutation. Removing
+displacement raises motion target MSE from numerical zero to `2.736429`. The target-only tone play yields
+latent squared error `0.0738`. The linear view maps make every pair exactly predictable from two factors. A
+successful factor probe therefore confirms this constructed organism's recoverability. It does not establish
+that end-to-end JEPA training discovers semantic factors or invariance on natural data. Fixed-target
+regression and the one-update EMA fixture are distinct evidence layers.
 
 ## Named-method bridge and reading-only variants
 
