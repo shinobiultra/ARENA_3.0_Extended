@@ -18,31 +18,19 @@ _PAGE_LINKS = {
         "../part3_mamba_from_scratch/5.3_Mamba_from_Scratch_exercises.ipynb": (
             "chapter5_modern_architectures/exercises/part3_mamba_from_scratch/5.3_Mamba_from_Scratch_exercises.ipynb",
             "27026a893d5cb7138c83f0a943d3221cfa60d84dfca520f4ea35418d5aae7b81",
-            "historical raw notebook",
+            "lesson notebook",
         ),
     },
     "chapter13_image_generation_interpretability/instructions/pages/02_[13.2]_Denoising-Time_Causal_Patching.md": {
         "13.2_Denoising-Time_Causal_Patching_exercises.ipynb": (
             "chapter13_image_generation_interpretability/exercises/part2_denoising_time_causal_patching/13.2_Denoising-Time_Causal_Patching_exercises.ipynb",
             "55ae5246aae1603bd894f45aad45a065eb70f021fea92816723e6c2113a7b5b0",
-            "historical raw notebook",
+            "lesson notebook",
         ),
         "13.2_Denoising-Time_Causal_Patching_solutions.ipynb": (
             "chapter13_image_generation_interpretability/exercises/part2_denoising_time_causal_patching/13.2_Denoising-Time_Causal_Patching_solutions.ipynb",
             "a1b585423650db88b140b9ac23b05a3e266da57f0186c62554056a8419c5d897",
-            "historical raw notebook",
-        ),
-    },
-    "chapter14_jepa_world_models/instructions/pages/02_[14.2]_V-JEPA_and_Video_World_Models.md": {
-        "../part1_jepa_world_model_controls/14.1_JEPA_and_World_Model_Controls_exercises.ipynb": (
-            "chapter14_jepa_world_models/exercises/part1_jepa_world_model_controls/14.1_JEPA_and_World_Model_Controls_exercises.ipynb",
-            "d56188485421e54d6c144305134a6109225a2d83139f4308151d345252153b68",
-            "historical raw notebook",
-        ),
-        "../part1_jepa_world_model_controls/14.1_JEPA_and_World_Model_Controls_solutions.ipynb": (
-            "chapter14_jepa_world_models/exercises/part1_jepa_world_model_controls/14.1_JEPA_and_World_Model_Controls_solutions.ipynb",
-            "3636330f1f1bef5b02cff7d20a57c076ad46970c308287700ef2d02e07039e2e",
-            "historical raw notebook",
+            "lesson notebook",
         ),
     },
     "chapter15_peft_misalignment/instructions/pages/01_[15.1]_LoRA_and_DoRA_from_Scratch.md": {
@@ -63,24 +51,24 @@ _PAGE_LINKS = {
         ),
     },
     "chapter16_shapley_attribution_baselines/instructions/pages/02_[16.2]_KernelSHAP_and_PartitionSHAP.md": {
-        "../part1_exact_shapley_ground_truth_games/16.1_Exact_Shapley_on_Ground_Truth_Games_exercises.ipynb": (
-            "chapter16_shapley_attribution_baselines/exercises/part1_exact_shapley_ground_truth_games/16.1_Exact_Shapley_on_Ground_Truth_Games_exercises.ipynb",
-            "425e9963d352048a6f9370feb5c9fa255dd72f7ca44f70d00f60980d74e4eaa7",
-            "historical raw notebook",
+        "../part1_exact_shapley/16.1_Exact_Shapley_on_Ground-Truth_Games_exercises.ipynb": (
+            "chapter16_shapley_attribution_baselines/exercises/part1_exact_shapley/16.1_Exact_Shapley_on_Ground-Truth_Games_exercises.ipynb",
+            "b3535bea8936fadf26310c18f8143027c5134e6f6745c9210d865755ec34eb60",
+            "lesson notebook",
         ),
     },
     "chapter16_shapley_attribution_baselines/instructions/pages/04_[16.4]_SAGE_Global_Importance.md": {
-        "../part1_exact_shapley_ground_truth_games/16.1_Exact_Shapley_on_Ground_Truth_Games_exercises.ipynb": (
-            "chapter16_shapley_attribution_baselines/exercises/part1_exact_shapley_ground_truth_games/16.1_Exact_Shapley_on_Ground_Truth_Games_exercises.ipynb",
-            "425e9963d352048a6f9370feb5c9fa255dd72f7ca44f70d00f60980d74e4eaa7",
-            "historical raw notebook",
+        "../part1_exact_shapley/16.1_Exact_Shapley_on_Ground-Truth_Games_exercises.ipynb": (
+            "chapter16_shapley_attribution_baselines/exercises/part1_exact_shapley/16.1_Exact_Shapley_on_Ground-Truth_Games_exercises.ipynb",
+            "b3535bea8936fadf26310c18f8143027c5134e6f6745c9210d865755ec34eb60",
+            "lesson notebook",
         ),
     },
     "chapter16_shapley_attribution_baselines/instructions/pages/10_[16.10]_Influence_Functions_and_TracIn.md": {
         "../part9_data_shapley/16.9_Data_Shapley_in_One_Training_Run_exercises.ipynb": (
             "chapter16_shapley_attribution_baselines/exercises/part9_data_shapley/16.9_Data_Shapley_in_One_Training_Run_exercises.ipynb",
             "fd77f88df783a1757aa158a528da40ca1a639992c2282b4649c463c441a28a82",
-            "historical raw notebook",
+            "lesson notebook",
         ),
     },
     "chapter16_shapley_attribution_baselines/instructions/pages/11_[16.11]_Datamodels_and_Dataset_Cartography.md": {

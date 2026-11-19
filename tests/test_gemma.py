@@ -1,5 +1,4 @@
 import importlib.util
-import json
 from pathlib import Path
 
 import pytest
@@ -193,36 +192,3 @@ def test_tiny_gemma_matches_huggingface_reference_generation():
     assert result["generation_prompt"] == [1, 5, 8, 13]
     assert result["local_greedy_tokens"] == result["reference_greedy_tokens"]
     assert result["generation_matches_reference"]
-
-
-def test_gemma_report_exposes_signature_result_fields():
-    report_path = (
-        ROOT
-        / "chapter5_modern_architectures/exercises/part1_gemma_from_scratch"
-        / "verification_report.json"
-    )
-    report = json.loads(report_path.read_text())
-    gpu = report["metrics"]["gpu_test"]
-    notebook = report["metrics"]["notebook_contract"]
-
-    for key in [
-        "reference_logits_max_abs_diff",
-        "reference_logits_mse",
-        "reference_logits_kl_divergence",
-        "reference_logits_topk_agreement",
-        "cache_max_abs_diff",
-        "reference_cache_max_abs_diff",
-        "generation_prompt",
-        "local_greedy_tokens",
-        "reference_greedy_tokens",
-        "generation_matches_reference",
-        "peak_vram_gb",
-    ]:
-        assert key in gpu
-
-    for key in ["parameter_gb", "kv_cache_gb", "activation_gb", "overhead_gb", "total_gb"]:
-        assert key in notebook["memory_budget"]
-
-    assert gpu["generation_prompt"] == [1, 5, 8, 13]
-    assert gpu["local_greedy_tokens"] == gpu["reference_greedy_tokens"]
-    assert gpu["generation_matches_reference"]

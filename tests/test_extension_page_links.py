@@ -33,16 +33,6 @@ CASES = [
         "chapter13_image_generation_interpretability/exercises/part2_denoising_time_causal_patching/13.2_Denoising-Time_Causal_Patching_solutions.ipynb",
     ),
     (
-        "chapter14_jepa_world_models/instructions/pages/02_[14.2]_V-JEPA_and_Video_World_Models.md",
-        "../part1_jepa_world_model_controls/14.1_JEPA_and_World_Model_Controls_exercises.ipynb",
-        "chapter14_jepa_world_models/exercises/part1_jepa_world_model_controls/14.1_JEPA_and_World_Model_Controls_exercises.ipynb",
-    ),
-    (
-        "chapter14_jepa_world_models/instructions/pages/02_[14.2]_V-JEPA_and_Video_World_Models.md",
-        "../part1_jepa_world_model_controls/14.1_JEPA_and_World_Model_Controls_solutions.ipynb",
-        "chapter14_jepa_world_models/exercises/part1_jepa_world_model_controls/14.1_JEPA_and_World_Model_Controls_solutions.ipynb",
-    ),
-    (
         "chapter15_peft_misalignment/instructions/pages/01_[15.1]_LoRA_and_DoRA_from_Scratch.md",
         "media/lora_dora_adapter_controls_validation_loop.svg",
         "chapter15_peft_misalignment/exercises/part1_lora_dora/media/lora_dora_adapter_controls_validation_loop.svg",
@@ -59,13 +49,13 @@ CASES = [
     ),
     (
         "chapter16_shapley_attribution_baselines/instructions/pages/02_[16.2]_KernelSHAP_and_PartitionSHAP.md",
-        "../part1_exact_shapley_ground_truth_games/16.1_Exact_Shapley_on_Ground_Truth_Games_exercises.ipynb",
-        "chapter16_shapley_attribution_baselines/exercises/part1_exact_shapley_ground_truth_games/16.1_Exact_Shapley_on_Ground_Truth_Games_exercises.ipynb",
+        "../part1_exact_shapley/16.1_Exact_Shapley_on_Ground-Truth_Games_exercises.ipynb",
+        "chapter16_shapley_attribution_baselines/exercises/part1_exact_shapley/16.1_Exact_Shapley_on_Ground-Truth_Games_exercises.ipynb",
     ),
     (
         "chapter16_shapley_attribution_baselines/instructions/pages/04_[16.4]_SAGE_Global_Importance.md",
-        "../part1_exact_shapley_ground_truth_games/16.1_Exact_Shapley_on_Ground_Truth_Games_exercises.ipynb",
-        "chapter16_shapley_attribution_baselines/exercises/part1_exact_shapley_ground_truth_games/16.1_Exact_Shapley_on_Ground_Truth_Games_exercises.ipynb",
+        "../part1_exact_shapley/16.1_Exact_Shapley_on_Ground-Truth_Games_exercises.ipynb",
+        "chapter16_shapley_attribution_baselines/exercises/part1_exact_shapley/16.1_Exact_Shapley_on_Ground-Truth_Games_exercises.ipynb",
     ),
     (
         "chapter16_shapley_attribution_baselines/instructions/pages/10_[16.10]_Influence_Functions_and_TracIn.md",
@@ -99,7 +89,7 @@ def test_audited_destinations_download_or_embed_exact_canonical_bytes(page, old,
         assert f'download="{Path(target).name}"' in rendered
         assert "Original label" in rendered
         if target.endswith(".ipynb"):
-            assert "historical raw notebook" in rendered
+            assert "lesson notebook download" in rendered
     assert page_links.rewrite_page_links(rendered, ROOT / page) == rendered
 
 
