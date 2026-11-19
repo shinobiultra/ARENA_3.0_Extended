@@ -4684,7 +4684,8 @@ q2_accuracy = answer_accuracy(logits4, count_ids[3].repeat(len(scenes4)), count_
 q2_says = Counter([" one", " two", " three", " four"][i] for i in logits4[:, count_ids].argmax(-1).tolist())
 print(f"Q2: 500 four-object scenes: the model says {dict(q2_says)}; count accuracy {q2_accuracy:.3f}")
 
-# Q3: projector only, 1,500 steps
+# Q3: projector only, 1,500 steps (the training features were freed before Qwen, so featurise them again)
+train_features = featurise(train_scenes)
 t.manual_seed(0)
 projector_l = Projector().to(device)
 lm_l = copy.deepcopy(gpt2)
