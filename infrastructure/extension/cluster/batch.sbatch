@@ -1,7 +1,10 @@
 #!/bin/bash
 # One Julia (Würzburg) job that executes a batch of extension sections, one per GPU.
 #
-#   sbatch --gres=gpu:L40s:<N> --time=<HH:MM:SS> batch.sbatch <section> [<section> ...]
+#   infrastructure/extension/cluster/submit_batch.sh --gpus <N> --time <HH:MM:SS> <section> [<section> ...]
+#
+# submit_batch.sh syncs the sources and Julia's environment first, then runs sbatch at --qos=normal.
+# Each lesson gets 30 minutes (run_batch.py); the job exits nonzero if any lesson fails.
 #
 # Layout on the cluster (everything in one place):
 #   ~/projects/arena-extended/repo       source files synced from the local checkout

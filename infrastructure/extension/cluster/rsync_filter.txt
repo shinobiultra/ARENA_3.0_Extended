@@ -25,6 +25,7 @@
 + *.yml
 + *.toml
 + uv.lock
++ .python-version
 + *.txt
 + *.json
 + *.md
