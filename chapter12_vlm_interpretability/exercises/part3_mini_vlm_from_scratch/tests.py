@@ -527,8 +527,8 @@ def test_patching_sweep(patching_sweep: Callable, model: HookedTransformer):
     assert set(curves) == set(masks), f"Expected one curve per mask, got {sorted(curves)}"
     for name, values in curves.items():
         assert tuple(values.shape) == (3, batch), f"`{name}`: expected one recovery per layer and pair, shape (3, {batch}), got {tuple(values.shape)}"
-    assert t.allclose(curves["nothing"], t.zeros(3, batch), atol=1e-3), f"Patching nothing should recover 0, got {curves['nothing']}"
-    assert t.allclose(curves["everything"], t.ones(3, batch), atol=1e-3), f"Patching everything should recover 1, got {curves['everything']}"
+    assert t.allclose(curves["nothing"], t.zeros(3, batch, device=clean.device), atol=1e-3), f"Patching nothing should recover 0, got {curves['nothing']}"
+    assert t.allclose(curves["everything"], t.ones(3, batch, device=clean.device), atol=1e-3), f"Patching everything should recover 1, got {curves['everything']}"
     # At layer 0 a partial patch is the same as feeding the mixed embeddings through the model: work the recovery out by hand
     with t.no_grad():
         mixed_logits = answer_logits(t.where(partial[..., None], clean, corrupt))
