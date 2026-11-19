@@ -772,6 +772,10 @@ resid_stack = t.stack(
 random_logits = model.unembed(model.ln_final(random_vectors_like(resid_stack)))
 random_ranks = answer_ranks(random_logits, answer_tokens[right])
 
+del resid_stack, random_logits
+if device.type == "cuda":
+    t.cuda.empty_cache()
+
 utils.plot_lens_ranks(
     {
         "correct capital": ranks.float().median(dim=1).values.tolist(),
@@ -2005,6 +2009,9 @@ bank = bank_states[:, :, :-1].flatten(1, 2)  # (layer, n_bank * 62, d_model)
 bank_current, bank_next = bank_tokens[:, 1:-1].flatten().to(device), bank_tokens[:, 2:].flatten().to(device)
 queries = query_states.flatten(1, 2)  # (layer, 100 * 63, d_model)
 query_current, query_top = query_tokens[:, 1:].flatten().to(device), query_top.flatten()
+del bank_states, query_states  # the flattened copies above are all we need
+if device.type == "cuda":
+    t.cuda.empty_cache()
 print(f"bank: {bank.shape[1]:,} vectors per layer from {n_bank} training stories.  queries: {queries.shape[1]:,} held-out states per layer.")
 
 # ! CELL TYPE: markdown
@@ -2057,6 +2064,8 @@ with t.no_grad():
             "cosine: two random states": (normalize_rows(q) * normalize_rows(random_pairs)).sum(-1).mean().item(),
         })
 lens_table = pd.DataFrame(rows).rename_axis("layer")
+if device.type == "cuda":
+    t.cuda.empty_cache()
 layer0_floor = lens_table["tuned lens"][0]
 print(f"bigram floor: {bigram_floor:.2f}   layer-0 floor: {layer0_floor:.2f}")
 display(lens_table.iloc[:, :6].round(2).T)
@@ -2732,9 +2741,9 @@ haven't tried. A wrong answer here isn't a failure. It's the most useful thing t
 > You should spend up to 25 minutes on this quiz.
 > ```
 
-**The baseline.** Every question changes one call from this lesson. In your runs: GPT-2 Small gets @@BASE_ACC@@ of the 48 capitals right; the median rank of the correct capital first reaches 1 at @@BASE_RANK_LAYER@@
-of the logit lens; the 300-step tuned lens agrees with the model's final prediction @@BASE_TUNED6@@ of the time at layer 6; the Patchscope from source layer 4 into target layer 1 names @@BASE_PATCH@@ of the capitals;
-and a layer-3 contextual lens agrees @@BASE_CTX3@@ of the time, a layer-9 one @@BASE_CTX9@@.
+**The baseline.** Every question changes one call from this lesson. In your runs: GPT-2 Small gets 37 of the 48 capitals right; the median rank of the correct capital first reaches 1 at row `pre 9`
+of the logit lens; the 300-step tuned lens agrees with the model's final prediction 0.60 of the time at layer 6; the Patchscope from source layer 4 into target layer 1 names 79% of the capitals;
+and a layer-3 contextual lens agrees 0.29 of the time, a layer-9 one 0.34.
 '''
 
 # ! CELL TYPE: markdown
@@ -2760,7 +2769,7 @@ the median over the prompts the model gets right.
 
 | a | b | c | d | e |
 |---|---|---|---|---|
-| @@Q1A@@ | @@Q1B@@ | @@Q1C@@ | @@Q1D@@ | @@Q1E@@ |
+| before `pre 8` | `pre 8` | `pre 9` | `pre 10` | `pre 11` or only `final` |
 '''
 
 # ! CELL TYPE: markdown
@@ -2783,7 +2792,7 @@ r'''
 
 | a | b | c | d | e |
 |---|---|---|---|---|
-| @@Q2A@@ | @@Q2B@@ | @@Q2C@@ | @@Q2D@@ | @@Q2E@@ |
+| below 0.30 | 0.30 to 0.42 | 0.42 to 0.54 | 0.54 to 0.66 | above 0.66 |
 '''
 
 # ! CELL TYPE: markdown
@@ -2807,7 +2816,7 @@ r'''
 
 | a | b | c | d | e |
 |---|---|---|---|---|
-| @@Q3A@@ | @@Q3B@@ | @@Q3C@@ | @@Q3D@@ | @@Q3E@@ |
+| below 30% | 30% to 55% | 55% to 80% | 80% to 95% | above 95% |
 '''
 
 # ! CELL TYPE: markdown
@@ -2831,7 +2840,7 @@ the model's final top-1 prediction at the query? The 6,300 queries and the 37,00
 
 | a | b | c | d | e |
 |---|---|---|---|---|
-| @@Q4A@@ | @@Q4B@@ | @@Q4C@@ | @@Q4D@@ | @@Q4E@@ |
+| below 0.10 | 0.10 to 0.22 | 0.22 to 0.32 | 0.32 to 0.42 | above 0.42 |
 '''
 
 # ! CELL TYPE: markdown
@@ -2855,7 +2864,7 @@ read the same 200 held-out TinyStories sequences (tokenized with Pythia's own to
 
 | a | b | c | d | e |
 |---|---|---|---|---|
-| @@Q5A@@ | @@Q5B@@ | @@Q5C@@ | @@Q5D@@ | @@Q5E@@ |
+| below 0.01 | 0.01 to 0.06 | 0.06 to 0.15 | 0.15 to 0.30 | above 0.30 |
 '''
 
 # ! CELL TYPE: markdown
@@ -2906,9 +2915,9 @@ Now the key, and your score. (The key is written out in the cell below. If you'd
 quiz = Quiz({
     "Q1": Interval("c", points=3),
     "Q2": Interval("c", points=4),
-    "Q3": Interval("c", points=4),
+    "Q3": Interval("d", points=4),
     "Q4": Interval("c", points=4),
-    "Q5": Interval("c", points=5),
+    "Q5": Interval("b", points=5),
 })
 quiz.score(my_answers)
 
@@ -2922,31 +2931,61 @@ r'''
 <details>
 <summary>Reveal - Q1: a different template</summary>
 
-@@REVEAL1@@
+The median rank of the correct capital, by row of the logit lens (`embed` to `final`), with this template: 14290, 19146, 16728, 20159, 18521, 12121, 3747, 1754, 805, **1**, 1, 1, 1. The model gets 37 of the 48 right with this template, the same number as before, and the median reaches rank 1 at **`pre 9`**, exactly where it did in Part 1.
+
+**Answer: c.**
+
+**The mental model.** The rank curve is a statement about the model's computation, not about the wording of the prompt. Both templates ask for the capital of a country after three worked examples, so the same blocks have the same job: by `pre 8` the capital has only reached a median rank of 805, and block 8 (the one between `pre 8` and `pre 9`) is where it jumps to the top. Part 1's mismatched-capitals control gave the same message: the type of answer arrives before the specific answer, and the specific answer arrives in one step.
+
+If you chose b or d, you expected a new wording to move the answer by a layer. That's a fair worry for a single prompt, but a median over 37 prompts is steady. If you chose a, you may have expected a clearer cue ("capital city") to make the model commit early.
 </details>
 
 <details>
 <summary>Reveal - Q2: a tuned lens with a tenth of the training</summary>
 
-@@REVEAL2@@
+Top-1 agreement at layer 6 with a 30-step tuned lens: **0.482, 0.482 and 0.481** for seeds 0, 1 and 2 (mean 0.482). The 300-step lens you trained gets 0.599 and the logit lens gets 0.100.
+
+**Answer: c.**
+
+**The mental model.** Look at your training-loss curve from Part 2: it fell steeply in the first 50 steps or so and then crawled. Most of what the translators learn first is a large, simple correction (a shift and a rescaling that moves each layer's states into the region the final layernorm and unembedding expect), and that is cheap to learn. The remaining steps buy the last part of the gap, from 0.48 to 0.60. The three seeds agree to the third decimal place, so this isn't luck.
+
+If you chose a or b, you expected an undertrained lens to stay close to the logit lens. It starts there, but it leaves very quickly. If you chose d or e, you expected a tenth of the training to be nearly enough; it takes you most of the way, not all of it.
 </details>
 
 <details>
 <summary>Reveal - Q3: one example in the inspection prompt</summary>
 
-@@REVEAL3@@
+One-shot Patchscope: **42 of 48 = 0.875** (the three-shot prompt you used got 38 of 48 = 0.792). With the one-shot prompt and nothing patched, accuracy is **0.000**.
+
+**Answer: d.**
+
+**The mental model.** The inspection prompt only has to tell the model what *kind* of answer to give ("the capital of x is"). The country's identity comes from the patched vector, which is why the text-only control gets 0% however many examples there are. One worked example is enough to set the format. Fewer examples also leave fewer in-context capitals (Paris, Tokyo, Rome) for the model to copy, which is one possible reason the score went up, but we didn't test that. Don't read much into 42 against 38 either: with 48 countries their Wilson intervals overlap, so the honest summary is "no worse".
+
+If you chose a, b or c, you expected fewer examples to make the model worse at the task. It would, if the examples carried the answer. In a Patchscope they don't, which is the point of the text-only control.
 </details>
 
 <details>
 <summary>Reveal - Q4: a bank from another layer</summary>
 
-@@REVEAL4@@
+Layer-9 queries against a layer-3 bank: **0.271**. For comparison, same-layer neighbours get 0.295 (layer 3 to layer 3) and 0.336 (layer 9 to layer 9), and the bigram floor is 0.306.
+
+**Answer: c.**
+
+**The mental model.** Your Part 2 figure had two messages. The heatmap says a neighbour from almost any layer is the same *token* as the query, so searching across layers still lands on the right word. The left panel says the next token of that neighbour agrees with the model's prediction only about as often as a bigram table does (0.22 to 0.37 across the layers, against a bigram floor of 0.31). Crossing layers keeps the first and loses a little of the second: the neighbour is the right word from a slightly mismatched context, so its next token is a little less on target.
+
+If you chose d or e, you expected the layer-9 queries to do better than they ever did in the same-layer figure. If you chose a or b, you expected cross-layer search to break, but the heatmap told you it doesn't for the current token.
 </details>
 
 <details>
 <summary>Reveal - Q5: a model you never loaded</summary>
 
-@@REVEAL5@@
+The plain logit lens on Pythia-160M, top-1 agreement with its final prediction, by layer: 0.000, 0.009, 0.005, 0.014, 0.016, 0.034, **0.028**, 0.041, 0.051, 0.117, 0.226, 0.331. For GPT-2 Small at layer 6 it was 0.100.
+
+**Answer: b.**
+
+**The mental model.** The logit lens assumes every layer speaks the final layer's language. In Part 2 you saw that this is only roughly true even for GPT-2, and that the tuned lens fixes it. On Pythia the assumption holds much less well: the lens is close to useless until layer 9, and even at the last block (row 11) it agrees with the model only a third of the time, against 0.62 for GPT-2. We didn't test why. One thing that differs is that Pythia's embedding and unembedding are separate matrices, whereas GPT-2 reads out with the transpose of its embedding.
+
+If you chose c or higher, you carried GPT-2's 0.10 over to a new model; this is exactly the regime the tuned lens was invented for. If you chose a, you were right that the lens is nearly blind there, just a bit too pessimistic.
 </details>
 '''
 
@@ -3051,7 +3090,7 @@ utils.plot_quiz_runs(
 )
 
 # The written key must match what these runs produced.
-EDGES = {"Q1": [7.5, 8.5, 9.5, 10.5], "Q2": [0.3, 0.4, 0.5, 0.6], "Q3": [0.2, 0.4, 0.6, 0.8], "Q4": [0.2, 0.3, 0.4, 0.5], "Q5": [0.05, 0.1, 0.2, 0.4]}
+EDGES = {"Q1": [7.5, 8.5, 9.5, 10.5], "Q2": [0.30, 0.42, 0.54, 0.66], "Q3": [0.30, 0.55, 0.80, 0.95], "Q4": [0.10, 0.22, 0.32, 0.42], "Q5": [0.01, 0.06, 0.15, 0.30]}
 measured = {"Q1": q1_first, "Q2": q2_mean[6], "Q3": q3_accuracy, "Q4": q4_match, "Q5": pythia_logit[6]}
 for name, value in measured.items():
     letter = interval_of(value, EDGES[name])
