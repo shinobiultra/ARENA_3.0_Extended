@@ -10,7 +10,10 @@ from infrastructure.extension.home import render_chapter_home
 INTRO = (
     '## Description of material\n'
     '\n'
-    "[1.4.1] finds the IOI circuit by hand. This chapter is about doing that automatically and about knowing when to trust the answer. You'll implement the main families of circuit-discovery methods from scratch, compare them against exact patching, test hypotheses with causal scrubbing, build circuits out of SAE and transcoder features, and finally evaluate every method on compiled transformers where the true circuit is known."
+    '[1.4.1] finds the IOI circuit by hand. This chapter is about doing that automatically and about knowing when '
+    "to trust the answer. You'll implement the main families of circuit-discovery methods from scratch, compare "
+    'them against exact patching, test hypotheses with causal scrubbing, build circuits out of SAE and transcoder '
+    'features, and finally evaluate every method on compiled transformers where the true circuit is known.'
 )
 
 render_chapter_home(__file__, INTRO)

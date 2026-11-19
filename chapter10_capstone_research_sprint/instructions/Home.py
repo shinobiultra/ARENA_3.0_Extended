@@ -10,7 +10,10 @@ from infrastructure.extension.home import render_chapter_home
 INTRO = (
     '## Description of material\n'
     '\n'
-    "Everything else in the course gives you the methods. This chapter is about using them to answer a question you don't already know the answer to, and doing it in a way you'd trust: choosing a question small enough to finish, deciding in advance what would count as evidence, separating exploratory from confirmatory analysis, running the controls, and writing up a negative result as carefully as a positive one."
+    'Everything else in the course gives you the methods. This chapter is about using them to answer a question you'
+    " don't already know the answer to, and doing it in a way you'd trust: choosing a question small enough to "
+    'finish, deciding in advance what would count as evidence, separating exploratory from confirmatory analysis, '
+    'running the controls, and writing up a negative result as carefully as a positive one.'
 )
 
 render_chapter_home(__file__, INTRO)

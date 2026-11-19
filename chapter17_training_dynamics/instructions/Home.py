@@ -10,7 +10,10 @@ from infrastructure.extension.home import render_chapter_home
 INTRO = (
     '## Description of material\n'
     '\n'
-    "Interpretability usually studies a finished model. Developmental interpretability asks how the mechanisms got there: when a circuit forms, what the loss curve looks like when it does, and whether the same capability is learned the same way by different architectures. You'll train small models yourself, save checkpoints, and also mine the public training checkpoints of the Pythia suite."
+    'Interpretability usually studies a finished model. Developmental interpretability asks how the mechanisms got '
+    'there: when a circuit forms, what the loss curve looks like when it does, and whether the same capability is '
+    "learned the same way by different architectures. You'll train small models yourself, save checkpoints, and "
+    'also mine the public training checkpoints of the Pythia suite.'
 )
 
 render_chapter_home(__file__, INTRO)
