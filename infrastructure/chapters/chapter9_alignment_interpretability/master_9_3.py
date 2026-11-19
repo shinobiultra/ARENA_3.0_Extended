@@ -41,11 +41,9 @@ Can a hidden-answer probe establish that a visible rationale caused an answer? B
 inspect its layer-position heatmap, then intervene with matched controls. Compare that validated
 measurement pipeline with a Pythia result that does not establish the causal claim.
 
-The scope is the exact A/B toy and pinned base Pythia prompt organism. Small instruct models,
+The scope is the exact A/B toy and a recorded result from a pinned base Pythia prompt organism. Small instruct models,
 arithmetic word problems, generated CoT, truncation, inserted mistakes and paraphrase interventions
 are absent. Those broader items are not covered here.
-
-The optional real-model path (`run_gpu_test`) needs a CUDA GPU, the repository-root working directory and the pinned external resources.
 '''
 
 # ! CELL TYPE: markdown
@@ -76,17 +74,8 @@ r'''
 
 from __future__ import annotations
 MAIN = __name__ == "__main__"
-from importlib import import_module as _migration_import_module
 from pathlib import Path as _MigrationPath
 asset_dir = _MigrationPath(__file__).resolve().parents[2] / "instructions" / "assets"
-class _HistoricalReference:
-    """Defer the exact historical helper until an explicit optional wrapper call.
-
-    Optional execution retains its original repository-root cwd requirement.
-    """
-    def __getattr__(self, name):
-        return getattr(_migration_import_module("chapter9_alignment_interpretability.exercises.part2_cot_faithfulness.solutions"), name)
-reference_solutions = _HistoricalReference()
 
 # ! CELL TYPE: markdown
 # ! FILTERS: []
@@ -105,16 +94,16 @@ r'''
 
 By the end of this notebook, you will have shown that an exact CoT-style model organism carries a
 hidden answer before the final token and that patching its known causal residual state beats five
-matched controls; you will also have tested and rejected the same claim on the pinned Pythia
-experiment used here.
+matched controls; you will also have tested and rejected the same claim on a recorded pinned Pythia
+result.
 
 ## Core Question
 
 > When a visible rationale points one way, can hidden-state evidence reveal a different answer, and
 can moving that hidden state change the model's final answer behavior?
 
-The first half is exact toy ground truth. The second half exposes the pinned Pythia-70M prompts,
-token positions, layer-position heatmap, and hook-patching controls used by the real-model cells. They generate the heatmap, bars, and prompt table live when CUDA is available.
+The first half is exact toy ground truth. The second half adjudicates a recorded Pythia-70M result
+against the same controls.
 '''
 
 # ! CELL TYPE: markdown
@@ -205,23 +194,11 @@ if MAIN:
 if MAIN:
     import chapter9_alignment_interpretability.exercises.part2_cot_faithfulness.utils as utils
 
-# FILTERS: ~python
-from chapter9_alignment_interpretability.exercises.part2_cot_faithfulness import solutions as reference_solutions
-# END FILTERS
-
 MAIN = __name__ == '__main__'
 
 AnswerLabel = Literal['A', 'B']
 
 CoTCondition = Literal['no_cot', 'faithful_cot', 'biased_cot', 'posthoc']
-
-GT_TIER = 'GT-0'
-
-EXERCISE_ID = '9_2_chain_of_thought_faithfulness'
-
-EXPECTED_RUNTIME = '45-75 minutes; parent CUDA verification runs the pinned Pythia hook-patching path'
-
-REQUIRES_GPU = True
 
 SEMANTIC_POSITIONS = ('private_answer', 'rationale_answer', 'final_prompt')
 
@@ -1000,14 +977,6 @@ if MAIN:
 
 # ! CELL TYPE: markdown
 # ! FILTERS: []
-# ! TAGS: [html]
-
-r'''
-<img alt="Expected toy display" src="media/historical_cell_21_0.png" width="1000">
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
 # ! TAGS: []
 
 r'''
@@ -1633,21 +1602,11 @@ if MAIN:
 
 # ! CELL TYPE: markdown
 # ! FILTERS: []
-# ! TAGS: [html]
-
-r'''
-<img alt="Expected toy display" src="media/historical_cell_33_1.png" width="1000">
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
 # ! TAGS: []
 
 r'''
 <details>
 <summary>Expected toy panel</summary>
-
-<img src="media/historical_saved_toy_panel.png" width="900">
 
 The target patch is the only condition that flips the answer toward the donor. The random-donor
 control can move the donor margin slightly in the exact toy, but it does not flip.
@@ -1661,11 +1620,11 @@ control can move the donor margin slightly in the exact toy, but it does not fli
 r'''
 ## 7. Real-model path: prompts, tokens, heatmap, hook patches
 
-The reference CUDA path uses pinned `EleutherAI/pythia-70m-deduped` at revision
-`e93a9faa9c77e5d09219f6c868bfc7a1bd65593c`. It uses 40 train prompts and 40 held-out prompts over
+The recorded run used pinned `EleutherAI/pythia-70m-deduped` at revision
+`e93a9faa9c77e5d09219f6c868bfc7a1bd65593c`, with 40 train prompts and 40 held-out prompts over
 safe A/B private-answer templates.
 
-For each held-out prompt it records:
+For each held-out prompt it recorded:
 
 - the private-answer token position;
 - the rationale-answer token position;
@@ -1694,9 +1653,8 @@ control and the detector's recall advantage over the text-only baseline. Support
 claim only if the held-out probe passes, the target patch clears the strongest control by more than
 `0.05`, and detector recall exceeds text-only recall.
 
-`PINNED_PYTHIA_NEGATIVE_RESULT` below is a compact copy of the locked parent CUDA result, not a mock
-and not a replacement for a live rerun. The optional runner after this exercise owns model loading
-and repeated hook plumbing; your job here is to decide what its evidence permits us to claim.
+`PINNED_PYTHIA_NEGATIVE_RESULT` below is a compact copy of the recorded Pythia result, not a mock.
+Your job here is to decide what its evidence permits us to claim.
 '''
 
 # ! CELL TYPE: markdown
@@ -1788,13 +1746,6 @@ def run_smoke_test(cpu: bool=True) -> dict[str, Any]:
     _ = cpu
     return toy_ground_truth_signature()
 
-def run_gpu_test(max_vram_gb: float=24.0) -> dict[str, Any]:
-    """Run the pinned Pythia loader and hook plumbing maintained by the section."""
-    return reference_solutions.run_gpu_test(max_vram_gb=max_vram_gb)
-
-def run_full_experiment(max_vram_gb: float=24.0) -> dict[str, Any]:
-    return run_gpu_test(max_vram_gb=max_vram_gb)
-
 if MAIN:
     tests.test_notebook_contract(run_smoke_test)
 
@@ -1878,112 +1829,7 @@ def adjudicate_pythia_result(result: Mapping[str, Any]) -> RealModelVerdict:
     )
 ```
 </details>
-
-The provided `run_gpu_test` function is infrastructure, not the solution to this exercise. It reruns
-the pinned loader and hook sweep only when explicitly invoked on CUDA; the parent owns that
-serialized verification.
 '''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-## Optional live Pythia rerun - current result is negative
-
-The current pinned run fails the claim boundaries above. On CUDA, this cell regenerates the Pythia
-layer-position heatmap, control bars, and qualitative table from fresh activations and true
-hook-patched forward passes. A rerun must still be reported as negative unless it beats the same
-predeclared controls.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-Forecast what evidence an optional rerun would need; the saved notebook skipped CUDA.
-'''
-
-# ! CELL TYPE: code
-# ! FILTERS: []
-# ! TAGS: []
-
-def plot_gpu_signature_result(gpu_result: Mapping[str, Any]) -> None:
-    heatmap = t.tensor(gpu_result['probe_heatmap'], dtype=t.float32)
-    controls = list(gpu_result['patch_control_means'].keys())
-    means = [gpu_result['patch_control_means'][name] for name in controls]
-    flips = [gpu_result['patch_control_flip_rates'][name] for name in controls]
-    fig, axes = plt.subplots(1, 3, figsize=(15, 4))
-    im = axes[0].imshow(heatmap, vmin=0, vmax=1, cmap='magma')
-    axes[0].set_title('Pythia hidden-answer probe\nlayer-position heatmap')
-    axes[0].set_xticks(range(len(gpu_result['semantic_positions'])), gpu_result['semantic_positions'], rotation=25, ha='right')
-    axes[0].set_yticks(range(len(heatmap)), [f'h{i}' for i in range(len(heatmap))])
-    fig.colorbar(im, ax=axes[0], fraction=0.046, pad=0.04)
-    axes[1].bar(range(len(controls)), means)
-    axes[1].set_title('Hook patch effect vs controls')
-    axes[1].set_ylabel('mean donor-margin effect')
-    axes[1].set_xticks(range(len(controls)), controls, rotation=35, ha='right')
-    axes[2].bar(range(len(controls)), flips)
-    axes[2].set_title('Final answer flips toward donor')
-    axes[2].set_ylabel('flip rate')
-    axes[2].set_xticks(range(len(controls)), controls, rotation=35, ha='right')
-    fig.tight_layout()
-    output = asset_dir / 'cot_faithfulness_signature_result.png'
-    fig.savefig(output, dpi=180, bbox_inches='tight')
-    plt.show()
-    print(f'saved {output}')
-
-if MAIN:
-    RUN_GPU_SIGNATURE = False
-
-if MAIN:
-    if RUN_GPU_SIGNATURE and t.cuda.is_available():
-        gpu_result = run_gpu_test(max_vram_gb=24.0)
-        tests.test_live_gpu_signature_result(gpu_result)
-        plot_gpu_signature_result(gpu_result)
-        utils.print_report('Core GPU metrics',
-            {'hidden_answer_accuracy': gpu_result['hidden_answer_accuracy'],
-            'label_shuffled_probe_accuracy': gpu_result['label_shuffled_probe_accuracy'],
-            'patch_target_control_gap': gpu_result['patch_target_control_gap'],
-            'text_only_recall': gpu_result['text_only_recall'],
-            'detector_recall': gpu_result['detector_recall']})
-    else:
-        print('Set RUN_GPU_SIGNATURE = True on CUDA to run the real Pythia hook-patching signature result. Parent verification will run it serially.')
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-## Qualitative prompt table
-
-After the CUDA cell runs, inspect `gpu_result["qualitative_examples"]`. Do not accept the aggregate
-bars if the examples are nonsensical.
-'''
-
-# ! CELL TYPE: code
-# ! FILTERS: []
-# ! TAGS: []
-
-if MAIN:
-    if 'gpu_result' in globals() and gpu_result.get('cuda_available'):
-        for row in gpu_result['qualitative_examples'][:6]:
-            print('-' * 80)
-            print(row['prompt'])
-            print({'condition': row['condition'],
-                'hidden': row['hidden_answer'],
-                'visible': row['visible_answer'],
-                'donor': row['donor_hidden_answer'],
-                'clean': row['clean_prediction'],
-                'target_patch': row['target_patched_prediction'],
-                'random_direction': row['random_direction_prediction'],
-                'target_patch_effect': round(row['target_patch_effect'],
-                4),
-                'random_direction_effect': round(row['random_direction_effect'],
-                4)})
-    else:
-        print('Run the CUDA signature cell first.')
 
 # ! CELL TYPE: markdown
 # ! FILTERS: []
@@ -1996,8 +1842,7 @@ This cell runs on CPU. Change the layer, semantic position, target example, or o
 and predict the result before executing.
 
 Good first comparisons are `(layer=2, final_prompt)` versus `(layer=1, final_prompt)` and `(layer=2,
-rationale_answer)`. Only the first is in the toy's known causal pathway. The optional Pythia rerun
-remains separate because its current result is negative and requires serialized CUDA verification.
+rationale_answer)`. Only the first is in the toy's known causal pathway.
 '''
 
 # ! CELL TYPE: markdown
@@ -2098,8 +1943,8 @@ r'''
 This is a controlled A/B model organism, not a broad benchmark of natural-language reasoning traces.
 The private answer is present in the prompt, so the claim is about hidden-state localization and
 causal activation transfer under conflicting rationale text, not about discovering an unobserved
-latent belief. The real path uses Pythia-70M-deduped because it is small enough for repeated
-hook-patching sweeps on a 24GB local GPU. Larger chat or reasoning models would need a separate
+latent belief. The recorded run used Pythia-70M-deduped because it is small enough for repeated
+hook-patching sweeps. Larger chat or reasoning models would need a separate
 gated-model and memory-budget review.
 
 ## Reading links

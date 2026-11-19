@@ -41,10 +41,9 @@ When the visible response stays identical, can a planted internal feature reveal
 named-feature interventions.
 
 **Scope.** This section preserves six planted features, thirty training records in five contexts, and twenty-four held-out
-records in four disjoint contexts. Adversarial input optimization, red-teaming with internals, general monitor benchmarks and generated-completion evaluation remain missing. Pythia
-hidden-state/next-token evidence is a separate preflight.
+records in four disjoint contexts. Adversarial input optimization, red-teaming with internals, general monitor benchmarks and generated-completion evaluation remain missing.
 
-**Runtime.** The planted organism is CPU-sized. Only explicitly calling the optional Pythia wrapper starts a CUDA path.
+**Runtime.** The planted organism is CPU-sized.
 '''
 
 # ! CELL TYPE: markdown
@@ -94,8 +93,7 @@ r'''
 
 > **When two outputs are literally identical, can a validated internal feature expose the planted failure without turning every activation into a safety claim?**
 
-This is a safe model organism. Every label, feature activation, output string, and context split is visible below. The later Pythia run is a real hidden-state preflight, not the
-ground truth for this lesson and not a deployment claim.
+This is a safe model organism. Every label, feature activation, output string, and context split is visible below. It is not a deployment claim.
 
 **Common bug:** treating perfect AUROC on the planted organism as evidence for a general safety monitor. The narrow claim requires exact feature ground truth, a context-held-out
 split, an output-only baseline, failed shuffled-label and random-direction controls, and a predicted intervention effect.
@@ -129,7 +127,6 @@ feature, so a white-box monitor has a fair opportunity to distinguish them. That
 # ! FILTERS: [~python]
 # ! TAGS: []
 
-import json
 import sys
 from dataclasses import dataclass
 from pathlib import Path
@@ -153,18 +150,12 @@ if str(exercises_dir) not in sys.path:
 
 import part5_white_box_monitors.tests as tests
 
-GT_TIER = "GT-3"
-EXERCISE_ID = "9_4_white_box_evals_and_monitors"
 DIFFICULTY = 3
 IMPORTANCE = 4
-EXPECTED_RUNTIME = "75-100 minutes for the learner path; minutes on local real-model path"
-REQUIRES_GPU = True
 
 # ! CELL TYPE: code
 # ! FILTERS: [python]
 # ! TAGS: []
-
-import json
 
 import sys
 
@@ -206,17 +197,9 @@ if MAIN:
 if MAIN:
     import part5_white_box_monitors.tests as tests
 
-GT_TIER = "GT-3"
-
-EXERCISE_ID = "9_4_white_box_evals_and_monitors"
-
 DIFFICULTY = 3
 
 IMPORTANCE = 4
-
-EXPECTED_RUNTIME = "75-100 minutes for the learner path; minutes on local real-model path"
-
-REQUIRES_GPU = True
 
 # ! CELL TYPE: markdown
 # ! FILTERS: []
@@ -2015,14 +1998,6 @@ if MAIN:
     print(signature_metrics)
 
 # ! CELL TYPE: markdown
-# ! FILTERS: [streamlit]
-# ! TAGS: []
-
-r'''
-<img src="../../../chapter9_alignment_interpretability/exercises/part5_white_box_monitors/media/white_box_legacy_cell_30_output_0.png" width="1100">
-'''
-
-# ! CELL TYPE: markdown
 # ! FILTERS: []
 # ! TAGS: []
 
@@ -2035,8 +2010,7 @@ The headline result is not merely `AUROC = 1`. The interpretable evidence is the
 2. the white-box score crosses threshold in all four unseen contexts while the output-only score stays below it;
 3. destroying label-feature alignment or choosing an arbitrary direction destroys the ranking.
 
-The output-only monitor is weaker by construction, not by luck. That is appropriate for an exact theorem, and precisely why the real-model result below must be described only as a
-preflight.
+The output-only monitor is weaker by construction, not by luck. That is appropriate for an exact theorem, and precisely why it must not be read as a general safety result.
 '''
 
 # ! CELL TYPE: markdown
@@ -2148,124 +2122,17 @@ if MAIN:
     plt.show()
 
 # ! CELL TYPE: markdown
-# ! FILTERS: [streamlit]
-# ! TAGS: []
-
-r'''
-<img src="../../../chapter9_alignment_interpretability/exercises/part5_white_box_monitors/media/white_box_legacy_cell_33_output_1.png" width="1100">
-'''
-
-# ! CELL TYPE: markdown
 # ! FILTERS: []
 # ! TAGS: []
 
 r'''
-## Notebook Contract
-
-The signature result above is recomputed from the visible learner functions. Calling either function below deliberately starts the CUDA path.
-'''
-
-# ! CELL TYPE: code
-# ! FILTERS: [~python]
-# ! TAGS: []
-
-def run_gpu_test(max_vram_gb: float = 24.0) -> dict:
-    from chapter9_alignment_interpretability.exercises.part4_white_box_evals_monitors.solutions import (
-        run_pythia_white_box_monitor_preflight,
-    )
-
-    return run_pythia_white_box_monitor_preflight(max_vram_gb=max_vram_gb)
-
-
-def run_full_experiment(max_vram_gb: float = 24.0) -> dict:
-    return run_gpu_test(max_vram_gb=max_vram_gb)
-
-
-report = json.loads((section_dir / "historical_verification_report.json").read_text())
-gpu = report["metrics"]["gpu_test"]
-print({
-    "preflight_passed": gpu["preflight_passed"],
-    "monitor_auroc": gpu["monitor_auroc"],
-    "black_box_proxy_accuracy": gpu["black_box_proxy_accuracy"],
-    "label_shuffled_monitor_auroc": gpu["label_shuffled_monitor_auroc"],
-    "random_direction_monitor_auroc": gpu["random_direction_monitor_auroc"],
-    "generation_used": gpu["generation_used"],
-})
-tests.test_committed_gpu_report_retains_real_model_boundary()
-
-# ! CELL TYPE: code
-# ! FILTERS: [python]
-# ! TAGS: []
-
-def run_gpu_test(max_vram_gb: float = 24.0) -> dict:
-    from chapter9_alignment_interpretability.exercises.part4_white_box_evals_monitors.solutions import (
-        run_pythia_white_box_monitor_preflight,
-    )
-
-    return run_pythia_white_box_monitor_preflight(max_vram_gb=max_vram_gb)
-
-def run_full_experiment(max_vram_gb: float = 24.0) -> dict:
-    return run_gpu_test(max_vram_gb=max_vram_gb)
-
-if MAIN:
-    report = json.loads((section_dir / "historical_verification_report.json").read_text())
-
-if MAIN:
-    gpu = report["metrics"]["gpu_test"]
-
-if MAIN:
-    print({
-        "preflight_passed": gpu["preflight_passed"],
-        "monitor_auroc": gpu["monitor_auroc"],
-        "black_box_proxy_accuracy": gpu["black_box_proxy_accuracy"],
-        "label_shuffled_monitor_auroc": gpu["label_shuffled_monitor_auroc"],
-        "random_direction_monitor_auroc": gpu["random_direction_monitor_auroc"],
-        "generation_used": gpu["generation_used"],
-    })
-
-if MAIN:
-    tests.test_committed_gpu_report_retains_real_model_boundary()
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-<details>
-<summary>Expected output</summary>
-
-The committed evidence reports `preflight_passed=True`, monitor AUROC `1.0`, black-box proxy accuracy `0.875`, label-shuffled AUROC at most `0.85`, random-direction AUROC at most
-`0.85`, and `generation_used=False`. The contract test should pass without invoking CUDA.
-
-</details>
-
-<details>
-<summary>Interpreting the contract</summary>
-
-The report confirms that the same mechanics ran on pinned Pythia hidden states. It does not replace the exact organism, the visible signature result, or the negative controls
-above.
-
-</details>
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-## Real-model connection
-
-The section's serialized GPU path loads pinned `EleutherAI/pythia-70m-deduped` at revision `e93a9faa9c77e5d09219f6c868bfc7a1bd65593c`, extracts final-token hidden states from 36
-safe training prompts and 24 held-out prompts, and compares a hidden-state direction with the model's next-token `pass`/`fail` logits. It generates no completions. That run checks
-that the mechanics work on a real transformer; it does **not** provide exact feature semantics and is not the signature result of this notebook.
-
 ## Limitations
 
 - The organism plants monosemantic features and a linear boundary. Real hidden states are distributed, correlated, and may shift under deployment.
 - The output-only score is a deliberately transparent baseline, not a strong learned classifier.
 - AUROC measures ranking, not calibrated probabilities or intervention safety.
 - Named feature explanations are correct here because the ground truth is declared. On a real SAE they require causal and held-out validation.
-- A Pythia-70M hidden-state preflight cannot justify claims about broad safety monitoring, adversarial robustness, or larger instruction models.
+- The planted organism cannot justify claims about broad safety monitoring, adversarial robustness, or real instruction models.
 
 ## Bonus Anomaly Hunt
 
@@ -2280,7 +2147,6 @@ Break one assumption at a time and document the first failure:
 
 - [ARENA Chapter 3: LLM Evaluations](https://arena-chapter3-llm-evals.streamlit.app/)
 - [Scaling Monosemanticity](https://transformer-circuits.pub/2024/scaling-monosemanticity/)
-- [Pythia-70M-deduped model card](https://huggingface.co/EleutherAI/pythia-70m-deduped)
 '''
 
 # ! CELL TYPE: markdown
@@ -2290,7 +2156,7 @@ Break one assumption at a time and document the first failure:
 r'''
 ## Notebook integrity check
 
-This final test verifies that every taught method above is defined in this notebook and that the signature result is recomputed rather than loaded from a verification artifact.
+This final test verifies that every taught method above is defined in this notebook and that the signature result is recomputed in this notebook.
 '''
 
 # ! CELL TYPE: code

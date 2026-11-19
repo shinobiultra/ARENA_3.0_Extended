@@ -65,7 +65,6 @@ r'''
 r'''
 **Scope.** This lesson preserves exact node and edge patching, nonlinear attribution versus EAP-IG, graph
 thresholding and causal metrics, plus a toy SHIFT-style editing exercise. It does not implement or validate the complete SHIFT method or a released-SAE feature-circuit replication.
-The released-artifact and optional GPU routes are separate escalation context.
 
 **Runtime and device.** The planted fixtures and editing exercise are small CPU teaching examples.
 '''
@@ -99,11 +98,11 @@ r'''
 
 > ##### Learning Objectives
 >
-> - Separate toy feature editing, graph faithfulness and controls from released-artifact claims.
+> - Keep toy feature editing, graph faithfulness and controls scoped to the planted graph.
 
 ### ☆ Bonus
 
-Preserve the readout-scale anomaly probe and inspect the stated released-artifact limitations.
+Preserve the readout-scale anomaly probe and inspect the stated limitations.
 '''
 
 # ! CELL TYPE: markdown
@@ -123,14 +122,13 @@ r'''
 By the end of this notebook, you will have recovered an exact planted sparse-feature circuit, because exact node patching, exact edge patching, EAP-IG, thresholded graph metrics,
 and same-size random controls all identify the same sparse graph.
 
-The planted learner theorem runs on CPU in seconds; the local real-model path takes minutes, and full verification includes CUDA.
+The planted learner theorem runs on CPU in seconds.
 
 ## Core Question
 
 Can we discover a causal graph over interpretable SAE features, rather than over opaque residual dimensions, and know when the graph is faithful enough to trust?
 
-This notebook is intentionally local-first. The main result is an exact planted sparse-feature graph. The released Pythia-70M / official Sparse Feature Circuits artifact
-evidence is discussed at the end as a separate escalation path, and this CPU pass does not download or execute those artifacts.
+This notebook is intentionally local-first. The main result is an exact planted sparse-feature graph, and nothing is downloaded.
 
 <details>
 <summary>Common bug - mixing source and receiver feature indices</summary>
@@ -149,14 +147,13 @@ r'''
 By the end of this notebook, you will have recovered an exact planted sparse-feature circuit, because exact node patching, exact edge patching, EAP-IG, thresholded graph metrics,
 and same-size random controls all identify the same sparse graph.
 
-The planted learner theorem runs on CPU in seconds; the local real-model path takes minutes, and full verification includes CUDA.
+The planted learner theorem runs on CPU in seconds.
 
 ## Core Question
 
 Can we discover a causal graph over interpretable SAE features, rather than over opaque residual dimensions, and know when the graph is faithful enough to trust?
 
-This notebook contains the filled reference implementation for the exact planted sparse-feature circuit. It deliberately executes only the CPU learner contract; the parent CUDA
-pass owns Pythia/released-SAE verification.
+This notebook contains the filled reference implementation for the exact planted sparse-feature circuit. It deliberately executes only the CPU learner contract.
 
 <details>
 <summary>Common bug - mixing source and receiver feature indices</summary>
@@ -188,7 +185,6 @@ r'''
 - Compare one-gradient attribution patching with EAP-IG on a nonlinear readout where plain EAP visibly miscalibrates.
 - Threshold a feature graph and measure faithfulness, minimality, completeness, and same-size random controls.
 - Run a small SHIFT-style sparse-feature edit where suppressing the spurious feature improves OOD behavior while random edits fail.
-- Keep the toy theorem separate from released-artifact evidence.
 '''
 
 # ! CELL TYPE: markdown
@@ -236,7 +232,6 @@ from IPython.display import Image, display
 
 chapter = "chapter8_automated_circuits"
 section = "part6_sparse_feature_circuits"
-legacy_section = "part5_sparse_feature_circuits"
 # FILTERS: ~python
 root_dir = next(p for p in [Path.cwd(), *Path.cwd().parents] if (p / chapter).exists())
 # END FILTERS
@@ -245,7 +240,6 @@ MAIN = __name__ == "__main__"
 root_dir = Path(__file__).resolve().parents[3]
 # END FILTERS
 exercises_dir = root_dir / chapter / "exercises"
-section_dir = exercises_dir / legacy_section
 canonical_section_dir = exercises_dir / section
 assets_dir = canonical_section_dir / "assets"
 if MAIN:
@@ -2715,15 +2709,6 @@ if MAIN:
 
 # ! CELL TYPE: markdown
 # ! FILTERS: []
-# ! TAGS: [html]
-
-r'''
-<img src="../../../chapter8_automated_circuits/exercises/part6_sparse_feature_circuits/media/sparse_feature_legacy_cell_25_output_1.png" width="1100">
-<img src="../../../chapter8_automated_circuits/exercises/part6_sparse_feature_circuits/media/sparse_feature_legacy_cell_25_output_2.png" width="1100">
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
 # ! TAGS: []
 
 r'''
@@ -2842,24 +2827,11 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-## Released-artifact boundary
-
-The exact result above is exact: every node, edge, and control is known. The Pythia-70M / released SAE path is separate evidence that must be verified separately.
-
-This CPU notebook does not download `saprmarks/feature-circuits`, does not download the multi-GB Pythia SAE zip, and does not claim that the student has replicated the paper. The released-artifact path covers a Pythia-70M subject-verb preflight, official SAE state-dict checks, one-layer SAE attribution, official saved graph artifact inspection, held-out faithfulness, and SHIFT-style editing evidence. Those are supporting evidence, not the toy theorem.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ## Limitations
 
 - The main learner result is an exact planted sparse-feature graph, not a discovered circuit in an unknown transformer.
 - The SAE here is deliberately transparent and exact. Real SAEs have reconstruction error, dead features, feature splitting, and error terms that can carry important signal.
 - The EAP-IG comparison uses a small nonlinear readout so the failure mode is visible. Real transformer paths have many more nonlinearities and backup paths.
-- The released Sparse Feature Circuits replication path is intentionally deferred to the serialized CUDA/external-artifact verification pass for this task.
 '''
 
 # ! CELL TYPE: code
@@ -2927,21 +2899,4 @@ if MAIN:
     smoke = run_smoke_test(cpu=True)
     assert smoke["planted_signature"]["accepted"]
     tests.test_notebook_contract(lambda cpu=True: smoke)
-
-# ! CELL TYPE: code
-# ! FILTERS: []
-# ! TAGS: []
-
-def run_gpu_test(max_vram_gb: float = 24.0) -> dict:
-    from importlib import import_module
-
-    backend = import_module("chapter8_automated_circuits.exercises.part5_sparse_feature_circuits.solutions")
-    return backend.run_gpu_test(max_vram_gb=max_vram_gb)
-
-
-def run_full_experiment(max_vram_gb: float = 24.0) -> dict:
-    from importlib import import_module
-
-    backend = import_module("chapter8_automated_circuits.exercises.part5_sparse_feature_circuits.solutions")
-    return backend.run_full_experiment(max_vram_gb=max_vram_gb)
 

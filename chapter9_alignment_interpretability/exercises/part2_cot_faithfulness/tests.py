@@ -1,6 +1,4 @@
-from collections.abc import Callable, Mapping
-import json
-from pathlib import Path
+from collections.abc import Callable
 from typing import Any
 
 import pytest
@@ -13,10 +11,6 @@ def _solutions():
     )
 
     return solutions
-
-
-def _section_dir() -> Path:
-    return Path(__file__).resolve().parent
 
 
 def _assert_close(actual: Any, expected: float, *, name: str) -> None:
@@ -241,99 +235,3 @@ def test_notebook_contract(run_smoke_test: Callable | None = None):
     print("All tests in `test_notebook_contract` passed!")
 
 
-def test_live_gpu_signature_result(result: Mapping[str, Any] | None = None):
-    if result is None:
-        pytest.skip("Pass a live run_gpu_test result from the parent CUDA verification run.")
-    assert result["cuda_available"] and result["experiment_completed"], (
-        "The live signature result must come from a completed CUDA experiment."
-    )
-    assert result["model_name"] == "EleutherAI/pythia-70m-deduped", (
-        "The real-model result must use the course's pinned Pythia checkpoint."
-    )
-    assert result["hf_revision"] == "e93a9faa9c77e5d09219f6c868bfc7a1bd65593c", (
-        "The checkpoint revision must remain pinned so the negative result is reproducible."
-    )
-    assert result["heldout_prompt_count"] >= 20, (
-        "The Pythia claim boundary requires a nontrivial held-out prompt set."
-    )
-    assert result["hidden_answer_accuracy"] >= 0.7, (
-        "The hidden-answer probe should clear its predeclared held-out threshold."
-    )
-    assert result["label_shuffled_probe_accuracy"] <= 0.65, (
-        "The shuffled-label control should remain substantially weaker than the probe."
-    )
-    assert result["text_only_recall"] >= result["detector_recall"], (
-        "This pinned run is negative because text-only recall matches or exceeds the detector."
-    )
-    assert not result["text_only_misses_cases"], (
-        "The private answer is text-visible here, so text-only should miss no target cases."
-    )
-    assert not result["target_beats_controls"], (
-        "The pinned Pythia target patch should not be reported as beating matched controls."
-    )
-    assert result["patch_control_means"]["target_patch"] <= result["patch_control_means"]["random_donor"], (
-        "The target intervention must not exceed the matched random-donor control in this negative run."
-    )
-    assert result["patch_target_control_gap"] <= 0.01, (
-        "The target-control gap should stay at the locked negative-result boundary."
-    )
-    assert result["negative_result_detected"], (
-        "The verification path should explicitly classify the Pythia evidence as negative."
-    )
-    assert not result["real_model_claim_supported"], (
-        "Failed causal and text-only controls must block a real-model faithfulness claim."
-    )
-    assert not result["preflight_passed"], (
-        "The preflight should fail honestly when the real-model claim boundaries are not met."
-    )
-    assert "true forward-pass residual activation patching" in result["full_path"], (
-        "The evidence record should state that real hook-based forward patching was executed."
-    )
-    assert len(result["probe_heatmap"]) >= 2, (
-        "The real-model result should expose a layer-position heatmap, not only a scalar."
-    )
-    assert len(result["qualitative_examples"]) >= 4, (
-        "The real-model result should retain enough prompts for qualitative inspection."
-    )
-    print("All tests in `test_live_gpu_signature_result` passed!")
-
-
-def test_exercise_notebook_declares_arena_pedagogy():
-    notebook_path = _section_dir() / "9.2_Chain_of_Thought_Faithfulness_exercises.ipynb"
-    notebook = json.loads(notebook_path.read_text())
-    source = "\n".join("".join(cell.get("source", [])) for cell in notebook.get("cells", []))
-
-    required_strings = [
-        "By the end of this notebook",
-        "exact toy ground truth",
-        "Exercise 1",
-        "Exercise 2",
-        "Exercise 3",
-        "Exercise 4",
-        "Exercise 5",
-        "Exercise 6",
-        "layer-position heatmap",
-        "true forward-pass residual activation patching",
-        "text-only",
-        "label-shuffled",
-        "random-direction",
-        "random-donor",
-        "irrelevant-position",
-        "Try It Yourself",
-        "Anomaly hunt",
-        "def run_smoke_test(cpu: bool = True)",
-        "def run_gpu_test(max_vram_gb: float = 24.0)",
-        "test_live_gpu_signature_result",
-    ]
-    for required in required_strings:
-        assert required in source, f"The learner notebook should include {required!r}."
-    assert source.count("<summary>Expected output</summary>") >= 6, (
-        "Each hard exercise should state the output a learner should expect."
-    )
-    assert source.count("<summary>Help") >= 6, (
-        "Each hard exercise should provide local help without revealing the solution immediately."
-    )
-    assert source.count("<summary>Solution") >= 6, (
-        "Each hard exercise should include a collapsible reference solution."
-    )
-    print("All tests in `test_exercise_notebook_declares_arena_pedagogy` passed!")

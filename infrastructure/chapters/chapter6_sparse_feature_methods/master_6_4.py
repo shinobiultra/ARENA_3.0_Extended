@@ -100,7 +100,7 @@ r'''
 
 ### ☆ Bonus
 
-Separate model-organism evidence from the optional model preflight.
+Inspect the limitations.
 '''
 
 # ! CELL TYPE: code
@@ -154,7 +154,6 @@ The lesson takes 75-100 minutes on CPU and needs no GPU.
 # ! FILTERS: []
 # ! TAGS: []
 
-import json
 import sys
 from dataclasses import dataclass
 from pathlib import Path
@@ -165,7 +164,6 @@ import torch.nn.functional as F
 
 chapter = "chapter6_sparse_feature_methods"
 section = "part4_transcoders"
-legacy_section = "part3_transcoders_attribution_graphs"
 # FILTERS: ~python
 root_dir = next(p for p in [Path.cwd(), *Path.cwd().parents] if (p / chapter).exists())
 # END FILTERS
@@ -173,7 +171,6 @@ root_dir = next(p for p in [Path.cwd(), *Path.cwd().parents] if (p / chapter).ex
 root_dir = Path(__file__).resolve().parents[3]
 # END FILTERS
 exercises_dir = root_dir / chapter / "exercises"
-section_dir = exercises_dir / legacy_section  # historical report identity stays at legacy 6.3
 canonical_section_dir = exercises_dir / section
 assets_dir = canonical_section_dir / "media"
 if str(root_dir) not in sys.path:
@@ -183,8 +180,6 @@ if str(exercises_dir) not in sys.path:
 
 import part3_transcoders_attribution_graphs.tests as tests
 
-GT_TIER = "GT-0"
-EXERCISE_ID = "6_3_transcoders_and_attribution_graphs"
 
 @dataclass(frozen=True)
 class ToyOrganism:
@@ -988,14 +983,6 @@ if MAIN:
 
 # ! CELL TYPE: markdown
 # ! FILTERS: []
-# ! TAGS: [html]
-
-r'''
-<img src="media/transcoder_legacy_cell_12_output_0.png" width="1100">
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
 # ! TAGS: []
 
 r'''
@@ -1530,14 +1517,6 @@ if MAIN:
 
 # ! CELL TYPE: markdown
 # ! FILTERS: []
-# ! TAGS: [html]
-
-r'''
-<img src="media/transcoder_legacy_cell_18_output_0.png" width="1100">
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
 # ! TAGS: []
 
 r'''
@@ -1624,14 +1603,6 @@ if MAIN:
 
 # ! CELL TYPE: markdown
 # ! FILTERS: []
-# ! TAGS: [html]
-
-r'''
-<img src="media/transcoder_legacy_cell_21_output_1.png" width="1100">
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
 # ! TAGS: []
 
 r'''
@@ -1705,73 +1676,6 @@ r'''
 # ! TAGS: []
 
 r'''
-## Real-model connection: supporting evidence only
-
-The course repository also contains a committed CUDA preflight for pinned TransformerLens `gelu-1l` at revision `bddc0e332f0ae84279e6a6a45d91b314899e1603`. It replaced the
-one-layer model's MLP output exactly, then trained a small ReLU transcoder on 104 cached activations. This CPU notebook does not rerun that experiment, and the committed run is not
-a replication of a published cross-layer transcoder graph.
-
-The cell below reads a few metrics as secondary context. It does not feed the signature result.
-
-<details>
-<summary>Expected output</summary>
-
-The committed run reports oracle MLP-output max error `5.72e-06`, oracle logit max error `1.81e-05`, trained held-out MSE ratio `0.15015`, top-1 agreement `0.90385`, and
-top-feature damage `0.80828` versus low-effect damage `0.00065`.
-
-</details>
-'''
-
-# ! CELL TYPE: code
-# ! FILTERS: []
-# ! TAGS: []
-
-if MAIN:
-    report = json.loads((section_dir / "verification_report.json").read_text())
-    gpu = report["metrics"]["gpu_test"]
-    supporting_metrics = [
-        ("model / revision", f"{gpu['model_name']} / {gpu['hf_revision'][:12]}"),
-        ("cached activations", gpu["activation_count"]),
-        ("oracle MLP max error", f"{gpu['oracle_mlp_out_max_abs_error']:.2e}"),
-        ("oracle logit max error", f"{gpu['oracle_logits_max_abs_error']:.2e}"),
-        ("held-out MSE ratio", f"{gpu['trained_transcoder_heldout_mse_ratio']:.5f}"),
-        ("top-1 agreement", f"{gpu['trained_replacement_top1_agreement']:.5f}"),
-        ("top / low-effect damage", f"{gpu['graph_topk_damage']:.5f} / {gpu['graph_random_damage']:.5f}"),
-    ]
-    for label, value in supporting_metrics:
-        print(f"{label:24s} {value}")
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Optional CUDA verification entry points
-
-These wrappers expose the pinned real-model path required by the course verification harness. They call the section's existing GELU-1L implementation and never substitute CPU
-values. Do not run them in this CPU notebook; the parent workflow serializes CUDA checks.
-'''
-
-# ! CELL TYPE: code
-# ! FILTERS: []
-# ! TAGS: []
-
-def run_gpu_test(max_vram_gb: float = 24.0) -> dict:
-    verification_module = __import__(
-        "part3_transcoders_attribution_graphs.solutions",
-        fromlist=["run_gpu_test"],
-    )
-    return verification_module.run_gpu_test(max_vram_gb=max_vram_gb)
-
-
-def run_full_experiment(max_vram_gb: float = 24.0) -> dict:
-    return run_gpu_test(max_vram_gb=max_vram_gb)
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ## Limitations
 
 - The main result is exact because the model organism is hand-specified and has one ReLU layer. It demonstrates the mechanics and tests, not feature discovery from learned
@@ -1780,8 +1684,6 @@ language-model activations.
 - The decoder intervention tests the replacement model. A learned transcoder can be behaviorally close yet mechanistically unfaithful to the original MLP.
 - The reconstruction-only control is intentionally target-agnostic. Real evaluations should compare reconstruction, behavior, sparsity, feature interpretability, and interventions
 over held-out prompts.
-- The committed `gelu-1l` run is a small per-layer preflight with generated prompts. It does not establish frontier-model attribution-graph validity or reproduce the cross-layer
-results from the papers below.
 
 ## Reading and model links
 
@@ -1789,7 +1691,6 @@ results from the papers below.
 attribution-graph, intervention, evaluation, and limitations sections.
 - [On the Biology of a Large Language Model](https://transformer-circuits.pub/2025/attribution-graphs/biology.html) for applications and intervention caveats.
 - [Transcoders Beat Sparse Autoencoders for Interpretability](https://arxiv.org/abs/2501.18823) for evidence comparing transcoder and SAE features.
-- [TransformerLens `gelu-1l` model code and configuration](https://github.com/TransformerLensOrg/TransformerLens) for the small real-model preflight used by this repository.
 
 The transferable workflow is: verify replacement, expose the decomposition, attribute edges, extract a sparse graph, intervene, and try to break the claim with matched controls.
 '''

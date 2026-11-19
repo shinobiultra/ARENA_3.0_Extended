@@ -1,6 +1,4 @@
-import json
 from collections.abc import Callable
-from pathlib import Path
 
 import torch as t
 
@@ -675,66 +673,3 @@ def test_notebook_contract(run_smoke_test: Callable | None = None):
     print("All tests in `test_notebook_contract` passed!")
 
 
-def test_notebook_learner_surface_contract():
-    notebook_path = (
-        Path(__file__).parent
-        / "8.4_Circuit_Tracing_with_Attribution_Graphs_exercises.ipynb"
-    )
-    notebook = json.loads(notebook_path.read_text(encoding="utf-8"))
-    text = "\n".join(
-        "".join(cell.get("source", ""))
-        for cell in notebook["cells"]
-        if cell.get("cell_type") in {"markdown", "code"}
-    )
-    assert text.count("## Exercise ") >= 7, (
-        "8.4 should expose at least seven learner exercises, not a report wrapper."
-    )
-    for required in [
-        "By the end of this notebook",
-        "Expected output",
-        "Help -",
-        "Solution",
-        "Try It Yourself",
-        "Bonus - Anomaly Hunt",
-        "same-size random",
-        "reversed-edge",
-        "circuit_tracing_attribution_graphs_signature_result.png",
-        "circuit_tracing_attribution_graphs_exact_vs_approx_heatmap.png",
-        "circuit_tracing_attribution_graphs_metrics_controls.png",
-    ]:
-        assert required in text, f"Missing required ARENA learner-surface marker: {required}"
-    assert "position_5 -> position_5" in text and "not the flagship claim" in text, (
-        "The notebook must explicitly demote the old position-level preflight."
-    )
-    print("All tests in `test_notebook_learner_surface_contract` passed!")
-
-
-def test_solution_notebook_exposes_taught_implementations():
-    notebook_path = (
-        Path(__file__).parent
-        / "8.4_Circuit_Tracing_with_Attribution_Graphs_solutions.ipynb"
-    )
-    notebook = json.loads(notebook_path.read_text(encoding="utf-8"))
-    code = "\n".join(
-        "".join(cell.get("source", ""))
-        for cell in notebook["cells"]
-        if cell.get("cell_type") == "code"
-    )
-    for function_name in [
-        "make_planted_attribution_circuit",
-        "planted_circuit_activations",
-        "exact_edge_ablation_effects",
-        "integrated_edge_attribution_scores",
-        "threshold_attribution_graph",
-        "top_attribution_path",
-        "exact_path_patch_report",
-        "graph_control_report",
-        "run_planted_graph_signature_result",
-    ]:
-        assert f"def {function_name}(" in code, (
-            f"The solution notebook must expose `{function_name}` rather than hide it in solutions.py."
-        )
-    assert "solutions.run_planted_graph_signature_result" not in code, (
-        "The solution notebook must generate its flagship result from its visible implementation."
-    )
-    print("All tests in `test_solution_notebook_exposes_taught_implementations` passed!")

@@ -80,7 +80,7 @@ r'''
 
 ### ☆ Bonus
 
-Inspect the limitations and optional release contracts.
+Inspect the limitations.
 '''
 
 # ! CELL TYPE: code
@@ -125,7 +125,7 @@ The exact organism supports a causal claim because its sparse code and readout a
 
 ## Setup
 
-The exact organism and released-SAE tensor checks run on CPU: seconds on the toy contract and minutes on the local real-model path. A CUDA GPU is needed only for the optional release verification.
+The exact organism and released-SAE tensor checks run on CPU: seconds on the toy contract and minutes on the local real-model path.
 
 ## Objectives
 
@@ -994,14 +994,6 @@ if MAIN:
 
 # ! CELL TYPE: markdown
 # ! FILTERS: []
-# ! TAGS: [html]
-
-r'''
-<img src="../../exercises/part2_gemma_scope/media/legacy_5_2_cell_15_output_0.png" width="1100">
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
 # ! TAGS: []
 
 r'''
@@ -1735,14 +1727,6 @@ if MAIN:
 
 # ! CELL TYPE: markdown
 # ! FILTERS: []
-# ! TAGS: [html]
-
-r'''
-<img src="../../exercises/part2_gemma_scope/media/legacy_5_2_cell_27_output_1.png" width="1100">
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
 # ! TAGS: []
 
 r'''
@@ -1810,7 +1794,7 @@ r'''
 - Feature `15586` also fires on two held-out narrative prompts. Token identity, syntax, or instruction style may explain part of the separation.
 - The DLA-aligned logit contrast is selected from the decoder vector and unembedding before intervention. It is a function score, not an external measure of coherent technical generation.
 - One random feature and one random direction are visible controls, not a full null distribution. Coefficients near `200` may move activations out of distribution.
-- We do not claim safety effects, monosemanticity, or a complete Gemma Scope audit. Full serialized GPU verification remains separate.
+- We do not claim safety effects, monosemanticity, or a complete Gemma Scope audit.
 
 ## Bonus anomaly hunt
 
@@ -1824,40 +1808,6 @@ The held-out narrative examples about friends listening to music and lanterns at
 - [ARENA SAE interpretation exercises](../../../chapter1_transformer_interp/exercises/part33_interp_with_saes/1.3.3_Interpretability_with_SAEs_exercises.ipynb)
 - [Sparse Autoencoders Find Highly Interpretable Features in Language Models](https://arxiv.org/abs/2309.08600)
 '''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-## GPU entry points
-
-The exercises and signature result above are the CPU learner path. The two entry points below run the GPU check and the full path; neither runs automatically. Call them only on a CUDA GPU.
-
-`run_gpu_test(max_vram_gb=24.0)` runs the bounded GPU check. `run_full_experiment(max_vram_gb=24.0)` runs the same validated full path.
-'''
-
-# ! CELL TYPE: code
-# ! FILTERS: []
-# ! TAGS: []
-
-import importlib
-
-
-def _release_solution_module():
-    return importlib.import_module("chapter5_modern_architectures.exercises.part2_gemma_scope_feature_steering.solutions")
-
-
-def run_gpu_test(max_vram_gb: float = 24.0) -> dict:
-    """Run the section's pinned CUDA verification contract."""
-    return _release_solution_module().run_gpu_test(max_vram_gb=max_vram_gb)
-
-
-def run_full_experiment(max_vram_gb: float = 24.0) -> dict:
-    """Run the full experiment used for the checked-in release evidence."""
-    return _release_solution_module().run_full_experiment(
-        max_vram_gb=max_vram_gb
-    )
 
 # ! CELL TYPE: markdown
 # ! FILTERS: []
@@ -1885,9 +1835,9 @@ r'''
 
 > **Core question:** when a released SAE feature looks semantic, what evidence shows that the coordinate is measured correctly, generalizes beyond selected examples, and has a feature-specific causal effect?
 
-**By the end of this notebook, you will have shown that one known sparse feature is recovered exactly, separates 24 held-out examples, and causally controls a known readout while random-feature, shuffled-label, decoder-norm, density, and matched-direction controls fail. You will then compare that standard with one pinned Gemma Scope 2 result.**
+**By the end of this notebook, you will have shown that one known sparse feature is recovered exactly, separates 24 held-out examples, and causally controls a known readout while random-feature, shuffled-label, decoder-norm, density, and matched-direction controls fail.**
 
-This notebook runs on CPU and takes 75-100 minutes. CUDA is only needed to refresh the pinned real-model evidence.
+This notebook runs on CPU and takes 75-100 minutes.
 
 ## Introduction
 
@@ -1935,9 +1885,6 @@ if str(deep_dive_exercises_dir) not in sys.path:
 
 import chapter6_sparse_feature_methods.exercises.part2_gemma_scope_deep_dive.tests as deep_dive_tests
 import chapter6_sparse_feature_methods.exercises.part2_gemma_scope_deep_dive.utils as utils
-
-GT_TIER = "GT-1"
-EXERCISE_ID = "6_2_gemma_scope_deep_dive"
 
 
 def show_table(headers, rows):
@@ -3230,14 +3177,6 @@ if MAIN:
 
 # ! CELL TYPE: markdown
 # ! FILTERS: []
-# ! TAGS: [html]
-
-r'''
-<img src="../../exercises/part2_gemma_scope/media/legacy_6_2_cell_19_output_2.png" width="1100">
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
 # ! TAGS: []
 
 r'''
@@ -3325,14 +3264,6 @@ if MAIN:
 
 # ! CELL TYPE: markdown
 # ! FILTERS: []
-# ! TAGS: [html]
-
-r'''
-<img src="../../exercises/part2_gemma_scope/media/legacy_6_2_cell_23_output_0.png" width="1100">
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
 # ! TAGS: []
 
 r'''
@@ -3365,91 +3296,12 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-## Escalation To Pinned Gemma Scope Evidence
-
-Only now do we inspect the committed real-model evidence. This CPU cell reads a strict record; it does not download a model, run CUDA, or substitute another artifact. The record pins:
-
-- Gemma Scope 2 repository `google/gemma-scope-2-1b-it` at revision `b0fa29457c3601df0a70c48a15534c738d7c10e0`;
-- residual JumpReLU SAE `resid_post/layer_13_width_16k_l0_small` with `d_model=1152`, width `16384`;
-- Gemma 3 1B IT at revision `dcc83ea841ab6100d6b47a070329e1ba4cf78752`;
-- one benign technical-ML-tool-text versus narrative-prose feature selected on 8 prompts and evaluated on 8 held-out prompts.
-
-This is a narrow semantic result. It does not contain a real-model ablation or steering experiment, and eight held-out prompts are too few for a broad feature claim.
-
-<details>
-<summary>Expected output</summary>
-
-Feature `15586` has held-out AUC `1.000`, random feature `7121` has AUC `0.500`, shuffled-label AUC is `0.000`, threshold accuracy is `0.750`, and positive/negative mean activations are `240.36 / 102.72`. Peak CUDA memory should remain below `2.3 GB`.
-</details>
-
-<details>
-<summary>Help - why keep this after the exact result?</summary>
-
-The exact organism proves the analysis code can recover truth and reject planted traps. The pinned run shows the same measurement shape works on one real artifact. Neither result upgrades the other beyond its evidence.
-</details>
-'''
-
-# ! CELL TYPE: code
-# ! FILTERS: []
-# ! TAGS: []
-
-if MAIN:
-    gpu = utils.load_pinned_real_evidence(deep_dive_section_dir)
-if MAIN:
-    real = gpu["gemma_scope_real_activation_preflight"]
-if MAIN:
-    show_table(
-        ["pinned real-model field", "value"],
-        [
-            ("artifact", gpu["gemma_scope_artifact_path"]),
-            ("encoder / decoder", f"{gpu['gemma_scope_w_enc_shape']} / {gpu['gemma_scope_w_dec_shape']}"),
-            ("train / held-out prompts", f"{real['train_prompt_count']} / {real['heldout_prompt_count']}"),
-            ("selected / random feature", f"{real['selected_feature_id']} / {real['random_control_feature_id']}"),
-            ("held-out target / random / shuffle AUC", f"{real['feature_auc']:.3f} / {real['baseline_auc']:.3f} / {real['label_shuffle_auc']:.3f}"),
-            ("threshold accuracy", f"{real['threshold_accuracy']:.3f}"),
-            ("positive / negative mean", f"{real['positive_mean']:.2f} / {real['negative_mean']:.2f}"),
-            ("active features per prompt-token", f"{real['active_features_per_prompt_token']:.1f}"),
-            ("prompted reconstruction MSE", f"{real['prompted_reconstruction_mse']:.1f} (not scale-normalized)"),
-            ("peak CUDA memory", f"{gpu['peak_vram_gb']:.2f} GB (< 2.3 GB)"),
-        ],
-    )
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-## Optional CUDA entry points
-
-The entry points below refresh the pinned CUDA run and need exact gated model access; the learner notebook never calls them automatically.
-'''
-
-# ! CELL TYPE: code
-# ! FILTERS: []
-# ! TAGS: []
-
-def deep_dive_run_gpu_test(max_vram_gb: float = 24.0) -> dict:
-    from chapter6_sparse_feature_methods.exercises.part2_gemma_scope_deep_dive import solutions as reference_solutions
-
-    return reference_solutions.run_gpu_test(max_vram_gb=max_vram_gb)
-
-
-def deep_dive_run_full_experiment(max_vram_gb: float = 24.0) -> dict:
-    return deep_dive_run_gpu_test(max_vram_gb=max_vram_gb)
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ## Limitations
 
 - The exact organism is linear, orthogonal, and noiseless. Real SAEs are overcomplete, features interfere, thresholds vary, and reconstruction error is non-zero.
 - Text labels in the organism are assigned by construction. Real semantic labels require a written rubric, independent annotators where feasible, and larger held-out and out-of-distribution sets.
 - AUC does not measure calibration and can hide subgroup failures. Inspect score distributions and concrete false positives and negatives.
 - DLA is a direct linear contribution, not a full causal path through later layers.
-- The pinned Gemma Scope result uses 16 prompts total, with 8 held out, one layer, one SAE width, and one selected feature. Its shuffled-label AUC of `0.0` is one small-sample permutation, not a null distribution.
-- The pinned result has no real-model steering or ablation, so the real feature claim remains correlational.
 
 ## Further Research
 

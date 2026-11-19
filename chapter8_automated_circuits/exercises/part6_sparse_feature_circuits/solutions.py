@@ -13,11 +13,9 @@ from IPython.display import Image, display
 
 chapter = "chapter8_automated_circuits"
 section = "part6_sparse_feature_circuits"
-legacy_section = "part5_sparse_feature_circuits"
 MAIN = __name__ == "__main__"
 root_dir = Path(__file__).resolve().parents[3]
 exercises_dir = root_dir / chapter / "exercises"
-section_dir = exercises_dir / legacy_section
 canonical_section_dir = exercises_dir / section
 assets_dir = canonical_section_dir / "assets"
 if MAIN:
@@ -1162,20 +1160,5 @@ if MAIN:
     smoke = run_smoke_test(cpu=True)
     assert smoke["planted_signature"]["accepted"]
     tests.test_notebook_contract(lambda cpu=True: smoke)
-
-# %%
-
-def run_gpu_test(max_vram_gb: float = 24.0) -> dict:
-    from importlib import import_module
-
-    backend = import_module("chapter8_automated_circuits.exercises.part5_sparse_feature_circuits.solutions")
-    return backend.run_gpu_test(max_vram_gb=max_vram_gb)
-
-
-def run_full_experiment(max_vram_gb: float = 24.0) -> dict:
-    from importlib import import_module
-
-    backend = import_module("chapter8_automated_circuits.exercises.part5_sparse_feature_circuits.solutions")
-    return backend.run_full_experiment(max_vram_gb=max_vram_gb)
 
 # %%
