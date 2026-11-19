@@ -38,7 +38,6 @@ _SUBMODULES = {
     "peft_interpretability",
     "predictive_concept_decoders",
     "proxy_drift_detection",
-    "refusal_steering",
     "representation_geometry",
     "sae_variants",
     "shapley_attribution",

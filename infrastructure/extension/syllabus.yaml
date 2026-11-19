@@ -383,7 +383,7 @@ chapters:
       - number: "9.1"
         title: Refusal Directions and Representation Engineering
         dir: part1_refusal_directions
-        sources: [chapter9_alignment_interpretability/exercises/part1_refusal_directions_safe_steering, arena_ext/refusal_steering.py]
+        sources: []
         requirements: [alignment.refusal_direction, alignment.multi_refusal_geometry, representation.representation_engineering]
         brief: >
           Replicate "Refusal is mediated by a single direction" on a small instruct model with sanitised prompts:
@@ -531,7 +531,7 @@ chapters:
       - number: "12.1"
         title: CLIP and SigLIP from Scratch
         dir: part1_clip_siglip
-        sources: [chapter12_vlm_interpretability/exercises/part1_clip_siglip_vlm_controls, arena_ext/vlm_interpretability.py]
+        sources: []
         requirements: [vlm.clip_contrastive_from_scratch, vlm.siglip_loss_from_scratch, vlm.real_clip_siglip_retrieval, vlm.clip_siglip_feature_geometry, vlm.clothing_object_color_style_geometry]
         brief: >
           Contrastive (InfoNCE) and sigmoid losses, a tiny CLIP trained on synthetic coloured shapes with a retrieval
@@ -550,7 +550,7 @@ chapters:
           steer with latents, then study typographic attacks (an image of an apple labelled "iPod"): locate the text-reading
           features/heads and mitigate by ablation, with clean-accuracy side effects.
       - number: "12.3"
-        title: Mini VLM from Scratch
+        title: Build a Mini VLM on SigLIP and GPT-2
         dir: part3_mini_vlm_from_scratch
         description: "Build a mini VLM and inspect actual image-only, text-only and region-patching controls; compare the fresh unique-layer Qwen sweep while keeping selected-pair and readout limits visible."
         sources: [chapter12_vlm_interpretability/exercises/part3_mini_vlm_from_scratch]

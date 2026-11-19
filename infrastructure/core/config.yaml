@@ -252,7 +252,7 @@ conversion_map:
     streamlit_page: 02_[12.2]_Typographic_Attacks_and_SAE_Features_in_a_Toy_Two-Tower_Model
     exercise_dir: part2_clip_saes_typographic
   '12.3':
-    streamlit_page: 03_[12.3]_Mini_VLM_from_Scratch
+    streamlit_page: 03_[12.3]_Build_a_Mini_VLM_on_SigLIP_and_GPT-2
     exercise_dir: part3_mini_vlm_from_scratch
   '12.4':
     streamlit_page: 04_[12.4]_Visual_Token_Flow_in_Real_VLMs
@@ -1317,9 +1317,9 @@ chapters:
       streamlit_description_short: Implement a small pixel-to-retrieval organism, fit an SAE and measure typography mitigation against clean/OCR controls; native CLIP/SigLIP feature and head evidence remains pending
     - id: 3_mini_vlm_from_scratch
       number: '12.3'
-      title: Mini VLM from Scratch
+      title: Build a Mini VLM on SigLIP and GPT-2
       exercise_dir: part3_mini_vlm_from_scratch
-      page_file: 03_[12.3]_Mini_VLM_from_Scratch.md
+      page_file: 03_[12.3]_Build_a_Mini_VLM_on_SigLIP_and_GPT-2.md
       header_image: https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/headers/header-15-3.png
       streamlit_description: Build a mini VLM and inspect actual image-only, text-only and region-patching controls; compare the fresh unique-layer Qwen sweep while keeping selected-pair and readout limits visible.
       streamlit_description_short: Build a mini VLM and inspect actual image-only, text-only and region-patching controls; compare the fresh unique-layer Qwen sweep while keeping selected-pair and readout limits visible
