@@ -57,16 +57,16 @@ green star"`. For the second picture we ask a much easier-sounding question: whi
 "a red circle and a blue square"          "a blue circle and a red square"
 ```
 
-The model we'll use is **SigLIP**, and on the test set we'll build in Part 4 it picks the right caption out of ninety SIGLIP_90% of the time, getting the right colour, the right shape
-*and* the right pattern. On the second question, with the same kind of shapes and almost the same words, it does no better than a coin flip (it prefers the right caption in SIGLIP_PAIR% of
-cases). **CLIP**, its predecessor, does worse on the first (CLIP_90%) and just as badly on the second (CLIP_PAIR%).
+The model we'll use is **SigLIP**, and on the test set we'll build in Part 4 it picks the right caption out of ninety 98% of the time, getting the right colour, the right shape
+*and* the right pattern. On the second question, with the same kind of shapes and almost the same words, it does no better than a coin flip (it prefers the right caption in 55% of
+cases). **CLIP**, its predecessor, does worse on the first (78%) and just as badly on the second (52%).
 
 These are the two models we'll take apart in this section. They are **dual encoders**: an image tower and a text tower which each map their input to a point in one shared vector
 space, trained so that an image and its caption land close together. Nothing else. There is no cross-attention between the two modalities, no decoder, and no generation. Almost
 every vision-language system built since 2021 either uses such a model directly (retrieval, zero-shot classification, image search, dataset filtering) or contains one as its eyes:
 the image encoder of many open multimodal LLMs is a SigLIP or a CLIP ViT, and many of the text-to-image models you'll meet in chapter 13 are conditioned on CLIP text embeddings.
 
-What we build from scratch is a **tiny CLIP**: a ViT and a text transformer with about TINY_PARAMS parameters in all, trained on 120 classes of coloured shapes (24 of them held out) for 2,000 steps. The real
+What we build from scratch is a **tiny CLIP**: a ViT and a text transformer with about 220,000 parameters in all, trained on 120 classes of coloured shapes (24 of them held out) for 2,000 steps. The real
 checkpoints, `openai/clip-vit-base-patch32` and `google/siglip-base-patch16-224`, are loaded frozen at pinned revisions and probed, never trained. The data are a 200-image sample of CIFAR-10 in
 this repository, two photographs that come with scikit-learn, and synthetic shapes and clothing captions that we generate.
 
@@ -176,7 +176,7 @@ What this lesson doesn't show, hard negatives (NegCLIP), what to look at when th
 r'''
 ## Setup code
 
-SETUP_LINE
+A GPU is optional. The tiny CLIP trains in 10-40 seconds per run, and the real checkpoints only see a few hundred images. On a laptop GPU the whole lesson, including the quiz's fourteen key runs, takes about 5 minutes and peaks at about 2 GB of GPU memory. The two real checkpoints are downloaded once, about 0.6 GB for CLIP and 0.8 GB for SigLIP.
 '''
 
 # ! CELL TYPE: code
@@ -2039,7 +2039,7 @@ r'''
 
 The exact numbers vary with hardware and seeds, but you should see something like:
 
-<pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace">CLIP loss, paired captions                 final loss 0.018   i2t R@1 0.942   t2i R@1 0.967
+<pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace">CLIP loss, paired captions                 final loss 0.016   i2t R@1 0.958   t2i R@1 0.983
 CLIP loss, shuffled captions (control)     final loss 4.159   i2t R@1 0.000   t2i R@1 0.017
 untrained (control)                                             i2t R@1 0.008   t2i R@1 0.008
 chance: 0.008</pre>
@@ -2091,7 +2091,7 @@ r'''
 <details>
 <summary>Help - how should I interpret these heatmaps?</summary>
 
-**Left: the trained model.** There's a bright diagonal band: each test image is most similar to its own caption (image-to-text R@1 = 0.94: 1.00 on the 96 seen classes and 0.71 on
+**Left: the trained model.** There's a bright diagonal band: each test image is most similar to its own caption (image-to-text R@1 = 0.96: 0.99 on the 96 seen classes and 0.83 on
 the 24 held-out ones; chance is 0.008). The checkered pattern around it tells you *what* the model confuses. Classes are ordered colour-major, then shape, then position, so the
 bright off-diagonal stripes belong to captions that share a colour, a shape or a position with the true one. Similarity is high between captions that share words, so the model has
 learned attributes, not 120 unrelated labels.
@@ -2102,7 +2102,7 @@ whole matrix is a single constant: all images have collapsed to one embedding, a
 **Right: the untrained model.** Also flat, with cosines close to zero and faint horizontal banding: a random network gives each image a slightly different but meaningless
 embedding. R@1 = 0.01.
 
-**Held-out classes (red ticks).** Their rows also have a bright diagonal entry, but a less sharp one: 17 of the 24 combinations the model has never seen (a green star, a blue
+**Held-out classes (red ticks).** Their rows also have a bright diagonal entry, but a less sharp one: 20 of the 24 combinations the model has never seen (a green star, a blue
 triangle, ...) are retrieved correctly from all 120 captions, including the 96 it was trained on. So the tiny CLIP is partly *compositional*, and not merely memorising. The "Try it
 yourself" section below shows one of the failures.
 
@@ -2169,17 +2169,17 @@ r'''
 <details>
 <summary>Expected output</summary>
 
-<pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace">final training loss: 0.004
+<pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace">final training loss: 0.005
 image-to-text R@1 against the TRUE captions:               0.000
-image-to-text R@1 against the captions it was TRAINED on:  0.792</pre>
+image-to-text R@1 against the captions it was TRAINED on:  0.783</pre>
 
 </details>
 
 <details>
 <summary>Question - what does this tell us about what a "random caption" baseline can and can't rule out?</summary>
 
-The permuted model learned its (wrong) task *perfectly*: a final loss of 0.004, as low as the paired model's. Against the true captions its R@1 is 0.000, which is what a "random
-caption" control would give, but against the relabelled captions it was trained on the R@1 is 0.792, which is 95 of 120 classes, i.e. essentially all of the 96 it saw in training
+The permuted model learned its (wrong) task *perfectly*: a final loss of 0.005, as low as the paired model's. Against the true captions its R@1 is 0.000, which is what a "random
+caption" control would give, but against the relabelled captions it was trained on the R@1 is 0.783, which is 94 of 120 classes, i.e. essentially all of the 96 it saw in training
 (and none of the 24 held-out ones, whose relabelled captions it never saw). In the right panel, the bright diagonal appears as soon as the columns are put in the order of its
 training labels.
 
@@ -2188,7 +2188,7 @@ text tower learned which sentence to put next to that, and nothing in the loss c
 
 - A control that is *fresh at every step* (the `"shuffled"` pairing) tests whether the pairing carries information. A fixed relabelling doesn't: it carries exactly as much information as the real one.
 - High retrieval accuracy by itself can't tell you that a model understands English, since it is reachable with captions that are arbitrary tokens. What
-  distinguishes the paired model from the permuted one is the **held-out combinations**: the paired model retrieves 0.71 of them by composing the meaning of the
+  distinguishes the paired model from the permuted one is the **held-out combinations**: the paired model retrieves 0.83 of them by composing the meaning of the
   words, and the permuted model gets none, because composing arbitrary labels is impossible. A test where the answer depends on meaning is what you need.
 </details>
 '''
@@ -2250,9 +2250,9 @@ r'''
 
 <pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace">SigLIP loss, paired captions                     final loss 0.433   i2t R@1 0.958 (held-out 0.792)   scale 12.3  bias -9.99
 SigLIP loss, shuffled captions (control)         final loss 5.151   i2t R@1 0.025 (held-out 0.000)   scale 9.9  bias -9.95
-SigLIP loss, paired, bias init 0 / scale 14.3    final loss 2.890   i2t R@1 0.175 (held-out 0.125)   scale 14.5  bias -0.00
-same, trained 3x longer (6,000 steps)            final loss 0.119   i2t R@1 0.942 (held-out 0.875)   scale 31.4  bias -0.07
-CLIP loss, paired captions                       final loss 0.018   i2t R@1 0.942 (held-out 0.708)   scale 18.9
+SigLIP loss, paired, bias init 0 / scale 14.3    final loss 2.888   i2t R@1 0.183 (held-out 0.208)   scale 14.6  bias -0.00
+same, trained 3x longer (6,000 steps)            final loss 0.163   i2t R@1 0.950 (held-out 0.792)   scale 30.8  bias -0.08
+CLIP loss, paired captions                       final loss 0.016   i2t R@1 0.958 (held-out 0.833)   scale 19.6
 CLIP loss, shuffled captions (control)           final loss 4.159   i2t R@1 0.000 (held-out 0.000)   scale 14.0</pre>
 
 </details>
@@ -2260,8 +2260,8 @@ CLIP loss, shuffled captions (control)           final loss 4.159   i2t R@1 0.00
 <details>
 <summary>Help - how should I interpret this plot?</summary>
 
-**Both losses learn the task, at about the same level.** The CLIP-loss model's retrieval jumps between steps 300 and 400 and plateaus around 0.94. The sigmoid-loss model takes off
-more slowly (between steps 300 and 700) but reaches a similar plateau (0.96 at the end; 0.79 on held-out classes, against 0.71 for CLIP), so at this scale neither loss has an
+**Both losses learn the task, at about the same level.** The CLIP-loss model's retrieval jumps between steps 200 and 400 and plateaus around 0.96. The sigmoid-loss model takes off
+more slowly (between steps 300 and 700) but reaches the same plateau (0.96 at the end; 0.79 on held-out classes, against 0.83 for CLIP), so at this scale neither loss has an
 accuracy advantage and the main difference is *speed*.
 
 **Both controls stay at chance (0.008) throughout.** The CLIP control sits at a loss of $\log 64 = 4.159$. The SigLIP control sits at a loss of **5.151**, which is not $\log 64$
@@ -2269,13 +2269,13 @@ and deserves an explanation: if the model can't tell the pairs apart it can at b
 probability is $1/64$. That gives $\text{softplus}(-z) + 63\,\text{softplus}(z)$ at $z = -\log 63$, which is $\log 64 + 63 \log(1 + 1/63) = 4.159 + 0.992 = 5.151$ (the Bonus asks
 you to derive this).
 
-**The initialisation is about speed.** The CLIP-style initialisation (scale 14.3, bias 0) is *much* slower: after 2,000 steps it has an R@1 of only 0.175, against 0.96 for the
+**The initialisation is about speed.** The CLIP-style initialisation (scale 14.3, bias 0) is *much* slower: after 2,000 steps it has an R@1 of only 0.183, against 0.96 for the
 paper's initialisation; the loss is 2.89, nowhere near zero. Whether this is "stuck" or "slow" is something we can test: in the run with three times as many steps it does get there
-(R@1 0.94, held-out 0.88), after a long delay of about 1,000 steps in which nothing seems to happen. Notice how it got there: the bias is still at $-0.07$ (it barely moves at this
+(R@1 0.95, held-out 0.79), after a long delay of about 1,200 steps in which nothing seems to happen. Notice how it got there: the bias is still at $-0.08$ (it barely moves at this
 learning rate) and instead the logit scale grew from 14.3 to 31. The model solved the imbalance of Part 1 by making the logits *larger* rather than shifting them. The $-10$ bias
 initialisation doesn't make the task possible; it makes it fast.
 
-The learned parameters at the end of the 2,000-step runs: CLIP's scale grew from 14.3 to 18.9; SigLIP's moved from 10 to 12.3 and its bias stayed at $-9.99$. Compare these with the
+The learned parameters at the end of the 2,000-step runs: CLIP's scale grew from 14.3 to 19.6; SigLIP's moved from 10 to 12.3 and its bias stayed at $-9.99$. Compare these with the
 real models in Part 3.
 </details>
 '''
@@ -2336,18 +2336,18 @@ r'''
 <details>
 <summary>Expected output</summary>
 
-<pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace">  +0.892  'a green triangle in the top left'
-  +0.880  'a blue star in the top left'
-  +0.821  'a green star in the top left'  (held-out class)
-  +0.802  'a blue triangle in the top left'  (held-out class)
-  +0.628  'a yellow star in the top left'</pre>
+<pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace">  +0.887  'a green triangle in the top left'
+  +0.881  'a blue star in the top left'
+  +0.810  'a green star in the top left'  (held-out class)
+  +0.801  'a blue triangle in the top left'  (held-out class)
+  +0.638  'a blue star in the bottom left'</pre>
 
 </details>
 
 The model doesn't retrieve `'a green star in the top left'`, even though it's one of the candidates. Its two best answers each get one attribute wrong: `'a green triangle'` (right
-colour, wrong shape, +0.892) and `'a blue star'` (right shape, wrong colour, +0.880). The true caption is third, at +0.821. So for this unseen combination the model has the
-position right and *both* colour and shape partly right, since it's found captions which share one attribute but failed to pick the one that shares both. This is what the 0.71
-held-out score looks like from the inside: 7 of the 24 unseen combinations fail, and this is one way of failing. Try `("blue", "triangle", "bottom right")` and other combinations,
+colour, wrong shape, +0.887) and `'a blue star'` (right shape, wrong colour, +0.881). The true caption is third, at +0.810. So for this unseen combination the model has the
+position right and *both* colour and shape partly right, since it's found captions which share one attribute but failed to pick the one that shares both. This is what the 0.83
+held-out score looks like from the inside: 4 of the 24 unseen combinations fail, and this is one way of failing. Try `("blue", "triangle", "bottom right")` and other combinations,
 and see whether the failure is always an error in one attribute.
 '''
 
@@ -2358,10 +2358,10 @@ and see whether the failure is always an error in one attribute.
 r'''
 ## Summary of 2️⃣
 
-- A 220,000-parameter dual encoder, built from a patchify function, two small transformers and your loss, learns to match images and captions from scratch in about 2,000 steps: image-to-text R@1 is 0.94 over 120 classes (chance 0.008), and the retrieval matrix shows a clean diagonal.
-- **Controls.** Training on shuffled captions collapses the model (loss $\log 64$, a flat matrix, R@1 0.00); an untrained model is at chance. A *consistent* wrong labelling is learned perfectly (0.79 against its own labels, 0.00 against the true ones), so only a control that is fresh at every step is a null.
-- Generalisation is partial: seen classes are retrieved perfectly (1.00), unseen colour-shape combinations only 0.71 of the time. The model composes attributes, but unreliably.
-- The sigmoid loss reaches the same accuracy (0.96), but learns more slowly, and its initialisation matters: with scale 14.3 and bias 0 it reaches R@1 0.175 in 2,000 steps, against 0.96 with the paper's initialisation (it does get there in 6,000 steps).
+- A 220,000-parameter dual encoder, built from a patchify function, two small transformers and your loss, learns to match images and captions from scratch in about 2,000 steps: image-to-text R@1 is 0.96 over 120 classes (chance 0.008), and the retrieval matrix shows a clean diagonal.
+- **Controls.** Training on shuffled captions collapses the model (loss $\log 64$, a flat matrix, R@1 0.00); an untrained model is at chance. A *consistent* wrong labelling is learned perfectly (0.78 against its own labels, 0.00 against the true ones), so only a control that is fresh at every step is a null.
+- Generalisation is partial: seen classes are retrieved almost perfectly (0.99), unseen colour-shape combinations 0.83 of the time. The model composes attributes, but unreliably.
+- The sigmoid loss reaches the same accuracy (0.96), but learns more slowly, and its initialisation matters: with scale 14.3 and bias 0 it reaches R@1 0.183 in 2,000 steps, against 0.96 with the paper's initialisation (it does get there in 6,000 steps).
 - Batches must not contain repeated captions: 48% of rows would otherwise contain a false negative.
 
 That's the machinery. Now let's see what the real thing looks like.
@@ -2488,8 +2488,8 @@ r'''
 <details>
 <summary>Expected output</summary>
 
-<pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace">CLIP    max |ours - official| over 25 logits: 9.54e-06   (logits range from 17.4 to 25.7)
-SigLIP  max |ours - official| over 25 logits: 1.91e-06   (logits range from -15.3 to -1.9)</pre>
+<pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace">CLIP    max |ours - official| over 25 logits: 7.63e-06   (logits range from 17.4 to 25.7)
+SigLIP  max |ours - official| over 25 logits: 2.86e-06   (logits range from -15.3 to -1.9)</pre>
 
 </details>
 
@@ -2694,13 +2694,27 @@ r'''
 <details>
 <summary>Expected output</summary>
 
-<pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace">FILL_RETRIEVAL_TABLE</pre>
+<pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace">                   real images  shuffled labels (control)  noise images (control)
+image-to-text R@1                                                                
+CLIP                     0.880                      0.135                     0.1
+SigLIP                   0.905                      0.140                     0.1</pre>
 </details>
 
 <details>
 <summary>Help - how should I interpret these heatmaps and this table?</summary>
 
-HELP_RETRIEVAL
+**Real images.** Both models show a strong diagonal: the mean cosine between an image and its own class caption is higher than with any other class's caption. R@1 is 0.88 for CLIP
+and 0.905 for SigLIP (chance 0.10). The confusions are between semantically close classes: animals with animals (cat/dog, deer/horse) and vehicles with vehicles (automobile/truck,
+airplane/ship), which is a good sign that the models are using meaning, not a low-level shortcut.
+
+Notice the *scale* of the cosines: CLIP's matched cosines are about 0.25 and SigLIP's about 0.05 to 0.09 (the colour scale is shared across all six panels). The two models use very
+different parts of the cosine range, and their logit scale and bias compensate (CLIP: $100 \cos$; SigLIP: $117 \cos - 12.9$). Even CLIP's best cell is a cosine of 0.27: matched
+image-caption pairs are *not* close to 1. We'll see why in Part 4.
+
+**Controls.** With the image labels shuffled, the class-mean matrix is almost the same in every row, and R@1 falls to 0.135 and 0.14 (chance is 0.10; with 200 images, differences
+of 0.02 are noise). With noise images the matrix is again flat across rows, and R@1 is 0.10: that is exactly what you'd get if every noise image picked the *same* caption (20 of
+the 200 images belong to any one class). The noise panel isn't blank, however: it has *column* structure, meaning that some captions are more similar to every image than others.
+Hold on to that caption-specific bias: it comes back, with consequences, in the binding test.
 </details>
 '''
 
@@ -2742,18 +2756,18 @@ r'''
 <details>
 <summary>Expected output</summary>
 
-<pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace">CLIP   (N=10, log N = 2.30):  InfoNCE loss with correct pairing   0.237,  with shifted pairing   5.004
+<pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace">CLIP   (N=10, log N = 2.30):  InfoNCE loss with correct pairing   0.238,  with shifted pairing   5.003
        the model's own logits as probabilities for image 0 (a airplane): 0.60, 0.29, 0.02, 0.00 ...
-SigLIP (N=10):             sigmoid loss with correct pairing   3.115 (positive 3.113 + negative 0.002),  with shifted pairing  11.367 (positive 11.276 + negative 0.091)
+SigLIP (N=10):             sigmoid loss with correct pairing   3.113 (positive 3.110 + negative 0.002),  with shifted pairing  11.368 (positive 11.277 + negative 0.091)
        the model's own logits as probabilities for image 0 (a airplane): 0.13, 0.00, 0.00, 0.00 ...</pre>
 
 </details>
 
-**CLIP.** On a batch of ten different images the InfoNCE loss is 0.237, far below $\log 10 = 2.30$, so the model is almost sure which caption goes with which image. With the
+**CLIP.** On a batch of ten different images the InfoNCE loss is 0.238, far below $\log 10 = 2.30$, so the model is almost sure which caption goes with which image. With the
 pairing shifted, the loss is 5.0, more than twice $\log N$: the same "confidently wrong" effect as in Part 1. For image 0 (an airplane), the probabilities are 0.60 for `a photo of
 a airplane` and 0.29 for `a photo of a automobile`.
 
-**SigLIP.** The loss on the *correct* pairing is 3.115, almost all positive term (3.113; the negative term is 0.002). The correct pairs get logits well below zero on average: for
+**SigLIP.** The loss on the *correct* pairing is 3.113, almost all positive term (3.110; the negative term is 0.002). The correct pairs get logits well below zero on average: for
 image 0, the sigmoid match score for `a photo of a airplane` is 0.13. SigLIP ranks the right caption first frequently (R@1 0.905), yet its absolute scores for correct pairs are
 often below 0.5. These are 32×32 CIFAR photographs enlarged to 224 pixels; distribution shift is a plausible contributor, but this experiment does not identify its cause or measure
 calibration. With the shifted pairing the loss is 11.4. Ranking, threshold selection and probability calibration are separate questions: a low score does not mean that only 13% of
@@ -2826,7 +2840,7 @@ r'''
 <summary>Expected output</summary>
 
 <pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace">real images, matching captions      CLIP, softmax: 0.817   SigLIP, softmax: 0.907   SigLIP, sigmoid: 0.174
-real images, unrelated captions     CLIP, softmax: 0.334   SigLIP, softmax: 0.439   SigLIP, sigmoid: 0.000859
+real images, unrelated captions     CLIP, softmax: 0.334   SigLIP, softmax: 0.439   SigLIP, sigmoid: 0.00087
 noise images, matching captions     CLIP, softmax: 0.202   SigLIP, softmax: 0.392   SigLIP, sigmoid: 4.95e-06</pre>
 
 </details>
@@ -2908,15 +2922,15 @@ r'''
 <summary>Expected output</summary>
 
 <pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace">        CLIP softmax  SigLIP softmax  SigLIP sigmoid
-temple        0.0122          0.0191          0.0443
+temple        0.0122          0.0191          0.0444
 castle        0.0049          0.0002          0.0004
 car           0.0000          0.0000          0.0000
 cat           0.0000          0.0000          0.0000
 dog           0.0000          0.0000          0.0000
-pagoda        0.9829          0.9808          0.7046
+pagoda        0.9829          0.9807          0.7045
 piano         0.0000          0.0000          0.0000
         CLIP softmax  SigLIP softmax  SigLIP sigmoid
-flower        0.9931          0.9964          0.3778
+flower        0.9931          0.9964          0.3779
 bee           0.0008          0.0004          0.0002
 car           0.0000          0.0000          0.0000
 cat           0.0000          0.0000          0.0000
@@ -3183,7 +3197,7 @@ r'''
 
 <pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace">                      gap norm  matched cos  unmatched cos  image-image cos  text-text cos
 tiny CLIP, untrained     1.376        0.051          0.051            0.998          0.997
-tiny CLIP, trained       0.050        0.921         -0.007           -0.006         -0.007
+tiny CLIP, trained       0.051        0.921         -0.007           -0.006         -0.007
 CLIP                     1.037        0.343          0.260            0.814          0.780
 SigLIP                   1.186        0.154          0.022            0.772          0.677</pre>
 </details>
@@ -3256,24 +3270,24 @@ r'''
 <summary>Expected output</summary>
 
 <pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace">                                       gap norm  matched cos  unmatched cos  image-image cos  text-text cos  i2t R@1
-learned scale (about 19)                  0.050        0.921         -0.007           -0.006         -0.007    0.942
-frozen scale 14.3 (temperature 0.07)      0.044        0.931         -0.008           -0.007         -0.008    0.958
-frozen scale 100.0 (temperature 0.01)     0.611        0.667          0.010            0.043          0.347    0.942</pre>
+learned scale (about 19)                  0.051        0.921         -0.007           -0.006         -0.007    0.958
+frozen scale 14.3 (temperature 0.07)      0.047        0.932         -0.008           -0.007         -0.008    0.933
+frozen scale 100.0 (temperature 0.01)     0.624        0.657          0.013            0.044          0.368    0.958</pre>
 </details>
 
 <details>
 <summary>Help - how should I interpret this table and plot?</summary>
 
-**Same architecture, same data, same steps and the same retrieval accuracy (0.94 to 0.96), but a very different geometry.** At a frozen scale of 14.3 the gap is 0.044 and the
-matched cosine 0.93: captions and images land on the same points (left panel; the model with a learned scale, which ended at about 19, looks the same: gap 0.050). At CLIP's scale
-of 100 the gap is 0.61, the matched cosine is only 0.67, and the plot shows two clouds far apart along the gap direction, with the captions packed into a few tight clusters (their
-mean pairwise cosine is 0.35, against $-0.008$ at the lower scale) and the images spread more loosely on the other side.
+**Same architecture, same data, same steps and the same retrieval accuracy (0.93 to 0.96), but a very different geometry.** At a frozen scale of 14.3 the gap is 0.047 and the
+matched cosine 0.93: captions and images land on the same points (left panel; the model with a learned scale, which ended at about 19, looks the same: gap 0.051). At CLIP's scale
+of 100 the gap is 0.62, the matched cosine is only 0.66, and the plot shows two clouds far apart along the gap direction, with the captions packed into a few tight clusters (their
+mean pairwise cosine is 0.37, against $-0.008$ at the lower scale) and the images spread more loosely on the other side.
 
-This reproduces, on a small model, the temperature dependence that Liang et al. report. The arithmetic is suggestive: at a scale of 100 a matched cosine of 0.67 against 0.01 for an
-unmatched pair is already a logit gap of 66, enough to make the loss essentially zero (it is 0.000 in this run) long before the two clouds meet. At a scale of 14.3 the same cosine
+This reproduces, on a small model, the temperature dependence that Liang et al. report. The arithmetic is suggestive: at a scale of 100 a matched cosine of 0.66 against 0.01 for an
+unmatched pair is already a logit gap of 64, enough to make the loss essentially zero (it is 0.000 in this run) long before the two clouds meet. At a scale of 14.3 the same cosine
 gap would be a logit gap of only 9, and the loss keeps rewarding matching pairs for coinciding.
 
-Does the gap matter for retrieval? Not here: 0.942 against 0.958. It is a property of the geometry the loss *allows*, not something that retrieval needs. Real CLIP sits at the
+Does the gap matter for retrieval? Not here: the model with the large gap retrieves at 0.958 and the one without at 0.933, so the large gap costs nothing (one seed each). It is a property of the geometry the loss *allows*, not something that retrieval needs. Real CLIP sits at the
 clamp of 100 and has a large gap, but that is a correlation across two models that differ in much more than their temperature: only our tiny experiment varies the temperature on its own.
 (The Bonus has a reading line on *Mind the Gap*, which explains the cone effect behind it.) SigLIP's scale is 117 with a bias of $-12.9$. Next we ask what happens to the real models when we move the clouds.
 </details>
@@ -3695,7 +3709,7 @@ r'''
 <details>
 <summary>Expected output</summary>
 
-<pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace">CLIP    |d_img| = 0.251, |d_txt| = 0.457.  Best success over alpha: image direction: 0.91, caption direction: 0.87, held-out shapes: 0.78, random direction (same norm): 0.00, shape direction (wrong attribute): 0.00
+<pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace">CLIP    |d_img| = 0.251, |d_txt| = 0.457.  Best success over alpha: image direction: 0.93, caption direction: 0.87, held-out shapes: 0.78, random direction (same norm): 0.00, shape direction (wrong attribute): 0.00
 SigLIP  |d_img| = 0.315, |d_txt| = 0.500.  Best success over alpha: image direction: 1.00, caption direction: 1.00, held-out shapes: 1.00, random direction (same norm): 0.00, shape direction (wrong attribute): 0.00</pre>
 
 </details>
@@ -3705,7 +3719,7 @@ SigLIP  |d_img| = 0.315, |d_txt| = 0.500.  Best success over alpha: image direct
 
 **SigLIP.** The image direction turns every red image into the exact blue caption with the same shape and pattern, for all $\alpha \ge 0.75$ up to 2.5; the
 caption direction does the same from $\alpha = 0.5$. (At $\alpha = 1$ we add exactly the average red-to-blue difference.) **CLIP** behaves similarly but less
-robustly. The image direction reaches 0.91 at $\alpha = 0.75$ and falls to 0.64 at 2.5. The caption direction (a longer vector: 0.457 against 0.251) peaks at
+robustly. The image direction reaches 0.93 at $\alpha = 0.75$ and falls to 0.64 at 2.5. The caption direction (a longer vector: 0.457 against 0.251) peaks at
 0.87 at $\alpha = 0.25$ and falls to 0.27 at 2.5. Success needs the *exact* caption, so once the shift is large enough to change the colour, any further push
 starts changing other things as well (what does the retrieved caption look like at $\alpha = 2.5$? Print it and see).
 
@@ -4131,16 +4145,16 @@ r'''
 <summary>Expected output</summary>
 
 <pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace">        text score  image score  group score  swap: pair accuracy  both images pick the same caption  wrong colour word: accuracy  cos(caption A, swapped B)  cos(caption A, wrong-colour C)
-CLIP          0.12        0.060         0.02                0.527                              0.813                          1.0                      0.977                           0.893
-SigLIP        0.18        0.127         0.04                0.553                              0.747                          1.0                      0.979                           0.844
+CLIP          0.12        0.053         0.02                0.523                              0.807                          1.0                      0.977                           0.893
+SigLIP        0.18        0.133         0.04                0.553                              0.747                          1.0                      0.979                           0.844
 chance: text 0.25, image 0.25, group 0.167, pair accuracy 0.5</pre>
 </details>
 
 <details>
 <summary>Help - how should I interpret this table?</summary>
 
-**Neither model binds.** Pooled over the 300 individual comparisons ("does this image prefer its own caption over the swapped one?"), the answer is right 52.7%
-of the time for CLIP and 55.3% for SigLIP: coin flips. The Winoground scores are *below* chance: text score 0.12 and 0.18 (chance 0.25), image score 0.06 and
+**Neither model binds.** Pooled over the 300 individual comparisons ("does this image prefer its own caption over the swapped one?"), the answer is right 52.3%
+of the time for CLIP and 55.3% for SigLIP: coin flips. The Winoground scores are *below* chance: text score 0.12 and 0.18 (chance 0.25), image score 0.05 and
 0.13, group score 0.02 and 0.04 (chance 0.167). That's not a bug, and it is more interesting than "at chance". The two swapped captions are almost the *same
 vector* (cosine 0.977 and 0.979; compare 0.89 and 0.84 for a caption with one wrong colour word), so which one scores higher is decided mostly by
 **caption-specific offsets that don't depend on the image**. In 81% (CLIP) and 75% (SigLIP) of the items the two images, which have opposite colours, choose the
@@ -4281,10 +4295,10 @@ r'''
 <details>
 <summary>Expected output</summary>
 
-<pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace">trained for 2000 steps, final loss 0.081
+<pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace">trained for 2000 steps, final loss 0.082
                                           text  image  group  pair_accuracy  same_caption_for_both  control_accuracy  caption_cos_swap  caption_cos_wrong_colour
-tiny CLIP, trained on two-object scenes  0.967  0.967  0.933          0.983                  0.033               1.0             0.679                     0.515
-tiny CLIP, untrained                     0.000  0.000  0.000          0.500                  1.000               0.7             1.000                     0.998</pre>
+tiny CLIP, trained on two-object scenes  0.967  0.933    0.9          0.983                  0.033               1.0              0.69                     0.510
+tiny CLIP, untrained                     0.000  0.000    0.0          0.500                  1.000               0.7              1.00                     0.998</pre>
 </details>
 '''
 
@@ -4322,8 +4336,8 @@ r'''
 <summary>Help - how should I interpret this plot?</summary>
 
 **The tiny model binds.** After 2,000 steps on 240 swap pairs it prefers its own caption on **98.3%** of the held-out pairs (neither image of which it ever saw), with a group score
-of 0.933, against 0.02 to 0.04 for the real models. The wrong-colour-word control is at 1.0. Its swapped captions aren't nearly identical: their cosine is 0.68, against 0.98 for
-the real models (and 0.52 for a wrong-colour caption). The untrained model is the degenerate case of the real ones, taken to the extreme: swapped captions have a cosine of 1.000,
+of 0.900, against 0.02 to 0.04 for the real models. The wrong-colour-word control is at 1.0. Its swapped captions aren't nearly identical: their cosine is 0.69, against 0.98 for
+the real models (and 0.51 for a wrong-colour caption). The untrained model is the degenerate case of the real ones, taken to the extreme: swapped captions have a cosine of 1.000,
 and in 100% of the items both images choose the same caption, which gives pair accuracy of exactly 0.5 and a text score of 0.
 
 **What this does and doesn't show.** It rules out the explanation that a dual encoder can't bind *by construction*. The one-vector-per-modality bottleneck, in a 220k-parameter pair
@@ -4344,16 +4358,16 @@ r'''
 
 - **The modality gap.** Images and captions occupy two separate narrow cones: the gap between their centres is about 1.0 to 1.2 (maximum 2), and matched pairs
   have cosines of only 0.15 to 0.34. The gap exists at random initialisation (cone effect, gap 1.38 in the untrained tiny CLIP), and whether it survives
-  training depends on the temperature: in our tiny CLIP it disappears at a scale of 14 (gap 0.04) and persists at CLIP's scale of 100 (gap 0.61), with the same
-  retrieval accuracy. In the real models, closing half the gap helps retrieval a little and closing it all hurts, whereas moving by the same distance in a
+  training depends on the temperature: in our tiny CLIP it disappears at a scale of 14 (gap 0.05) and persists at CLIP's scale of 100 (gap 0.62), with similar
+  retrieval accuracy (0.93 and 0.96). In the real models, closing half the gap helps retrieval a little and closing it all hurts, whereas moving by the same distance in a
   random direction hurts much more.
 - **Attributes are directions that the two towers share.** Colour, shape and pattern directions estimated independently from images and from captions have a
   cosine of +0.74/+0.76 (colour), 0.52/0.57 (shape), 0.30/0.37 (pattern), against about 0 for shuffled labels or different attributes. Adding the colour
-  direction to an image embedding turns a red shape into its blue counterpart (SigLIP: 100% for $\alpha \ge 0.75$; CLIP: up to 91%), with random-direction and
+  direction to an image embedding turns a red shape into its blue counterpart (SigLIP: 100% for $\alpha \ge 0.75$; CLIP: up to 93%), with random-direction and
   wrong-attribute controls at 0%, and a direction estimated from three shapes works on the other two.
 - **Captions add up.** 91 to 94% of the variance of clothing-caption embeddings is explained by additive effects of object, colour, material and style (against under 1% per factor for shuffled labels), with colour the largest.
 - **Binding fails in both real models, and a tiny CLIP binds when its training data demands it.** Both real models are at chance on colour binding (pair
-  accuracy BIND_PAIR, group score BIND_GROUP) while getting the easy control 100% right; their swapped captions have cosine 0.98 and both images usually pick the
+  accuracy 0.52/0.55, group score 0.02/0.04) while getting the easy control 100% right; their swapped captions have cosine 0.98 and both images usually pick the
   same caption. A tiny CLIP trained on two-object scenes binds on held-out pairs (0.98). That rules out one explanation, that a dual encoder can't bind by construction. It doesn't show that the
   training data is the whole story for the real models.
 
@@ -4410,7 +4424,7 @@ m = fresh_model(siglip=(loss_name == "siglip"))
 hist = train_tiny_clip(m, train_images, CAPTION_IDS, train_classes, loss_name, "paired", steps=2000, batch_size=64, lr=5e-4, seed=0)
 ```
 
-It gave an image-to-text R@1 of BASE_CLIP with the CLIP loss and BASE_SIG with the SigLIP loss (BASE_CLIP_HO and BASE_SIG_HO on held-out combinations). Chance is 1/120 = 0.008.
+It gave an image-to-text R@1 of 0.958 with the CLIP loss and 0.958 with the SigLIP loss (0.83 and 0.79 on held-out combinations). Chance is 1/120 = 0.008.
 '''
 
 # ! CELL TYPE: markdown
@@ -4465,7 +4479,7 @@ for every image, or **depends** on the image.
 
 ## Q3. Smaller batches &nbsp;·&nbsp; Medium &nbsp;·&nbsp; 5 points
 
-**From the lesson.** At batch size 64 the two losses were level: BASE_CLIP for CLIP and BASE_SIG for SigLIP. The SigLIP paper (Zhai et al., 2023) reports that the sigmoid loss is at least on par with
+**From the lesson.** At batch size 64 the two losses were level: 0.958 for CLIP and 0.958 for SigLIP. The SigLIP paper (Zhai et al., 2023) reports that the sigmoid loss is at least on par with
 softmax, and does particularly well at small batch sizes.
 
 **This question changes.** The batch size drops from 64 to 16 for both losses. Everything else is as in Part 2, including the bias initialisation of $-10$. There are three seeds per loss.
@@ -4571,30 +4585,77 @@ r'''
 
 <pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace">FILL_Q1</pre>
 
-Q1_REVEAL
+**Answer:** (a) softmax **falls** for every image and sigmoid is **unchanged**; (b) **c**, −9.1 points.
+
+**The mental model.** A softmax row is a competition for a fixed budget of 1. A new candidate always takes some of that budget, however weak it is. The correct caption's
+probability is multiplied by $Z_\text{old}/Z_\text{new}$, so it always falls. How far it falls in *points* depends on how much it had and how strong the newcomers
+are. Image 3 had 0.75 and meets a newcomer (0.50) close to its own logit, so it loses 28 points. Image 2 meets the strongest newcomer in the table (1.75), but it only
+had 0.06 to lose. A sigmoid scores every pair on its own, so adding columns can't touch it.
+
+This is the Part 3 result about abstaining, seen from the other side. A SigLIP score means the same thing however many captions you show the model. A CLIP score means
+"better than the other captions on this list". If you got (a) wrong, re-read the part of Part 3 where both models are shown captions that don't fit the image.
 </details>
 
 <details>
 <summary>Reveal - Q2: turning up the learning rate</summary>
 
-Q2_REVEAL
+| run | loss | learning rate | final R@1, mean of 2 seeds (each seed) |
+| --- | --- | --- | --- |
+| A | CLIP | 2e-3 | 0.967 (0.975, 0.958) |
+| B | CLIP | 5e-3 | 0.975 (0.983, 0.967) |
+| C | SigLIP | 2e-3 | 0.421 (0.758, 0.083) |
+| D | SigLIP | 5e-3 | 0.008 (0.008, 0.008), which is chance |
+
+**Answer:** `D < C < A = B`.
+
+**The mental model.** The CLIP loss barely noticed a 10× learning rate. The sigmoid loss got much worse at 4× and failed completely at 10×. The likely reason is one you met in Part 1:
+softmax is invariant to adding the same number to every logit in a row, so a large step that moves a whole row together costs nothing. The sigmoid loss has no such
+slack. Every pair is pushed on its own, and 63 of every 64 pairs in a batch are negatives. Q4 shows where a big step can then end up.
+
+Also notice the two seeds at 2e-3: 0.758 and 0.083. Close to an instability, seeds disagree wildly, and a single seed would have told you either story: C could have sat next to A, or next to D.
 </details>
 
 <details>
 <summary>Reveal - Q3: smaller batches</summary>
 
-Q3_REVEAL
+| loss | batch 16, three seeds | mean |
+| --- | --- | --- |
+| CLIP | 0.917, 0.900, 0.917 | 0.911 |
+| SigLIP | 0.533, 0.533, 0.733 | 0.600 |
+
+$\Delta = 0.600 - 0.911 = -0.311$. **Answer: a.** Even the best SigLIP seed is below the worst CLIP seed.
+
+**The mental model.** This is the opposite of the paper's headline, and it's worth asking *why* rather than which is right. The paper's claim is about its own regime:
+hundreds of thousands of steps on billions of pairs. Yours is 2,000 steps on 120 classes. One explanation worth testing comes from Part 1. The $-10$ bias
+says "almost every pair is a negative". That is a better fit for a batch of 64 (63 negatives per positive) than for a batch of 16 (15 per positive). Part 2 showed that the
+bias barely moves at this learning rate (it ended at $-9.99$). So a smaller batch may leave the model further from the right starting point, with no fast way to fix it. The Bonus asks
+you to separate this from the other candidate, the scale of the gradient.
+
+If you chose d or e, you trusted the paper over your own runs. That's often the right call, but not when the paper's setting is this far from yours.
 </details>
 
 <details>
 <summary>Reveal - Q4: where does the broken run end up?</summary>
 
-Q4_REVEAL
+Both seeds ended at a loss of **5.151**, with R@1 0.008 (chance). There was no NaN and no divergence. **Answer: d.**
+
+**The mental model.** 5.151 is a number you've seen before. It's the loss of the SigLIP shuffled-caption control in Part 2:
+$\log 64 + 63 \log(1 + 1/63)$, the loss of a model that gives every image-caption pair the same logit, $z = -\log 63$. So the run didn't blow up. It fell into the
+constant solution, which is the best a model can do when it ignores its inputs, and it stayed there. The control got there because it had nothing to learn. This run got
+there because its steps were too big to keep what it had learned.
+
+If you chose e, your picture of "too high a learning rate means divergence" missed that the sigmoid loss has a stable trivial solution sitting at a finite loss. A loss
+that matches a control's to three decimals is a diagnosis: when you see one, check whether the embeddings have collapsed. The Bonus asks you to look at the image-image
+cosines of a stuck model.
 </details>
 
 ## What this quiz tested
 
-QUIZ_TESTED
+- **Softmax scores are relative to the candidate list, and sigmoid scores are not** (Q1). That's why a SigLIP model can abstain.
+- **The softmax loss has slack that the sigmoid loss lacks** (Q2). A whole row can shift for free, so large steps hurt the sigmoid loss first.
+- **The sigmoid loss fails in a specific way** (Q4). It fails to the constant solution at 5.151, a number you derived from a control.
+- **A paper's claim belongs to its regime** (Q3). In this tiny world the sigmoid loss is the one that suffers at small batches. When your runs and a paper disagree,
+  the disagreement is the interesting part.
 
 ## Try it yourself - reproduce one result
 
@@ -4618,12 +4679,12 @@ r'''
 <details>
 <summary>Expected output</summary>
 
-<pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace">FILL_TRYIT</pre>
+<pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace">final loss 5.151   i2t R@1 0.008</pre>
 </details>
 
 ## The runs behind this quiz
 
-Every number in the reveals above comes from the next cell, which reruns all 14 runs, about QUIZ_MINUTES minutes in total. You don't need to run it. It's here so that you can check any answer,
+Every number in the reveals above comes from the next cell, which reruns all 14 runs, about 2 minutes in total. You don't need to run it. It's here so that you can check any answer,
 and so that the quiz can never drift from the code: the cell ends by checking that the answers written in the key above are still the ones these runs produce.
 '''
 
@@ -4675,7 +4736,7 @@ ax.axhline(1 / 120, color="grey", ls=":", lw=1)
 ax.text(len(groups) - 0.5, 1 / 120 + 0.02, "chance (1/120)", ha="right", fontsize=8, color="grey")
 ax.set_xticks(range(len(groups)), list(groups), fontsize=8)
 ax.set(ylabel="image-to-text R@1", ylim=(0, 1.02), title="Tiny CLIP, 2,000 steps: bars are seed means, dots are single seeds")
-ax.legend(loc="lower left", fontsize=8)
+ax.legend(loc="center left", bbox_to_anchor=(1.01, 0.5), fontsize=8)
 plt.tight_layout()
 plt.show()
 
@@ -4684,7 +4745,8 @@ assert quiz.questions["Q1a_softmax"].key == ("falls" if (after < before - 1e-6).
 before, after = q1_probabilities("sigmoid")
 assert quiz.questions["Q1a_sigmoid"].key == ("unchanged" if t.allclose(before, after) else "other"), "Q1a (sigmoid) key has drifted"
 assert letter(-q1_softmax_change, [2, 5, 15, 30]) == quiz.questions["Q1b"].key, "Q1b key has drifted"
-assert Ranking.from_values(q2_means, eps=0.05).key_text == quiz.questions["Q2"].key_text, "Q2 key has drifted"
+q2_order = Ranking.from_values(q2_means, eps=0.05)
+assert q2_order.grade(quiz.questions["Q2"].key_text)[0] == q2_order.out_of, "Q2 key has drifted"
 assert letter(q3_delta, [-0.20, -0.05, 0.05, 0.20]) == quiz.questions["Q3"].key, "Q3 key has drifted"
 assert letter(q4_loss, [0.5, 2, 4.5, 5.5]) == quiz.questions["Q4"].key, "Q4 key has drifted"
 print("The written key matches these runs.")
@@ -4705,7 +4767,10 @@ r'''
 <details>
 <summary>Help - how should I read this figure?</summary>
 
-QUIZ_FIGURE_READING
+Every run behind Q2 to Q4 is shown here, together with your two Part 2 runs. Bars are seed means and dots are single seeds (the Part 2 bars are one seed each). Read across: the CLIP loss (blue)
+stays at 0.90 or above in every setting, and the SigLIP loss (orange) is level with it only at the setting you trained with (batch 64, learning rate 5e-4). It falls as the batch shrinks or the
+learning rate rises. The spread of the orange dots grows as you move away from that setting: at a learning rate of 2e-3 the two seeds land at 0.76 and 0.08, while the CLIP seeds stay within 0.02
+of each other; at 5e-3 both SigLIP seeds are at chance.
 </details>
 '''
 
@@ -4725,7 +4790,7 @@ r'''
 ## What this lesson doesn't show
 
 - Our images are flat-coloured shapes with a few nuisance variations. Real photographs have clutter, occlusion, lighting and text, and we haven't tested the real models' geometry on them.
-- We looked at two checkpoints, and each tiny model was trained from a single seed. Numbers such as 0.71 on held-out combinations, or 0.175 for the sigmoid loss with the CLIP-style initialisation, will move with the seed; the qualitative pattern is what we'd trust (the controls tell you how large a difference has to be before it means something).
+- We looked at two checkpoints, and each tiny model was trained from a single seed. Numbers such as 0.83 on held-out combinations, or 0.183 for the sigmoid loss with the CLIP-style initialisation, will move with the seed; the qualitative pattern is what we'd trust (the controls tell you how large a difference has to be before it means something).
 - The temperature experiment varies one factor in one tiny setting. It reproduces the *direction* of the effect Liang et al. describe, and doesn't test their explanation of it.
 - The binding test is about colours on two objects in fixed positions. It shows that these two models fail *this* test with the small caption change we made; it isn't a statement about all compositional reasoning. And the tiny CLIP's success tells you what is *possible* for the architecture when the data demands it, not why web-scale data doesn't.
 - "Directions" are difference-of-means vectors. They show that attributes are linearly accessible and shared between the towers; they don't show that the models *use* a single direction internally.

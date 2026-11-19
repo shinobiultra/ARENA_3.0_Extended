@@ -1415,7 +1415,7 @@ if MAIN:
     ax.text(len(groups) - 0.5, 1 / 120 + 0.02, "chance (1/120)", ha="right", fontsize=8, color="grey")
     ax.set_xticks(range(len(groups)), list(groups), fontsize=8)
     ax.set(ylabel="image-to-text R@1", ylim=(0, 1.02), title="Tiny CLIP, 2,000 steps: bars are seed means, dots are single seeds")
-    ax.legend(loc="lower left", fontsize=8)
+    ax.legend(loc="center left", bbox_to_anchor=(1.01, 0.5), fontsize=8)
     plt.tight_layout()
     plt.show()
     
@@ -1424,7 +1424,8 @@ if MAIN:
     before, after = q1_probabilities("sigmoid")
     assert quiz.questions["Q1a_sigmoid"].key == ("unchanged" if t.allclose(before, after) else "other"), "Q1a (sigmoid) key has drifted"
     assert letter(-q1_softmax_change, [2, 5, 15, 30]) == quiz.questions["Q1b"].key, "Q1b key has drifted"
-    assert Ranking.from_values(q2_means, eps=0.05).key_text == quiz.questions["Q2"].key_text, "Q2 key has drifted"
+    q2_order = Ranking.from_values(q2_means, eps=0.05)
+    assert q2_order.grade(quiz.questions["Q2"].key_text)[0] == q2_order.out_of, "Q2 key has drifted"
     assert letter(q3_delta, [-0.20, -0.05, 0.05, 0.20]) == quiz.questions["Q3"].key, "Q3 key has drifted"
     assert letter(q4_loss, [0.5, 2, 4.5, 5.5]) == quiz.questions["Q4"].key, "Q4 key has drifted"
     print("The written key matches these runs.")
