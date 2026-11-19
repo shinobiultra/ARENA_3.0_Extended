@@ -442,26 +442,3 @@ def test_architecture_controls(run_architecture_controls: Callable | None = None
             f"Control {control!r} did not produce a meaningful final-logit difference."
         )
     print("All tests in `test_architecture_controls` passed!")
-
-
-def test_notebook_contract(run_smoke_test: Callable | None = None):
-    if run_smoke_test is None:
-        from chapter5_modern_architectures.exercises.part1_gemma_from_scratch.solutions import (
-            run_smoke_test as default_run_smoke_test,
-        )
-
-        run_smoke_test = default_run_smoke_test
-
-    result = run_smoke_test(cpu=True)
-    assert result["rms_norm_passed"], "RMSNorm smoke test failed; inspect `test_gemma_rms_norm` first."
-    assert result["rope_norm_passed"], "RoPE norm preservation failed; inspect `test_apply_rope` first."
-    assert result["cache_parity"]["passed"], (
-        "Tiny Gemma cache parity failed; full-sequence and cached logits should agree."
-    )
-    assert result["clone_parity"]["topk_agreement"] == 1.0, (
-        "Exact-clone parity should have top-k agreement 1.0. "
-        f"Got {result['clone_parity']}"
-    )
-    test_capture_gemma_trace()
-    test_architecture_controls()
-    print("All tests in `test_notebook_contract` passed!")

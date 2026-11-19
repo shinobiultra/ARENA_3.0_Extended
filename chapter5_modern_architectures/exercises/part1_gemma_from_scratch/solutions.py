@@ -977,50 +977,14 @@ import importlib
 def _release_solution_module():
     return importlib.import_module("chapter5_modern_architectures.exercises.part1_gemma_from_scratch.legacy_solutions")
 
-
-def run_gpu_test(max_vram_gb: float = 24.0) -> dict:
-    """Run the section's pinned CUDA verification contract."""
-    return _release_solution_module().run_gpu_test(max_vram_gb=max_vram_gb)
-
-
-def run_full_experiment(max_vram_gb: float = 24.0) -> dict:
-    """Run the full experiment used for the checked-in release evidence."""
-    return _release_solution_module().run_full_experiment(
-        max_vram_gb=max_vram_gb
-    )
-
 # %%
 
 def cache_parity_report(*args, **kwargs):
-    """Preserved compatibility helper; original source remains in legacy_solutions.py."""
+    """Cache-parity check used by the tests; implemented in legacy_solutions.py."""
     return _release_solution_module().cache_parity_report(*args, **kwargs)
 
-def cache_parity_smoke_test(*args, **kwargs):
-    """Preserved compatibility helper; original source remains in legacy_solutions.py."""
-    return _release_solution_module().cache_parity_smoke_test(*args, **kwargs)
-
-def compare_tiny_model_to_clone(*args, **kwargs):
-    """Preserved compatibility helper; original source remains in legacy_solutions.py."""
-    return _release_solution_module().compare_tiny_model_to_clone(*args, **kwargs)
-
-def local_memory_budget(*args, **kwargs):
-    """Preserved compatibility helper; original source remains in legacy_solutions.py."""
-    return _release_solution_module().local_memory_budget(*args, **kwargs)
-
-def rms_norm_smoke_test(*args, **kwargs):
-    """Preserved compatibility helper; original source remains in legacy_solutions.py."""
-    return _release_solution_module().rms_norm_smoke_test(*args, **kwargs)
-
-def rope_norm_smoke_test(*args, **kwargs):
-    """Preserved compatibility helper; original source remains in legacy_solutions.py."""
-    return _release_solution_module().rope_norm_smoke_test(*args, **kwargs)
-
 def run_hf_tiny_gemma_reference_parity(*args, **kwargs):
-    """Preserved compatibility helper; original source remains in legacy_solutions.py."""
+    """Tiny-Gemma versus Hugging Face parity check; implemented in legacy_solutions.py."""
     return _release_solution_module().run_hf_tiny_gemma_reference_parity(*args, **kwargs)
-
-def run_smoke_test(*args, **kwargs):
-    """Preserved compatibility helper; original source remains in legacy_solutions.py."""
-    return _release_solution_module().run_smoke_test(*args, **kwargs)
 
 # %%

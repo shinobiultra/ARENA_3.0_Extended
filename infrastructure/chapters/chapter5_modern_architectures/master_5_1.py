@@ -24,11 +24,6 @@ r'''
         "title": "Predict changed conditions",
         "icon": "4-circle-fill",
         "subtitle": ""
-    },
-    {
-        "title": "Bonus",
-        "icon": "star",
-        "subtitle": ""
     }
 ]
 ```
@@ -66,7 +61,7 @@ mistakes will diverge at the stage where their missing convention first matters.
 
 ## Setup
 
-The exercises and the signature result run on CPU; the toy contract takes seconds and the local real-model path takes minutes. The optional release verification needs a CUDA GPU.
+The exercises and the signature result run on CPU; the toy contract takes seconds and the local real-model path takes minutes.
 
 ## What you will implement
 
@@ -119,9 +114,6 @@ r'''
 >
 > - Predict how absolute positions and window width change cached attention before seeing the mask.
 
-### ☆ Bonus
-
-Inspect the release entry points without executing them.
 '''
 
 # ! CELL TYPE: code
@@ -1683,14 +1675,6 @@ if MAIN:
 
 # ! CELL TYPE: markdown
 # ! FILTERS: []
-# ! TAGS: [html]
-
-r'''
-<img src="media/gemma_historical_cell_23_output_0.png" width="1100">
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
 # ! TAGS: []
 
 r'''
@@ -1794,14 +1778,6 @@ if MAIN:
     ax.grid(axis="y", alpha=0.25)
 if MAIN:
     plt.show()
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: [html]
-
-r'''
-<img src="media/gemma_historical_cell_26_output_0.png" width="1100">
-'''
 
 # ! CELL TYPE: markdown
 # ! FILTERS: []
@@ -2532,30 +2508,8 @@ convention error here. These are the observed numbers for this one fixed fixture
 other weights or inputs.
 '''
 
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-# ☆ Bonus
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-## GPU entry points
-
-The exercises and signature result above are the CPU learner path. The two entry points below run the GPU check and
-the full path; neither runs automatically. Call them only on a CUDA GPU.
-
-`run_gpu_test(max_vram_gb=24.0)` runs the bounded GPU check. `run_full_experiment(max_vram_gb=24.0)` runs the
-same validated full path.
-'''
-
 # ! CELL TYPE: code
-# ! FILTERS: []
+# ! FILTERS: [python]
 # ! TAGS: []
 
 import importlib
@@ -2565,50 +2519,14 @@ def _release_solution_module():
     return importlib.import_module("chapter5_modern_architectures.exercises.part1_gemma_from_scratch.legacy_solutions")
 
 
-def run_gpu_test(max_vram_gb: float = 24.0) -> dict:
-    """Run the section's pinned CUDA verification contract."""
-    return _release_solution_module().run_gpu_test(max_vram_gb=max_vram_gb)
-
-
-def run_full_experiment(max_vram_gb: float = 24.0) -> dict:
-    """Run the full experiment used for the checked-in release evidence."""
-    return _release_solution_module().run_full_experiment(
-        max_vram_gb=max_vram_gb
-    )
-
 # ! CELL TYPE: code
 # ! FILTERS: [python]
 # ! TAGS: []
 
 def cache_parity_report(*args, **kwargs):
-    """Preserved compatibility helper; original source remains in legacy_solutions.py."""
+    """Cache-parity check used by the tests; implemented in legacy_solutions.py."""
     return _release_solution_module().cache_parity_report(*args, **kwargs)
 
-def cache_parity_smoke_test(*args, **kwargs):
-    """Preserved compatibility helper; original source remains in legacy_solutions.py."""
-    return _release_solution_module().cache_parity_smoke_test(*args, **kwargs)
-
-def compare_tiny_model_to_clone(*args, **kwargs):
-    """Preserved compatibility helper; original source remains in legacy_solutions.py."""
-    return _release_solution_module().compare_tiny_model_to_clone(*args, **kwargs)
-
-def local_memory_budget(*args, **kwargs):
-    """Preserved compatibility helper; original source remains in legacy_solutions.py."""
-    return _release_solution_module().local_memory_budget(*args, **kwargs)
-
-def rms_norm_smoke_test(*args, **kwargs):
-    """Preserved compatibility helper; original source remains in legacy_solutions.py."""
-    return _release_solution_module().rms_norm_smoke_test(*args, **kwargs)
-
-def rope_norm_smoke_test(*args, **kwargs):
-    """Preserved compatibility helper; original source remains in legacy_solutions.py."""
-    return _release_solution_module().rope_norm_smoke_test(*args, **kwargs)
-
 def run_hf_tiny_gemma_reference_parity(*args, **kwargs):
-    """Preserved compatibility helper; original source remains in legacy_solutions.py."""
+    """Tiny-Gemma versus Hugging Face parity check; implemented in legacy_solutions.py."""
     return _release_solution_module().run_hf_tiny_gemma_reference_parity(*args, **kwargs)
-
-def run_smoke_test(*args, **kwargs):
-    """Preserved compatibility helper; original source remains in legacy_solutions.py."""
-    return _release_solution_module().run_smoke_test(*args, **kwargs)
-
