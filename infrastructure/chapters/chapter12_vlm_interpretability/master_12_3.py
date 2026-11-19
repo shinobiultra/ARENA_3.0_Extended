@@ -2204,7 +2204,11 @@ r'''
 ## Summary of 3️⃣
 
 - Training only the projector on a frozen GPT-2 (regime A) already teaches the model a lot, but not everything. After 1,500 joint-training steps, regime B reaches near-perfect accuracy on four kinds (colour 99.9%, shape 100.0%, count 99.8%, vertical 99.0%), while horizontal remains weaker at 84.4%.
-- The modality controls perform much worse than the trained VLM: blank images, noise images, **shuffled image-question pairs**, a **random projector** and a **text-only model** give roughly image-blind performance, with some systematic defaults below the best constant guess (blank/noise count accuracy 0.236 versus 0.410). The shuffled control preserves a real image and a real question while breaking their match, so it directly tests whether correct pairing matters.
+- The modality controls perform much worse than the trained VLM: blank images, noise images, **shuffled
+  image-question pairs**, a **random projector** and a **text-only model** give roughly image-blind
+  performance, with some systematic defaults below the best constant guess (blank/noise count accuracy 0.236
+  versus 0.410). The shuffled control preserves a real image and a real question while breaking their match,
+  so it directly tests whether correct pairing matters.
 - When there is nothing to see, the model doesn't produce random answers: it **falls back on a favourite**. A VLM that is losing its grip on the image can look fluent and confident, so this kind of behaviour is exactly what controls are for.
 
 So the model does use the image. That is a statement about behaviour. The next section asks what happens *inside*.
@@ -2242,7 +2246,14 @@ They answer different questions, and the difference between them is the main les
 | **sufficient** | activation patching of image tokens | whether those tokens' content can *change the answer* |
 | **necessary** | attention knockout | whether the model *needs* a route to produce the answer |
 
-This follows the structure of two recent studies on real VLMs. Neo et al. (2025, [*Towards Interpreting Visual Information Processing in Vision-Language Models*](https://arxiv.org/abs/2410.07149)) apply the logit lens to LLaVA's image tokens, and ablate the tokens at an object's location, finding that the answer depends on them. Zhang et al. (2025, [*Cross-modal Information Flow in Multimodal Large Language Models*](https://arxiv.org/abs/2411.18620)) block attention between groups of tokens in windows of layers and find that image information flows to the question in lower and middle layers and to the last position in later ones. We'll reproduce the flavour of both, at toy scale first and on a real model in section 5️⃣.
+This follows the structure of two recent studies on real VLMs. Neo et al. (2025,
+[*Towards Interpreting Visual Information Processing in Vision-Language Models*](https://arxiv.org/abs/2410.07149))
+apply the logit lens to LLaVA's image tokens, and ablate the tokens at an object's location, finding that the
+answer depends on them. Zhang et al. (2025,
+[*Cross-modal Information Flow in Multimodal Large Language Models*](https://arxiv.org/abs/2411.18620)) block
+attention between groups of tokens in windows of layers and find that image information flows to the question
+in lower and middle layers and to the last position in later ones. We'll reproduce the flavour of both, at toy
+scale first and on a real model in section 5️⃣.
 
 **Predict before you look.** The answer is read at position 59 (the final `:`), and image tokens are at positions 1-49. Write down predictions for what you will see: At which
 layers will the answer position attend to the object's tokens? If you copy the *object tokens'* residual stream from a run on a differently coloured scene, at which layers will
@@ -2521,7 +2532,11 @@ A table of three tokens for one scene can't settle anything, and decoded tokens 
 over all 200 scenes, and a control. Two metrics, both about the *true colour word* of the queried object:
 
 1. **Rank.** At each layer, the rank of the true colour word (say `" blue"`) among all 50,257 tokens when the token's residual stream is decoded. Rank 1 means the lens's top prediction is the colour.
-2. **Restricted accuracy.** The full-vocabulary rank is a harsh test: it asks the lens to put the colour above *every* word in the language, including plausible ones like `" the"`. A gentler test restricts attention to the six colour words and asks whether the right one has the highest logit among them (chance: 1/6). It asks whether the token carries colour information *in a form the unembedding can read*, without requiring the colour to beat unrelated vocabulary.
+2. **Restricted accuracy.** The full-vocabulary rank is a harsh test: it asks the lens to put the colour above *every*
+   word in the language, including plausible ones like `" the"`. A gentler test restricts attention to the six
+   colour words and asks whether the right one has the highest logit among them (chance: 1/6). It asks whether
+   the token carries colour information *in a form the unembedding can read*, without requiring the colour to
+   beat unrelated vocabulary.
 '''
 
 # ! CELL TYPE: markdown
@@ -4220,7 +4235,11 @@ r'''
 
 - A pretrained 2B-parameter VLM, without our task-specific fine-tuning, answers these colour questions correctly. Its accuracy is near chance on blank, noise and shuffled images: correct image–question pairing matters.
 - Patching the clean residual stream into the corrupted run, **the object's image tokens recover much of the answer contrast** through the middle of the network, while the same number of random background tokens recovers about 0.05–0.06 and the other objects' tokens about zero. As in the mini VLM, the answer then moves to the last position in the later layers.
-- The two curves have the same shape on a relative-depth axis, but the details differ (where the hand-over happens and how complete the object-only patch is), and the architecture adds complications (DeepStack in the first three layers). That is a reasonable basis for saying that the qualitative picture of "object tokens in the middle, last position at the end" is not an accident of our training run, and no basis for saying the circuits are alike.
+- The two curves have the same shape on a relative-depth axis, but the details differ (where the hand-over
+  happens and how complete the object-only patch is), and the architecture adds complications (DeepStack in
+  the first three layers). That is a reasonable basis for saying that the qualitative picture of "object
+  tokens in the middle, last position at the end" is not an accident of our training run, and no basis for
+  saying the circuits are alike.
 
 That's the full loop: build a VLM from parts, check with controls that it uses the image, find which tokens and which layers matter, and check the findings on a real model.
 

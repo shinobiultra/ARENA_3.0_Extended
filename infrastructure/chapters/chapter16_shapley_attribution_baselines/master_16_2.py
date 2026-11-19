@@ -1479,7 +1479,11 @@ The partition panels compare ordinary exact Shapley with aligned, singleton, mis
 # ! TAGS: []
 
 r'''
-At budget 24, forecast paired_kernel mean maximum player error minus uniform mean maximum player error over seeds 0–49, in attribution units. Also forecast the endpoint-preserving shuffled-value control and partition controls. For transfer, add a new four-way dividend on {0,1,2,3} of +0.8, freeze all other dividends/budgets/masks/seeds/groupings, and forecast the same gap and formerly aligned Owen error before running that new game.
+At budget 24, forecast paired_kernel mean maximum player error minus uniform mean maximum player error over
+seeds 0–49, in attribution units. Also forecast the endpoint-preserving shuffled-value control and partition
+controls. For transfer, add a new four-way dividend on {0,1,2,3} of +0.8, freeze all other
+dividends/budgets/masks/seeds/groupings, and forecast the same gap and formerly aligned Owen error before
+running that new game.
 '''
 
 # ! CELL TYPE: code

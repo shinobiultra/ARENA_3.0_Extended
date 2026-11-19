@@ -31,7 +31,10 @@ r'''
 r'''
 Look at a four-patch image with a red object at the top left and a blue distractor at the bottom right. Ask “what colour is the top-left object?” Now change only that object to blue. If you replace the answer position before it has read the image, should the answer change? What if you replace all visual positions instead?
 
-By the end of this notebook, you will have shown exactly why full-sequence and last-position interventions differ in a visible image-question residual-flow organism, using a layer-by-position recovery heatmap with object and background controls. Then you will map that intervention contract to the real Qwen2.5-VL, PaliGemma, LLaVA-OneVision and Molmo families without pretending a source-level map qualifies their hooks.
+By the end of this notebook, you will have shown exactly why full-sequence and last-position interventions
+differ in a visible image-question residual-flow organism, using a layer-by-position recovery heatmap with
+object and background controls. Then you will map that intervention contract to the real Qwen2.5-VL,
+PaliGemma, LLaVA-OneVision and Molmo families without pretending a source-level map qualifies their hooks.
 
 The executed model here is a small specified attention route, not pretrained weights or a transformer trained to reason. Its point is that we can calculate the correct result independently. [12.3] supplies the fuller MiniVLM/GPT-2/Qwen reference; [1.2] hooks and [8.1] patching are prerequisites.
 '''
@@ -321,7 +324,11 @@ r'''
 r'''
 <details><summary>Help - matched counterfactuals</summary>
 
-Both examples use the same patch grid, question position and answer position. Our renderer also changes the opposite-colour distractor when the target colour changes; that fact means full-sequence interventions include more than one visual difference. The object-only versus matched background condition isolates the queried patch in this known route. For a stronger natural-image experiment, freeze non-target pixels and document donor construction.
+Both examples use the same patch grid, question position and answer position. Our renderer also changes the
+opposite-colour distractor when the target colour changes; that fact means full-sequence interventions include
+more than one visual difference. The object-only versus matched background condition isolates the queried
+patch in this known route. For a stronger natural-image experiment, freeze non-target pixels and document
+donor construction.
 
 </details>
 
@@ -345,7 +352,10 @@ r'''
 r'''
 Scaled dot-product attention is $\operatorname{softmax}(QK^T/\sqrt d)V$. The softmax normalises over **keys**, not query positions. Attention knockout sets specified key probabilities to zero and renormalises the remaining row; that operation changes the distribution over allowed keys and is different from zeroing value vectors.
 
-Our visible route has three transitions. At transition0 the question reads the visual colours using its spatial query and scale16 (which yields a score of8 for the selected patch after dividing by $\sqrt4$). At transition1 the answer reads the question’s two colour coordinates. Transition2 is identity. The route is hand specified; no conclusion about the depth of a real model follows from its three stages.
+Our visible route has three transitions. At transition0 the question reads the visual colours using its
+spatial query and scale16 (which yields a score of8 for the selected patch after dividing by $\sqrt4$). At
+transition1 the answer reads the question’s two colour coordinates. Transition2 is identity. The route is hand
+specified; no conclusion about the depth of a real model follows from its three stages.
 '''
 
 # ! CELL TYPE: markdown
@@ -908,7 +918,12 @@ r'''
 r'''
 ## Interpreting the result
 
-Full-sequence recovery is an important implementation oracle, not a localisation result: replacing the complete matched state reconstructs the clean computation. The queried visual-token row should succeed only at boundary0; question patching carries the effect at boundary1; answer patching works only after the answer has read it. Background patches are matched in count and fail because this explicit route does not read them. The tiny off-target softmax mass also means an unqueried distractor can have a small influence; do not round every small effect into exactly zero without checking its size.
+Full-sequence recovery is an important implementation oracle, not a localisation result: replacing the
+complete matched state reconstructs the clean computation. The queried visual-token row should succeed only at
+boundary0; question patching carries the effect at boundary1; answer patching works only after the answer has
+read it. Background patches are matched in count and fail because this explicit route does not read them. The
+tiny off-target softmax mass also means an unqueried distractor can have a small influence; do not round every
+small effect into exactly zero without checking its size.
 
 ## Summary of 3️⃣
 
@@ -1066,7 +1081,10 @@ r'''
 r'''
 ## The released-model bridge
 
-The reusable contract is: processed inputs and exact image-position mapping; decoder boundary states `(batch,sequence,width)`; a resumable or hook-based replacement at the same boundary; candidate logits; reliable hook removal with `try/finally`. Verify a no-op, full-state clean donor, input nonmutation, batch axes and cached-generation timing before interpreting a real patch. Do not reuse this six-token layout for a processor that expands crops.
+The reusable contract is: processed inputs and exact image-position mapping; decoder boundary states `(batch,sequence,width)`;
+a resumable or hook-based replacement at the same boundary; candidate logits; reliable hook removal with `try/finally`.
+Verify a no-op, full-state clean donor, input nonmutation, batch axes and cached-generation timing before
+interpreting a real patch. Do not reuse this six-token layout for a processor that expands crops.
 
 | Family | Source-grounded mapping to inspect | What remains unqualified here |
 |---|---|---|
@@ -1075,7 +1093,11 @@ The reusable contract is: processed inputs and exact image-position mapping; dec
 | LLaVA-OneVision | SigLIP vision features feed a projector and language model; image/video/crop processing determines the visual sequence. | Any-resolution crop correspondence, image newline/delimiter tokens and full-sequence replacement parity. |
 | Molmo | The official code provides image preprocessing/crops, vision features and language generation with image inputs. | Its image-to-token index mapping, checkpoint-specific source path, cache behavior and a native hook/resumption proof. |
 
-These are implementation reading bridges, not adapters claimed to run. The primary links below are the starting points; freeze exact source/checkpoint revisions before a later qualification. For Patchscopes, a real target prompt and model may decode the donor differently from a fixed lens. Free-text feature verbalizers add another inference model and need donor-swap and text-only controls; this notebook implements neither an oracle nor a qualified real-VLM verbalizer.
+These are implementation reading bridges, not adapters claimed to run. The primary links below are the
+starting points; freeze exact source/checkpoint revisions before a later qualification. For Patchscopes, a
+real target prompt and model may decode the donor differently from a fixed lens. Free-text feature verbalizers
+add another inference model and need donor-swap and text-only controls; this notebook implements neither an
+oracle nor a qualified real-VLM verbalizer.
 
 ## Try it yourself
 
@@ -1097,7 +1119,12 @@ fig,ax=plt.subplots(figsize=(8,3));ax.imshow(np.array(list(play_curves.values())
 r'''
 ## Limitations
 
-The visual encoder is mean pixel colour and the attention route is specified. Its layer0/1 timing is not a measurement of a released VLM. The lens uses known feature coordinates and its zero-state argmax is an arbitrary tie. The two rendered counterfactuals alter a distractor as well as the target; candidate margins and object-only controls show how the known route handles that difference. Native full-sequence hooks/adapters, natural-image evaluation, real Patchscopes/verbalizers and architecture-specific masking/caching remain pending.
+The visual encoder is mean pixel colour and the attention route is specified. Its layer0/1 timing is not a
+measurement of a released VLM. The lens uses known feature coordinates and its zero-state argmax is an
+arbitrary tie. The two rendered counterfactuals alter a distractor as well as the target; candidate margins
+and object-only controls show how the known route handles that difference. Native full-sequence
+hooks/adapters, natural-image evaluation, real Patchscopes/verbalizers and architecture-specific
+masking/caching remain pending.
 '''
 
 # ! CELL TYPE: markdown

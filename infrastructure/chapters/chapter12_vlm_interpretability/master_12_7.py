@@ -33,7 +33,11 @@ Two pictures contain the same red body, green cap and blue handle, but the objec
 
 By the end of this notebook, you will have produced a dense correspondence-and-mask panel on a pixel-defined part task, checked against spatial shuffling, wrong prompts and matched background patches. You implement the PCA projection, matching, attention, prompt decoder, IoU and intervention yourself. A deliberately injected norm artifact makes a failure mode inspectable.
 
-DINO/DINOv2 motivate dense learned representations, and SAM motivates promptable mask decoding. The runnable features here are **mean pixel RGB**, not DINO/DINOv2/SAM weights or a model trained by their full recipes. The purpose is to learn the transportable analysis, then read the exact model bridge without renaming our affinity decoder “SAM”. Prerequisites: [0.1] array shapes and PCA basics, [12.1] normalised similarity; [8.1] is useful for activation replacement.
+DINO/DINOv2 motivate dense learned representations, and SAM motivates promptable mask decoding. The runnable
+features here are **mean pixel RGB**, not DINO/DINOv2/SAM weights or a model trained by their full recipes.
+The purpose is to learn the transportable analysis, then read the exact model bridge without renaming our
+affinity decoder “SAM”. Prerequisites: [0.1] array shapes and PCA basics, [12.1] normalised similarity; [8.1]
+is useful for activation replacement.
 '''
 
 # ! CELL TYPE: markdown
@@ -270,7 +274,10 @@ r'''
 r'''
 <details><summary>Help - what did this objective test establish?</summary>
 
-The prototype calculation checks centring, temperature and pairing numerically. Those logits are declared, not produced by a learned teacher or student. DINO learns across crops using a momentum teacher and collapse-avoidance machinery; DINOv2 adds a larger representation-learning recipe including patch-level objectives. A low loss on our declared prototypes is no evidence of self-supervised representation learning.
+The prototype calculation checks centring, temperature and pairing numerically. Those logits are declared, not
+produced by a learned teacher or student. DINO learns across crops using a momentum teacher and
+collapse-avoidance machinery; DINOv2 adds a larger representation-learning recipe including patch-level
+objectives. A low loss on our declared prototypes is no evidence of self-supervised representation learning.
 
 </details>
 
@@ -624,7 +631,11 @@ r'''
 r'''
 <details><summary>Help - why so few mutual matches?</summary>
 
-Constant-colour patches tie. Every red source patch chooses the first red target patch, whose reverse match returns only to the first red source patch. Thus perfect part accuracy can coexist with very few mutual matches. The spatially shuffled control leaves target feature vectors intact but assigns them to wrong locations, while ground-truth labels retain their positions. It specifically tests image-grid alignment; it is not a test that colour similarity disappears.
+Constant-colour patches tie. Every red source patch chooses the first red target patch, whose reverse match
+returns only to the first red source patch. Thus perfect part accuracy can coexist with very few mutual
+matches. The spatially shuffled control leaves target feature vectors intact but assigns them to wrong
+locations, while ground-truth labels retain their positions. It specifically tests image-grid alignment; it is
+not a test that colour similarity disappears.
 
 </details>
 
@@ -648,7 +659,10 @@ r'''
 r'''
 Attention depends on dot products, so both direction and norm matter. We inject a large multiple of a grey background vector at patch0. This creates an exact, declared artifact: it can dominate a red query’s attention without becoming a better red **cosine** match.
 
-The register-token paper reports high-norm background tokens used for internal computation in learned ViTs, and studies additional training-time tokens as a remedy. Multiplying a pixel feature here is an analogy for the measurement problem, not a reproduction of how those learned artifacts arise. Normalising keys is a diagnostic intervention; it is **not** the paper’s register-token training method.
+The register-token paper reports high-norm background tokens used for internal computation in learned ViTs,
+and studies additional training-time tokens as a remedy. Multiplying a pixel feature here is an analogy for
+the measurement problem, not a reproduction of how those learned artifacts arise. Normalising keys is a
+diagnostic intervention; it is **not** the paper’s register-token training method.
 '''
 
 # ! CELL TYPE: markdown
@@ -1100,15 +1114,30 @@ r'''
 r'''
 ## Interpreting the result
 
-The fixed CPU reference gives foreground part accuracy12/12 versus0/12 after spatial shuffling, with only3 mutual foreground matches because of exact part-colour ties. The injected background token gets attention1.000000 with raw keys and0.008039 after the unit-key diagnostic. Clean/red-part-patched mask IoU is1; corrupted, background-patched and wrong-prompt IoU is0. These are the specified teaching-fixture outputs. The mask panel is the signature result. Red-part replacement should restore the declared red mask, while an equally large background replacement cannot repair the corrupted red features. A blue positive prompt selects another part and scores poorly against the red target. The positive/negative prototypes were fixed from the known clean example; they are privileged task annotations, not an automated discovery procedure.
+The fixed CPU reference gives foreground part accuracy12/12 versus0/12 after spatial shuffling, with only3
+mutual foreground matches because of exact part-colour ties. The injected background token gets
+attention1.000000 with raw keys and0.008039 after the unit-key diagnostic. Clean/red-part-patched mask IoU
+is1; corrupted, background-patched and wrong-prompt IoU is0. These are the specified teaching-fixture outputs.
+The mask panel is the signature result. Red-part replacement should restore the declared red mask, while an
+equally large background replacement cannot repair the corrupted red features. A blue positive prompt selects
+another part and scores poorly against the red target. The positive/negative prototypes were fixed from the
+known clean example; they are privileged task annotations, not an automated discovery procedure.
 
 ## Bridge to DINO, DINOv2, registers and SAM
 
-For **DINO/DINOv2**, replace mean-RGB patch vectors with a pinned model’s patch outputs while preserving its resize/crop geometry. Inspect the official feature interfaces and keep class/register tokens out of the grid. Fit the PCA basis on a declared collection and freeze it before comparisons; use annotated correspondences and shuffled-grid controls, not attractive colours alone. DINOv2 is a larger learned-feature recipe, not this teacher-loss function plus a few steps.
+For **DINO/DINOv2**, replace mean-RGB patch vectors with a pinned model’s patch outputs while preserving its
+resize/crop geometry. Inspect the official feature interfaces and keep class/register tokens out of the grid.
+Fit the PCA basis on a declared collection and freeze it before comparisons; use annotated correspondences and
+shuffled-grid controls, not attractive colours alone. DINOv2 is a larger learned-feature recipe, not this
+teacher-loss function plus a few steps.
 
 For **registers**, inspect norm distributions and downstream maps in the trained variants studied by the paper. This notebook’s injected large background vector and unit-key diagnostic isolate a norm effect; they do not demonstrate the benefit of training with registers.
 
-For **SAM**, keep the model’s image resize/padding coordinates, prompt coordinates, positional image embeddings, prompt encoder, mask decoder and output upsampling path. Cache the actual encoder embedding, replace aligned regions, and rerun the same prompt decoder with the same point/box prompts. Score real masks with background and wrong-prompt controls. Our affinity mask has none of SAM’s learned decoder architecture or ambiguity handling; it makes the intervention logic inspectable before native qualification.
+For **SAM**, keep the model’s image resize/padding coordinates, prompt coordinates, positional image
+embeddings, prompt encoder, mask decoder and output upsampling path. Cache the actual encoder embedding,
+replace aligned regions, and rerun the same prompt decoder with the same point/box prompts. Score real masks
+with background and wrong-prompt controls. Our affinity mask has none of SAM’s learned decoder architecture or
+ambiguity handling; it makes the intervention logic inspectable before native qualification.
 
 ## Try it yourself
 
@@ -1133,7 +1162,13 @@ plt.tight_layout();plt.show()
 r'''
 ## Limitations
 
-RGB means give appearance correspondence, not learned DINO features or semantic object understanding. Constant part colours make exact point matching ambiguous. The PCA task has three input coordinates, so its three-component view loses no information; this is a basis/geometry exercise, not dimensionality-reduction evidence. The norm artifact is injected. The teacher/student objective omits networks, optimisation, momentum updates, crops and DINOv2’s complete objectives. The prompt decoder is a cosine affinity rule, not SAM. Native pretrained-model patch features, learned register comparisons, mask-decoder patching and natural-image results remain pending.
+RGB means give appearance correspondence, not learned DINO features or semantic object understanding. Constant
+part colours make exact point matching ambiguous. The PCA task has three input coordinates, so its
+three-component view loses no information; this is a basis/geometry exercise, not dimensionality-reduction
+evidence. The norm artifact is injected. The teacher/student objective omits networks, optimisation, momentum
+updates, crops and DINOv2’s complete objectives. The prompt decoder is a cosine affinity rule, not SAM. Native
+pretrained-model patch features, learned register comparisons, mask-decoder patching and natural-image results
+remain pending.
 '''
 
 # ! CELL TYPE: markdown
