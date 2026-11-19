@@ -14,11 +14,9 @@ import torch as t
 
 chapter = "chapter8_automated_circuits"
 section = "part7_attribution_graphs"
-legacy_section = "part4_circuit_tracing_attribution_graphs"
 MAIN = __name__ == "__main__"
 root_dir = Path(__file__).resolve().parents[3]
 exercises_dir = root_dir / chapter / "exercises"
-section_dir = exercises_dir / legacy_section
 canonical_section_dir = exercises_dir / section
 assets_dir = canonical_section_dir / "media"
 if MAIN:
@@ -901,20 +899,5 @@ if MAIN:
     for edge in play_signature["graph_edges"]:
         print(f"  {edge['source']} -> {edge['target']}  score={edge['score']:.4f}")
     print("top path:", " -> ".join(play_signature["top_path"]))
-
-# %%
-
-def run_gpu_test(max_vram_gb: float = 24.0) -> dict:
-    from importlib import import_module
-
-    backend = import_module("chapter8_automated_circuits.exercises.part4_circuit_tracing_attribution_graphs.solutions")
-    return backend.run_gpu_test(max_vram_gb=max_vram_gb)
-
-
-def run_full_experiment(max_vram_gb: float = 24.0) -> dict:
-    from importlib import import_module
-
-    backend = import_module("chapter8_automated_circuits.exercises.part4_circuit_tracing_attribution_graphs.solutions")
-    return backend.run_full_experiment(max_vram_gb=max_vram_gb)
 
 # %%
