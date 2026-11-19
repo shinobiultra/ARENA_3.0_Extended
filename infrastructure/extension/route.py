@@ -9,8 +9,10 @@ from __future__ import annotations
 
 import math
 import re
+from collections.abc import Callable
 from dataclasses import dataclass
 from pathlib import Path
+from urllib.parse import quote
 
 import yaml
 
@@ -51,7 +53,7 @@ class Stop:
         if self.first_part is None:
             return ""
         if self.last_part is None:
-            return f", parts {_emoji(self.first_part)} onward" if self.first_part > 1 else ""
+            return f", from part {_emoji(self.first_part)}" if self.first_part > 1 else ""
         if self.first_part == self.last_part:
             return f", part {_emoji(self.first_part)}"
         return f", parts {_emoji(self.first_part)}–{_emoji(self.last_part)}"
@@ -272,6 +274,7 @@ def load(root: Path = ROOT) -> Route:
                 if number in originals:
                     urls[number] = f"{SITE_ROOT}{chapter}/{section['id']}/"
     companions = {entry["unit"]: entry for entry in doc["companions"]}
+    chapter_numbers = {data["number"]: chapter for chapter, data in doc["chapters"].items()}
 
     stages = []
     for stage_number, stage in enumerate(doc["route"], start=1):
@@ -283,8 +286,9 @@ def load(root: Path = ROOT) -> Route:
                 stops.append(Stop(kind="companion", number=unit, title=companions[unit]["title"], **common))
                 continue
             if "planned" in raw:
-                stops.append(Stop(kind="planned", number=str(raw["planned"]), title=raw["title"],
-                                  days=float(raw["days"]), **common))
+                number = str(raw["planned"])
+                stops.append(Stop(kind="planned", number=number, title=raw["title"], days=float(raw["days"]),
+                                  chapter=chapter_numbers.get(int(number.split(".")[0])), **common))
                 continue
             number = str(raw["section"])
             first, last = _parse_parts(raw.get("parts"), number)
@@ -300,3 +304,237 @@ def load(root: Path = ROOT) -> Route:
         number: tuple(str(item) for item in section.get("prerequisites") or ()) for number, section in extension.items()
     }
     return Route(tuple(stages), prerequisites, companions, pages, urls)
+
+
+# ---------- companions (#322) ----------
+
+COMPANION_PAGE = "ALCHEMY.md"  # the companion list (Batch 4, #269)
+COMPANION_LABS = {"u02": "mastery_hub/app.py"}  # the optimizer lab rides with u02
+LAB_COMMAND = "uv run streamlit run {path} --server.address=127.0.0.1 --server.port=18506"
+
+
+def companion_materials(route: Route, unit: str, root: Path = ROOT) -> list[tuple[str, str]]:
+    """What a side trip can link to: (label, repo path), only for files that exist in `root`."""
+    root = Path(root)
+    entry = route.companions[unit]
+    materials = []
+    if entry.get("status") in ("written", "finished") and entry.get("dir") and (root / entry["dir"]).is_dir():
+        materials.append(("companion notebook", str(entry["dir"])))
+    lab = COMPANION_LABS.get(unit)
+    if lab and (root / lab).is_file():
+        materials.append(("optimizer lab", lab))
+    if (root / COMPANION_PAGE).is_file():
+        materials.append(("companion list", COMPANION_PAGE))
+    return materials
+
+
+# ---------- the study guide (#315) ----------
+
+GUIDE = Path("mastery_hub/STUDY-GUIDE.md")
+GUIDE_MARKERS = (
+    "<!-- The stage table below is generated from the syllabus route: "
+    "uv run python infrastructure/extension/route.py --write -->",
+    "<!-- End of the generated stage table. -->",
+)
+
+
+def _guide_target(route: Route, stop: Stop, root: Path) -> str | None:
+    """Where the guide links a stop: originals to learn.arena.education, extension pages by relative path."""
+    if stop.kind == "original":
+        return route.original_url(stop)
+    if stop.kind == "extension" and stop.number in route.pages and route.pages[stop.number].is_file():
+        relative = route.pages[stop.number].resolve().relative_to(Path(root).resolve())
+        return "../" + quote(relative.as_posix())
+    return None
+
+
+def _guide_ref(route: Route, stop: Stop, root: Path, *, short: bool = False) -> str:
+    text = f"[{stop.number}]{stop.parts_label}" if short else stop.label
+    target = _guide_target(route, stop, root)
+    if target is None:
+        return text
+    return f"[{text.replace('[', '').replace(']', '')}]({target})" if short else f"[{text}]({target})"
+
+
+def _companion_line(route: Route, stop: Stop, root: Path) -> str:
+    parts = []
+    for label, target in companion_materials(route, stop.number, root):
+        if label == "optimizer lab":
+            parts.append(f"with the optimizer lab (`{LAB_COMMAND.format(path=target)}`)")
+        else:
+            parts.append(f"[{label}](../{quote(target)})")
+    suffix = f": {', '.join(parts)}" if parts else ""
+    return f"{stop.label}, an optional side trip{suffix}"
+
+
+def _days(days: float) -> str:
+    return "1 day" if days == 1 else f"{days:g} days"
+
+
+def _weeks(days: float) -> str:
+    return f"{days / 5:.0f}"
+
+
+def render_guide(route: Route, root: Path = ROOT) -> str:
+    """The guide's generated part: the stage table, totals, and each stage's stops."""
+    root = Path(root)
+    lines = [
+        "| Stage | | Core | Optional | Core days | All days |",
+        "|---|---|---|---|---|---|",
+    ]
+    for number, (title, stops) in enumerate(route.stages, start=1):
+        core = ", ".join(_guide_ref(route, s, root, short=True) for s in stops if s.core) or "—"
+        optional = [_guide_ref(route, s, root, short=True) for s in stops if not s.core and s.kind != "companion"]
+        optional += [f"{s.number} (side trip)" for s in stops if s.kind == "companion"]
+        core_days, all_days = route.stage_days(number)
+        lines.append(f"| {number} | {title} | {core} | {', '.join(optional) or '—'} | {core_days:g} | {all_days:g} |")
+    core_total, all_total = route.totals()
+    lines += [
+        "",
+        f"The core route is about {core_total:g} days (about {_weeks(core_total)} weeks full-time). Everything, "
+        f"optional lessons included, is about {all_total:g} days (about {_weeks(all_total)} weeks). Alchemy side "
+        "trips are not counted.",
+        "",
+        "## The route, stage by stage",
+    ]
+    for number, (title, stops) in enumerate(route.stages, start=1):
+        core_days, all_days = route.stage_days(number)
+        lines += ["", f"### {number}. {title}", ""]
+        core = [s for s in stops if s.core]
+        optional = [s for s in stops if not s.core and s.kind != "companion"]
+        trips = [s for s in stops if s.kind == "companion"]
+        if core:
+            lines.append(f"Core ({_days(core_days)}):")
+            lines.append("")
+            lines += [f"- {_guide_ref(route, s, root)}{_where(s)}" for s in core]
+        if optional:
+            lines += ["", "Optional, in any order:", ""]
+            lines += [f"- {_guide_ref(route, s, root)}{_where(s)}{_needs(route, s)}" for s in optional]
+        if trips:
+            lines += ["", "Side trips:", ""]
+            lines += [f"- {_companion_line(route, s, root)}" for s in trips]
+    return "\n".join(lines) + "\n"
+
+
+def _where(stop: Stop) -> str:
+    return " (original ARENA)" if stop.kind == "original" else ""
+
+
+def _needs(route: Route, stop: Stop, ref: Callable[[Stop], str] | None = None) -> str:
+    """For an optional lesson: its prerequisites that are themselves optional stops."""
+    extra = [
+        route.first_stop(number)
+        for number in route.prerequisites.get(stop.number, ())
+        if not route.first_stop(number).core
+    ]
+    if not extra:
+        return ""
+    ref = ref or (lambda s: f"[{s.number}] {s.title}")
+    return " (after " + _and([ref(s) for s in extra]) + ")"
+
+
+def _and(items: list[str]) -> str:
+    if len(items) <= 2:
+        return " and ".join(items)
+    return ", ".join(items[:-1]) + " and " + items[-1]
+
+
+def write_guide(root: Path = ROOT, *, check: bool = False) -> bool:
+    """Regenerate the guide's stage table; with check=True only report whether it is current."""
+    root = Path(root)
+    path = root / GUIDE
+    text = path.read_text(encoding="utf-8")
+    start, end = GUIDE_MARKERS
+    if start not in text or end not in text:
+        raise ValueError(f"{GUIDE} lacks the generated-table markers")
+    before, rest = text.split(start, 1)
+    _, after = rest.split(end, 1)
+    updated = f"{before}{start}\n\n{render_guide(load(root), root)}\n{end}{after}"
+    if updated == text:
+        return True
+    if not check:
+        path.write_text(updated, encoding="utf-8")
+    return False
+
+
+# ---------- chapter homes (#321) ----------
+
+
+def _plain(stop: Stop) -> str:
+    return stop.label
+
+
+def chapter_tldr(route: Route, chapter: str, ref: Callable[[Stop], str] = _plain) -> str:
+    """An ARENA-style TLDR for an extension chapter home, from the route: before, during and after."""
+    stops = route.stops
+    segments: list[list[Stop]] = []
+    for stop in stops:
+        if stop.chapter == chapter and stop.kind in ("extension", "planned"):
+            if segments and segments[-1][-1].stage == stop.stage:
+                segments[-1].append(stop)
+            else:
+                segments.append([stop])
+    if not segments:
+        return ""
+    lines = ["## TLDR (if you're in a hurry!)", ""]
+    if len(segments) == 1:
+        segment = segments[0]
+        lines += [f"This chapter is stage {segment[0].stage} of the study route, *{segment[0].stage_title}*.", ""]
+        lines += _segment_directions(route, chapter, segment, ref)
+    else:
+        lines += ["This chapter's lessons sit at more than one stage of the study route.", ""]
+        for segment in segments:
+            lines += [f"**Stage {segment[0].stage} · {segment[0].stage_title}**", ""]
+            lines += _segment_directions(route, chapter, segment, ref)
+            lines.append("")
+    return "\n".join(lines).rstrip() + "\n"
+
+
+def _segment_directions(route: Route, chapter: str, segment: list[Stop], ref: Callable[[Stop], str]) -> list[str]:
+    lines = []
+    core = [stop for stop in segment if stop.core]
+    optional = [stop for stop in segment if not stop.core]
+    in_chapter = {stop.number for stop in route.stops if stop.chapter == chapter}
+    if core:
+        before = []
+        continuing = all(route.first_stop(stop.number) is not stop for stop in core)
+        for stop in core:
+            for number in route.prerequisites.get(stop.number, ()):
+                if number not in in_chapter and number not in {s.number for s in before}:
+                    before.append(route.first_stop(number))
+        before.sort(key=route.stops.index)
+        if continuing:
+            prepared = f"the core of stages 1–{core[0].stage - 1}"
+        else:
+            prepared = _and([ref(stop) for stop in before]) if before else "no other lessons"
+        lines.append(f"- **Before you start:** {prepared}.")
+        lines.append(f"- **Start with** {ref(core[0])}.")
+        lines.append(f"- **Core:** {_and([ref(stop) for stop in core])}.")
+    if optional:
+        described = [f"{ref(stop)}{_needs(route, stop, ref)}" for stop in optional]
+        lines.append(f"- **Optional, in any order:** {'; '.join(described)}.")
+    following = route.next_core(segment[-1])
+    while following is not None and following.chapter == chapter and following.stage == segment[-1].stage:
+        following = route.next_core(following)
+    if following is None:
+        lines.append("- **Then:** this is the end of the route.")
+    elif following.stage == segment[-1].stage:
+        lines.append(f"- **Then:** the route continues with {ref(following)}.")
+    else:
+        lines.append(f"- **Then:** the route continues with stage {following.stage}, *{following.stage_title}*: "
+                     f"{ref(following)}.")
+    return lines
+
+
+if __name__ == "__main__":
+    import argparse
+
+    parser = argparse.ArgumentParser(description="Regenerate or check the study guide's stage table.")
+    parser.add_argument("--check", action="store_true", help="exit 1 if the guide is out of date")
+    parser.add_argument("--write", action="store_true", help="rewrite the guide's generated table")
+    args = parser.parse_args()
+    current = write_guide(check=not args.write)
+    if args.write:
+        print("mastery_hub/STUDY-GUIDE.md " + ("was current" if current else "updated"))
+    elif not current:
+        raise SystemExit("mastery_hub/STUDY-GUIDE.md is out of date: run with --write")

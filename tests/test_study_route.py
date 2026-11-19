@@ -3,7 +3,9 @@
 from __future__ import annotations
 
 import copy
+import re
 from pathlib import Path
+from urllib.parse import unquote
 
 import pytest
 import yaml
@@ -220,3 +222,142 @@ def test_approved_future_lessons_are_plain_labels(real_route):
     planned = [stop for stop in real_route.stops if stop.kind == "planned"]
     assert [stop.number for stop in planned] == ["0.7", "10.2", "10.3", "19.1", "19.2", "19.3"]
     assert all(real_route.original_url(stop) is None for stop in planned)
+
+
+# ---------- the study guide (#315, #322) ----------
+
+GUIDE = ROOT / "mastery_hub/STUDY-GUIDE.md"
+STATUS_WORDS = re.compile(
+    r"(?i)\b(status|verified|verification|evidence|provenance|readiness|acceptance|pending|historical|"
+    r"not (?:yet )?(?:written|available|finished)|work in progress|draft)\b"
+)
+MARKDOWN_LINK = re.compile(r"\]\(<?([^)>\s]+)>?\)")
+
+
+def guide_text() -> str:
+    return GUIDE.read_text(encoding="utf-8")
+
+
+def test_guide_route_block_is_generated_from_the_syllabus(real_route):
+    text = guide_text()
+    start, end = study_route.GUIDE_MARKERS
+    block = text.split(start, 1)[1].split(end, 1)[0]
+    assert block.strip() == study_route.render_guide(real_route, ROOT).strip(), (
+        "the study guide is out of date: run `uv run python infrastructure/extension/route.py --write`"
+    )
+
+
+def test_guide_shows_every_stage_with_days_and_totals(real_route):
+    text = guide_text()
+    table = [line for line in text.splitlines() if re.match(r"^\| \d+ \|", line)]
+    assert len(table) == 18
+    for stage, line in enumerate(table, start=1):
+        core, everything = real_route.stage_days(stage)
+        assert f"| {core:g} | {everything:g} |" in line, line
+    core, everything = real_route.totals()
+    assert f"about {core:g} days" in text and f"about {everything:g} days" in text
+
+
+def test_guide_starts_at_original_zero_with_the_graduate_shortcut():
+    text = guide_text()
+    assert "https://learn.arena.education/chapter0_fundamentals/00_prereqs/" in text
+    assert re.search(r"Done ARENA chapters 0–1\?.*0\.6.*stage 4", text)
+
+
+def test_guide_has_no_status_or_provenance_wording():
+    found = STATUS_WORDS.findall(guide_text())
+    assert not found, f"learner copy carries status wording: {found}"
+
+
+def test_guide_links_resolve():
+    for target in MARKDOWN_LINK.findall(guide_text()):
+        if target.startswith("http"):
+            assert target.startswith(("https://learn.arena.education/", "https://deep-learning-alchemy.github.io/",
+                                      "http://127.0.0.1:18505/")), target
+            continue
+        path = (GUIDE.parent / unquote(target.split("#", 1)[0])).resolve()
+        assert path.exists(), f"dead link {target}"
+
+
+def test_planned_lessons_are_unlinked_labels(real_route):
+    text = guide_text()
+    for stop in real_route.stops:
+        if stop.kind == "planned":
+            assert f"[{stop.number}] {stop.title}" in text
+            assert not re.search(rf"\[\[{re.escape(stop.number)}\][^\]]*\]\(", text)
+
+
+def test_companions_are_optional_side_trips_at_their_stops(real_route):
+    stops = real_route.stops
+    after = {stop.number: stops[i - 1].number for i, stop in enumerate(stops) if stop.kind == "companion"}
+    assert after == {"u01": "0.3", "u02": "u01", "u03": "u02", "u04": "1.1", "u05": "5.2", "u06": "16.9", "u07": "10.1"}
+    assert all(not stop.core for stop in stops if stop.kind == "companion")
+    text = guide_text()
+    for unit in after:
+        assert f"Alchemy {unit}" in text
+    u02 = text.split("Alchemy u02", 1)[1].split("\n", 1)[0]
+    assert "optimizer lab" in u02 and "mastery_hub/app.py" in u02
+
+
+def test_side_trips_leave_core_order_and_pacing_alone(real_route):
+    without = [stop for stop in real_route.stops if stop.kind != "companion"]
+    assert [s.number for s in without if s.core] == [s.number for s in real_route.stops if s.core]
+    assert all(stop.days is None for stop in real_route.stops if stop.kind == "companion")
+
+
+def test_companion_materials_link_only_what_exists(real_route, tmp_path):
+    for unit in real_route.companions:
+        for _, target in study_route.companion_materials(real_route, unit, ROOT):
+            assert target.startswith("https://") or (ROOT / target).exists(), (unit, target)
+    assert study_route.companion_materials(real_route, "u07", ROOT) == [] or all(
+        "u07" not in target for _, target in study_route.companion_materials(real_route, "u07", ROOT)
+    )
+    lab = dict(study_route.companion_materials(real_route, "u02", ROOT))
+    assert lab.get("optimizer lab") == "mastery_hub/app.py"
+    # Without the companion page or the lab, nothing dangles.
+    assert study_route.companion_materials(real_route, "u02", tmp_path) == []
+
+
+# ---------- chapter homes (#321) ----------
+
+
+def test_chapter_tldr_names_preparation_start_optional_and_onward_route(real_route):
+    text = study_route.chapter_tldr(real_route, "chapter8_automated_circuits")
+    assert "stage 7" in text and "Circuits" in text
+    assert re.search(r"Before you start.*\[1\.4\.1\] Indirect Object Identification", text)
+    assert re.search(r"Start with.*\[8\.1\] Activation Patching Refresher", text)
+    assert re.search(r"(?s)Core.*\[8\.1\].*\[8\.2\]", text)
+    optional = text.split("Optional", 1)[1]
+    assert "[8.3] AtP* from Scratch" in optional
+    assert re.search(r"\[8\.7\][^\n]*after[^\n]*\[6\.4\]", optional)
+    assert re.search(r"Then.*stage 8.*\[7\.1\]", text)
+
+
+def test_split_chapters_give_directions_per_stage(real_route):
+    text = study_route.chapter_tldr(real_route, "chapter10_capstone_research_sprint")
+    stage10, stage18 = text.split("Stage 18", 1)
+    assert "parts 1️⃣–4️⃣" in stage10 and "[10.2] Replicate and Critique a Fresh Claim" in stage10
+    assert "[10.3]" in stage10 and re.search(r"Then.*stage 11.*\[2\.1\] Intro to RL", stage10)
+    assert "part 5️⃣" in stage18 or "parts 5️⃣" in stage18
+    assert "end of the route" in stage18
+    peft = study_route.chapter_tldr(real_route, "chapter15_peft_misalignment")
+    assert "Stage 13" in peft and "Stage 14" in peft
+    assert re.search(r"(?s)Stage 14.*\[15\.5\] VLM LoRA.*Then.*\[13\.1\]", peft)
+
+
+def test_chapter_tldr_links_use_the_given_destinations(real_route):
+    seen = []
+
+    def ref(stop):
+        seen.append(stop)
+        return f"<{stop.number}>"
+
+    text = study_route.chapter_tldr(real_route, "chapter8_automated_circuits", ref)
+    assert "<8.1>" in text and "<1.4.1>" in text and "<7.1>" in text
+    assert {stop.kind for stop in seen} <= {"original", "extension", "planned", "companion"}
+
+
+def test_every_extension_chapter_has_a_tldr(real_route):
+    for chapter in SYLLABUS["chapters"]:
+        if SYLLABUS["chapters"][chapter]["number"] >= 5:
+            assert "Start with" in study_route.chapter_tldr(real_route, chapter) or "Optional" in study_route.chapter_tldr(real_route, chapter)
