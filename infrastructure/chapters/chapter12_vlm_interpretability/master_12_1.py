@@ -176,7 +176,7 @@ What this lesson doesn't show, hard negatives (NegCLIP), what to look at when th
 r'''
 ## Setup code
 
-A GPU is optional. The tiny CLIP trains in 10-40 seconds per run, and the real checkpoints only see a few hundred images. On a laptop GPU the whole lesson, including the quiz's fourteen key runs, takes about 5 minutes and peaks at about 2 GB of GPU memory. The two real checkpoints are downloaded once, about 0.6 GB for CLIP and 0.8 GB for SigLIP.
+A GPU is optional. The tiny CLIP trains in 10-40 seconds per run, and the real checkpoints only see a few hundred images. On a laptop GPU the whole lesson, including the quiz's fourteen key runs, takes about 5 to 8 minutes, depending on how busy the GPU is, and peaks at about 2 GB of GPU memory. The two real checkpoints are downloaded once, about 0.6 GB for CLIP and 0.8 GB for SigLIP.
 '''
 
 # ! CELL TYPE: code
@@ -4583,7 +4583,19 @@ r'''
 <details>
 <summary>Reveal - Q1: more candidates, same logits</summary>
 
-<pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace">FILL_Q1</pre>
+<pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace">softmax: probability of the correct caption, 3 candidates -&gt; 5 candidates
+  image 0: 0.209 -&gt; 0.180   ( -2.9 points)
+  image 1: 0.037 -&gt; 0.024   ( -1.4 points)
+  image 2: 0.060 -&gt; 0.016   ( -4.4 points)
+  image 3: 0.748 -&gt; 0.472   (-27.6 points)
+  mean change: -9.1 percentage points
+
+sigmoid: probability of the correct caption, 3 candidates -&gt; 5 candidates
+  image 0: 0.500 -&gt; 0.500   ( +0.0 points)
+  image 1: 0.223 -&gt; 0.223   ( +0.0 points)
+  image 2: 0.119 -&gt; 0.119   ( +0.0 points)
+  image 3: 0.731 -&gt; 0.731   ( +0.0 points)
+  mean change: +0.0 percentage points</pre>
 
 **Answer:** (a) softmax **falls** for every image and sigmoid is **unchanged**; (b) **c**, −9.1 points.
 
@@ -4684,7 +4696,7 @@ r'''
 
 ## The runs behind this quiz
 
-Every number in the reveals above comes from the next cell, which reruns all 14 runs, about 2 minutes in total. You don't need to run it. It's here so that you can check any answer,
+Every number in the reveals above comes from the next cell, which reruns all 14 runs, about 2 to 3 minutes in total. You don't need to run it. It's here so that you can check any answer,
 and so that the quiz can never drift from the code: the cell ends by checking that the answers written in the key above are still the ones these runs produce.
 '''
 
