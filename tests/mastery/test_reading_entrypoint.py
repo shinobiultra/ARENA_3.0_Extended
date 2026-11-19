@@ -142,62 +142,28 @@ def test_absent_chapter_has_explicit_status_and_no_download(reader, monkeypatch)
     assert any("not available" in text.lower() for text in ui.text)
 
 
-SUPPLEMENT_PATHS = {
-    "0.6": [
-        "chapter0_fundamentals/exercises/part6_fake_interpretability_results/0.6_How_to_Know_When_an_Interpretability_Result_Is_Fake_exercises.ipynb",
-        "chapter0_fundamentals/exercises/part6_fake_interpretability_results/0.6_How_to_Know_When_an_Interpretability_Result_Is_Fake_solutions.ipynb",
-    ],
-    "1.6": [
-        "chapter1_transformer_interp/exercises/part6_frontier_ml_infrastructure/1.6_Local_Frontier_ML_Infrastructure_exercises.ipynb",
-        "chapter1_transformer_interp/exercises/part6_frontier_ml_infrastructure/1.6_Local_Frontier_ML_Infrastructure_solutions.ipynb",
-    ],
-    "16.3": [
-        "chapter16_shapley_attribution_baselines/exercises/part13_treeshap/16.13_TreeSHAP_from_First_Principles_exercises.ipynb",
-        "chapter16_shapley_attribution_baselines/exercises/part13_treeshap/16.13_TreeSHAP_from_First_Principles_solutions.ipynb",
-        "chapter16_shapley_attribution_baselines/exercises/part14_deepshap/16.14_DeepSHAP_When_Does_Fast_Attribution_Match_Exact_SHAP_exercises.ipynb",
-        "chapter16_shapley_attribution_baselines/exercises/part14_deepshap/16.14_DeepSHAP_When_Does_Fast_Attribution_Match_Exact_SHAP_solutions.ipynb",
-        "chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/16.15_Expected_Gradients_Which_Expectation_Does_GradientSHAP_Estimate_exercises.ipynb",
-        "chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/16.15_Expected_Gradients_Which_Expectation_Does_GradientSHAP_Estimate_solutions.ipynb",
-    ],
-}
-
-
-def test_supplements_have_only_finite_section_identities_without_path_fallback(reader):
-    for section, paths in SUPPLEMENT_PATHS.items():
-        expected = ["mastery_hub/STUDY-GUIDE.md", *paths]
-        assert [str(path.relative_to(ROOT)) for _, path in reader.supplements(section, ROOT)] == expected
-    for unlisted in ("5.2", "../../private.txt", "/etc/passwd", "mastery_hub/units/u02_optimization/lesson.py"):
-        assert [str(path.relative_to(ROOT)) for _, path in reader.supplements(unlisted, ROOT)] == ["mastery_hub/STUDY-GUIDE.md"]
-
-
 RETIRED = ("practice_addons", "pilot_practice", "acdc_own_method", "_prediction",
            "extension_predictions", "extension_checkpoints")
 
 
-@pytest.mark.parametrize("section", list(SUPPLEMENT_PATHS))
-def test_native_supplements_and_main_notebooks_are_exact_original_bytes(reader, section):
-    row = next(r for r in reader.inventory(ROOT) if r["number"] == section)
-    ui = ReadingUI(chapter=row["chapter"], section=section)
-    reader.render(ui, ROOT)
-    expected_paths = [row["exercises"], row["reference"], ROOT / "mastery_hub/STUDY-GUIDE.md"]
-    expected_paths.extend(ROOT / rel for rel in SUPPLEMENT_PATHS[section])
-    downloads = {name: data for _, data, name in ui.downloads}
-    assert len(downloads) == len(expected_paths) + 1
-    assert sum(label == "Download blank Practice exercises" for label, _, _ in ui.downloads) == 1
-    for path in expected_paths:
-        assert downloads[path.name] == path.read_bytes()
+def test_supplements_are_only_the_study_guide(reader):
+    for section in ("0.6", "1.6", "5.2", "16.3", "../../private.txt", "/etc/passwd",
+                    "mastery_hub/units/u02_optimization/lesson.py"):
+        assert [str(path.relative_to(ROOT)) for _, path in reader.supplements(section, ROOT)] == ["mastery_hub/STUDY-GUIDE.md"]
 
 
-def test_every_lesson_download_resolves_to_its_exercises_notebook_and_no_retired_path(reader):
+def test_every_lesson_downloads_its_exercises_notebook_byte_for_byte(reader):
+    """The reader offers each lesson's own exercises and solutions notebooks, unchanged."""
     rows = [row for row in reader.inventory(ROOT) if row["available"]]
     assert rows
     for row in rows:
-        paths = [path for _, path in reader.supplements(row["number"], ROOT)]
-        assert all(path.is_file() for path in paths), row["number"]
-        assert not [p for p in paths if any(word in p.as_posix() for word in RETIRED)], row["number"]
         ui = ReadingUI(chapter=row["chapter"], section=row["number"])
         reader.render(ui, ROOT)
         downloads = {name: data for _, data, name in ui.downloads}
-        assert downloads[row["exercises"].name] == row["exercises"].read_bytes(), row["number"]
-        assert row["exercises"].name.endswith("_exercises.ipynb")
-        assert not [name for name in downloads if any(word in name for word in RETIRED)], row["number"]
+        assert downloads == {
+            row["exercises"].name: row["exercises"].read_bytes(),
+            row["reference"].name: row["reference"].read_bytes(),
+            "STUDY-GUIDE.md": (ROOT / "mastery_hub/STUDY-GUIDE.md").read_bytes(),
+        }, row["number"]
+        assert not any("blank" in label.lower() for label, _, _ in ui.downloads), row["number"]
+        assert not any(word in name for name in downloads for word in RETIRED), row["number"]

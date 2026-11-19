@@ -102,7 +102,8 @@ def test_start_routes_and_exact_jupyter_handoff_are_visible(rows):
         assert f"?section={number}&part=1" in text
     row = next(row for row in rows if row["number"] == "7.1")
     assert str(row["exercises"].parent) in text
-    assert "PUBLIC Practice" in text and "worked answers" in text
+    assert row["exercises"].name in text
+    assert "PUBLIC Practice" not in text and "blind evaluation" not in text
     assert "jupyter lab" in text
     assert "Kernel" in text and str(Path(sys.executable).absolute()) in text
     assert "Restart Kernel" in text and "Run All" in text

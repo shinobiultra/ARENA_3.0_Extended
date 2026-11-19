@@ -30,7 +30,6 @@ HOSTED_CPU_PYTEST_TARGETS = [
 STUDY_DELIVERY_TARGETS = [
     "tests/mastery/test_reader_routes.py",
     "tests/mastery/test_reading_entrypoint.py",
-    "tests/mastery/test_blank_practice.py",
     "tests/mastery/test_app.py",
     "tests/mastery/test_app_workspace.py",
     "tests/mastery/test_empirical_protocol.py",

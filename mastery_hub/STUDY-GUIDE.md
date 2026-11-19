@@ -9,17 +9,16 @@ To read the lessons locally, run this from the repository root in the existing e
 uv run --no-sync --offline streamlit run mastery_hub/read.py --server.address=127.0.0.1 --server.port=18505 --server.headless=true --browser.gatherUsageStats=false
 ```
 
-Choose a chapter, lesson and part in the sidebar. Start with the first button, **Download blank Practice exercises**,
-to work in your notebook environment. The published exercises and worked reference retain their saved outputs;
-help and expected answers remain public Practice. Use the study routes below to choose where to begin.
+Choose a chapter, lesson and part in the sidebar. Work in the lesson's exercises notebook; the solutions
+notebook has the worked answers and saved outputs. Use the study routes below to choose where to begin.
 
 ## Open your first working notebook
 
 1. Open [the local reader](http://127.0.0.1:18505/). For a small mathematical start,
    select [16.1 Exact Shapley](http://127.0.0.1:18505/?section=16.1&part=1).
-2. Download blank Practice and save a personal copy in the **exact lesson directory**
-   shown by the reader. A notebook opened from Downloads will not necessarily find
-   this checkout's helpers and assets. Keep the published reference unchanged.
+2. Open the exercises notebook in the **exact lesson directory** shown by the reader.
+   A notebook opened from Downloads will not necessarily find this checkout's helpers
+   and assets.
 3. From the repository root, run `uv run --no-sync --offline jupyter lab`. Open your
    saved copy in that browser. Select a kernel whose `sys.executable` is this
    checkout's `.venv/bin/python`; the Jupyter server and kernel must use the same

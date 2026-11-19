@@ -15,27 +15,7 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 
-_SUPPLEMENTS = {'*': (('Download study guide', 'mastery_hub/STUDY-GUIDE.md'),),
- '0.6': (('Download earlier 0.6 exercises',
-          'chapter0_fundamentals/exercises/part6_fake_interpretability_results/0.6_How_to_Know_When_an_Interpretability_Result_Is_Fake_exercises.ipynb'),
-         ('Download earlier 0.6 reference (saved outputs)',
-          'chapter0_fundamentals/exercises/part6_fake_interpretability_results/0.6_How_to_Know_When_an_Interpretability_Result_Is_Fake_solutions.ipynb')),
- '1.6': (('Download earlier 1.6 exercises',
-          'chapter1_transformer_interp/exercises/part6_frontier_ml_infrastructure/1.6_Local_Frontier_ML_Infrastructure_exercises.ipynb'),
-         ('Download earlier 1.6 reference (saved outputs)',
-          'chapter1_transformer_interp/exercises/part6_frontier_ml_infrastructure/1.6_Local_Frontier_ML_Infrastructure_solutions.ipynb')),
- '16.3': (('Download earlier TreeSHAP exercises (saved outputs)',
-           'chapter16_shapley_attribution_baselines/exercises/part13_treeshap/16.13_TreeSHAP_from_First_Principles_exercises.ipynb'),
-          ('Download earlier TreeSHAP reference (saved outputs)',
-           'chapter16_shapley_attribution_baselines/exercises/part13_treeshap/16.13_TreeSHAP_from_First_Principles_solutions.ipynb'),
-          ('Download earlier DeepSHAP exercises (saved outputs)',
-           'chapter16_shapley_attribution_baselines/exercises/part14_deepshap/16.14_DeepSHAP_When_Does_Fast_Attribution_Match_Exact_SHAP_exercises.ipynb'),
-          ('Download earlier DeepSHAP reference (saved outputs)',
-           'chapter16_shapley_attribution_baselines/exercises/part14_deepshap/16.14_DeepSHAP_When_Does_Fast_Attribution_Match_Exact_SHAP_solutions.ipynb'),
-          ('Download earlier Expected Gradients exercises (saved outputs)',
-           'chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/16.15_Expected_Gradients_Which_Expectation_Does_GradientSHAP_Estimate_exercises.ipynb'),
-          ('Download earlier Expected Gradients reference (saved outputs)',
-           'chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/16.15_Expected_Gradients_Which_Expectation_Does_GradientSHAP_Estimate_solutions.ipynb'))}
+_SUPPLEMENTS = {'*': (('Download study guide', 'mastery_hub/STUDY-GUIDE.md'),)}
 
 
 def supplements(number: str, root: Path) -> list[tuple[str, Path]]:
@@ -47,8 +27,10 @@ def inventory(root: Path, *, configuration_bytes: dict[str, bytes] | None = None
     """Resolve only configured lesson identities; never glob historical neighbors."""
     root = Path(root)
     if configuration_bytes is None:
-        from infrastructure.extension.blank_practice import _capture_configuration
-        configuration_bytes = _capture_configuration(root)
+        configuration_bytes = {
+            name: (root / name).read_bytes()
+            for name in ("infrastructure/extension/syllabus.yaml", "infrastructure/core/config_extension.yaml")
+        }
     syllabus = yaml.safe_load(configuration_bytes["infrastructure/extension/syllabus.yaml"])
     config = yaml.safe_load(configuration_bytes["infrastructure/core/config_extension.yaml"])
     rows = []
@@ -154,13 +136,15 @@ def start_panel(st) -> None:
     )
 
 
-def notebook_handoff(st, root: Path, lesson: dict, blank_name: str) -> None:
+def notebook_handoff(st, root: Path, lesson: dict) -> None:
     directory = lesson["exercises"].parent.resolve()
+    name = lesson["exercises"].name
     root = root.resolve()
     python = Path(sys.executable).absolute()
     st.markdown(
-        "### Open your Practice notebook locally\n"
-        f"1. Save **{blank_name}** in this exact directory (beside the configured exercise notebook):\n\n"
+        "### Open the exercises notebook locally\n"
+        f"1. The exercises notebook **{name}** is in this directory of your checkout "
+        "(if you downloaded a copy, save it here so its setup and assets resolve):\n\n"
         f"   `{directory}`\n\n"
         "2. From a terminal, use this checkout's existing environment to register a named kernel "
         "and open Jupyter. Run the kernel registration once; it does not install lesson dependencies.\n\n"
@@ -170,29 +154,12 @@ def notebook_handoff(st, root: Path, lesson: dict, blank_name: str) -> None:
         "--display-name 'ARENA Extended (study kernel)'\n"
         f"{shlex.quote(str(python))} -m jupyter lab\n"
         "```\n\n"
-        f"3. In Jupyter's file browser, open `{directory.relative_to(root) / blank_name}`. "
+        f"3. In Jupyter's file browser, open `{directory.relative_to(root) / name}`. "
         "Choose **Kernel → Change Kernel → ARENA Extended (study kernel)**. In a new cell, "
         f"`import sys; print(sys.executable)` should show `{python}`. "
         "Follow the notebook's setup and hardware requirements, implement the exercises, then use "
-        "**Restart Kernel** and **Run All** when you are ready to check your complete work.\n\n"
-        "Keep the published exercises and worked reference as references. Blank copies are **PUBLIC Practice**: "
-        "help, worked answers and expected answers remain public; clearing outputs does not make an unseen assessment."
+        "**Restart Kernel** and **Run All** when you are ready to check your complete work."
     )
-
-
-def blank_config_identity(root: Path) -> dict[str, str]:
-    from infrastructure.extension.blank_practice import config_identity
-    return config_identity(root)
-
-
-def blank_practice_download(root: Path, section: str) -> tuple[bytes, str]:
-    from infrastructure.extension.blank_practice import download
-    return download(root, section, inventory)
-
-
-def restore_blank_practice(projected: bytes, source: bytes, relative: str, authority: dict) -> dict:
-    from infrastructure.extension.blank_practice import restore_download
-    return restore_download(projected, source, relative, authority)
 
 
 def render(st, root: Path = ROOT) -> None:
@@ -240,26 +207,19 @@ def render(st, root: Path = ROOT) -> None:
     lesson = st.sidebar.selectbox("Lesson", available, format_func=lambda row: f"[{row['number']}] {row['title']}", key=lesson_key)
     st.markdown(f"## [{lesson['number']}] {lesson['title']}")
     try:
-        blank_bytes, blank_name = blank_practice_download(root, lesson["number"])
-        study_name = blank_name
         page_parts = parts(lesson["page"], with_media=True)
     except ValueError as exc:
-        st.info(f"This lesson's study copy could not be prepared: {exc}. Please report section {lesson['number']} and this message.")
+        st.info(f"This lesson's page could not be read: {exc}. Please report section {lesson['number']} and this message.")
         return
-    st.markdown("Start with blank Practice. The exercises and worked reference below include their saved outputs.")
-    st.download_button("Download blank Practice exercises", blank_bytes,
-                       file_name=blank_name, mime="application/x-ipynb+json")
-    st.markdown("Blank copies are PUBLIC Practice: help, worked answers and expected answers remain public. "
-                "Save beside the original exercise notebook for relative setup and assets. "
-                "This is not blind evaluation or fresh execution evidence.")
-    if hasattr(st, "expander"):
-        with st.expander("Open your notebook in Jupyter", expanded=False):
-            notebook_handoff(st, root, lesson, study_name)
-    else:
-        notebook_handoff(st, root, lesson, study_name)
-    for role, label in (("exercises", "Download exercises"), ("reference", "Download worked reference")):
+    st.markdown("Work through the exercises notebook; the solutions notebook has worked answers and saved outputs.")
+    for role, label in (("exercises", "Download exercises notebook"), ("reference", "Download solutions notebook")):
         path = lesson[role]
         st.download_button(label, path.read_bytes(), file_name=path.name, mime="application/x-ipynb+json")
+    if hasattr(st, "expander"):
+        with st.expander("Open your notebook in Jupyter", expanded=False):
+            notebook_handoff(st, root, lesson)
+    else:
+        notebook_handoff(st, root, lesson)
     st.markdown("### Practice and reading")
     for label, path in supplements(lesson["number"], root):
         mime = "text/markdown" if path.suffix == ".md" else "application/x-ipynb+json"
