@@ -1068,14 +1068,25 @@ r'''
 <details>
 <summary>Expected output</summary>
 
-<pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace">FILL_ATTN</pre>
+<pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace">Heads that add most to the correct capital's logit (mean over the prompts the model gets right):
+  L9H8: +4.05
+  L10H0: +3.27
+  L8H11: +2.55
+  L8H6: +0.93
+  L10H3: +0.66
+All 144 heads together: +14.41.  The correct capital's final logit: 18.81</pre>
 
 </details>
 
 <details>
 <summary>Help - how should I interpret this?</summary>
 
-TODO_ATTN_READING
+Three heads do most of the direct work: L9H8 (+4.05), L10H0 (+3.27) and L8H11 (+2.55) together add about +9.9 logits, out of +14.4 for all 144 heads. The correct capital's final logit is 18.8, so the heads
+supply most of it but not all: the rest comes from the MLPs, the embeddings and the biases (your test checked that everything adds up exactly). These heads sit in blocks 8-10, right where the logit lens
+first saw the capital reach rank 1 (`pre 9`, the stream after block 8).
+
+What the lens can't tell you is *how* these heads find the country. It says what a head writes, not where it looks. Do they attend to the `" Germany"` token, like the mover heads in [1.4.1]
+[IOI](https://learn.arena.education/chapter1_transformer_interp/21_ioi/)? Checking their attention patterns would tell you.
 </details>
 '''
 
@@ -1092,6 +1103,7 @@ The logit lens is free: no training, no extra parameters, and it often gives ver
 - Before the specific answer appears, the *type* of the answer (a capital city) appears. Without the mismatched-answer control, we'd have conflated the two.
 - The final layers actively push competing capitals back down.
 - Random vectors with matched norms never decode to the answer, so the readout isn't doing the work.
+- The attention lens splits the answer's logit into per-head terms: three heads in blocks 8-10 supply about two thirds of what all 144 heads add (9.9 of 14.4).
 
 But we've also seen its main weakness: the embedding layer decodes to junk and the early layers decode to generic filler, and we can't tell whether that's because the information
 isn't there yet, or because it's there in a different basis. The next section addresses this directly.
@@ -2079,7 +2091,31 @@ r'''
 <details>
 <summary>Expected output</summary>
 
-<pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace">FILL_BRIDGE</pre>
+<pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace">bigram floor: 0.31   layer-0 floor: 0.37
+layer                          0     1     2     3     4     5     6     7   \
+logit lens                   0.00  0.06  0.04  0.05  0.07  0.09  0.10  0.14   
+tuned lens                   0.37  0.45  0.47  0.51  0.54  0.56  0.60  0.63   
+contextual lens              0.22  0.27  0.28  0.29  0.30  0.30  0.31  0.32   
+shuffled bank labels         0.02  0.02  0.02  0.02  0.02  0.02  0.02  0.02   
+random queries               0.03  0.02  0.02  0.02  0.03  0.02  0.02  0.02   
+neighbour is the same token  0.95  0.95  0.95  0.95  0.95  0.94  0.93  0.93   
+
+layer                          8     9     10    11  
+logit lens                   0.17  0.30  0.44  0.62  
+tuned lens                   0.67  0.72  0.79  0.86  
+contextual lens              0.33  0.34  0.35  0.37  
+shuffled bank labels         0.02  0.02  0.02  0.02  
+random queries               0.02  0.01  0.02  0.02  
+neighbour is the same token  0.91  0.90  0.87  0.84  
+layer                           0     1     2     3     4     5     6     7   \
+cosine: real nearest          0.99  0.99  0.99  0.98  0.97  0.96  0.95  0.95   
+cosine: random-query nearest  0.09  0.08  0.08  0.09  0.09  0.09  0.10  0.10   
+cosine: two random states     0.60  0.71  0.68  0.65  0.61  0.57  0.55  0.53   
+
+layer                           8     9     10    11  
+cosine: real nearest          0.94  0.94  0.93  0.95  
+cosine: random-query nearest  0.10  0.10  0.10  0.08  
+cosine: two random states     0.51  0.53  0.56  0.68  </pre>
 
 </details>
 
@@ -2116,7 +2152,13 @@ r'''
 <details>
 <summary>Help - how should I interpret this figure?</summary>
 
-TODO_SIGNATURE_READING
+**Left panel.** The tuned lens (orange) is on top at every layer, from 0.37 at the embeddings to 0.86 at layer 11. The logit lens (blue) starts at 0 and stays below the layer-0 floor (purple, 0.37) until it crosses it between layers 9 and 10.
+
+The contextual lens (green) answers the prediction: barely. Its neighbours' next tokens agree with the model 0.22 to 0.37 of the time, which is about the **bigram floor** (red, 0.31) from layer 5 to 7 and only 0.02 to 0.06 above it from layer 8 on. It beats the logit lens up to layer 9, never beats the tuned lens, and at layer 11 only matches the layer-0 floor. So most of what a neighbour knows about the next token is what a bigram table already knows.
+
+**Controls.** Shuffling the bank's labels (grey) gives 0.02 at every layer, and norm-matched random queries (black) give 0.01 to 0.03. So the green curve comes from real neighbours with real labels, not from the bank's token frequencies. The cosines tell the same story: the nearest real neighbour has cosine 0.93 to 0.99, the nearest neighbour of a random vector only 0.08 to 0.10, and two random states have cosine 0.51 to 0.71 (the "about 0.6" from the first-use block).
+
+**Heatmap.** The nearest neighbour is the same *token* as the query for 79% to 96% of queries, for every pair of layers from 1 to 11. Layer 0 is the exception: embeddings only find embeddings (96% on the diagonal, 27% or less against any other bank layer). So after the first block, states from different layers describe the current word in a shared way, which is what lets a bank built at one layer read states from another. What the neighbour *doesn't* know is what comes next.
 </details>
 '''
 
@@ -2129,8 +2171,9 @@ r'''
 
 - The tuned lens is a cheap, principled fix for representational drift: one affine translator per layer, initialised at the logit lens, trained to match the model's own output.
 - On held-out text it beats the logit lens at every layer, by a large margin early on.
-- But a large part of the early-layer improvement is bigram statistics, which you can read off the layer-0 lens. The interesting signal is the gap above that floor.
+- But a large part of the early-layer improvement is available at layer 0, from the current token and position alone (the layer-0 floor, 0.37). The interesting signal is the gap above it.
 - Translators are layer-specific: using the wrong layer's translator hurts, and the embedding layer's translator is useless anywhere else.
+- A third reader, nearest neighbours in a bank of real contexts, finds the right *word* for almost every state after the first block, but its next-token agreement (0.22 to 0.37) sits near a real bigram table (0.31) and well below the tuned lens. Shuffled labels and random queries both score about 0.02.
 - Corpus-level improvements don't automatically transfer to a specific task: on the capitals prompts, the tuned lens tells the same story as the logit lens.
 
 Both lenses share one limitation: they only tell us what can be read out *as a next-token prediction*. A hidden state might carry lots of information (that the subject is a
@@ -2458,8 +2501,8 @@ r'''
 <details>
 <summary>Help - how should I interpret this grid?</summary>
 
-**What the grid shows.** Patching into target layers 1, 3, 4 and 5 works well for early source layers, reaching 75-79%, which matches what the model does on the real prompts (77%). Patching
-into target layer 6 or later almost never works, whatever the source. The target layer matters more than the source layer.
+**What the grid shows.** Patching into target layers 1 and 4 works well for source layers 1-5, reaching 73-79%, which matches what the model does on the real prompts (77%). Target layer 5 gets about 69%
+and target layer 3 does less well (35-56%). Patching into target layer 6 or later almost never works, whatever the source (at most 25%). The target layer matters more than the source layer.
 
 **What the cutoff does and doesn't mean.** Patching at target layer $\ell^*$ means only blocks $\ell^*, \dots, L-1$ get to process the patched vector. In *this inspection prompt*, a country
 patched in after block 5 can no longer be turned into its capital. So the grid is a map of where a donor vector can still be read, and it *suggests* that the recall happens in blocks 1-5.
@@ -2471,11 +2514,11 @@ output basis, which is a different thing from where it was computed.) The Bonus 
 region of space from processed residual vectors, so a processed vector patched in there is off-distribution for block 0.
 
 **Later source layers work less well.** Source vectors from layers 1-5 decode best. From layer 6 onwards accuracy drops, and by layer 9-11 only target layer 2 still works
-reasonably. The country's identity is still *there* in late source vectors (some target layer can read it), but it's gradually being reformatted into something the early blocks of
+reasonably (35-42%). The country's identity is still *there* in late source vectors (some target layer can read it), but it's gradually being reformatted into something the early blocks of
 the target prompt don't expect.
 
 **Target layer 2 is strange.** Look at the column for target layer 2: early source vectors (1-4) almost completely fail there (4-12%), even though they work at target layers 1 and
-3 on either side. Yet late source vectors (8-11) work *better* at target layer 2 than anywhere else. We don't have an explanation for this. It's exactly the kind of anomaly that's
+3 on either side. Yet late source vectors (9-11) work *better* at target layer 2 than anywhere else. We don't have an explanation for this. It's exactly the kind of anomaly that's
 worth chasing (see the Bonus), and a good reminder that a Patchscope is an intervention on a real network, not a clean measuring device.
 </details>
 '''
@@ -2621,14 +2664,15 @@ r'''
 <details>
 <summary>Expected output</summary>
 
-<pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace">FILL_WILSON</pre>
+<pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace">Patchscope (source 4 -&gt; target 1)  38/48 = 79.2%   95% interval 65.7% to 88.3%
+model on the real prompts          37/48 = 77.1%   95% interval 63.5% to 86.7%</pre>
 
 </details>
 
 <details>
 <summary>Help - how should I interpret this?</summary>
 
-TODO_WILSON_READING
+The two intervals, 65.7% to 88.3% and 63.5% to 86.7%, overlap almost completely, and the Patchscope is ahead by a single country (38 against 37). We can't say it beats the model's own answers; the honest claim is that it matches them, to within what 48 countries can tell us.
 </details>
 '''
 
@@ -2679,9 +2723,21 @@ r'''
 <details>
 <summary>Expected output</summary>
 
-<pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace">FILL_LANG</pre>
+<pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace">Spain    -&gt; ' Spanish' (0.49), ' English' (0.14), ' Portuguese' (0.11)
+Russia   -&gt; ' Russian' (0.43), ' English' (0.15), ' Ukrainian' (0.02)
+China    -&gt; ' Chinese' (0.29), ' Mandarin' (0.25), ' Korean' (0.10)
+Italy    -&gt; ' Italian' (0.46), ' Spanish' (0.11), ' English' (0.10)
+Greece   -&gt; ' Greek' (0.38), ' English' (0.08), ' Spanish' (0.06)
+Poland   -&gt; ' Polish' (0.41), ' English' (0.08), ' Russian' (0.06)
+Sweden   -&gt; ' Swedish' (0.37), ' English' (0.20), ' Norwegian' (0.04)
+Turkey   -&gt; ' Turkish' (0.37), ' English' (0.10), ' Greek' (0.06)
+Iran     -&gt; ' Persian' (0.14), ' English' (0.10), ' Turkish' (0.08)
+Brazil   -&gt; ' Portuguese' (0.46), ' English' (0.13), ' Spanish' (0.10)
 
-TODO_TRYIT_READING
+Patchscope: 10 of 10 languages right.
+Text only (nothing patched): says ' Chinese' for every country, 1 of 10 right.</pre>
+
+All ten are right, including Brazil → Portuguese (not Spanish) and Iran → Persian. With nothing patched, the inspection prompt says `' Chinese'` for every country, which is right for one country out of ten (China, by luck). The same source vectors that answered "what's the capital?" also answer "what language do they speak?", and the baseline is 1 of 10 against 10 of 10.
 </details>
 '''
 
@@ -2826,7 +2882,7 @@ r'''
 r'''
 ## Q4. A bank from another layer &nbsp;·&nbsp; Medium &nbsp;·&nbsp; 4 points
 
-**From the lesson.** In Part 2 you searched a bank of real contexts with states from the *same* layer, and the heatmap showed that a neighbour from almost any layer is the same token as the query.
+**From the lesson.** In Part 2 you searched a bank of real contexts with states from the *same* layer, and the heatmap showed that, after the embeddings, a neighbour from any layer is usually the same token as the query.
 
 **This question changes.** The bank is built from layer-3 states, and queried with layer-9 states. We score the neighbour's *next* token, as in the left panel of your figure: how often does it equal
 the model's final top-1 prediction at the query? The 6,300 queries and the 37,000-vector bank are the ones you used.
@@ -2971,7 +3027,7 @@ Layer-9 queries against a layer-3 bank: **0.271**. For comparison, same-layer ne
 
 **Answer: c.**
 
-**The mental model.** Your Part 2 figure had two messages. The heatmap says a neighbour from almost any layer is the same *token* as the query, so searching across layers still lands on the right word. The left panel says the next token of that neighbour agrees with the model's prediction only about as often as a bigram table does (0.22 to 0.37 across the layers, against a bigram floor of 0.31). Crossing layers keeps the first and loses a little of the second: the neighbour is the right word from a slightly mismatched context, so its next token is a little less on target.
+**The mental model.** Your Part 2 figure had two messages. The heatmap says that, after the embeddings, a neighbour from any layer is the same *token* as the query (93% for layer-9 queries against a layer-3 bank), so searching across layers still lands on the right word. The left panel says the next token of that neighbour agrees with the model's prediction only about as often as a bigram table does (0.22 to 0.37 across the layers, against a bigram floor of 0.31). Crossing layers keeps the first and loses a little of the second: the neighbour is the right word from a slightly mismatched context, so its next token is a little less on target.
 
 If you chose d or e, you expected the layer-9 queries to do better than they ever did in the same-layer figure. If you chose a or b, you expected cross-layer search to break, but the heatmap told you it doesn't for the current token.
 </details>
@@ -3113,12 +3169,16 @@ r'''
 <details>
 <summary>Help - how should I read this figure?</summary>
 
-TODO_QUIZ_FIGURE
+One panel per question, with every key run on it. **Q1:** the median rank falls from about 10,000 to 1 at row 9 for both templates. **Q2:** the 30-step lens (green, three seeds drawn faintly and sitting almost on top of each other) lies between the logit lens (blue) and the 300-step lens (orange), and at layer 6 (dotted line) it reads 0.48. **Q3:** the one-shot Patchscope (orange) scores as well as the three-shot one (blue), and the one-shot text-only control scores 0. **Q4:** next-token agreement of neighbours is 0.27 to 0.34 whichever layers the query and bank come from, around the bigram floor (purple). **Q5:** Pythia's logit-lens curve (orange) stays at or below GPT-2's (blue) at every layer, and both only take off in the last few layers.
 </details>
 
 ## What this quiz tested
 
-TODO_QUIZ_TESTED
+- **A rank curve describes the model's computation, not the wording of the prompt** (Q1). Two templates, the same row.
+- **A tuned lens learns most of its gain quickly** (Q2). The first 30 steps take it most of the way from the logit lens to the 300-step lens, the same on every seed.
+- **A Patchscope's inspection prompt sets the format and the patched vector supplies the content** (Q3). That is why the text-only control fails however many examples you give.
+- **Neighbours find the right word, not the right next word** (Q4). Cross-layer search keeps the first and sits near the bigram floor on the second.
+- **The logit lens's assumption doesn't transfer for free** (Q5). A readout that works on GPT-2 is much weaker on Pythia, which is what the tuned lens is for.
 '''
 
 # ! CELL TYPE: markdown
@@ -3264,14 +3324,18 @@ r'''
 <details>
 <summary>Expected output</summary>
 
-<pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace">FILL_NECESSITY</pre>
+<pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace">no ablation            capital accuracy 77.1%
+MLPs of blocks 1-5     capital accuracy 83.3%
+MLPs of blocks 6-10    capital accuracy 81.2%</pre>
 
 </details>
 
 <details>
 <summary>Help - how should I interpret this?</summary>
 
-TODO_NECESSITY_READING
+Mean-ablating the MLP outputs of blocks 1-5 at the country position doesn't hurt: accuracy goes from 77.1% (37 of 48) to 83.3% (40 of 48), and ablating blocks 6-10 gives 81.2% (39 of 48). A few prompts change either way, and with 48 prompts three prompts is well inside the interval you computed above. So this test finds **neither** block range necessary. That's the point of the exercise: the Patchscope grid said recall can be read in blocks 1-5 *in the inspection prompt*, and the model's own recall doesn't depend on those MLPs at the country position.
+
+It doesn't mean the model recalls capitals without those blocks. We ablated MLPs only (not attention), at one position, and left block 0 and the embedding of the country alone, so the country's identity is still in the stream and later positions can still read it. A different intervention might find a dependence. Try ablating attention outputs, or the MLPs of block 0, or several positions at once.
 </details>
 '''
 
@@ -3286,8 +3350,8 @@ r'''
 LLM judge finds the description interpretable for 68% of visual tokens. The same judge finds 32% interpretable for EmbeddingLens (nearest static token embedding) and 24% for LogitLens. These
 are the authors' numbers across 15 models, from [LatentLens](https://arxiv.org/abs/2602.00462); we didn't re-run them.
 
-**What our version shows.** On GPT-2's text states, a state's nearest neighbour is very often the same token in another story, and its next token carries some information about what the model
-will say (Part 2's figure). We used no judge and no images.
+**What our version shows.** On GPT-2's text states, a state's nearest neighbour is very often the same token in another story, and its next token carries a little information about what the model
+will say, though not much more than a bigram table does (Part 2's figure). We used no judge and no images.
 
 **What neither shows.** Retrieval is description, not causal use. A nearby context tells you what a state *looks like*. It doesn't show that the model uses the state the way that context would
 suggest. Testing that takes an intervention, like the ablation above.

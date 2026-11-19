@@ -212,6 +212,10 @@ if MAIN:
     random_logits = model.unembed(model.ln_final(random_vectors_like(resid_stack)))
     random_ranks = answer_ranks(random_logits, answer_tokens[right])
     
+    del resid_stack, random_logits
+    if device.type == "cuda":
+        t.cuda.empty_cache()
+    
     utils.plot_lens_ranks(
         {
             "correct capital": ranks.float().median(dim=1).values.tolist(),
@@ -588,6 +592,9 @@ if MAIN:
     bank_current, bank_next = bank_tokens[:, 1:-1].flatten().to(device), bank_tokens[:, 2:].flatten().to(device)
     queries = query_states.flatten(1, 2)  # (layer, 100 * 63, d_model)
     query_current, query_top = query_tokens[:, 1:].flatten().to(device), query_top.flatten()
+    del bank_states, query_states  # the flattened copies above are all we need
+    if device.type == "cuda":
+        t.cuda.empty_cache()
     print(f"bank: {bank.shape[1]:,} vectors per layer from {n_bank} training stories.  queries: {queries.shape[1]:,} held-out states per layer.")
 
 # %%
@@ -620,6 +627,8 @@ if MAIN:
                 "cosine: two random states": (normalize_rows(q) * normalize_rows(random_pairs)).sum(-1).mean().item(),
             })
     lens_table = pd.DataFrame(rows).rename_axis("layer")
+    if device.type == "cuda":
+        t.cuda.empty_cache()
     layer0_floor = lens_table["tuned lens"][0]
     print(f"bigram floor: {bigram_floor:.2f}   layer-0 floor: {layer0_floor:.2f}")
     display(lens_table.iloc[:, :6].round(2).T)
@@ -836,9 +845,9 @@ if MAIN:
     quiz = Quiz({
         "Q1": Interval("c", points=3),
         "Q2": Interval("c", points=4),
-        "Q3": Interval("c", points=4),
+        "Q3": Interval("d", points=4),
         "Q4": Interval("c", points=4),
-        "Q5": Interval("c", points=5),
+        "Q5": Interval("b", points=5),
     })
     quiz.score(my_answers)
 
@@ -914,7 +923,7 @@ if MAIN:
     )
     
     # The written key must match what these runs produced.
-    EDGES = {"Q1": [7.5, 8.5, 9.5, 10.5], "Q2": [0.3, 0.4, 0.5, 0.6], "Q3": [0.2, 0.4, 0.6, 0.8], "Q4": [0.2, 0.3, 0.4, 0.5], "Q5": [0.05, 0.1, 0.2, 0.4]}
+    EDGES = {"Q1": [7.5, 8.5, 9.5, 10.5], "Q2": [0.30, 0.42, 0.54, 0.66], "Q3": [0.30, 0.55, 0.80, 0.95], "Q4": [0.10, 0.22, 0.32, 0.42], "Q5": [0.01, 0.06, 0.15, 0.30]}
     measured = {"Q1": q1_first, "Q2": q2_mean[6], "Q3": q3_accuracy, "Q4": q4_match, "Q5": pythia_logit[6]}
     for name, value in measured.items():
         letter = interval_of(value, EDGES[name])
