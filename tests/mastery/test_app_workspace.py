@@ -67,7 +67,7 @@ def test_default_has_one_primary_result_and_closed_secondary_material(tmp_path, 
     assert not at.sidebar.get('number_input')
     # Every source link/download is behind a closed shelf; none fills the sidebar.
     assert not [node for node in at.sidebar.children.values() if node.type in ('markdown', 'download_button')]
-    for label in ('Original materials', 'More prediction notebooks', 'Course map',
+    for label in ('Original materials', 'Course map',
                   'Optional study duration', 'Start here', 'Step data', 'Chart options',
                   'Controls and limits', 'Optional reflection', 'Import an exported'):
         assert not expander(at, label).proto.expanded

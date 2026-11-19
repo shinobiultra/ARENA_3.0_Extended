@@ -57,7 +57,7 @@ def test_all86_native_blank_download(reader, row):
     assert name.endswith('_Blank_Practice_exercises.ipynb')
     assert n['nbformat']==source['nbformat'] and n['nbformat_minor']==source['nbformat_minor']
     assert all(c['outputs']==[] and c['execution_count'] is None for c in n['cells'] if c['cell_type']=='code')
-    assert len(n['cells'])==len(source['cells'])+1+(6 if row['number'] in ('0.6','1.6') else 0)
+    assert len(n['cells'])==len(source['cells'])+1
     note=''.join(n['cells'][0]['source']); assert all(x in note for x in ['PUBLIC Practice','beside','Hints and solutions'])
     assert row['exercises'].read_bytes()==before
     restored=reader.restore_blank_practice(data,before,row['exercises'].relative_to(ROOT).as_posix(),reader.blank_config_identity(ROOT))
@@ -177,15 +177,14 @@ def test_real_inputs_stay_read_only_and_round_trip(reader,monkeypatch):
         reader.restore_blank_practice(raw,source,row['exercises'].relative_to(ROOT).as_posix(),reader.blank_config_identity(ROOT))
 
 
-@pytest.mark.parametrize('section,appended',[('0.6',6),('1.6',6),('5.1',0),('7.1',0),('12.3',0)])
-def test_foundation_downloads_append_live_signature_cells_and_others_do_not(reader,section,appended):
+@pytest.mark.parametrize('section',['0.6','1.6','5.1','7.1','12.3'])
+def test_downloads_add_only_the_note_cell_and_no_live_signature_cells(reader,section):
     row=next(r for r in ROWS if r['number']==section)
     source=json.loads(row['exercises'].read_bytes())
     data,_=reader.blank_practice_download(ROOT,section);n=json.loads(data)
-    assert len(n['cells'])==len(source['cells'])+1+appended
-    provider=load(ROOT/'mastery_hub/practice_addons/foundation_live_signatures/lesson.py','foundation_provider')
-    if appended:
-        assert [c['source'] for c in n['cells'][-appended:]]==[c['source'] for c in provider.additions(section)]
+    assert len(n['cells'])==len(source['cells'])+1
+    assert [c['source'] for c in n['cells'][1:]]==[c['source'] for c in source['cells']]
+    assert 'foundation_live' not in n['metadata']['arena_blank_practice']
     assert all(c['outputs']==[] and c['execution_count'] is None for c in n['cells'] if c['cell_type']=='code')
 
 

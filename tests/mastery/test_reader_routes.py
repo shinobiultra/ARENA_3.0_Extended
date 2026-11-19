@@ -142,13 +142,9 @@ def test_acdc_route_points_to_prerequisites():
         assert phrase in text
 
 
-def test_mini_vlm_route_exposes_memory_handoff_before_optional_bridge():
-    # The finite allowlist is checked without importing or running model code.
+def test_mini_vlm_route_has_no_retired_memory_handoff():
     paths = [str(path.relative_to(ROOT)) for _, path in reader.supplements("12.3", ROOT)]
-    assert "mastery_hub/practice_addons/mini_vlm_memory_handoff/README.md" in paths
+    assert paths == ["mastery_hub/STUDY-GUIDE.md"]
     at = app({"section": "12.3", "part": "1"})
     assert not at.exception
-    text = markdown_text(at)
-    assert "Before the optional Step 5 Qwen bridge" in text
-    assert "keeps earlier models resident" in text
-    assert "6GB" not in text
+    assert "Before the optional Step 5 Qwen bridge" not in markdown_text(at)

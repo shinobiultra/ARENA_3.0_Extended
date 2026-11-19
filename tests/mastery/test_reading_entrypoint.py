@@ -143,11 +143,6 @@ def test_absent_chapter_has_explicit_status_and_no_download(reader, monkeypatch)
 
 
 SUPPLEMENT_PATHS = {
-    "6.5": ["mastery_hub/practice_addons/crosscoder_metric_repair/exercises.ipynb", "mastery_hub/practice_addons/crosscoder_metric_repair/solutions.ipynb", "mastery_hub/practice_addons/crosscoder_metric_repair/README.md"],
-    "7.1": ["mastery_hub/units/pilot_practice/7_1_exercises.ipynb"],
-    "9.1": ["mastery_hub/units/pilot_practice/9_1_exercises.ipynb"],
-    "12.3": ["mastery_hub/practice_addons/mini_vlm_checked_recovery/exercises.ipynb", "mastery_hub/practice_addons/mini_vlm_memory_handoff/README.md"],
-    "8.4": ["mastery_hub/units/acdc_own_method/exercises.ipynb", "mastery_hub/units/acdc_own_method/README.md"],
     "0.6": [
         "chapter0_fundamentals/exercises/part6_fake_interpretability_results/0.6_How_to_Know_When_an_Interpretability_Result_Is_Fake_exercises.ipynb",
         "chapter0_fundamentals/exercises/part6_fake_interpretability_results/0.6_How_to_Know_When_an_Interpretability_Result_Is_Fake_solutions.ipynb",
@@ -171,8 +166,12 @@ def test_supplements_have_only_finite_section_identities_without_path_fallback(r
     for section, paths in SUPPLEMENT_PATHS.items():
         expected = ["mastery_hub/STUDY-GUIDE.md", *paths]
         assert [str(path.relative_to(ROOT)) for _, path in reader.supplements(section, ROOT)] == expected
-    for unlisted in ("5.2", "../../private.txt", "/etc/passwd", "mastery_hub/units/acdc_own_method/protocol.json"):
+    for unlisted in ("5.2", "../../private.txt", "/etc/passwd", "mastery_hub/units/u02_optimization/lesson.py"):
         assert [str(path.relative_to(ROOT)) for _, path in reader.supplements(unlisted, ROOT)] == ["mastery_hub/STUDY-GUIDE.md"]
+
+
+RETIRED = ("practice_addons", "pilot_practice", "acdc_own_method", "_prediction",
+           "extension_predictions", "extension_checkpoints")
 
 
 @pytest.mark.parametrize("section", list(SUPPLEMENT_PATHS))
@@ -183,11 +182,22 @@ def test_native_supplements_and_main_notebooks_are_exact_original_bytes(reader, 
     expected_paths = [row["exercises"], row["reference"], ROOT / "mastery_hub/STUDY-GUIDE.md"]
     expected_paths.extend(ROOT / rel for rel in SUPPLEMENT_PATHS[section])
     downloads = {name: data for _, data, name in ui.downloads}
-    revised = [label for label, _, _ in ui.downloads if label.startswith("Download revised ")]
-    assert revised in ([], ["Download revised Study Practice", "Download revised worked reference"])
-    assert len(downloads) == len(expected_paths) + 1 + len(revised)
+    assert len(downloads) == len(expected_paths) + 1
     assert sum(label == "Download blank Practice exercises" for label, _, _ in ui.downloads) == 1
     for path in expected_paths:
         assert downloads[path.name] == path.read_bytes()
-    if section in {"7.1", "9.1", "8.4"}:
-        assert any("guided public Practice" in label for label, _, _ in ui.downloads)
+
+
+def test_every_lesson_download_resolves_to_its_exercises_notebook_and_no_retired_path(reader):
+    rows = [row for row in reader.inventory(ROOT) if row["available"]]
+    assert rows
+    for row in rows:
+        paths = [path for _, path in reader.supplements(row["number"], ROOT)]
+        assert all(path.is_file() for path in paths), row["number"]
+        assert not [p for p in paths if any(word in p.as_posix() for word in RETIRED)], row["number"]
+        ui = ReadingUI(chapter=row["chapter"], section=row["number"])
+        reader.render(ui, ROOT)
+        downloads = {name: data for _, data, name in ui.downloads}
+        assert downloads[row["exercises"].name] == row["exercises"].read_bytes(), row["number"]
+        assert row["exercises"].name.endswith("_exercises.ipynb")
+        assert not [name for name in downloads if any(word in name for word in RETIRED)], row["number"]

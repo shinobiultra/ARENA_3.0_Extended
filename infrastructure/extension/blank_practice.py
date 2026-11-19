@@ -18,17 +18,6 @@ import re
 _KEY = 'arena_blank_practice'
 _CONFIG = ('infrastructure/extension/syllabus.yaml', 'infrastructure/core/config_extension.yaml')
 
-_PROVIDER_ROOT = Path(__file__).absolute().parents[2]
-_PROVIDER_PATH = 'mastery_hub/practice_addons/foundation_live_signatures/lesson.py'
-_FOUNDATIONS = {
-    'chapter0_fundamentals/exercises/part6_fake_interpretability_results_practice/0.6_How_to_Know_When_an_Interpretability_Result_Is_Fake_Practice_exercises.ipynb': {
-        'section': '0.6',
-    },
-    'chapter1_transformer_interp/exercises/part6_frontier_ml_infrastructure_practice/1.6_Local_Frontier_ML_Infrastructure_Practice_exercises.ipynb': {
-        'section': '1.6',
-    },
-}
-
 
 def _read_regular(root: Path, relative: str) -> bytes:
     """Capture a regular file through a retained nofollow descriptor chain."""
@@ -223,20 +212,6 @@ def restore(projected: bytes, raw: bytes, relative: str, authority: dict[str, st
     return restored
 
 
-def _foundation_cells(relative: str) -> tuple[list[dict], dict]:
-    """Read the live-signature cells from the provider module (source strings only)."""
-    pin = _FOUNDATIONS[relative]
-    provider = _read_regular(_PROVIDER_ROOT, _PROVIDER_PATH)
-    namespace = {'__name__': '_arena_foundation_provider', '__file__': _PROVIDER_PATH}
-    # The provider imports only stdlib textwrap. It returns source strings; no
-    # generated plotting source or taught callback runs here.
-    exec(compile(provider, _PROVIDER_PATH, 'exec', dont_inherit=True), namespace)
-    cells = namespace['additions'](pin['section'])
-    if type(cells) is not list or len(cells) != 6:
-        raise ValueError('Foundation provider must return six cells')
-    return cells, {'section': pin['section'], 'provider_path': _PROVIDER_PATH, 'cell_count': 6}
-
-
 def project_download(raw: bytes, relative: str, authority: dict[str, str]) -> bytes:
     """Explicit V2 download feature; the generic V1 projection stays unchanged."""
     result = _load(project(raw, relative, authority))
@@ -248,28 +223,18 @@ def project_download(raw: bytes, relative: str, authority: dict[str, str]) -> by
         'Then work through the cells and their immediate tests.\n',
         '\nHints and solutions are in the notebook as usual. Code outputs and execution counts are cleared.\n',
     ]
-    if relative in _FOUNDATIONS:
-        cells, live_provenance = _foundation_cells(relative)
-        if result['nbformat_minor'] < 5:
-            # Cell IDs exist only from nbformat 4.5; older generated notebooks omit them.
-            cells = [{key: value for key, value in cell.items() if key != 'id'} for cell in cells]
-        result['cells'].extend(cells)
-        provenance['foundation_live'] = live_provenance
     _validate(result)
     return (json.dumps(result, ensure_ascii=False, indent=1, allow_nan=False) + '\n').encode('utf-8')
 
 
 def restore_download(projected: bytes, raw: bytes, relative: str, authority: dict[str, str]) -> dict:
-    """Remove exactly the V2 note/provenance and six known appended cells."""
+    """Remove exactly the V2 note and provenance."""
     actual = _load(projected)
     expected = _load(project_download(raw, relative, authority))
     if _typed(actual) != _typed(expected):
         raise ValueError('Derivative differs outside the exact V2 download projection')
     baseline = _load(project(raw, relative, authority))
     restored = deepcopy(actual)
-    if relative in _FOUNDATIONS:
-        del restored['cells'][-6:]
-        del restored['metadata'][_KEY]['foundation_live']
     for field in ('download_feature_version',):
         del restored['metadata'][_KEY][field]
     restored['cells'][0] = deepcopy(baseline['cells'][0])

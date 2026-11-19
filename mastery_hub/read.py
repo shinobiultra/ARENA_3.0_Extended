@@ -16,15 +16,6 @@ if str(ROOT) not in sys.path:
 
 
 _SUPPLEMENTS = {'*': (('Download study guide', 'mastery_hub/STUDY-GUIDE.md'),),
- '6.5': (('Download crosscoder metric repair Practice', 'mastery_hub/practice_addons/crosscoder_metric_repair/exercises.ipynb'),
-         ('Download crosscoder metric repair reference', 'mastery_hub/practice_addons/crosscoder_metric_repair/solutions.ipynb'),
-         ('Download crosscoder metric repair instructions', 'mastery_hub/practice_addons/crosscoder_metric_repair/README.md')),
- '7.1': (('Download 7.1 guided public Practice', 'mastery_hub/units/pilot_practice/7_1_exercises.ipynb'),),
- '9.1': (('Download 9.1 guided public Practice', 'mastery_hub/units/pilot_practice/9_1_exercises.ipynb'),),
- '12.3': (('Download checked recovery Practice', 'mastery_hub/practice_addons/mini_vlm_checked_recovery/exercises.ipynb'),
-          ('Download Mini VLM memory handoff', 'mastery_hub/practice_addons/mini_vlm_memory_handoff/README.md')),
- '8.4': (('Download 8.4 own-method guided public Practice', 'mastery_hub/units/acdc_own_method/exercises.ipynb'),
-         ('Download 8.4 Practice instructions', 'mastery_hub/units/acdc_own_method/README.md')),
  '0.6': (('Download earlier 0.6 exercises',
           'chapter0_fundamentals/exercises/part6_fake_interpretability_results/0.6_How_to_Know_When_an_Interpretability_Result_Is_Fake_exercises.ipynb'),
          ('Download earlier 0.6 reference (saved outputs)',
@@ -248,13 +239,6 @@ def render(st, root: Path = ROOT) -> None:
         state[lesson_key] = route_lesson
     lesson = st.sidebar.selectbox("Lesson", available, format_func=lambda row: f"[{row['number']}] {row['title']}", key=lesson_key)
     st.markdown(f"## [{lesson['number']}] {lesson['title']}")
-    if lesson["number"] == "12.3":
-        st.markdown(
-            "**Before the optional Step 5 Qwen bridge:** download the **Mini VLM memory handoff** "
-            "below and follow its operational steps. The historical notebook keeps earlier models "
-            "resident; use the handoff before loading the optional bridge. The original notebooks "
-            "and their saved results remain unchanged."
-        )
     try:
         blank_bytes, blank_name = blank_practice_download(root, lesson["number"])
         study_name = blank_name

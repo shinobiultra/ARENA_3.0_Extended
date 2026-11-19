@@ -30,8 +30,7 @@ HOSTED_CPU_PYTEST_TARGETS = [
 STUDY_DELIVERY_TARGETS = [
     "tests/mastery/test_reader_routes.py",
     "tests/mastery/test_reading_entrypoint.py",
-    "tests/mastery/test_blank_practice_foundation_integration.py",
-    "tests/mastery/test_extension_prediction_workbook.py",
+    "tests/mastery/test_blank_practice.py",
     "tests/mastery/test_app.py",
     "tests/mastery/test_app_workspace.py",
     "tests/mastery/test_empirical_protocol.py",
@@ -70,16 +69,7 @@ def run_local_unit() -> None:
 
 def run_study_delivery() -> None:
     run([sys.executable, "-m", "pytest", "-q", *STUDY_DELIVERY_TARGETS])
-    for script in (
-        "scripts/build_extension_prediction_workbook.py",
-        "scripts/build_circuit_prediction_notebook.py",
-        "scripts/build_shapley_prediction_notebook.py",
-        "scripts/build_sage_prediction_notebook.py",
-        "scripts/build_ssd_prediction_notebook.py",
-        "scripts/build_graph_prediction_notebook.py",
-        "scripts/build_sae_prediction_notebook.py",
-    ):
-        run(python_command(script, "--check"))
+    run(python_command("scripts/build_mastery_notebooks.py", "--check"))
     run(python_command("scripts/build_merged_config.py", "--check"))
     run(python_command("scripts/audit_original_arena_preservation.py"))
 

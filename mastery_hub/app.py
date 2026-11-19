@@ -339,50 +339,6 @@ def main():
                 st.markdown(f"{source_number}. [{source['label'] or 'Original source'}]({source['url']})")
             st.caption('Quiz answer links become visible above after your explicit choice. Reading them exposes those original quiz answers.')
             st.caption('This is the checked homepage link index; source publication does not imply companion completion.')
-        with st.expander('More prediction notebooks'):
-            workbook_path = ROOT / 'mastery_hub/units/extension_predictions/exercises.ipynb'
-            if workbook_path.exists():
-                st.download_button('Download ARENA prediction workbook', workbook_path.read_bytes(), file_name='arena_extension_prediction_workbook.ipynb', mime='application/x-ipynb+json')
-                checkpoint_count = len(json.loads((ROOT / 'mastery_hub/extension_checkpoints.json').read_text())['checkpoints'])
-                st.caption(f'Method-specific prediction practice across {checkpoint_count} master-backed lessons. Public reference results are guided practice.')
-            circuit_path = ROOT / 'mastery_hub/units/circuit_prediction/exercises.ipynb'
-            if circuit_path.exists():
-                st.download_button('Download blind circuit challenge', circuit_path.read_bytes(), file_name='circuit_prediction_exercises.ipynb', mime='application/x-ipynb+json')
-                st.caption('8.8 companion: implement the circuit methods, commit a forecast, then run the paired readout-gain experiment on CPU. Run from this checkout; no model download is needed.')
-            shapley_path = ROOT / 'mastery_hub/units/shapley_prediction/exercises.ipynb'
-            if shapley_path.exists():
-                st.download_button('Download blind Data Shapley challenge', shapley_path.read_bytes(), file_name='shapley_prediction_exercises.ipynb', mime='application/x-ipynb+json')
-                st.caption('16.9 companion: predict how coalition normalization changes example credit, then run the exact eight-example training comparison on CPU. Run from this checkout; no model download is needed.')
-            sage_path = ROOT / 'mastery_hub/units/sage_prediction/exercises.ipynb'
-            if sage_path.exists():
-                st.download_button('Download blind SAGE challenge', sage_path.read_bytes(), file_name='sage_prediction_exercises.ipynb', mime='application/x-ipynb+json')
-                st.caption('16.4 companion: predict how two missing-input rules allocate predictive performance. Implement the Gaussian game, commit, then inspect paired SAGE bars and coalition controls. CPU only; no model training or download.')
-            ssd_path = ROOT / 'mastery_hub/units/ssd_prediction/exercises.ipynb'
-            if ssd_path.exists():
-                st.download_button('Download blind SSD challenge', ssd_path.read_bytes(), file_name='ssd_prediction_exercises.ipynb', mime='application/x-ipynb+json')
-                st.caption('5.4 companion: implement recurrent, quadratic and chunked state updates. Commit a carry-effect forecast, then inspect state heatmaps and equivalence controls. CPU only; no model training or download.')
-            graph_path = ROOT / 'mastery_hub/units/graph_prediction/exercises.ipynb'
-            if graph_path.exists():
-                st.download_button(
-                    'Download 8.7 graph/path prediction challenge', graph_path.read_bytes(),
-                    file_name='graph_prediction_exercises.ipynb', mime='application/x-ipynb+json',
-                )
-                st.caption(
-                    '8.7 companion: implement graph attribution and path recovery, pass distinct DEV fixtures, '
-                    'then commit before the explicit CPU experiment. Fixed public synthetic setup; '
-                    'no automatic run, training or download, and no claim of unseen mastery.'
-                )
-            sae_path = ROOT / 'mastery_hub/units/sae_prediction/exercises.ipynb'
-            if sae_path.exists():
-                st.download_button(
-                    'Download 6.1 SAE forward-rule prediction companion', sae_path.read_bytes(),
-                    file_name='sae_prediction_exercises.ipynb', mime='application/x-ipynb+json',
-                )
-                st.caption(
-                    '6.1 companion: implement seven visible methods for four fixed forward rules and pass distinct DEV fixtures. '
-                    'The public target remains unexecuted; forecast before any separately authorized CPU attempt. '
-                    'No automatic run, training or model/data download; this is not a learned-SAE ranking.'
-                )
         with st.expander('Course map and original ARENA'):
             units = load_catalog(ROOT / 'mastery_hub/catalog.json')
             by_id = {unit['id']: unit for unit in units}
@@ -399,7 +355,7 @@ def main():
                         kind = 'tree' if (ROOT / original).is_dir() else 'blob'
                         original_url = f'https://github.com/ARENA-education/ARENA_materials/{kind}/6a46100c4f219b2764d3a30fe501e810ee500d86/{quote(original)}'
                         st.markdown(f'[Original foundation: {original}]({original_url})')
-            st.caption('The app runs the optimizer pilot. Extension prediction notebooks are available above; the other Alchemy companions remain planned.')
+            st.caption('The app runs the optimizer pilot; the other Alchemy companions remain planned.')
             st.markdown('[Original ARENA](https://github.com/ARENA-education/ARENA_materials) · [Extension](https://github.com/shinobiultra/ARENA_3.0_Extended)')
         timer_renderer = show_study_timer()
         with st.expander('Local progress and privacy'):
