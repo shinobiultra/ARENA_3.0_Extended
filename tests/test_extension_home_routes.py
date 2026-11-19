@@ -125,3 +125,49 @@ def test_home_preserves_display_order_and_excludes_group_headers(chapter_home):
     assert [text for text in rows["messages"] if text.startswith("About ")] == [
         "About Second", "About First"
     ]
+
+
+# ---------- the route TLDR on real chapter homes (#321) ----------
+
+import ast  # noqa: E402
+import re  # noqa: E402
+from pathlib import Path  # noqa: E402
+
+ROOT = Path(__file__).resolve().parents[1]
+EXTENSION_HOMES = sorted(
+    (path for path in ROOT.glob("chapter*/instructions/Home.py") if int(re.search(r"chapter(\d+)_", str(path))[1]) >= 5),
+    key=lambda path: int(re.search(r"chapter(\d+)_", str(path))[1]),
+)
+
+
+def home_intro(path: Path) -> str:
+    for node in ast.parse(path.read_text(encoding="utf-8")).body:
+        if isinstance(node, ast.Assign) and getattr(node.targets[0], "id", None) == "INTRO":
+            return ast.literal_eval(node.value)
+    raise AssertionError(f"{path} has no INTRO")
+
+
+def test_all_fourteen_extension_homes_are_checked():
+    assert len(EXTENSION_HOMES) == 14
+
+
+@pytest.mark.parametrize("home", EXTENSION_HOMES, ids=lambda path: path.parts[-3])
+def test_hand_written_intro_leaves_route_directions_to_the_syllabus(home):
+    intro = home_intro(home)
+    assert "TLDR" not in intro and "Prerequisites" not in intro
+    assert intro.lstrip().startswith("## Description of material")
+
+
+def test_real_home_renders_the_route_tldr_with_original_links(monkeypatch):
+    rendered = []
+    monkeypatch.setattr(st_dependencies, "styling", lambda title: None)
+    monkeypatch.setattr(st_dependencies.st, "markdown", lambda body, **kwargs: rendered.append(body))
+    monkeypatch.setattr(st_dependencies.st, "page_link", lambda page, *, label: None)
+    home = ROOT / "chapter8_automated_circuits/instructions/Home.py"
+    render_chapter_home(str(home), home_intro(home))
+    top = rendered[0]
+    assert top.count("TLDR") == 1
+    assert "Start with" in top and "[8.1] Activation Patching Refresher" in top
+    assert "(https://learn.arena.education/chapter1_transformer_interp/21_ioi/)" in top
+    assert "stage 8" in top and "[7.1] Logit Lens, Tuned Lens and Patchscopes" in top
+    assert top.index("TLDR") < top.index("## Description of material")

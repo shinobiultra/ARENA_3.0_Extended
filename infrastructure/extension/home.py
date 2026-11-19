@@ -1,7 +1,8 @@
 """Streamlit home page for extension chapters, laid out like the original ARENA chapter home pages.
 
 Each chapter's `instructions/Home.py` calls `render_chapter_home(__file__, INTRO)`, where INTRO is that chapter's own
-markdown (TLDR / recommended order / description). Section summaries come from `infrastructure/core/config.yaml`.
+description. The TLDR above it (before, during and after the chapter on the study route) comes from the syllabus
+route, and section summaries come from `infrastructure/core/config.yaml`.
 """
 
 from __future__ import annotations
@@ -10,6 +11,23 @@ import sys
 from pathlib import Path
 
 import streamlit as st
+
+
+def chapter_tldr(chapter: str) -> str:
+    """The chapter's place on the study route, from the syllabus `route:` block (Spec #39, Study route).
+
+    Original ARENA lessons link to learn.arena.education; this chapter's own lessons are listed below the TLDR
+    with their page links, and lessons elsewhere in the extension are named.
+    """
+    from infrastructure.extension import route as study_route  # noqa: PLC0415
+
+    route = study_route.load()
+
+    def ref(stop: study_route.Stop) -> str:
+        url = route.original_url(stop)
+        return f"[{stop.label}]({url})" if url else stop.label
+
+    return study_route.chapter_tldr(route, chapter, ref)
 
 
 def render_chapter_home(home_file: str, intro_markdown: str) -> None:
@@ -23,8 +41,9 @@ def render_chapter_home(home_file: str, intro_markdown: str) -> None:
     sections = get_displayable_sections(chapter_dir.name)
     styling(chapter["title"].replace(":", " -"))
 
+    tldr = chapter_tldr(chapter_dir.name)
     st.markdown(
-        f'<img src="{chapter["header_image"]}" width="600">\n\n# {chapter["title"]}\n\n{intro_markdown}',
+        f'<img src="{chapter["header_image"]}" width="600">\n\n# {chapter["title"]}\n\n{tldr}\n{intro_markdown}',
         unsafe_allow_html=True,
     )
 
