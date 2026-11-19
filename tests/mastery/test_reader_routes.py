@@ -155,7 +155,7 @@ def test_mini_vlm_route_has_no_retired_memory_handoff():
 
 # ---------- the study route in the reader (#320, #322) ----------
 
-from infrastructure.extension import route as study_route  # noqa: E402
+from infrastructure.extension import route as study_route
 
 ROUTE = study_route.load(ROOT)
 
@@ -242,3 +242,15 @@ def test_chapter_directions_come_from_the_route():
     text = markdown_text(at)
     assert "Before you start" in text and "Start with" in text
     assert "?section=7.1&part=1" in text.split("Then", 1)[1]
+
+
+def test_route_sidebar_stays_when_the_url_is_invalid():
+    at = app({"section": "999.1"})
+    assert not at.exception
+    labels = expander_labels(at)
+    assert sum(1 for label in labels if label.split(".", 1)[0].isdigit()) == 18
+
+
+def test_addenda_in_original_chapters_get_no_chapter_directions():
+    text = markdown_text(app({"section": "0.6", "part": "1"}))
+    assert "before, during and after" not in text and "Start with" not in text

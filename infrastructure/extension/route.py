@@ -7,6 +7,7 @@ read the route through this module, so they agree on stage order, core flags, pa
 
 from __future__ import annotations
 
+import functools
 import math
 import re
 from collections.abc import Callable
@@ -23,6 +24,8 @@ SITE_ROOT = "https://learn.arena.education/"
 TIME_LINE = re.compile(
     r"(?i)you should spend (?:up to |around |about |approximately )?~?(\d+)(?:\s*-\s*~?(\d+))? minutes"
 )
+PART_BREAK = "=== NEW CHAPTER ==="
+FIRST_EXTENSION_CHAPTER = 5
 PARTS = re.compile(r"^([1-9])-([1-9])?$")
 MINUTES_PER_DAY = 6 * 60
 
@@ -232,6 +235,7 @@ class Route:
     companions: dict[str, dict]
     pages: dict[str, Path]  # section → its page file (configured sections only)
     _original_urls: dict[str, str]
+    part_counts: dict[str, int]  # extension section → number of reader parts on its page
 
     @property
     def stops(self) -> tuple[Stop, ...]:
@@ -308,7 +312,17 @@ def load(root: Path = ROOT) -> Route:
                 if number in originals:
                     urls[number] = f"{SITE_ROOT}{chapter}/{section['id']}/"
     companions = {entry["unit"]: entry for entry in doc["companions"]}
-    chapter_numbers = {data["number"]: chapter for chapter, data in doc["chapters"].items()}
+    # Only extension chapters (5+) own a chapter home; 0.7 is a shelf, not part of upstream's chapter 0.
+    chapter_numbers = {
+        data["number"]: chapter
+        for chapter, data in doc["chapters"].items()
+        if data["number"] >= FIRST_EXTENSION_CHAPTER
+    }
+    part_counts = {
+        number: len(pages[number].read_text(encoding="utf-8").split(PART_BREAK))
+        for number in extension
+        if number in pages and pages[number].is_file()
+    }
 
     stages = []
     for stage_number, stage in enumerate(doc["route"], start=1):
@@ -345,6 +359,12 @@ def load(root: Path = ROOT) -> Route:
                 continue
             number = str(raw["section"])
             first, last = _parse_parts(raw.get("parts"), number)
+            count = part_counts.get(number)
+            if first is not None and count is not None and max(first, last or first) > count - 1:
+                raise ValueError(
+                    f"route stage {stage_number}: {number} has parts 1–{count - 1} on its page, "
+                    f"but the route names parts {raw['parts']}"
+                )
             days = raw.get("days")
             if days is None:
                 days = days_from_minutes(
@@ -371,7 +391,23 @@ def load(root: Path = ROOT) -> Route:
         number: tuple(str(item) for item in section.get("prerequisites") or ())
         for number, section in extension.items()
     }
-    return Route(tuple(stages), prerequisites, companions, pages, urls)
+    return Route(tuple(stages), prerequisites, companions, pages, urls, part_counts)
+
+
+def _stamp(root: Path) -> tuple[float, ...]:
+    files = (SYLLABUS, Path("infrastructure/core/config.yaml"), ORIGINAL_CONFIG)
+    return tuple((Path(root) / name).stat().st_mtime for name in files)
+
+
+@functools.lru_cache(maxsize=4)
+def _load_cached(root: Path, stamp: tuple[float, ...]) -> Route:
+    return load(root)
+
+
+def load_cached(root: Path = ROOT) -> Route:
+    """`load`, reused across Streamlit reruns until the syllabus or configs change."""
+    root = Path(root).resolve()
+    return _load_cached(root, _stamp(root))
 
 
 # ---------- companions (#322) ----------
@@ -553,6 +589,9 @@ def _plain(stop: Stop) -> str:
 
 def chapter_tldr(route: Route, chapter: str, ref: Callable[[Stop], str] = _plain) -> str:
     """An ARENA-style TLDR for an extension chapter home, from the route: before, during and after."""
+    match = re.match(r"chapter(\d+)_", chapter)
+    if match is None or int(match[1]) < FIRST_EXTENSION_CHAPTER:
+        return ""  # chapters 0–4 are upstream's; their homes are not the fork's to direct
     stops = route.stops
     segments: list[list[Stop]] = []
     for stop in stops:

@@ -438,3 +438,24 @@ def test_the_finale_links_u07_once_its_companion_exists(real_route, tmp_path):
         label == "companion list"
         for label, _ in study_route.companion_materials(real_route, "u07", ROOT)
     )
+
+
+def test_split_stops_must_name_parts_that_exist_on_the_page(tmp_path):
+    import shutil
+
+    real = (ROOT / "infrastructure/extension/syllabus.yaml").read_text(encoding="utf-8")
+    assert "parts: 5-" in real
+    fixture = tmp_path / "fixture"
+    shutil.copytree(
+        ROOT / "infrastructure",
+        fixture / "infrastructure",
+        symlinks=True,
+        ignore=shutil.ignore_patterns("chapters", "archive", "__pycache__"),
+    )
+    for chapter in ROOT.glob("chapter*_*"):
+        (fixture / chapter.name).symlink_to(chapter)
+    (fixture / "infrastructure/extension/syllabus.yaml").write_text(
+        real.replace("parts: 5-", "parts: 9-"), encoding="utf-8"
+    )
+    with pytest.raises(ValueError, match=r"10\.1 has parts 1–6"):
+        study_route.load(fixture)

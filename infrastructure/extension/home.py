@@ -21,7 +21,7 @@ def chapter_tldr(chapter: str) -> str:
     """
     from infrastructure.extension import route as study_route
 
-    route = study_route.load()
+    route = study_route.load_cached()
 
     def ref(stop: study_route.Stop) -> str:
         url = route.original_url(stop)

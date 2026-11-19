@@ -150,9 +150,8 @@ def stop_link(route, stop, rows: list[dict]) -> str:
     if stop.kind == "original":
         url = route.original_url(stop)
         return f'<a href="{escape(url, quote=True)}" target="_blank">{escape(stop.label)}</a> ↗'
-    row = _available(rows).get(stop.number)
-    if stop.kind == "extension" and row is not None:
-        first, _ = stop.reader_parts(len(parts(row["page"])))
+    if stop.kind == "extension" and stop.number in _available(rows) and stop.number in route.part_counts:
+        first, _ = stop.reader_parts(route.part_counts[stop.number])
         return route_link(stop.label, stop.number, first)
     return escape(stop.label)
 
@@ -167,10 +166,10 @@ def next_on_route(route, rows: list[dict], stop):
     return waiting, following
 
 
-def side_trip(route, stop) -> str:
+def side_trip(route, stop, root: Path = ROOT) -> str:
     """An Alchemy side trip, with the materials that exist in this checkout."""
     text = f"↪ {escape(stop.label)}, optional side trip"
-    for label, target in study_route.companion_materials(route, stop.number, ROOT):
+    for label, target in study_route.companion_materials(route, stop.number, root):
         if label == "optimizer lab":
             text += f"; {label}: <code>{escape(study_route.LAB_COMMAND.format(path=target))}</code>"
         else:
@@ -178,7 +177,7 @@ def side_trip(route, stop) -> str:
     return text + ' (<a href="https://deep-learning-alchemy.github.io/" target="_blank">CS 312</a> ↗)'
 
 
-def route_sidebar(st, route, rows: list[dict], current) -> None:
+def route_sidebar(st, route, rows: list[dict], current, root: Path = ROOT) -> None:
     """All 18 stages; the current one is open and marked."""
     st.sidebar.markdown("## Study route")
     for number, (title, stops) in enumerate(route.stages, start=1):
@@ -187,7 +186,7 @@ def route_sidebar(st, route, rows: list[dict], current) -> None:
         lines = []
         for stop in stops:
             if stop.kind == "companion":
-                lines.append(f"- {side_trip(route, stop)}")
+                lines.append(f"- {side_trip(route, stop, root)}")
                 continue
             text = stop_link(route, stop, rows)
             if stop == current:
@@ -200,17 +199,18 @@ def route_sidebar(st, route, rows: list[dict], current) -> None:
             (st if hasattr(st.sidebar, "expander") else st.sidebar).markdown(body, unsafe_allow_html=True)
 
 
-def next_step(st, route, rows: list[dict], stop) -> None:
+def next_step(st, route, rows: list[dict], stop, root: Path = ROOT) -> None:
     """At the end of a route stop: "Next on the route →", or the end of the route."""
     waiting, following = next_on_route(route, rows, stop)
-    if following is None and not waiting:
-        trips = [s for s in route.stages[stop.stage - 1][1] if s.kind == "companion"]
-        extra = "".join(f"<br>{side_trip(route, trip)}" for trip in trips)
-        st.markdown(f"🏁 **You've reached the end of the route.**{extra}", unsafe_allow_html=True)
-        return
     later = "".join(f"{escape(s.label)} (not in the reader yet), then " for s in waiting)
-    target = stop_link(route, following, rows) if following is not None else "the end of the route"
-    st.markdown(f"**Next on the route →** {later}{target}", unsafe_allow_html=True)
+    if following is None:
+        last = waiting[-1] if waiting else stop
+        trips = [s for s in route.stages[last.stage - 1][1] if s.kind == "companion"]
+        extra = "".join(f"<br>{side_trip(route, trip, root)}" for trip in trips)
+        lead = f"**Next on the route →** {later.removesuffix(', then ')}. " if waiting else ""
+        st.markdown(f"{lead}🏁 **You've reached the end of the route.**{extra}", unsafe_allow_html=True)
+        return
+    st.markdown(f"**Next on the route →** {later}{stop_link(route, following, rows)}", unsafe_allow_html=True)
 
 
 def at_stop_end(stop, page_parts: list[str], part: int) -> bool:
@@ -254,7 +254,7 @@ def render(st, root: Path = ROOT) -> None:
     st.markdown("Choose a lesson, make a prediction, then work through its exercises and controls. "
                 "The reference notebooks contain public worked answers and saved outputs.")
     query = getattr(st, "query_params", {})
-    study = study_route.load(root)
+    study = study_route.load_cached(root)
     if hasattr(st, "expander"):
         with st.expander("Start here", expanded=not query.get("section")):
             start_panel(st)
@@ -272,6 +272,7 @@ def render(st, root: Path = ROOT) -> None:
     route_lesson, route_part, route_error = resolve_route(query, rows)
     if route_error:
         st.info(route_error)
+        route_sidebar(st, study, rows, None, root)
         return
     state = getattr(st, "session_state", {})
     route = (route_lesson["number"], route_part) if route_lesson else None
@@ -286,6 +287,7 @@ def render(st, root: Path = ROOT) -> None:
             st.sidebar.info(f"[{row['number']}] {row['title']} — {row['status']}")
     if not available:
         st.info("These configured lessons are not available yet. Choose another chapter or the original ARENA course.")
+        route_sidebar(st, study, rows, None, root)
         return
     lesson_key = f"reader_lesson_{chapter}"
     if new_route:
@@ -296,6 +298,7 @@ def render(st, root: Path = ROOT) -> None:
         page_parts = parts(lesson["page"], with_media=True)
     except ValueError as exc:
         st.info(f"This lesson's page could not be read: {exc}. Please report section {lesson['number']} and this message.")
+        route_sidebar(st, study, rows, None, root)
         return
     st.markdown("Work through the exercises notebook; the solutions notebook has worked answers and saved outputs.")
     for role, label in (("exercises", "Download exercises notebook"), ("reference", "Download solutions notebook")):
@@ -339,8 +342,8 @@ def render(st, root: Path = ROOT) -> None:
     st.markdown(f"Part **{part + 1} of {len(page_parts)}** · " + " · ".join(links), unsafe_allow_html=True)
     st.markdown(page_parts[part], unsafe_allow_html=True)
     if stop is not None and at_stop_end(stop, page_parts, part):
-        next_step(st, study, rows, stop)
-    route_sidebar(st, study, rows, stop)
+        next_step(st, study, rows, stop, root)
+    route_sidebar(st, study, rows, stop, root)
 
 
 if __name__ == "__main__":
