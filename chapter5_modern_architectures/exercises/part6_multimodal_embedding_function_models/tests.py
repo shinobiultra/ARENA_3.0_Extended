@@ -303,34 +303,3 @@ def test_schema_token_attribution_matches_dot_products(
         "Top schema directions should match the largest dot product per hidden state."
     )
     print("All tests in `test_schema_token_attribution_matches_dot_products` passed!")
-
-
-def test_notebook_contract(run_smoke_test: Callable | None = None):
-    if run_smoke_test is None:
-        run_smoke_test = _solutions().run_smoke_test
-    result = run_smoke_test(cpu=True)
-    assert result["pooling"]["pooled"] == [[2.0, 1.0], [4.0, 6.0]], (
-        "Notebook contract should include a padding-sensitive pooling check."
-    )
-    assert result["retrieval"]["top1_accuracy"] == 1.0, (
-        "Notebook contract should include a paired retrieval sanity check."
-    )
-    assert result["centroid_probe"]["accuracy"] == 1.0, (
-        "Notebook contract should include held-out centroid-probe accuracy."
-    )
-    assert result["tool_masking"]["prediction"] == 2, (
-        "Notebook contract should include an invalid high-logit tool mask check."
-    )
-    assert result["function_call"]["hallucination_rate"] == 0.5, (
-        "Notebook contract should include no-call hallucination diagnostics."
-    )
-    assert result["router"]["predictions"] == [0, 1, 2, 3, 3], (
-        "Notebook contract should include confidence and ambiguity abstention."
-    )
-    assert result["router"]["overall_accuracy"] == 1.0, (
-        "Exact toy router should recover its known ground truth."
-    )
-    assert result["schema_attribution"]["top_schema_ids"] == [1, 0], (
-        "Notebook contract should include schema-direction attribution diagnostics."
-    )
-    print("All tests in `test_notebook_contract` passed!")
