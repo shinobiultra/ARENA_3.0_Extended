@@ -392,7 +392,14 @@ def test_sweep_directions(sweep_directions: Callable, model, tokenizer):
         handle.remove()
     expected_kl = F.kl_div(ablated_harmless.log_softmax(-1), base_harmless.log_softmax(-1), log_target=True, reduction="none").sum(-1).mean()
     t.testing.assert_close(result["ablation_score"][layer, pos].float().cpu(), score(ablated_harmful).mean().cpu(), atol=1e-3, rtol=1e-3, msg="ablation_score: mean refusal score on the harmful prompts with the direction ablated")
-    t.testing.assert_close(result["addition_score"][layer, pos].float().cpu(), score(added_harmless).mean().cpu(), atol=1e-3, rtol=1e-3, msg="addition_score: mean refusal score on the harmless prompts after adding the (unnormalised) direction with coefficient 1 at that layer")
+    t.testing.assert_close(
+        result["addition_score"][layer, pos].float().cpu(),
+        score(added_harmless).mean().cpu(),
+        atol=1e-3,
+        rtol=1e-3,
+        msg="addition_score: mean refusal score on the harmless prompts after adding the (unnormalised) direction "
+        "with coefficient 1 at that layer",
+    )
     t.testing.assert_close(result["kl"][layer, pos].float().cpu(), expected_kl.cpu(), atol=1e-3, rtol=1e-3, msg="kl: mean KL(unedited || ablated) on the harmless prompts")
     assert _hook_counts(model) == hooks_before, "sweep_directions left hooks attached to the model"
     print("All tests in `test_sweep_directions` passed!")

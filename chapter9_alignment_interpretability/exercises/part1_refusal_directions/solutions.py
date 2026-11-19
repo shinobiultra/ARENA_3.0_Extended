@@ -410,7 +410,11 @@ if MAIN:
     layer, pos = select_direction(sweep, baseline_harmless_score, n_layers)
     direction = directions[layer, pos]
     print(f"Selected: layer {layer}, position {pos - N_POS} ({POS_LABELS[pos]}), ‖r‖ = {direction.norm():.2f}")
-    print(f"  ablation score {sweep['ablation_score'][layer, pos]:.2f} (unedited: {baseline_harmful_score:.2f}),  addition score {sweep['addition_score'][layer, pos]:.2f} (unedited: {baseline_harmless_score:.2f}),  KL {sweep['kl'][layer, pos]:.3f}")
+    print(
+        f"  ablation score {sweep['ablation_score'][layer, pos]:.2f} (unedited: {baseline_harmful_score:.2f}),  "
+        f"addition score {sweep['addition_score'][layer, pos]:.2f} (unedited: {baseline_harmless_score:.2f}),  "
+        f"KL {sweep['kl'][layer, pos]:.3f}"
+    )
     
     # The eight candidates with the lowest ablation score, and which of the selection criteria each one fails
     candidates = pd.DataFrame(
@@ -992,7 +996,12 @@ if MAIN:
     for (row, metric), (low, high) in control_ranges.items():
         shown.loc[row, metric] += f" [{low:.2f}, {high:.2f}]"
     display(shown)
-    utils.plot_reading_vs_control(control_table.drop(columns="cos with diff. of means"), f"Reading versus control at layer {layer}, position {pos - N_POS} (vectors scaled to the length of the difference of means; controls: mean and range of six draws)", ranges=control_ranges)
+    utils.plot_reading_vs_control(
+        control_table.drop(columns="cos with diff. of means"),
+        f"Reading versus control at layer {layer}, position {pos - N_POS} "
+        "(vectors scaled to the length of the difference of means; controls: mean and range of six draws)",
+        ranges=control_ranges,
+    )
 
 # %%
 
@@ -1147,7 +1156,11 @@ if MAIN:
     del edited_17
     utils.free_gpu_memory()
     q4_rise = q4_loss - results["unedited"]["Pile loss"]
-    print(f"Q4: Pile loss with the layer-17 weight edit {q4_loss:.3f}, a rise of {q4_rise:.3f} nats (unedited {results['unedited']['Pile loss']:.3f}; layer-14 edit rose by {results['weights: refusal direction']['Pile loss'] - results['unedited']['Pile loss']:.3f})")
+    print(
+        f"Q4: Pile loss with the layer-17 weight edit {q4_loss:.3f}, a rise of {q4_rise:.3f} nats "
+        f"(unedited {results['unedited']['Pile loss']:.3f}; layer-14 edit rose by "
+        f"{results['weights: refusal direction']['Pile loss'] - results['unedited']['Pile loss']:.3f})"
+    )
     
     # Q5: eight prompts per class, three random choices of the eight
     q5_runs = []

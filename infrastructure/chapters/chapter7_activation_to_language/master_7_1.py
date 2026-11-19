@@ -1743,7 +1743,8 @@ The tuned lens curves lie almost exactly on top of the logit lens curves. On thi
 
 That might be surprising after the big improvement on held-out TinyStories text, so it's worth thinking about why.
 
-- **Most of the tuned lens's gains are on common tokens.** Averaged over a corpus, top-1 agreement is dominated by frequent, predictable tokens (punctuation, `" the"`, `" was"`, the second half of a common word). The layer-0 floor tells us how much of that is available from the current token and position alone. A rare, fact-dependent answer like `" Canberra"` is a very different kind of prediction.
+- **Most of the tuned lens's gains are on common tokens.** Averaged over a corpus, top-1 agreement is dominated by frequent, predictable tokens (punctuation, `" the"`, `" was"`, the second half of a common word).
+  The layer-0 floor tells us how much of that is available from the current token and position alone. A rare, fact-dependent answer like `" Canberra"` is a very different kind of prediction.
 - **Distribution shift.** The translators were fit on children's stories. There are no capital cities in TinyStories, so nothing pushed the translators to read out capital-city information early, even if it's there.
 - **Maybe the information really isn't there.** It's entirely possible that GPT-2 Small simply hasn't retrieved the specific capital before layer 9, and that both lenses are correctly reporting this.
 
@@ -2154,11 +2155,18 @@ r'''
 
 **Left panel.** The tuned lens (orange) is on top at every layer, from 0.37 at the embeddings to 0.86 at layer 11. The logit lens (blue) starts at 0 and stays below the layer-0 floor (purple, 0.37) until it crosses it between layers 9 and 10.
 
-The contextual lens (green) answers the prediction: barely. Its neighbours' next tokens agree with the model 0.22 to 0.37 of the time, which is about the **bigram floor** (red, 0.31) from layer 5 to 7 and only 0.02 to 0.06 above it from layer 8 on. It beats the logit lens up to layer 9, never beats the tuned lens, and at layer 11 only matches the layer-0 floor. So most of what a neighbour knows about the next token is what a bigram table already knows.
+The contextual lens (green) answers the prediction: barely.
+Its neighbours' next tokens agree with the model 0.22 to 0.37 of the time, which is about the **bigram floor** (red, 0.31) from layer 5 to 7 and only 0.02 to 0.06 above it from layer 8 on.
+It beats the logit lens up to layer 9, never beats the tuned lens, and at layer 11 only matches the layer-0 floor. So most of what a neighbour knows about the next token is what a bigram table already knows.
 
-**Controls.** Shuffling the bank's labels (grey) gives 0.02 at every layer, and norm-matched random queries (black) give 0.01 to 0.03. So the green curve comes from real neighbours with real labels, not from the bank's token frequencies. The cosines tell the same story: the nearest real neighbour has cosine 0.93 to 0.99, the nearest neighbour of a random vector only 0.08 to 0.10, and two random states have cosine 0.51 to 0.71 (the "about 0.6" from the first-use block).
+**Controls.** Shuffling the bank's labels (grey) gives 0.02 at every layer, and norm-matched random queries (black) give 0.01 to 0.03.
+So the green curve comes from real neighbours with real labels, not from the bank's token frequencies.
+The cosines tell the same story: the nearest real neighbour has cosine 0.93 to 0.99, the nearest neighbour of a random vector only 0.08 to 0.10, and two random states have cosine 0.51 to 0.71 (the "about 0.6" from the first-use block).
 
-**Heatmap.** The nearest neighbour is the same *token* as the query for 79% to 96% of queries, for every pair of layers from 1 to 11. Layer 0 is the exception: embeddings only find embeddings (96% on the diagonal, 27% or less against any other bank layer). So after the first block, states from different layers describe the current word in a shared way, which is what lets a bank built at one layer read states from another. What the neighbour *doesn't* know is what comes next.
+**Heatmap.** The nearest neighbour is the same *token* as the query for 79% to 96% of queries, for every pair of layers from 1 to 11.
+Layer 0 is the exception: embeddings only find embeddings (96% on the diagonal, 27% or less against any other bank layer).
+So after the first block, states from different layers describe the current word in a shared way, which is what lets a bank built at one layer read states from another.
+What the neighbour *doesn't* know is what comes next.
 </details>
 '''
 
@@ -2991,7 +2999,9 @@ The median rank of the correct capital, by row of the logit lens (`embed` to `fi
 
 **Answer: c.**
 
-**The mental model.** The rank curve is a statement about the model's computation, not about the wording of the prompt. Both templates ask for the capital of a country after three worked examples, so the same blocks have the same job: by `pre 8` the capital has only reached a median rank of 805, and block 8 (the one between `pre 8` and `pre 9`) is where it jumps to the top. Part 1's mismatched-capitals control gave the same message: the type of answer arrives before the specific answer, and the specific answer arrives in one step.
+**The mental model.** The rank curve is a statement about the model's computation, not about the wording of the prompt.
+Both templates ask for the capital of a country after three worked examples, so the same blocks have the same job: by `pre 8` the capital has only reached a median rank of 805, and block 8 (the one between `pre 8` and `pre 9`) is where it jumps to the top.
+Part 1's mismatched-capitals control gave the same message: the type of answer arrives before the specific answer, and the specific answer arrives in one step.
 
 If you chose b or d, you expected a new wording to move the answer by a layer. That's a fair worry for a single prompt, but a median over 37 prompts is steady. If you chose a, you may have expected a clearer cue ("capital city") to make the model commit early.
 </details>
@@ -3003,7 +3013,9 @@ Top-1 agreement at layer 6 with a 30-step tuned lens: **0.482, 0.482 and 0.481**
 
 **Answer: c.**
 
-**The mental model.** Look at your training-loss curve from Part 2: it fell steeply in the first 50 steps or so and then crawled. Most of what the translators learn first is a large, simple correction (a shift and a rescaling that moves each layer's states into the region the final layernorm and unembedding expect), and that is cheap to learn. The remaining steps buy the last part of the gap, from 0.48 to 0.60. The three seeds agree to the third decimal place, so this isn't luck.
+**The mental model.** Look at your training-loss curve from Part 2: it fell steeply in the first 50 steps or so and then crawled.
+Most of what the translators learn first is a large, simple correction (a shift and a rescaling that moves each layer's states into the region the final layernorm and unembedding expect), and that is cheap to learn.
+The remaining steps buy the last part of the gap, from 0.48 to 0.60. The three seeds agree to the third decimal place, so this isn't luck.
 
 If you chose a or b, you expected an undertrained lens to stay close to the logit lens. It starts there, but it leaves very quickly. If you chose d or e, you expected a tenth of the training to be nearly enough; it takes you most of the way, not all of it.
 </details>
@@ -3015,7 +3027,10 @@ One-shot Patchscope: **42 of 48 = 0.875** (the three-shot prompt you used got 38
 
 **Answer: d.**
 
-**The mental model.** The inspection prompt only has to tell the model what *kind* of answer to give ("the capital of x is"). The country's identity comes from the patched vector, which is why the text-only control gets 0% however many examples there are. One worked example is enough to set the format. Fewer examples also leave fewer in-context capitals (Paris, Tokyo, Rome) for the model to copy, which is one possible reason the score went up, but we didn't test that. Don't read much into 42 against 38 either: with 48 countries their Wilson intervals overlap, so the honest summary is "no worse".
+**The mental model.** The inspection prompt only has to tell the model what *kind* of answer to give ("the capital of x is").
+The country's identity comes from the patched vector, which is why the text-only control gets 0% however many examples there are. One worked example is enough to set the format.
+Fewer examples also leave fewer in-context capitals (Paris, Tokyo, Rome) for the model to copy, which is one possible reason the score went up, but we didn't test that.
+Don't read much into 42 against 38 either: with 48 countries their Wilson intervals overlap, so the honest summary is "no worse".
 
 If you chose a, b or c, you expected fewer examples to make the model worse at the task. It would, if the examples carried the answer. In a Patchscope they don't, which is the point of the text-only control.
 </details>
@@ -3027,7 +3042,10 @@ Layer-9 queries against a layer-3 bank: **0.271**. For comparison, same-layer ne
 
 **Answer: c.**
 
-**The mental model.** Your Part 2 figure had two messages. The heatmap says that, after the embeddings, a neighbour from any layer is the same *token* as the query (93% for layer-9 queries against a layer-3 bank), so searching across layers still lands on the right word. The left panel says the next token of that neighbour agrees with the model's prediction only about as often as a bigram table does (0.22 to 0.37 across the layers, against a bigram floor of 0.31). Crossing layers keeps the first and loses a little of the second: the neighbour is the right word from a slightly mismatched context, so its next token is a little less on target.
+**The mental model.** Your Part 2 figure had two messages.
+The heatmap says that, after the embeddings, a neighbour from any layer is the same *token* as the query (93% for layer-9 queries against a layer-3 bank), so searching across layers still lands on the right word.
+The left panel says the next token of that neighbour agrees with the model's prediction only about as often as a bigram table does (0.22 to 0.37 across the layers, against a bigram floor of 0.31).
+Crossing layers keeps the first and loses a little of the second: the neighbour is the right word from a slightly mismatched context, so its next token is a little less on target.
 
 If you chose d or e, you expected the layer-9 queries to do better than they ever did in the same-layer figure. If you chose a or b, you expected cross-layer search to break, but the heatmap told you it doesn't for the current token.
 </details>
@@ -3039,7 +3057,9 @@ The plain logit lens on Pythia-160M, top-1 agreement with its final prediction, 
 
 **Answer: b.**
 
-**The mental model.** The logit lens assumes every layer speaks the final layer's language. In Part 2 you saw that this is only roughly true even for GPT-2, and that the tuned lens fixes it. On Pythia the assumption holds much less well: the lens is close to useless until layer 9, and even at the last block (row 11) it agrees with the model only a third of the time, against 0.62 for GPT-2. We didn't test why. One thing that differs is that Pythia's embedding and unembedding are separate matrices, whereas GPT-2 reads out with the transpose of its embedding.
+**The mental model.** The logit lens assumes every layer speaks the final layer's language. In Part 2 you saw that this is only roughly true even for GPT-2, and that the tuned lens fixes it.
+On Pythia the assumption holds much less well: the lens is close to useless until layer 9, and even at the last block (row 11) it agrees with the model only a third of the time, against 0.62 for GPT-2.
+We didn't test why. One thing that differs is that Pythia's embedding and unembedding are separate matrices, whereas GPT-2 reads out with the transpose of its embedding.
 
 If you chose c or higher, you carried GPT-2's 0.10 over to a new model; this is exactly the regime the tuned lens was invented for. If you chose a, you were right that the lens is nearly blind there, just a bit too pessimistic.
 </details>
@@ -3169,7 +3189,11 @@ r'''
 <details>
 <summary>Help - how should I read this figure?</summary>
 
-One panel per question, with every key run on it. **Q1:** the median rank falls from about 10,000 to 1 at row 9 for both templates. **Q2:** the 30-step lens (green, three seeds drawn faintly and sitting almost on top of each other) lies between the logit lens (blue) and the 300-step lens (orange), and at layer 6 (dotted line) it reads 0.48. **Q3:** the one-shot Patchscope (orange) scores as well as the three-shot one (blue), and the one-shot text-only control scores 0. **Q4:** next-token agreement of neighbours is 0.27 to 0.34 whichever layers the query and bank come from, around the bigram floor (purple). **Q5:** Pythia's logit-lens curve (orange) stays at or below GPT-2's (blue) at every layer, and both only take off in the last few layers.
+One panel per question, with every key run on it. **Q1:** the median rank falls from about 10,000 to 1 at row 9 for both templates.
+**Q2:** the 30-step lens (green, three seeds drawn faintly and sitting almost on top of each other) lies between the logit lens (blue) and the 300-step lens (orange), and at layer 6 (dotted line) it reads 0.48.
+**Q3:** the one-shot Patchscope (orange) scores as well as the three-shot one (blue), and the one-shot text-only control scores 0.
+**Q4:** next-token agreement of neighbours is 0.27 to 0.34 whichever layers the query and bank come from, around the bigram floor (purple).
+**Q5:** Pythia's logit-lens curve (orange) stays at or below GPT-2's (blue) at every layer, and both only take off in the last few layers.
 </details>
 
 ## What this quiz tested
@@ -3333,7 +3357,9 @@ MLPs of blocks 6-10    capital accuracy 81.2%</pre>
 <details>
 <summary>Help - how should I interpret this?</summary>
 
-Mean-ablating the MLP outputs of blocks 1-5 at the country position doesn't hurt: accuracy goes from 77.1% (37 of 48) to 83.3% (40 of 48), and ablating blocks 6-10 gives 81.2% (39 of 48). A few prompts change either way, and with 48 prompts three prompts is well inside the interval you computed above. So this test finds **neither** block range necessary. That's the point of the exercise: the Patchscope grid said recall can be read in blocks 1-5 *in the inspection prompt*, and the model's own recall doesn't depend on those MLPs at the country position.
+Mean-ablating the MLP outputs of blocks 1-5 at the country position doesn't hurt: accuracy goes from 77.1% (37 of 48) to 83.3% (40 of 48), and ablating blocks 6-10 gives 81.2% (39 of 48).
+A few prompts change either way, and with 48 prompts three prompts is well inside the interval you computed above. So this test finds **neither** block range necessary.
+That's the point of the exercise: the Patchscope grid said recall can be read in blocks 1-5 *in the inspection prompt*, and the model's own recall doesn't depend on those MLPs at the country position.
 
 It doesn't mean the model recalls capitals without those blocks. We ablated MLPs only (not attention), at one position, and left block 0 and the embedding of the country alone, so the country's identity is still in the stream and later positions can still read it. A different intervention might find a dependence. Try ablating attention outputs, or the MLPs of block 0, or several positions at once.
 </details>
