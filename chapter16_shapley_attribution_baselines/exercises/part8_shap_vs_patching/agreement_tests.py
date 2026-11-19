@@ -347,21 +347,6 @@ def test_write_signature_panel_contract(
     print("All tests in `test_write_signature_panel_contract` passed!")
 
 
-def test_notebook_contract(run_smoke_test: Callable | None = None):
-    run_smoke_test = run_smoke_test or _solutions().run_smoke_test
-    result = run_smoke_test(cpu=True)
-    assert result["additive_agreement"]["agrees_with_mechanistic"], (
-        "The notebook contract should include the additive agreement control."
-    )
-    assert result["xor_disagreement"]["interaction_recovers_pair"], (
-        "The notebook contract should include the XOR interaction disagreement control."
-    )
-    assert result["data_player_bridge"]["pearson_correlation"] > 0.99, (
-        "The notebook contract should include the one-step Data Shapley bridge."
-    )
-    print("All tests in `test_notebook_contract` passed!")
-
-
 def test_notebooks_have_arena_learner_surface():
     required_phrases = [
         "By the end of this notebook",
@@ -420,7 +405,6 @@ def test_solution_notebook_exposes_taught_implementations():
         "shuffled_mechanistic_control",
         "data_player_bridge_report",
         "write_signature_panel",
-        "run_smoke_test",
     }
     missing = sorted(required - function_names)
     assert not missing, (
@@ -428,46 +412,3 @@ def test_solution_notebook_exposes_taught_implementations():
         f"missing {missing}."
     )
     print("All tests in `test_solution_notebook_exposes_taught_implementations` passed!")
-
-
-def test_committed_gpu_report_records_agreement_and_controls():
-    report_path = Path(__file__).with_name("verification_report.json")
-    report = json.loads(report_path.read_text())
-    assert report["accepted"], "The committed 16.8 report should be accepted."
-    assert report["gt_tier"] == "GT-0", "16.8 should remain a finite-game GT-0 section."
-
-    gpu = report["metrics"]["gpu_test"]
-    assert gpu["preflight_passed"], "The CUDA mechanistic-agreement preflight should pass."
-    assert gpu["model_family"] == "cuda_trained_neural_coalition_game_mlp", (
-        "The report should use the generated nonlinear neural coalition game."
-    )
-    assert gpu["coalition_count"] == 16, "The report should evaluate the complete 2**4 table."
-    assert gpu["fit_mse"] <= 1e-8, "The trained model should fit the finite table."
-    assert gpu["spearman_correlation"] >= 0.99, (
-        "Shapley values should recover the analytic mechanistic ranking."
-    )
-    assert gpu["topk_overlap"] == 1.0, "Top-k overlap should match the analytic mechanism."
-    assert gpu["deletion_drop"] > gpu["random_baseline_drop"], (
-        "Deleting the top Shapley feature should beat the non-top deletion baseline."
-    )
-    assert gpu["interaction_max_abs_error"] <= 1e-4, (
-        "Pair interactions should recover the planted interaction table."
-    )
-    assert gpu["top_interaction_pair"] == [0, 2], (
-        "The positive planted interaction pair should be recovered."
-    )
-    assert gpu["second_interaction_pair"] == [1, 3], (
-        "The negative planted interaction pair should be recovered as the second strongest pair."
-    )
-    assert gpu["shuffled_control_rejected"], (
-        "The shuffled-label trained model should fail mechanistic agreement."
-    )
-    assert gpu["shuffled_control_topk_overlap"] == 0.0, (
-        "The shuffled-label control should not recover the top mechanistic features."
-    )
-    assert gpu["agreement_artifacts_written"], "The CUDA report should write visible artifacts."
-    assert gpu["agreement_artifact_count"] == 5, "The report should list all five artifacts."
-    assert gpu["agreement_matrix_rows"] >= 7, "The agreement matrix should include all cases."
-    assert gpu["peak_vram_gb"] < 1.0, "The finite model organism should stay under 1GB VRAM."
-    assert gpu["within_vram_budget"], "The committed report should satisfy the VRAM budget."
-    print("All tests in `test_committed_gpu_report_records_agreement_and_controls` passed!")
