@@ -1743,23 +1743,6 @@ def render_signature_result(result: SignatureResult, save_path: str | Path | Non
     return fig
 
 
-def result_to_json(result: SignatureResult) -> dict[str, object]:
-    return {
-        "metrics": result.metrics,
-        "seed_metrics": result.seed_metrics,
-        "dev_routing_by_regime": result.dev_routing_by_regime.tolist(),
-        "routing_by_regime": result.routing_by_regime.tolist(),
-        "preferred_experts": result.preferred_experts.tolist(),
-        "requested_counts": result.requested_counts.tolist(),
-        "kept_counts": result.kept_counts.tolist(),
-        "intervention": {
-            key: value.tolist()
-            for key, value in asdict(result.intervention).items()
-        },
-        "traces": {name: asdict(trace) for name, trace in result.traces.items()},
-    }
-
-
 def _signature_result_is_accepted(result: SignatureResult) -> bool:
     metrics = result.metrics
     return bool(
@@ -1779,57 +1762,3 @@ def _signature_result_is_accepted(result: SignatureResult) -> bool:
         and metrics["coherent_expert_permutation_max_diff"] <= 3e-6
         and metrics["router_evaluated_positions"] > metrics["active_operation_tokens"]
     )
-
-
-def _require_cuda() -> t.device:
-    if not t.cuda.is_available():
-        raise RuntimeError("CUDA is required for the release hook; no CPU fallback is permitted.")
-    return t.device("cuda")
-
-
-def run_gpu_test(max_vram_gb: float = 24.0) -> dict[str, object]:
-    """Strict CUDA release hook for the parent runner."""
-
-    if max_vram_gb <= 0:
-        raise ValueError("max_vram_gb must be positive.")
-    device = _require_cuda()
-    started = time.perf_counter()
-    t.cuda.empty_cache()
-    t.cuda.reset_peak_memory_stats(device)
-    result = _run_training_experiment(device=device, steps=180, seeds=(7, 19, 31))
-    t.cuda.synchronize(device)
-    peak_vram_gb = t.cuda.max_memory_allocated(device) / 2**30
-    elapsed = time.perf_counter() - started
-    if peak_vram_gb > max_vram_gb:
-        raise AssertionError(
-            f"peak VRAM {peak_vram_gb:.3f} GB exceeds {max_vram_gb:.3f} GB"
-        )
-    accepted = _signature_result_is_accepted(result)
-    if not accepted:
-        raise AssertionError("The CUDA result failed the section's scientific acceptance contract.")
-    payload = result_to_json(result)
-    return {
-        "notebook_id": "5_8_mixture_of_experts_from_scratch",
-        "cuda_available": True,
-        "device": t.cuda.get_device_name(device),
-        "steps": 180,
-        "seeds": [7, 19, 31],
-        "peak_vram_gb": peak_vram_gb,
-        "max_vram_gb": max_vram_gb,
-        "wall_clock_seconds": elapsed,
-        **payload,
-        "accepted": True,
-    }
-
-
-def run_full_experiment(max_vram_gb: float = 24.0) -> dict[str, object]:
-    """Strict full CUDA release API; intentionally identical to the GPU test path."""
-
-    return run_gpu_test(max_vram_gb=max_vram_gb)
-
-
-if __name__ == "__main__":
-    start = time.perf_counter()
-    result = run_cpu_experiment()
-    print(json.dumps(result_to_json(result), indent=2))
-    print(f"CPU wall time: {time.perf_counter() - start:.1f}s")
