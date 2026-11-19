@@ -12,9 +12,10 @@ import streamlit_antd_components as sac
 #     ...
 # ]
 metadata = [
-    {'title': 'The Logit Lens', 'icon': '1-circle-fill', 'subtitle': '(30%)'},
+    {'title': 'The Logit Lens', 'icon': '1-circle-fill', 'subtitle': '(25%)'},
     {'title': 'The Tuned Lens', 'icon': '2-circle-fill', 'subtitle': '(30%)'},
-    {'title': 'Patchscopes', 'icon': '3-circle-fill', 'subtitle': '(30%)'},
+    {'title': 'Patchscopes', 'icon': '3-circle-fill', 'subtitle': '(25%)'},
+    {'title': 'Held-out Quiz', 'icon': 'bullseye', 'subtitle': '(10%)'},
     {'title': 'Bonus', 'icon': 'star', 'subtitle': '(10%)'},
 ]
 chapter_name = 'chapter7_activation_to_language'

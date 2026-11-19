@@ -8,7 +8,8 @@ from transformer_lens import HookedTransformer
 
 
 def test_logit_lens(logit_lens: Callable, model: HookedTransformer):
-    tokens = model.to_tokens(["The capital of France is", "One, two, three, four"])
+    t.manual_seed(0)
+    tokens = t.randint(0, model.cfg.d_vocab, (2, 6), device=model.cfg.device)
     _, cache = model.run_with_cache(tokens)
     result = logit_lens(model, cache, pos=-1)
     n_layers = model.cfg.n_layers
@@ -148,17 +149,39 @@ def test_run_patchscope(run_patchscope: Callable, model: HookedTransformer):
     print("All tests in `test_run_patchscope` passed!")
 
 
-def test_patchscope_accuracy_grid(patchscope_accuracy_grid: Callable, model: HookedTransformer):
-    import part1_lenses_patchscopes.solutions as solutions
+def test_patchscope_accuracy_grid(patchscope_accuracy_grid: Callable):
+    """Checks the grid against a brute-force loop over a fake `run_patchscope`; no model is loaded."""
+    from unittest.mock import patch
 
-    sources = solutions.get_all_layer_source_vectors(model, [" Germany", " Spain"], pos=-1)
-    target = model.to_tokens("The capital of France is Paris. The capital of x is")
-    answers = model.to_tokens([" Berlin", " Madrid"], prepend_bos=False)[:, 0]
-    target_pos = target.shape[1] - 2
-    result = patchscope_accuracy_grid(model, sources[:3], target, target_pos, answers, target_layers=[0, 1])
-    expected = solutions.patchscope_accuracy_grid(model, sources[:3], target, target_pos, answers, target_layers=[0, 1])
-    assert result.shape == (3, 2), f"Expected shape (n_source_layers, n_target_layers) = (3, 2), got {tuple(result.shape)}"
-    t.testing.assert_close(result.float().cpu(), expected.float().cpu())
+    t.manual_seed(0)
+    n_source, batch, n_vocab = 3, 5, 4
+    sources = t.randn(n_source, batch, n_vocab)
+    answers = t.tensor([0, 1, 2, 3, 1])
+    target, target_pos, target_layers = t.tensor([[7, 8, 9]]), 1, [3, 0, 2]
+    calls = []
+
+    def fake_run_patchscope(model, vectors, target_tokens, target_pos_arg, target_layer):
+        # The "model" reads the patched vector directly, but flips its sign at odd target layers.
+        calls.append(target_layer)
+        assert t.equal(target_tokens, target) and target_pos_arg == target_pos, "Pass the target prompt and position on unchanged"
+        return vectors * (-1.0 if target_layer % 2 else 1.0)
+
+    with patch.dict(unwrap(patchscope_accuracy_grid).__globals__, run_patchscope=fake_run_patchscope):
+        result = patchscope_accuracy_grid(object(), sources, target, target_pos, answers, target_layers)
+    expected = t.zeros(n_source, len(target_layers))
+    for i in range(n_source):
+        for j, layer in enumerate(target_layers):
+            hits = 0
+            for b in range(batch):
+                row = sources[i, b] * (-1.0 if layer % 2 else 1.0)
+                hits += int(row.argmax().item() == answers[b].item())
+            expected[i, j] = hits / batch
+    assert tuple(result.shape) == (n_source, len(target_layers)), (
+        f"Expected shape (n_source_layers, n_target_layers) = {(n_source, len(target_layers))}, got {tuple(result.shape)}"
+    )
+    assert expected.unique().numel() > 2, "The fixture should give a mix of accuracies"
+    t.testing.assert_close(result.float().cpu(), expected, msg="Entry [i, j] is the accuracy of source layer i patched into target_layers[j]")
+    assert len(calls) == n_source * len(target_layers), "Run one Patchscope per (source layer, target layer) pair"
     print("All tests in `test_patchscope_accuracy_grid` passed!")
 
 
@@ -328,3 +351,149 @@ def test_patchscope_controls(patchscope_controls: Callable):
     for actual, saved in zip((vectors, bos, target, answers), snapshots):
         t.testing.assert_close(actual, saved, msg='Controls must not mutate source data or targets')
     print('All tests in `test_patchscope_controls` passed!')
+
+
+def test_attention_lens(attention_lens: Callable, model: HookedTransformer):
+    t.manual_seed(0)
+    cfg = model.cfg
+    batch = 3
+    tokens = t.randint(0, cfg.d_vocab, (batch, 7), device=cfg.device)
+    answers = t.tensor([5, 11, 2], device=cfg.device)
+    logits, cache = model.run_with_cache(tokens)
+    heads = attention_lens(model, cache, answers)
+    assert tuple(heads.shape) == (cfg.n_layers, cfg.n_heads, batch), (
+        f"Expected shape (layer, head, batch) = {(cfg.n_layers, cfg.n_heads, batch)}, got {tuple(heads.shape)}"
+    )
+    # Independent oracle: every other term that is added to the residual stream, read the same way.
+    scale = cache["ln_final.hook_scale"][:, -1]  # the final layernorm's scale at the last position, shape (batch, 1)
+
+    def read(x):  # a (batch, d_model) vector written to the stream -> its direct effect on the answer's logit
+        x = x - x.mean(-1, keepdim=True)
+        return ((x / scale) * model.W_U[:, answers].T).sum(-1)
+
+    rest = read(cache["hook_embed"][:, -1] + cache["hook_pos_embed"][:, -1])
+    for layer in range(cfg.n_layers):
+        rest = rest + read(cache["mlp_out", layer][:, -1]) + read(model.b_O[layer].expand(batch, -1))
+    total = heads.sum(dim=(0, 1)) + rest + model.b_U[answers]
+    final = logits[:, -1].gather(-1, answers[:, None])[:, 0]
+    t.testing.assert_close(
+        total, final, atol=1e-3, rtol=1e-3,
+        msg="The heads, MLPs, embeddings and biases should add up to the answer's final logit. "
+        "Divide by the final layernorm's scale (from the cache), not by each head's own norm or by 1.",
+    )
+    print("All tests in `test_attention_lens` passed!")
+
+
+def test_normalize_rows(normalize_rows: Callable):
+    x = t.tensor([[3.0, 4.0], [0.0, 0.0], [-1.0, 0.0]])
+    out = normalize_rows(x)
+    assert out.shape == x.shape, f"Expected shape {tuple(x.shape)}, got {tuple(out.shape)}"
+    assert t.isfinite(out).all(), "A zero row should stay zero, not turn into NaN"
+    t.testing.assert_close(out, t.tensor([[0.6, 0.8], [0.0, 0.0], [-1.0, 0.0]]))
+    t.manual_seed(0)
+    y = t.randn(5, 7)
+    t.testing.assert_close(normalize_rows(y).norm(dim=-1), t.ones(5))
+    t.testing.assert_close(normalize_rows(4.0 * y), normalize_rows(y), msg="Scaling a row by a positive number should change nothing")
+    t.testing.assert_close(normalize_rows(-y), -normalize_rows(y), msg="Normalising must keep each row's direction")
+    print("All tests in `test_normalize_rows` passed!")
+
+
+def _brute_force_topk(queries, bank, k):
+    """Cosine top-k by plain Python loops, lowest bank index first among exact ties."""
+    scores, indices = [], []
+    for q in queries.tolist():
+        row = []
+        for index, b in enumerate(bank.tolist()):
+            dot = sum(x * y for x, y in zip(q, b))
+            norm = (sum(x * x for x in q) ** 0.5) * (sum(y * y for y in b) ** 0.5)
+            row.append((dot / norm if norm else 0.0, index))
+        best = sorted(row, key=lambda pair: (-pair[0], pair[1]))[:k]
+        scores.append([score for score, _ in best])
+        indices.append([index for _, index in best])
+    return t.tensor(scores), t.tensor(indices)
+
+
+def test_contextual_topk(contextual_topk: Callable):
+    # Hand-worked: bank rows 0 and 2 point the same way (an exact tie), row 1 is orthogonal, row 3 is opposite.
+    bank = t.tensor([[1.0, 0.0], [0.0, 2.0], [3.0, 0.0], [-1.0, 0.0]])
+    queries = t.tensor([[5.0, 0.0], [0.0, 0.1]])
+    scores, indices = contextual_topk(queries, bank, k=3)
+    assert tuple(scores.shape) == (2, 3) and tuple(indices.shape) == (2, 3), "Return (scores, indices), each of shape (n_queries, k)"
+    assert indices.tolist() == [[0, 2, 1], [1, 0, 2]], (
+        f"Ties should go to the lower bank index, so the neighbours of query 0 are rows 0, 2, 1; got {indices[0].tolist()}"
+    )
+    t.testing.assert_close(scores, t.tensor([[1.0, 1.0, 0.0], [1.0, 0.0, 0.0]]))
+    # Positive scale does not matter, for queries or for bank rows
+    s2, i2 = contextual_topk(7.0 * queries, 0.25 * bank, k=3)
+    assert t.equal(i2, indices), "Cosine neighbours should not change when queries or bank rows are rescaled"
+    t.testing.assert_close(s2, scores)
+    # Chunked search equals brute force, whatever the chunk size
+    t.manual_seed(0)
+    q, b = t.randn(23, 6), t.randn(31, 6)
+    expected_scores, expected_indices = _brute_force_topk(q, b, k=4)
+    for chunk_size in (1, 5, 23, 1000):
+        got_scores, got_indices = contextual_topk(q, b, k=4, chunk_size=chunk_size)
+        assert t.equal(got_indices, expected_indices), f"chunk_size={chunk_size}: neighbours differ from the brute-force search"
+        t.testing.assert_close(got_scores, expected_scores, atol=1e-5, rtol=1e-5)
+    print("All tests in `test_contextual_topk` passed!")
+
+
+def test_layer_alignment_grid(layer_alignment_grid: Callable):
+    # Hand-worked: two layers in 2-D. Bank vectors point along x (label 10) and y (label 20) at layer 0, swapped at layer 1.
+    bank = t.tensor([[[1.0, 0.0], [0.0, 1.0]], [[0.0, 1.0], [1.0, 0.0]]])
+    bank_labels = t.tensor([10, 20])
+    queries = t.tensor([
+        [[1.0, 0.1], [0.1, 1.0], [1.0, 0.1], [0.1, 1.0]],
+        [[0.2, 1.0], [1.0, 0.2], [0.2, 1.0], [0.2, 1.0]],
+    ])
+    targets = t.tensor([10, 20, 10, 20])
+    grid = layer_alignment_grid(queries, bank, targets, bank_labels)
+    expected = t.tensor([[1.0, 0.0], [0.25, 0.75]])
+    assert tuple(grid.shape) == (2, 2), f"Expected a (query layer, bank layer) grid of shape (2, 2), got {tuple(grid.shape)}"
+    t.testing.assert_close(grid.float(), expected, msg="Entry [i, j]: queries from layer i, bank from layer j")
+    # Brute force on random data, with a chunk size that doesn't divide the queries
+    t.manual_seed(1)
+    q, b = t.randn(3, 17, 5), t.randn(3, 29, 5)
+    q_targets, b_labels = t.randint(0, 3, (17,)), t.randint(0, 3, (29,))
+    got = layer_alignment_grid(q, b, q_targets, b_labels, chunk_size=4)
+    want = t.zeros(3, 3)
+    for i in range(3):
+        for j in range(3):
+            _, nearest = _brute_force_topk(q[i], b[j], k=1)
+            want[i, j] = (b_labels[nearest[:, 0]] == q_targets).float().mean()
+    t.testing.assert_close(got.float(), want)
+    print("All tests in `test_layer_alignment_grid` passed!")
+
+
+def test_ablate_blocks_recall(ablate_blocks_recall: Callable, model: HookedTransformer):
+    t.manual_seed(0)
+    cfg = model.cfg
+    n_prompts, seq, pos = 24, 5, -2
+    tokens = t.randint(0, cfg.d_vocab, (n_prompts, seq), device=cfg.device)
+    clean_logits, cache = model.run_with_cache(tokens)
+    answers = clean_logits[:, -1].argmax(-1)  # so the unablated model is 100% "accurate"
+    assert ablate_blocks_recall(model, tokens, answers, blocks=[], pos=pos) == 1.0, "Ablating no blocks should change nothing"
+    same = tokens[:1].expand(6, -1)
+    assert ablate_blocks_recall(model, same, answers[:1].expand(6), blocks=list(range(cfg.n_layers)), pos=pos) == 1.0, (
+        "If every prompt is identical, replacing an activation by its mean over prompts should change nothing"
+    )
+    # Independent oracle: one prompt at a time, with the clean mean taken in plain Python
+    blocks = [0, 1]
+    result = ablate_blocks_recall(model, tokens, answers, blocks=blocks, pos=pos)
+    hits = 0
+    for i in range(n_prompts):
+        def hook_for(block):
+            mean = sum(cache["mlp_out", block][j, pos] for j in range(n_prompts)) / n_prompts
+
+            def hook(mlp_out, hook):
+                mlp_out[0, pos] = mean
+                return mlp_out
+            return hook
+
+        logits = model.run_with_hooks(tokens[i : i + 1], fwd_hooks=[(f"blocks.{b}.hook_mlp_out", hook_for(b)) for b in blocks])
+        hits += int(logits[0, -1].argmax().item() == answers[i].item())
+    assert abs(result - hits / n_prompts) < 1e-6, (
+        f"Expected accuracy {hits / n_prompts:.3f} after mean-ablating the MLP outputs of blocks {blocks} at position {pos}, got {result:.3f}"
+    )
+    assert hits < n_prompts, "The fixture should be one where the ablation matters"
+    print("All tests in `test_ablate_blocks_recall` passed!")
