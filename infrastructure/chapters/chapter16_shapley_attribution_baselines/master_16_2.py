@@ -1866,7 +1866,7 @@ and masking behavior.
 - [SHAP KernelExplainer documentation](https://shap.readthedocs.io/en/latest/generated/shap.KernelExplainer.html)
 - [SHAP PartitionExplainer documentation](https://shap.readthedocs.io/en/latest/generated/shap.PartitionExplainer.html)
 - [Values of Games with A Priori Unions](https://doi.org/10.1007/BF01774766)
-- [Section 16.1 exact-Shapley notebook](../part1_exact_shapley_ground_truth_games/16.1_Exact_Shapley_on_Ground_Truth_Games_exercises.ipynb)
+- [Section 16.1 exact-Shapley notebook](../part1_exact_shapley/16.1_Exact_Shapley_on_Ground-Truth_Games_exercises.ipynb)
 '''
 
 # ! CELL TYPE: markdown

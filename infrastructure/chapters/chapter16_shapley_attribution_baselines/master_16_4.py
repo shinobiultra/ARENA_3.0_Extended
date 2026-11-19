@@ -107,7 +107,7 @@ calculation under a fully specified data distribution.
 
 Allow about 4–6 hours including the exercises and optional derivations. You should be comfortable with
 expectations, squared loss, NumPy/PyTorch shapes and the Shapley idea from
-[16.1](../part1_exact_shapley_ground_truth_games/16.1_Exact_Shapley_on_Ground_Truth_Games_exercises.ipynb).
+[16.1](../part1_exact_shapley/16.1_Exact_Shapley_on_Ground-Truth_Games_exercises.ipynb).
 The conditional-Gaussian derivation uses covariance matrices and linear regression. We'll provide the network
 training code so you can concentrate on attribution.
 
