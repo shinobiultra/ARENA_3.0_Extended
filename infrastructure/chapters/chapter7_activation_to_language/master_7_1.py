@@ -153,7 +153,7 @@ blocks that grid points at, the claim of the LatentLens paper, what this lesson 
 r'''
 ## Setup code
 
-The whole lesson takes about 3 minutes on a GPU. It works on CPU with a shorter tuned-lens run, and the downloads add up to under 1 GB: GPT-2 Small (about 0.5 GB), the TinyStories validation file (about 20 MB) and, for the quiz, Pythia-160M (about 0.3 GB). The saved outputs and figures below were produced on a CUDA GPU.
+The whole lesson, quiz included, runs in about 1½ minutes on a laptop RTX 5090 and peaked at about 10 GB of GPU memory. It works on CPU with a shorter tuned-lens run, and the downloads add up to under 1 GB: GPT-2 Small (about 0.5 GB), the TinyStories validation file (about 20 MB) and, for the quiz, Pythia-160M (about 0.3 GB). The saved outputs and figures below were produced on a CUDA GPU.
 '''
 
 # ! CELL TYPE: code
