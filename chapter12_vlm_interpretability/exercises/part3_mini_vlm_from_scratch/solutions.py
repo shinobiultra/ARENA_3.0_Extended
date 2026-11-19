@@ -1502,7 +1502,7 @@ quiz = Quiz(
         "Q1": Interval("d", points=4),
         "Q2": Interval("a", points=5),
         "Q3": Ranking("S < L = J"),
-        "Q4": Interval("e", points=6),
+        "Q4": Interval("d", points=6),
     }
 )
 quiz.score(my_answers)
@@ -1619,7 +1619,7 @@ if MAIN:
     assert letter(float(q1_mean[4]), [0.5, 0.8, 0.9, 1.0]) == quiz.questions["Q1"].key, "Q1 key has drifted"
     assert letter(q2_accuracy, [0.02, 0.2, 0.5, 0.8]) == quiz.questions["Q2"].key, "Q2 key has drifted"
     assert Ranking.from_values(q3_runs, eps=0.02).key_text == quiz.questions["Q3"].key_text, "Q3 key has drifted"
-    assert ("e" if q4_first is None else letter(q4_first, [4, 8, 10, 11])) == quiz.questions["Q4"].key, "Q4 key has drifted"
+    assert ("e" if q4_first is None else "abcd"[sum(q4_first >= edge for edge in [8, 10, 11])]) == quiz.questions["Q4"].key, "Q4 key has drifted"
     print("The written key matches these runs.")
 
 # %%

@@ -450,13 +450,7 @@ r'''
 <details>
 <summary>Expected output</summary>
 
-<pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace">Loaded pretrained model gpt2-small into HookedTransformer
-All answers are single GPT-2 tokens.
-colour     ' Question: What colour is the triangle? Answer:'              -&gt; ' blue'
-shape      ' Question: What shape is the yellow object? Answer:'          -&gt; ' square'
-count      ' Question: How many shapes are there? Answer:'                -&gt; ' three'
-horizontal ' Question: Is the triangle on the left or the right? Answer:' -&gt; ' left'
-vertical   ' Question: Is the circle at the top or the bottom? Answer:'   -&gt; ' top'</pre>
+<pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace">FILL_E01</pre>
 
 </details>
 '''
@@ -551,12 +545,7 @@ r'''
 <details>
 <summary>Expected output</summary>
 
-<pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace">           best constant guess  test accuracy
-colour                  yellow          0.161
-shape                   square          0.326
-count                      two          0.410
-horizontal                left          0.488
-vertical                   top          0.491</pre>
+<pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace">FILL_E02</pre>
 
 </details>
 
@@ -698,8 +687,7 @@ r'''
 <details>
 <summary>Expected output</summary>
 
-<pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace">train features: (5000, 196, 768), test features: (1000, 196, 768), dtype torch.float16
-mean patch-embedding norm: 53.7</pre>
+<pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace">FILL_E03</pre>
 
 </details>
 
@@ -983,13 +971,7 @@ r'''
 <details>
 <summary>Expected output</summary>
 
-<pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace"> Question: What colour is the triangle? Answer:
-  ' The'       0.204
-  ' It'        0.115
-  ' A'         0.040
-  ' This'      0.034
-  '\n'         0.031
-  ' I'         0.023</pre>
+<pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace">FILL_E04</pre>
 
 </details>
 
@@ -1330,10 +1312,7 @@ r'''
 The exact numbers depend on the random initialisation of the projector. The saved run is roughly image-blind, with nonuniform answer preferences rather than exact uniform-chance
 performance:
 
-<pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace">                        colour  shape  count  horizontal  vertical
-untrained VLM            0.192  0.324  0.236       0.512     0.491
-uniform chance           0.167  0.333  0.333       0.500     0.500
-best image-blind guess   0.161  0.326  0.410       0.488     0.491</pre>
+<pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace">FILL_E05</pre>
 
 </details>
 
@@ -1636,12 +1615,7 @@ r'''
 
 The times depend on your GPU (these are from an NVIDIA L40S).
 
-<pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace">(A) projector only: 3.0M trainable parameters (projector), 55s, final loss 0.338
-(B) projector + GPT-2: 166M trainable parameters (projector + GPT-2 incl. its separate unembedding), 182s, final loss 0.0600
-                        colour  shape  count  horizontal  vertical
-(A) projector only       0.615  0.991  1.000       0.741     0.775
-(B) projector + GPT-2    0.999  1.000  0.998       0.844     0.990
-best image-blind guess   0.161  0.326  0.410       0.488     0.491</pre>
+<pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace">FILL_E06</pre>
 
 </details>
 
@@ -2079,14 +2053,7 @@ r'''
 <details>
 <summary>Expected output</summary>
 
-<pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace">colour:
-  true image  : {' blue': 189, ' green': 159, ' orange': 139, ' purple': 161, ' red': 191, ' yellow': 161}
-  blank image : {' red': 1000}
-  noise image : {' blue': 80, ' green': 37, ' purple': 148, ' red': 404, ' yellow': 331}
-count:
-  true image  : {' one': 236, ' three': 352, ' two': 412}
-  blank image : {' one': 1000}
-  noise image : {' one': 1000}</pre>
+<pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace">FILL_E07</pre>
 
 </details>
 
@@ -2197,11 +2164,7 @@ r'''
 <details>
 <summary>Expected output</summary>
 
-<pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace">What colour is the circle?                       truth: blue     model: red 0.00, green 0.00, blue 1.00, yellow 0.00, purple 0.00, orange 0.00
-What shape is the blue object?                   truth: circle   model: circle 1.00, square 0.00, triangle 0.00
-How many shapes are there?                       truth: three    model: one 0.00, two 0.00, three 1.00
-Is the circle on the left or the right?          truth: right    model: left 0.01, right 0.99
-Is the circle at the top or the bottom?          truth: top      model: top 1.00, bottom 0.00</pre>
+<pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace">FILL_E08</pre>
 
 For this scene, the model assigns rounded probability 1.00 to blue, circle, three and top, and 0.99 to right. These are probabilities renormalized over the valid answers for each
 question kind, not probabilities of arbitrary generated text. Change an object or its quadrant and rerun; the fixed template and synthetic images define the scope of this play
@@ -2334,10 +2297,7 @@ r'''
 <details>
 <summary>Expected output</summary>
 
-<pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace">sequence length 60, answer position 59
-question tokens: [' Question', ':', ' What', ' colour', ' is', ' the', ' triangle', '?', ' Answer', ':']
-forced-choice accuracy on these 200 questions: 100.0%
-free-generation accuracy (top-1 over the whole vocabulary): 100.0%</pre>
+<pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace">FILL_E09</pre>
 
 The last line answers a question we left open in section 2️⃣: for the trained VLM, forced choice and free generation agree. The model has learned to produce the valid answer words
 by itself.
@@ -2463,8 +2423,7 @@ r'''
 <details>
 <summary>Expected output</summary>
 
-<pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace">tokens per object: 4.4 on average (min 2, max 9)
-background tokens: 39.6 on average</pre>
+<pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace">FILL_E10</pre>
 
 </details>
 
@@ -2520,15 +2479,7 @@ r'''
 <details>
 <summary>Expected output</summary>
 
-<pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace">scene 0: the question is about the blue triangle
-                          object token                  background token
-embed          'agos', ' blue', ' Boo'  ' Citiz', ' arrang', ' challeng'
-pre 1              'jah', 'xon', 'lua'           'iness', 'ings', 'aign'
-pre 4          ' Island', 'xon', 'zon'           'iness', 'ings', ' Zin'
-pre 8    ' Island', ' Ridge', ' Tribe'               'iness', ',', 'ums'
-pre 10  ' Island', ' Tribe', ' Strait'             ' circle', ' to', '.'
-pre 11       ' Island', ' Ridge', "'s"             ' circle', '.', ' to'
-final             ' Island', "'s", '-'                   ' to', ',', '.'</pre>
+<pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace">FILL_E11</pre>
 
 </details>
 
@@ -2884,15 +2835,7 @@ r'''
 <details>
 <summary>Expected output</summary>
 
-<pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace">heads with the most attention on the object's tokens (layer.head: object / same-size random control):
-  L10.H0: 0.92 / 0.01
-  L9.H9: 0.92 / 0.01
-  L10.H6: 0.88 / 0.01
-  L11.H6: 0.86 / 0.01
-  L8.H11: 0.85 / 0.02
-  L10.H1: 0.84 / 0.01
-  L10.H2: 0.83 / 0.02
-  L10.H10: 0.82 / 0.02</pre>
+<pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace">FILL_E12</pre>
 
 </details>
 
@@ -3110,8 +3053,7 @@ r'''
 <details>
 <summary>Expected output</summary>
 
-<pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace">the model gets the clean scenes right: 100%, the corrupted scenes right: 100%
-mean logit difference (clean colour - corrupt colour): clean run +20.5, corrupted run -20.1</pre>
+<pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace">FILL_E13</pre>
 
 </details>
 '''
@@ -3412,13 +3354,7 @@ r'''
 <details>
 <summary>Expected output</summary>
 
-<pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace">                                0     1     2     3     4     5     6     7     8     9    10    11
-object tokens                0.90  0.89  0.89  0.89  0.89  0.89  0.89  0.89  0.89  0.80  0.58  0.18
-same-size random background  0.02  0.02  0.02  0.02  0.02  0.02  0.02  0.02  0.02  0.02  0.01  0.00
-other objects                0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00 -0.00
-all image tokens             1.00  1.00  1.00  1.00  1.00  1.00  1.00  1.00  1.00  0.92  0.68  0.18
-question tokens (50-58)      0.00 -0.00 -0.00 -0.00 -0.00 -0.00 -0.00 -0.00 -0.00 -0.00  0.00  0.01
-answer position (59)         0.00  0.00  0.00  0.00 -0.00 -0.00 -0.00 -0.00 -0.00  0.08  0.31  0.78</pre>
+<pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace">FILL_E14</pre>
 
 </details>
 
@@ -3489,10 +3425,7 @@ r'''
 <details>
 <summary>Expected output</summary>
 
-<pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace">layer  0: mean recovery of a single object token 0.34 (max 0.90), of a single background token 0.005 (max 0.428)
-layer  6: mean recovery of a single object token 0.33 (max 0.91), of a single background token 0.005 (max 0.381)
-layer 10: mean recovery of a single object token 0.23 (max 0.68), of a single background token 0.004 (max 0.239)
-layer 11: mean recovery of a single object token 0.12 (max 0.26), of a single background token 0.003 (max 0.138)</pre>
+<pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace">FILL_E15</pre>
 
 </details>
 
@@ -3667,19 +3600,7 @@ r'''
 <details>
 <summary>Expected output</summary>
 
-<pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace">                                       layers 0-2  layers 3-5  layers 6-8  \
-answer -&gt; object tokens                       1.0         1.0        1.00   
-answer -&gt; same-size random background         1.0         1.0        1.00   
-answer -&gt; all image tokens                    1.0         1.0        1.00   
-question tokens -&gt; all image tokens           1.0         1.0        1.00   
-answer -&gt; question tokens                     1.0         1.0        0.63   
-
-                                       layers 9-11  all layers  
-answer -&gt; object tokens                       0.79        0.73  
-answer -&gt; same-size random background         1.00        1.00  
-answer -&gt; all image tokens                    0.57        0.35  
-question tokens -&gt; all image tokens           1.00        1.00  
-answer -&gt; question tokens                     1.00        0.54</pre>
+<pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace">FILL_E16</pre>
 
 </details>
 
@@ -3738,17 +3659,7 @@ r'''
 <details>
 <summary>Expected output</summary>
 
-<pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace">                                                    object's tokens  \
-decodable: restricted lens accuracy (mean over ...             0.80   
-attended: attention mass from answer position, ...             0.29   
-sufficient: patching recovery, layers 0-8                      0.89   
-necessary: accuracy when the answer position ca...             0.79   
-
-                                                    same-size control  
-decodable: restricted lens accuracy (mean over ...               0.32  
-attended: attention mass from answer position, ...               0.03  
-sufficient: patching recovery, layers 0-8                        0.02  
-necessary: accuracy when the answer position ca...               1.00</pre>
+<pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace">FILL_E17</pre>
 
 (The control for "decodable" is all background tokens, since the lens doesn't depend on set size.)
 </details>
@@ -3829,18 +3740,7 @@ r'''
 <details>
 <summary>Expected output</summary>
 
-<pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace">What colour is the circle?
-clean scene  -&gt; red     (1.00) | corrupted    -&gt; green   (1.00) | patched L4   -&gt; red     (1.00)
-patched 4 positions ('object' at layer 4)
-What colour is the circle?
-clean scene  -&gt; red     (1.00) | corrupted    -&gt; green   (1.00) | patched L4   -&gt; green   (1.00)
-patched 4 positions ('background' at layer 4)
-What colour is the circle?
-clean scene  -&gt; red     (1.00) | corrupted    -&gt; green   (1.00) | patched L11  -&gt; green   (0.99)
-patched 4 positions ('object' at layer 11)
-What colour is the circle?
-clean scene  -&gt; red     (1.00) | corrupted    -&gt; green   (1.00) | patched L11  -&gt; red     (1.00)
-patched 1 positions ('answer' at layer 11)</pre>
+<pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace">FILL_E18</pre>
 
 At layer 4, patching four object positions changes the corrupted green answer to red; four background positions leave it green. At layer 11 the same object patch leaves green at
 0.99, while patching the one answer position gives red at 1.00. This concrete scene mirrors the aggregate transfer curve. The probabilities are restricted to colour candidates, and
@@ -3942,11 +3842,7 @@ r'''
 <details>
 <summary>Expected output</summary>
 
-<pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace">Qwen3-VL-2B-Instruct: 2.13B parameters, 28 language-model layers, d_model 2048
-prompt: 85 tokens, of which 64 image tokens (an 8 x 8 grid)
-first tokens: ['&lt;|im_start|&gt;', 'user', '\n', '&lt;|vision_start|&gt;', '&lt;|image_pad|&gt;']
-last tokens:  [' one', ' word', '.', '&lt;|im_end|&gt;', '\n', '&lt;|im_start|&gt;', 'assistant', '\n']
-the question about the orange circle -&gt; ' orange'</pre>
+<pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace">FILL_E19</pre>
 
 </details>
 '''
@@ -4084,7 +3980,7 @@ r'''
 <details>
 <summary>Expected output</summary>
 
-<pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace">{'true image': '100%', 'blank image': '13%', 'noise image': '12%', 'shuffled image-question pairs': '14%', 'image-only (no question)': '12%'}</pre>
+<pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace">FILL_E20</pre>
 
 </details>
 
@@ -4534,7 +4430,7 @@ At which layer does the mean recovery from patching the object's tokens first fa
 
 | a | b | c | d | e |
 |---|---|---|---|---|
-| layers 0 to 3 | layers 4 to 7 | layers 8 to 9 | layer 10 | layer 11, or it never falls below 0.5 |
+| layers 0 to 7 | layers 8 to 9 | layer 10 | layer 11 | it never falls below 0.5 |
 
 ## Your answers
 
@@ -4566,7 +4462,7 @@ quiz = Quiz(
         "Q1": Interval("d", points=4),
         "Q2": Interval("a", points=5),
         "Q3": Ranking("S < L = J"),
-        "Q4": Interval("e", points=6),
+        "Q4": Interval("d", points=6),
     }
 )
 quiz.score(my_answers)
@@ -4737,7 +4633,7 @@ plt.show()
 assert letter(float(q1_mean[4]), [0.5, 0.8, 0.9, 1.0]) == quiz.questions["Q1"].key, "Q1 key has drifted"
 assert letter(q2_accuracy, [0.02, 0.2, 0.5, 0.8]) == quiz.questions["Q2"].key, "Q2 key has drifted"
 assert Ranking.from_values(q3_runs, eps=0.02).key_text == quiz.questions["Q3"].key_text, "Q3 key has drifted"
-assert ("e" if q4_first is None else letter(q4_first, [4, 8, 10, 11])) == quiz.questions["Q4"].key, "Q4 key has drifted"
+assert ("e" if q4_first is None else "abcd"[sum(q4_first >= edge for edge in [8, 10, 11])]) == quiz.questions["Q4"].key, "Q4 key has drifted"
 print("The written key matches these runs.")
 
 # ! CELL TYPE: markdown
