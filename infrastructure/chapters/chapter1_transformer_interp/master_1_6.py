@@ -71,7 +71,7 @@ r'''
 
 ### ☆ Bonus
 
-Inspect the runtime entry points for the CUDA and full-experiment runs.
+Read the limitations and scope gaps of this infrastructure toolkit.
 '''
 
 # ! CELL TYPE: code

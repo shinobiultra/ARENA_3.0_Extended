@@ -1740,20 +1740,6 @@ r'''
 # ! TAGS: []
 
 r'''
-## Optional CUDA supporting path
-
-The section-local reference module retains the existing finite-model preflight: an additive trained
-model as the agreement control and a nonlinear trained model as the interaction-disagreement case.
-It requires CUDA and has no CPU fallback. The parent runner owns any refresh; this notebook only
-exposes the entry point.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 # 2️⃣ Finite circuits and data players
 '''
 
@@ -4597,4 +4583,3 @@ Explain which players, utility, baseline and intervention direction each result 
 case where rank agreement hides unequal magnitudes and a case where changing the player set repairs
 a disagreement. Keep the one-step data-player bridge separate. The anomaly hunts and play cells above are proposed changes to try.
 '''
-
