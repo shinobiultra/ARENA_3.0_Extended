@@ -129,7 +129,7 @@ prototype implementation surface and links to existing teaching material:
 [10.1 Capstone Research Sprint](chapter10_capstone_research_sprint/instructions/pages/01_%5B10.1%5D_Capstone_Research_Sprint.md),
 [11.1 PCA, SVD, and Geometry Controls](chapter11_representation_geometry/instructions/pages/01_%5B11.1%5D_PCA_SVD_and_Geometry_Controls.md),
 [12.1 CLIP and SigLIP from Scratch](chapter12_vlm_interpretability/instructions/pages/01_%5B12.1%5D_CLIP_and_SigLIP_from_Scratch.md),
-[12.3 Mini VLM from Scratch](chapter12_vlm_interpretability/instructions/pages/03_%5B12.3%5D_Mini_VLM_from_Scratch.md),
+[12.3 Build a Mini VLM on SigLIP and GPT-2](chapter12_vlm_interpretability/instructions/pages/03_%5B12.3%5D_Build_a_Mini_VLM_on_SigLIP_and_GPT-2.md),
 [13.1 Diffusion and Image-Generation Controls](chapter13_image_generation_interpretability/instructions/pages/01_%5B13.1%5D_Diffusion_Models_and_Cross-Attention_Attribution.md),
 [14.2 JEPA and World-Model Controls](chapter14_jepa_world_models/instructions/pages/02_%5B14.2%5D_V-JEPA_and_Video_World_Models.md),
 [15.1 LoRA, DoRA, and Adapter Controls](chapter15_peft_misalignment/instructions/pages/01_%5B15.1%5D_LoRA_and_DoRA_from_Scratch.md),
@@ -146,7 +146,7 @@ and [17.1 Checkpoint Archaeology on Modular Addition](chapter17_training_dynamic
 Lesson status is tracked in the `status` field of
 [the extension syllabus](infrastructure/extension/syllabus.yaml).
 
-The rewritten [12.3 Mini VLM](chapter12_vlm_interpretability/instructions/pages/03_%5B12.3%5D_Mini_VLM_from_Scratch.md) has nineteen exercises that build a word-generating model from RGB pixels. Its completed learner trains twelve models, shows actual captions and VQA answers, and tests five activation stages against object, background, random and full-sequence controls. All 34 own-answer code cells and 43 tests pass. The three-seed familiar-task improvement and complete failure on unseen color-shape captions are both visible; the separate CUDA check supports the same limited claim.
+The rewritten [12.3 Build a Mini VLM on SigLIP and GPT-2](chapter12_vlm_interpretability/instructions/pages/03_%5B12.3%5D_Build_a_Mini_VLM_on_SigLIP_and_GPT-2.md) has nineteen exercises that build a word-generating model from RGB pixels. Its completed learner trains twelve models, shows actual captions and VQA answers, and tests five activation stages against object, background, random and full-sequence controls. All 34 own-answer code cells and 43 tests pass. The three-seed familiar-task improvement and complete failure on unseen color-shape captions are both visible; the separate CUDA check supports the same limited claim.
 
 Polished [Original 0.6 How to Know When an Interpretability Result Is Fake](chapter0_fundamentals/instructions/pages/06_%5B0.6%5D_How_to_Know_When_an_Interpretability_Result_Is_Fake_Practice.md) is a GT-0 skepticism lab for leakage, cherry-picking, probe overfitting, and random-direction controls with a CUDA-backed negative-result signature. Polished [Original 1.6 Local Frontier ML Infrastructure](chapter1_transformer_interp/instructions/pages/40_%5B1.6%5D_Local_Frontier_ML_Infrastructure_Practice.md) introduces the reusable verification harness for later Gemma, Mamba, diffusion, SAE/transcoder, JEPA, world-model, attribution, and alignment-interpretability notebooks with environment, memory, parity, activation-store, and CUDA-runtime controls.
 

@@ -423,7 +423,7 @@ if MAIN:
     start = time.time()
     losses_a = train_vlm(lm_a, projector_a, train_features, train_scenes, n_steps=600, train_lm=False)
     n_trainable = sum(p.numel() for p in projector_a.parameters())
-    print(f"(A) projector only: {n_trainable / 1e6:.1f}M trainable parameters, {time.time() - start:.0f}s, final loss {np.mean(losses_a[-50:]):.3f}")
+    print(f"(A) projector only: {n_trainable / 1e6:.1f}M trainable parameters (projector), {time.time() - start:.0f}s, final loss {np.mean(losses_a[-50:]):.3f}")
     results_a = evaluate_vlm(lm_a, projector_a, test_features, test_questions)
     del lm_a
     t.cuda.empty_cache()
@@ -435,7 +435,7 @@ if MAIN:
     start = time.time()
     losses_b = train_vlm(vlm, projector, train_features, train_scenes, n_steps=1500, train_lm=True)
     n_trainable = sum(p.numel() for p in projector.parameters()) + sum(p.numel() for p in vlm.parameters())
-    print(f"(B) projector + GPT-2: {n_trainable / 1e6:.0f}M trainable parameters, {time.time() - start:.0f}s, final loss {np.mean(losses_b[-50:]):.4f}")
+    print(f"(B) projector + GPT-2: {n_trainable / 1e6:.0f}M trainable parameters (projector + GPT-2 incl. its separate unembedding), {time.time() - start:.0f}s, final loss {np.mean(losses_b[-50:]):.4f}")
     results_b = evaluate_vlm(vlm, projector, test_features, test_questions)
     vlm.requires_grad_(False)
     projector.requires_grad_(False)
@@ -466,6 +466,34 @@ if MAIN:
 
 # %%
 
+if MAIN:
+    n_test = len(test_scenes)
+    blank_features = extract_patch_features(siglip, utils.render_scenes([Scene([], background=235)])).expand(n_test, -1, -1)
+    noise_features = extract_patch_features(siglip, utils.noise_images(n_test, seed=0))
+    shuffled_features = test_features[derangement(n_test, seed=0).to(device)]
+    
+    t.manual_seed(0)
+    random_projector = Projector().to(device)
+    text_only_lm = copy.deepcopy(gpt2)
+    losses_text = train_vlm(text_only_lm, Projector().to(device), train_features, train_scenes, n_steps=400, train_lm=True, use_image=False)
+    text_only_lm.requires_grad_(False)
+    
+    all_results = {
+        "trained VLM (B)": results_b,
+        "projector only (A)": results_a,
+        "blank image": evaluate_vlm(vlm, projector, blank_features, test_questions),
+        "noise image": evaluate_vlm(vlm, projector, noise_features, test_questions),
+        "shuffled image-question pairs": evaluate_vlm(vlm, projector, shuffled_features, test_questions),
+        "random projector": evaluate_vlm(vlm, random_projector, test_features, test_questions),
+        "text-only model": evaluate_vlm(text_only_lm, projector, test_features, test_questions, use_image=False),
+    }
+    display(pd.DataFrame(all_results).round(3).T)
+    utils.plot_accuracy_by_condition(
+        all_results, IMAGE_BLIND, title="The trained VLM against every modality control (1,000 held-out questions per kind)"
+    )
+
+# %%
+
 def target_blind_oracle(scene: Scene, kind: str) -> float:
     """Best target-blind answer probability with perfect knowledge of this scene."""
     if not scene.objects:
@@ -480,14 +508,14 @@ if MAIN:
 # %%
 
 def replay_question_targets(scenes: list[Scene], seed: int) -> dict[str, list[int]]:
-    """Metadata-only replay of make_question_set's kind-major uniform target draws."""
+    """Draws make_question_set's random targets again (same seed, same order): which object each question was about."""
     rng = np.random.default_rng(seed)
     return {kind: [int(rng.integers(len(scene.objects))) for scene in scenes] for kind in KINDS}
 
 
 @t.no_grad()
 def evaluate_readout_controls(model, projector, features, scenes, questions, targets, batch_size=250):
-    """Paired full-question/image-only scores and auditable per-example traces."""
+    """Accuracy of the full question and of the fixed ` Answer:` cue, plus one row per (condition, kind, scene)."""
     if batch_size < 1 or len(scenes) == 0 or len(features) != len(scenes):
         raise ValueError("Need nonempty aligned scenes/features and a positive batch size")
     # One image-only forward per image batch. Task/candidate information enters
@@ -501,7 +529,7 @@ def evaluate_readout_controls(model, projector, features, scenes, questions, tar
             ids = t.tensor([model.to_single_token(" " + word) for word in ANSWER_WORDS[kind]], device=model.cfg.device)
             fixed_scores[kind].append(logits[:, ids].float().cpu())
     fixed_scores = {kind: t.cat(rows) for kind, rows in fixed_scores.items()}
-    results, traces = {}, []
+    results, rows_out = {}, []
     for condition in ["full question", "image-only (fixed readout)"]:
         results[condition] = {}
         for kind, (prompts, answers) in questions.items():
@@ -527,14 +555,14 @@ def evaluate_readout_controls(model, projector, features, scenes, questions, tar
                     prediction = words[int(row.argmax())]
                     hit = prediction == answers[i]
                     correct += int(hit)
-                    traces.append(dict(condition=condition, scene_index=i, kind=kind,
+                    rows_out.append(dict(condition=condition, scene_index=i, kind=kind,
                         object_count=len(scenes[i].objects), target_index=targets[kind][i],
                         original_question=prompts[i], model_prompt=model_prompts[i],
                         answer=answers[i], prediction=prediction, correct=hit,
                         candidate_words=words, candidate_ids=candidate_ids.cpu().tolist(),
                         candidate_logits=row.tolist(), target_blind_oracle=target_blind_oracle(scenes[i], kind)))
             results[condition][kind] = correct / len(scenes)
-    return results, traces
+    return results, rows_out
 
 
 if MAIN:
@@ -543,40 +571,12 @@ if MAIN:
 # %%
 
 if MAIN:
-    n_test = len(test_scenes)
-    blank_features = extract_patch_features(siglip, utils.render_scenes([Scene([], background=235)])).expand(n_test, -1, -1)
-    noise_features = extract_patch_features(siglip, utils.noise_images(n_test, seed=0))
-    shuffled_features = test_features[derangement(n_test, seed=0).to(device)]
-    
-    t.manual_seed(0)
-    random_projector = Projector().to(device)
-    text_only_lm = copy.deepcopy(gpt2)
-    losses_text = train_vlm(text_only_lm, Projector().to(device), train_features, train_scenes, n_steps=400, train_lm=True, use_image=False)
-    text_only_lm.requires_grad_(False)
-    
     readout_targets = replay_question_targets(test_scenes, seed=0)
-    readout_accuracy, readout_traces = evaluate_readout_controls(
+    readout_accuracy, readout_rows = evaluate_readout_controls(
         vlm, projector, test_features, test_scenes, test_questions, readout_targets)
-    assert all(abs(readout_accuracy["full question"][kind] - results_b[kind]) < 1e-6 for kind in KINDS)
-    all_results = {
-        "trained VLM (B)": results_b,
-        "projector only (A)": results_a,
-        "blank image": evaluate_vlm(vlm, projector, blank_features, test_questions),
-        "noise image": evaluate_vlm(vlm, projector, noise_features, test_questions),
-        "shuffled image-question pairs": evaluate_vlm(vlm, projector, shuffled_features, test_questions),
-        "random projector": evaluate_vlm(vlm, random_projector, test_features, test_questions),
-        "text-only model": evaluate_vlm(text_only_lm, projector, test_features, test_questions, use_image=False),
-        "image-only (fixed readout)": readout_accuracy["image-only (fixed readout)"],
-    }
-    display(pd.DataFrame(all_results).round(3).T)
-    utils.plot_accuracy_by_condition(
-        all_results, IMAGE_BLIND, title="The trained VLM against every modality control (1,000 held-out questions per kind)"
-    )
-
-# %%
-
-if MAIN:
-    readout_table = pd.DataFrame(readout_traces)
+    assert all(abs(readout_accuracy["full question"][kind] - results_b[kind]) < 1e-6 for kind in KINDS)  # same numbers as regime (B)
+    display(pd.DataFrame({**all_results, "image-only (fixed readout)": readout_accuracy["image-only (fixed readout)"]}).round(3).T)
+    readout_table = pd.DataFrame(readout_rows)
     display(readout_table.groupby(["condition", "kind", "object_count"])[["correct", "target_blind_oracle"]].mean().round(3))
 
 # %%
@@ -612,7 +612,6 @@ if MAIN:
     
     gallery_rng = np.random.default_rng(5)
     gallery_idx = gallery_rng.choice(n_test, size=8, replace=False)
-    gallery_kinds = [KINDS[i % 5] if i % 5 != 2 else KINDS[2] for i in range(8)]
     gallery_kinds = [KINDS[k] for k in gallery_rng.integers(0, 5, size=8)]
     gallery_captions = []
     for i, kind in zip(gallery_idx, gallery_kinds):
@@ -910,6 +909,29 @@ if MAIN:
 
 # %%
 
+def top_attention_mask(
+    patterns: Float[Tensor, "layer head query key"], query_pos: int, image_slice: slice, k: int
+) -> Bool[Tensor, " image_token"]:
+    """The k image tokens (keys in image_slice) with the highest attention from query_pos, averaged over layers and heads."""
+    scores = patterns[:, :, query_pos, image_slice].mean(dim=(0, 1))  # (image_token,)
+    mask = t.zeros_like(scores, dtype=t.bool)
+    mask[scores.topk(k).indices] = True
+    return mask
+
+
+if MAIN:
+    tests.test_top_attention_mask(top_attention_mask)
+
+# %%
+
+if MAIN:
+    a_patterns = [t.stack([a_cache["pattern", layer][b] for layer in range(N_LAYERS)]) for b in range(N_ANALYSIS)]  # each (layer, head, query, key)
+    a_top = t.stack([top_attention_mask(a_patterns[b], ANSWER_POS, IMAGE_SLICE, int(a_masks["object"][b].sum())) for b in range(N_ANALYSIS)])
+    overlap = ((a_top & a_masks["object"]).sum(1) / a_masks["object"].sum(1)).float()
+    print(f"fraction of the object's tokens that are among the most-attended: {overlap.mean():.2f} on average (a random choice of the same size would give {(a_masks['object'].sum(1) / N_IMAGE_TOKENS).float().mean():.2f})")
+
+# %%
+
 if MAIN:
     pairs = utils.make_counterfactual_pairs(100, seed=7)
     clean_scenes, corrupt_scenes = [p[0] for p in pairs], [p[1] for p in pairs]
@@ -926,9 +948,13 @@ if MAIN:
         clean_embeds = build_input_embeddings(vlm, projector(clean_features), pair_tokens)
         corrupt_embeds = build_input_embeddings(vlm, projector(corrupt_features), pair_tokens)
         _, clean_cache = vlm.run_with_cache(
-            clean_embeds, start_at_layer=0, stop_at_layer=N_LAYERS, names_filter=lambda name: name.endswith("resid_pre")
+            clean_embeds,
+            start_at_layer=0,
+            stop_at_layer=N_LAYERS,
+            names_filter=lambda name: name.endswith("resid_pre") or name.endswith("hook_pattern"),
         )
         clean_resids = {layer: clean_cache["resid_pre", layer] for layer in range(N_LAYERS)}  # layer -> (100, 60, 768)
+        clean_patterns = [t.stack([clean_cache["pattern", layer][b] for layer in range(N_LAYERS)]) for b in range(len(pairs))]  # each (layer, head, query, key)
         clean_logits = vlm.unembed(vlm.ln_final(vlm(clean_embeds, start_at_layer=0, stop_at_layer=N_LAYERS)[:, ANSWER_POS]))
         corrupt_logits = vlm.unembed(vlm.ln_final(vlm(corrupt_embeds, start_at_layer=0, stop_at_layer=N_LAYERS)[:, ANSWER_POS]))
     
@@ -980,7 +1006,14 @@ def logit_diff_recovery(
         rows = t.arange(len(logits), device=logits.device)
         return logits[rows, clean_ids] - logits[rows, corrupt_ids]
 
-    return (logit_diff(patched_logits) - logit_diff(corrupt_logits)) / (logit_diff(clean_logits) - logit_diff(corrupt_logits))
+    gap = logit_diff(clean_logits) - logit_diff(corrupt_logits)
+    bad = ~(t.isfinite(gap) & (gap > 0))
+    if bad.any():
+        raise ValueError(f"Pairs {bad.nonzero().flatten().tolist()} have a clean-minus-corrupted gap that is zero, negative or not finite: {gap[bad].tolist()}")
+    recovery = (logit_diff(patched_logits) - logit_diff(corrupt_logits)) / gap
+    if not t.isfinite(recovery).all():
+        raise ValueError(f"Recovery is not finite for pairs {(~t.isfinite(recovery)).nonzero().flatten().tolist()}")
+    return recovery
 
 
 if MAIN:
@@ -999,16 +1032,15 @@ def patching_sweep(
     corrupt_ids: Int[Tensor, " batch"],
     answer_pos: int,
     layers: list[int],
-) -> dict[str, list[float]]:
-    """For each named position mask: the mean (over the batch) recovery from patching it at each layer in `layers`."""
+) -> dict[str, Float[Tensor, "layer batch"]]:
+    """For each named position mask: the recovery of every pair (shape (len(layers), batch)) from patching it at each layer in `layers`."""
     curves = {name: [] for name in masks}
     with t.no_grad():
         for layer in layers:
             for name, mask in masks.items():
                 patched = patched_answer_logits(model, corrupt_embeds, clean_resids[layer], layer, mask, answer_pos)
-                recovery = logit_diff_recovery(patched, clean_logits, corrupt_logits, clean_ids, corrupt_ids)
-                curves[name].append(recovery.mean().item())
-    return curves
+                curves[name].append(logit_diff_recovery(patched, clean_logits, corrupt_logits, clean_ids, corrupt_ids))
+    return {name: t.stack(rows) for name, rows in curves.items()}
 
 
 if MAIN:
@@ -1018,6 +1050,9 @@ if MAIN:
 
 if MAIN:
     p_masks = token_set_masks(clean_scenes, pair_targets, seed=1)
+    p_masks["highest attention"] = t.stack(
+        [top_attention_mask(clean_patterns[b], ANSWER_POS, IMAGE_SLICE, int(p_masks["object"][b].sum())) for b in range(len(pairs))]
+    )
     
     
     def seq_mask(token_mask: Tensor | None = None, positions: slice | None = None) -> Tensor:
@@ -1034,18 +1069,20 @@ if MAIN:
         "object tokens": seq_mask(p_masks["object"]),
         "same-size random background": seq_mask(p_masks["random background"]),
         "other objects": seq_mask(p_masks["other objects"]),
+        "highest-attention tokens": seq_mask(p_masks["highest attention"]),
         "all image tokens": seq_mask(t.ones_like(p_masks["object"])),
         "question tokens (50-58)": seq_mask(positions=slice(1 + N_IMAGE_TOKENS, ANSWER_POS)),
         "answer position (59)": seq_mask(positions=slice(ANSWER_POS, ANSWER_POS + 1)),
     }
-    patch_curves = patching_sweep(
+    patch_recovery = patching_sweep(  # name -> (layer, pair): the recovery of every pair at every layer
         vlm, corrupt_embeds, clean_resids, patch_sets, clean_logits, corrupt_logits, clean_ids, corrupt_ids, ANSWER_POS, list(range(N_LAYERS))
     )
+    patch_curves = {name: values.mean(dim=1).tolist() for name, values in patch_recovery.items()}  # the mean over the 100 pairs
     utils.plot_layer_curves(
         patch_curves,
         "Patching clean -> corrupted: fraction of the logit difference recovered",
         "recovery (0 = corrupted answer, 1 = clean answer)",
-        controls=("same-size random background", "other objects", "all image tokens"),
+        controls=("same-size random background", "other objects", "highest-attention tokens", "all image tokens"),
         ylim=(-0.05, 1.08),
     )
     print(pd.DataFrame(patch_curves, index=[f"{layer}" for layer in range(N_LAYERS)]).T.round(2).to_string())
@@ -1230,7 +1267,7 @@ if MAIN:
 
 if MAIN:
     # Free what we no longer need (rerun the earlier cells if you want these back), then load Qwen
-    for name in ["text_only_lm", "train_features", "a_cache", "image_resid", "a_embeds", "clean_cache", "clean_resids", "clean_embeds", "corrupt_embeds"]:
+    for name in ["text_only_lm", "train_features", "a_cache", "a_patterns", "image_resid", "a_embeds", "clean_cache", "clean_patterns", "clean_resids", "clean_embeds", "corrupt_embeds"]:
         globals().pop(name, None)
     t.cuda.empty_cache()
     qwen, qwen_processor = utils.load_qwen(device)
@@ -1361,11 +1398,9 @@ if MAIN:
 
 if MAIN:
     qwen_layers = qwen_layer_schedule(N_QWEN_LAYERS)
-    qwen_set_names = ["object tokens", "same-size random background", "other objects", "all image tokens", "last position"]
-    qwen_recovery = {name: np.zeros(len(qwen_layers)) for name in qwen_set_names}
-    qwen_pair_traces = []
-    qwen_pair_selection = []
-    n_valid = 0
+    qwen_set_names = ["object tokens", "same-size random background", "other objects", "highest-attention tokens", "all image tokens", "answer position"]
+    qwen_patched = {name: [[] for _ in qwen_layers] for name in qwen_set_names}  # name -> layer -> one (6,) vector of colour logits per kept pair
+    qwen_clean_logits, qwen_corrupt_logits, qwen_clean_idx, qwen_corrupt_idx = [], [], [], []
     for k in tqdm(range(20)):
         clean_scene, corrupt_scene, idx = pairs[k]
         obj = clean_scene.objects[idx]
@@ -1373,74 +1408,222 @@ if MAIN:
         inputs_clean = utils.qwen_inputs(qwen_processor, utils.render_scene(clean_scene), question, device)
         inputs_corrupt = utils.qwen_inputs(qwen_processor, utils.render_scene(corrupt_scene), question, device)
         clean_ci, corrupt_ci = list(COLOURS).index(obj.colour), list(COLOURS).index(corrupt_scene.objects[idx].colour)
-        lc, lk = qwen_forced_choice(qwen, inputs_clean, qwen_colour_ids), qwen_forced_choice(qwen, inputs_corrupt, qwen_colour_ids)
-        qwen_pair_selection.append(dict(pair_index=k, target_index=idx,
-            clean_colour=obj.colour, corrupt_colour=corrupt_scene.objects[idx].colour,
-            clean_candidate_logits=lc.float().cpu().tolist(), corrupt_candidate_logits=lk.float().cpu().tolist(),
-            kept=int(lc.argmax()) == clean_ci and int(lk.argmax()) == corrupt_ci))
+        lc, lk = qwen_forced_choice(qwen, inputs_clean, qwen_colour_ids).float(), qwen_forced_choice(qwen, inputs_corrupt, qwen_colour_ids).float()
         if int(lc.argmax()) != clean_ci or int(lk.argmax()) != corrupt_ci:
             continue  # keep only pairs the model gets right on both scenes
-        n_valid += 1
+        qwen_clean_logits.append(lc)
+        qwen_corrupt_logits.append(lk)
+        qwen_clean_idx.append(clean_ci)
+        qwen_corrupt_idx.append(corrupt_ci)
         cache = utils.qwen_cache_layer_inputs(qwen, inputs_clean)
         seq = inputs_clean["input_ids"].shape[1]
         image_positions = (inputs_clean["input_ids"][0] == qwen.config.image_token_id).nonzero().flatten()
+        image_slice = slice(int(image_positions[0]), int(image_positions[-1]) + 1)
         obj_mask = t.tensor(utils.qwen_object_token_mask(obj).flatten(), device=device)[None]
         occupied = t.tensor(np.any([utils.qwen_object_token_mask(o).flatten() for o in clean_scene.objects], axis=0), device=device)[None]
         token_sets = {
             "object tokens": obj_mask[0],
             "same-size random background": random_background_mask(obj_mask, occupied, seed=k)[0],
             "other objects": (occupied & ~obj_mask)[0],
+            "highest-attention tokens": top_attention_mask(utils.qwen_attention_patterns(qwen, inputs_clean), seq - 1, image_slice, int(obj_mask.sum())),
             "all image tokens": t.ones_like(obj_mask[0]),
         }
         for name in qwen_set_names:
             positions = t.zeros(seq, dtype=t.bool, device=device)
-            if name == "last position":
+            if name == "answer position":
                 positions[-1] = True
             else:
                 positions[image_positions[token_sets[name]]] = True
             for li, layer in enumerate(qwen_layers):
-                logits = qwen_patched_logits(qwen, inputs_corrupt, layer, positions, cache[layer])[qwen_colour_ids].float()
-                ld = lambda lg: (lg[clean_ci] - lg[corrupt_ci]).item()
-                denominator = ld(lc.float()) - ld(lk.float())
-                if not np.isfinite(denominator) or denominator <= 0:
-                    raise ValueError("Selected pair has an invalid recovery denominator")
-                recovery = (ld(logits) - ld(lk.float())) / denominator
-                if not np.isfinite(recovery):
-                    raise ValueError("Nonfinite intervention recovery")
-                qwen_recovery[name][li] += recovery
-                qwen_pair_traces.append(dict(pair_index=k, layer=layer, token_set=name,
-                    target_index=idx, clean_colour=obj.colour, corrupt_colour=corrupt_scene.objects[idx].colour,
-                    clean_logit_difference=ld(lc.float()), corrupt_logit_difference=ld(lk.float()),
-                    patched_logit_difference=ld(logits), denominator=denominator, recovery=recovery,
-                    positions=positions.nonzero().flatten().cpu().tolist()))
+                qwen_patched[name][li].append(qwen_patched_logits(qwen, inputs_corrupt, layer, positions, cache[layer])[qwen_colour_ids].float())
+    n_valid = len(qwen_clean_idx)
     if n_valid == 0:
-        raise ValueError("No correctly answered counterfactual pairs; do not publish undefined recovery")
-    qwen_recovery = {name: (values / n_valid).tolist() for name, values in qwen_recovery.items()}
+        raise ValueError("No correctly answered counterfactual pairs, so recovery is undefined")
+    # One recovery for every kept pair, from the same function as the mini VLM: shape (layer, pair).
+    qwen_recovery = {
+        name: t.stack([
+            logit_diff_recovery(t.stack(rows), t.stack(qwen_clean_logits).cpu(), t.stack(qwen_corrupt_logits).cpu(), t.tensor(qwen_clean_idx), t.tensor(qwen_corrupt_idx))
+            for rows in per_layer
+        ])
+        for name, per_layer in {name: [[row.cpu() for row in rows] for rows in per_layer] for name, per_layer in qwen_patched.items()}.items()
+    }
+    qwen_recovery_mean = {name: values.mean(dim=1).tolist() for name, values in qwen_recovery.items()}
     print(f"{n_valid} of 20 pairs kept (both scenes answered correctly)")
-    print(pd.DataFrame(qwen_recovery, index=qwen_layers).T.round(2).to_string())
+    print(pd.DataFrame(qwen_recovery_mean, index=qwen_layers).T.round(2).to_string())
 
 # %%
 
 if MAIN:
-    mini_curves = {
-        "object tokens": patch_curves["object tokens"],
-        "same-size random background": patch_curves["same-size random background"],
-        "other objects": patch_curves["other objects"],
-        "all image tokens": patch_curves["all image tokens"],
-        "last position": patch_curves["answer position (59)"],
+    signature_sets = ["object tokens", "answer position", "other objects", "same-size random background", "highest-attention tokens"]
+    mini_recovery = {name: patch_recovery["answer position (59)" if name == "answer position" else name] for name in signature_sets}
+    signature_models = {
+        f"mini VLM (GPT-2 Small, {N_LAYERS} layers, {len(pairs)} pairs)": (mini_recovery, list(range(N_LAYERS)), N_LAYERS),
+        f"Qwen3-VL-2B ({N_QWEN_LAYERS} layers, {n_valid} pairs)": (qwen_recovery, qwen_layers, N_QWEN_LAYERS),
     }
-    utils.plot_relative_depth_curves(
-        {
-            f"mini VLM (GPT-2 Small, {N_LAYERS} layers)": (mini_curves, list(range(N_LAYERS)), N_LAYERS),
-            f"Qwen3-VL-2B ({N_QWEN_LAYERS} layers)": (qwen_recovery, qwen_layers, N_QWEN_LAYERS),
-        },
-        controls=("same-size random background", "other objects", "all image tokens"),
+    utils.plot_signature_recovery(
+        signature_models,
+        signature_sets,
+        controls=("other objects", "same-size random background", "highest-attention tokens"),
+        title="Where is the answer? Recovery from patching each token set, mini VLM and Qwen3-VL (bands: 95% pair bootstrap)",
     )
+    for model_name, (recovery, layers, n_layers) in signature_models.items():
+        print(model_name)
+        for name in ["object tokens", "highest-attention tokens", "answer position"]:
+            mean, low, high = utils.pair_bootstrap_band(recovery[name].T)
+            cells = [f"L{layer}: {mean[i]:.2f} [{low[i]:.2f}, {high[i]:.2f}]" for i, layer in enumerate(layers) if layer in (0, layers[len(layers) // 2], layers[-2], layers[-1])]
+            print(f"  {name:<26}" + "   ".join(cells))
 
 # %%
 
 if MAIN:
     del qwen
     t.cuda.empty_cache()
+
+# %%
+
+my_answers = {
+    "Q1": "",  # "a" to "e"
+    "Q2": "",  # "a" to "e"
+    "Q3": "",  # e.g. "S < L = J"
+    "Q4": "",  # "a" to "e"
+}
+my_reasons = {  # one sentence each: which result from this lesson are you relying on?
+    "Q1": "",
+    "Q2": "",
+    "Q3": "",
+    "Q4": "",
+}
+
+sys.path.append(str(root_dir / "infrastructure" / "extension" / "learner"))
+from quiz import Interval, Quiz, Ranking
+
+quiz = Quiz(
+    {
+        "Q1": Interval("d", points=4),
+        "Q2": Interval("a", points=5),
+        "Q3": Ranking("S < L = J"),
+        "Q4": Interval("b", points=6),
+    }
+)
+quiz.score(my_answers)
+
+# %%
+
+if MAIN:
+    rng4 = np.random.default_rng(1234)
+    scenes4 = [utils.sample_scene(rng4, n_objects=4) for _ in range(100)]
+    tokens4, lens4 = utils.tokenize_prompts(vlm, [" Question: How many shapes are there? Answer:"] * len(scenes4))
+    with t.no_grad():
+        logits4 = vlm_answer_logits(vlm, projector, featurise(scenes4), tokens4, lens4)
+    count_ids = t.tensor([vlm.to_single_token(w) for w in [" one", " two", " three", " four"]], device=device)
+    says = Counter([" one", " two", " three", " four"][i] for i in logits4[:, count_ids].argmax(-1).tolist())
+    print(f"{len(scenes4)} scenes with four objects: the model says {dict(says)}; accuracy {answer_accuracy(logits4, count_ids[3].repeat(len(scenes4)), count_ids):.0%}")
+
+# %%
+
+if MAIN:
+    def letter(value: float, edges: list[float]) -> str:
+        """Which of five intervals a-e the value falls in, for four ascending edges."""
+        return "abcde"[sum(value >= edge for edge in edges)]
+    
+    
+    def object_recovery_curve(pair_list: list, kind: str) -> dict[str, Tensor]:
+        """Recovery of every pair at every layer, shape (layer, pair), from patching the object's tokens (the union of its tokens in the clean and corrupted scenes) and, for reference, all image tokens."""
+        n = len(pair_list)
+        clean_s, corrupt_s, targets = [p[0] for p in pair_list], [p[1] for p in pair_list], [p[2] for p in pair_list]
+        word = (lambda s, i: s.objects[i].colour) if kind == "colour" else (lambda s, i: s.objects[i].shape)
+        prompts = [question_and_answer(s, kind, i)[0] for s, i in zip(clean_s, targets)]
+        tokens, lens = utils.tokenize_prompts(vlm, prompts)
+        assert (lens == lens[0]).all(), "all prompts should have the same length"
+        seq_q = 1 + N_IMAGE_TOKENS + int(lens[0])  # BOS, image tokens, question: the answer position is the last one
+        ids_clean = t.tensor([vlm.to_single_token(" " + word(s, i)) for s, i in zip(clean_s, targets)], device=device)
+        ids_corrupt = t.tensor([vlm.to_single_token(" " + word(s, i)) for s, i in zip(corrupt_s, targets)], device=device)
+        with t.no_grad():
+            embeds_clean = build_input_embeddings(vlm, projector(featurise(clean_s)), tokens)
+            embeds_corrupt = build_input_embeddings(vlm, projector(featurise(corrupt_s)), tokens)
+            _, cache_q = vlm.run_with_cache(embeds_clean, start_at_layer=0, stop_at_layer=N_LAYERS, names_filter=lambda name: name.endswith("resid_pre"))
+            resids = {layer: cache_q["resid_pre", layer] for layer in range(N_LAYERS)}
+            final = lambda x: vlm.unembed(vlm.ln_final(vlm(x, start_at_layer=0, stop_at_layer=N_LAYERS)[:, seq_q - 1]))
+            logits_clean, logits_corrupt = final(embeds_clean), final(embeds_corrupt)
+        masks_q = t.tensor(np.stack([(utils.object_token_mask(c.objects[i]) | utils.object_token_mask(k.objects[i])).flatten() for c, k, i in zip(clean_s, corrupt_s, targets)]), device=device)
+        mask = t.zeros(n, seq_q, dtype=t.bool, device=device)
+        mask[:, IMAGE_SLICE] = masks_q
+        everything = t.zeros_like(mask)
+        everything[:, IMAGE_SLICE] = True
+        return patching_sweep(vlm, embeds_corrupt, resids, {"object tokens": mask, "all image tokens": everything}, logits_clean, logits_corrupt, ids_clean, ids_corrupt, seq_q - 1, list(range(N_LAYERS)))
+    
+    
+    # Q1: 20 new colour pairs
+    q1_recovery = object_recovery_curve(utils.make_counterfactual_pairs(20, seed=123), "colour")["object tokens"]
+    q1_mean, q1_low, q1_high = utils.pair_bootstrap_band(q1_recovery.T)
+    print(f"Q1: object-token recovery at layer 4 on 20 new colour pairs: {q1_mean[4]:.3f} (95% band {q1_low[4]:.3f} to {q1_high[4]:.3f}); layers 0-8 range {q1_mean[:9].min():.3f} to {q1_mean[:9].max():.3f}")
+    
+    # Q2: four objects
+    rng4 = np.random.default_rng(777)
+    scenes4 = [utils.sample_scene(rng4, n_objects=4) for _ in range(500)]
+    tokens4, lens4 = utils.tokenize_prompts(vlm, [" Question: How many shapes are there? Answer:"] * len(scenes4))
+    with t.no_grad():
+        logits4 = vlm_answer_logits(vlm, projector, featurise(scenes4), tokens4, lens4)
+    q2_accuracy = answer_accuracy(logits4, count_ids[3].repeat(len(scenes4)), count_ids)
+    q2_says = Counter([" one", " two", " three", " four"][i] for i in logits4[:, count_ids].argmax(-1).tolist())
+    print(f"Q2: 500 four-object scenes: the model says {dict(q2_says)}; count accuracy {q2_accuracy:.3f}")
+    
+    # Q3: projector only, 1,500 steps (the training features were freed before Qwen, so featurise them again)
+    train_features = featurise(train_scenes)
+    t.manual_seed(0)
+    projector_l = Projector().to(device)
+    lm_l = copy.deepcopy(gpt2)
+    losses_l = train_vlm(lm_l, projector_l, train_features, train_scenes, n_steps=1500, train_lm=False)
+    q3_runs = {
+        "S": results_a["colour"],
+        "L": evaluate_vlm(lm_l, projector_l, test_features, test_questions)["colour"],
+        "J": results_b["colour"],
+    }
+    del lm_l
+    t.cuda.empty_cache()
+    print("Q3: colour accuracy " + ", ".join(f"{name} {value:.3f}" for name, value in q3_runs.items()) + f"; final loss of L {np.mean(losses_l[-50:]):.3f}")
+    
+    # Q4: shape pairs
+    q4_curves = object_recovery_curve(utils.make_shape_pairs(40, seed=11), "shape")
+    q4_mean, q4_low, q4_high = utils.pair_bootstrap_band(q4_curves["object tokens"].T)
+    q4_all_mean = q4_curves["all image tokens"].mean(dim=1)
+    below = [layer for layer in range(N_LAYERS) if q4_mean[layer] < 0.5]
+    q4_first = below[0] if below else None
+    print("Q4: object-token recovery by layer on 40 shape pairs: " + " ".join(f"{v:.2f}" for v in q4_mean.tolist()))
+    print("Q4: all image tokens, for reference:                 " + " ".join(f"{v:.2f}" for v in q4_all_mean.tolist()))
+    print(f"Q4: first layer below 0.5: {q4_first}")
+    
+    # one figure of all the quiz's runs
+    fig, axes = plt.subplots(2, 2, figsize=(11, 7.5))
+    layers_axis = np.arange(N_LAYERS)
+    axes[0, 0].plot(layers_axis, patch_curves["object tokens"], "-o", color=utils.GREY, markersize=3.5, label="Part 4: 100 pairs")
+    axes[0, 0].plot(layers_axis, q1_mean.numpy(), "-o", color=utils.BLUE, markersize=4, label="Q1: 20 new pairs")
+    axes[0, 0].fill_between(layers_axis, q1_low.numpy(), q1_high.numpy(), color=utils.BLUE, alpha=0.2, lw=0)
+    axes[0, 0].axvline(4, color="k", ls=":", lw=1)
+    axes[0, 0].set(title="Q1: object-token recovery, colour pairs", xlabel="layer", ylabel="recovery", ylim=(-0.05, 1.1))
+    axes[0, 0].legend(fontsize=8)
+    words4 = [" one", " two", " three", " four"]
+    axes[0, 1].bar([w.strip() for w in words4], [q2_says.get(w, 0) / len(scenes4) for w in words4], color=[utils.GREY, utils.GREY, utils.ORANGE, utils.BLUE])
+    axes[0, 1].set(title="Q2: what the model says on 500 four-object scenes", ylabel="fraction of scenes", ylim=(0, 1.05))
+    axes[1, 0].bar(["S: proj. only\n600 steps", "L: proj. only\n1,500 steps", "J: proj. + GPT-2\n1,500 steps"], [q3_runs["S"], q3_runs["L"], q3_runs["J"]], color=[utils.GREY, utils.ORANGE, utils.BLUE])
+    axes[1, 0].axhline(IMAGE_BLIND["colour"], color="k", ls=":", lw=1.2, label="best image-blind guess")
+    axes[1, 0].set(title="Q3: colour accuracy", ylabel="accuracy", ylim=(0, 1.08))
+    axes[1, 0].legend(fontsize=8)
+    axes[1, 1].plot(layers_axis, patch_curves["object tokens"], "-o", color=utils.GREY, markersize=3.5, label="colour pairs (Part 4)")
+    axes[1, 1].plot(layers_axis, q4_mean.numpy(), "-o", color=utils.PURPLE, markersize=4, label="Q4: 40 shape pairs")
+    axes[1, 1].fill_between(layers_axis, q4_low.numpy(), q4_high.numpy(), color=utils.PURPLE, alpha=0.2, lw=0)
+    axes[1, 1].plot(layers_axis, q4_all_mean.cpu().numpy(), "--s", color=utils.GREEN, markersize=3.5, label="Q4: all image tokens")
+    axes[1, 1].axhline(0.5, color="k", ls=":", lw=1.2)
+    axes[1, 1].set(title="Q4: object-token recovery, shape pairs", xlabel="layer", ylabel="recovery", ylim=(-0.05, 1.1))
+    axes[1, 1].legend(fontsize=8)
+    plt.tight_layout()
+    plt.show()
+    
+    # the written key must still be what these runs produce
+    assert letter(float(q1_mean[4]), [0.5, 0.8, 0.9, 1.0]) == quiz.questions["Q1"].key, "Q1 key has drifted"
+    assert letter(q2_accuracy, [0.02, 0.2, 0.5, 0.8]) == quiz.questions["Q2"].key, "Q2 key has drifted"
+    assert Ranking.from_values(q3_runs, eps=0.02).key_text == quiz.questions["Q3"].key_text, "Q3 key has drifted"
+    assert ("e" if q4_first is None else "abcde"[sum(q4_first >= edge for edge in [1, 2, 6, 11])]) == quiz.questions["Q4"].key, "Q4 key has drifted"
+    print("The written key matches these runs.")
 
 # %%
