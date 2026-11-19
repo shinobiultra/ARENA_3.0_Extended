@@ -47,7 +47,14 @@ In [1.2] you reverse-engineered the induction circuit of a two-layer attention-o
 (head 0.7), found induction heads in layer 1 (1.4 and 1.10), and showed with weight-based analysis that they're connected by **K-composition**: the induction heads' keys are built
 from the previous-token head's output. That took you a few hours, and a lot of it relied on knowing roughly what you were looking for.
 
-Here's a different way to get there. Write the model down as a graph, where every attention head reads from the heads before it through a separate edge into its query, key and value. Then hand a program three things: the model, a dataset on which the behaviour happens, and a number $\tau$. The program deletes edges one at a time, keeping each deletion if it changes the model's output by less than $\tau$, and hands back whatever survives. That's **ACDC**, *Automatic Circuit DisCovery* ([Conmy et al., 2023](https://arxiv.org/abs/2304.14997)). On the model from [1.2], with no hint about what to look for, it returns a 16-edge graph that contains every piece of the induction circuit you found, plus one piece you didn't.
+Here's a different way to get there. Write the model down as a graph, where every attention head reads from
+the heads before it through a separate edge into its query, key and value. Then hand a program three things:
+the model, a dataset on which the behaviour happens, and a number $\tau$. The program deletes edges one at a
+time, keeping each deletion if it changes the model's output by less than $\tau$, and hands back whatever
+survives. That's **ACDC**, *Automatic Circuit DisCovery*
+([Conmy et al., 2023](https://arxiv.org/abs/2304.14997)). On the model from [1.2], with no hint about what to
+look for, it returns a 16-edge graph that contains every piece of the induction circuit you found, plus one
+piece you didn't.
 
 The harder question is the one in this section's title. **When an algorithm hands you a circuit, how do you know it's the circuit?** A subgraph can reproduce the model's output for
 the wrong reasons, can leave out components that matter, or can carry passengers that don't. So the second half of this section is about evaluating circuits, with three metrics

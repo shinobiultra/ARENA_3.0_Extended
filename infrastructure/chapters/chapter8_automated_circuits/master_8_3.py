@@ -51,7 +51,12 @@ difference by **0.30**, about 10% of the whole effect we're trying to explain, w
 the effect is **+0.01**. If you used AtP to decide which components to look at more carefully, as people do when exact patching is too expensive, you'd rank 4.11 near the bottom
 and never find out you were wrong.
 
-That's the problem this section is about. AtP's errors aren't symmetric: a false *positive* (a component AtP says matters, but doesn't) costs you one wasted exact patch when you check it. A false *negative* (a component that matters, but AtP says doesn't) costs you a piece of the circuit, silently. Kramár, Lieberum, Shah & Nanda ([*AtP\*: An efficient and scalable method for localizing LLM behaviour to components*](https://arxiv.org/abs/2403.00745), 2024) studied these false negatives systematically, identified two mechanisms that cause them, and proposed fixes for both:
+That's the problem this section is about. AtP's errors aren't symmetric: a false *positive* (a component AtP
+says matters, but doesn't) costs you one wasted exact patch when you check it. A false *negative* (a component
+that matters, but AtP says doesn't) costs you a piece of the circuit, silently. Kramár, Lieberum, Shah & Nanda
+([*AtP\*: An efficient and scalable method for localizing LLM behaviour to components*](https://arxiv.org/abs/2403.00745), 2024)
+studied these false negatives systematically, identified two mechanisms that cause them, and proposed fixes
+for both:
 
 - **Attention saturation.** When a patch changes a query or key, the attention softmax can move from one saturated state to another, where the gradient says almost nothing about the size of the change. The **QK fix** recomputes the attention pattern exactly (which is cheap) and only linearises after the softmax.
 - **Cancellation.** A component can affect the output through several paths whose gradients cancel at the clean input, even though the actual effects don't cancel. **GradDrop** recomputes the gradient with each layer's contribution to the backward pass removed in turn, and adds up the absolute values, so that a node with large but cancelling path effects still gets a large score.
@@ -2190,7 +2195,10 @@ r'''
 - For MLP neurons, exact patching is expensive and AtP is nearly free: one backward pass scores all 36,864 neurons.
 - A budgeted workflow (rank cheaply, verify the top of the ranking exactly) finds neurons with much larger effects than random sampling.
 - Group tests give a cheap check on the unverified remainder, as long as you remember that cancellation within a group and non-additive effects can fool them.
-- When a group test flags something, adaptive group testing (bisection) can find the responsible neuron in about $2\log_2(\text{group size})$ patches. Here it found a layer-1 neuron with an exact effect of −0.32 that AtP had ranked 1,222nd, and the diagnosis was the same as for the attention nodes: per-prompt estimates that track the truth with an offset, which the mean-of-absolute-values aggregation catches.
+- When a group test flags something, adaptive group testing (bisection) can find the responsible neuron in
+  about $2\log_2(\text{group size})$ patches. Here it found a layer-1 neuron with an exact effect of −0.32
+  that AtP had ranked 1,222nd, and the diagnosis was the same as for the attention nodes: per-prompt estimates
+  that track the truth with an offset, which the mean-of-absolute-values aggregation catches.
 '''
 
 # ! CELL TYPE: markdown

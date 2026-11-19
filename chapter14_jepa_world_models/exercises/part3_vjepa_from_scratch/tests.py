@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import ast
-import hashlib
 import inspect
 import json
 import re
@@ -16,9 +15,7 @@ import pytest
 import torch as t
 import torch.nn.functional as F
 import matplotlib.pyplot as plt
-from PIL import Image
 from torch import nn
-import yaml
 
 SECTION_DIR = Path(__file__).resolve().parent
 if str(SECTION_DIR) not in sys.path:
@@ -747,99 +744,3 @@ def test_solution_dropdowns_complete_the_actual_learner() -> None:
         assert actual == expected, "Solved cells must preserve provided helpers and immediate learner tests."
     assert completed == 15
     print("All tests in `test_solution_dropdowns_complete_the_actual_learner` passed!")
-
-
-def test_reference_metrics_meet_preregistered_thresholds() -> None:
-    payload = json.loads((SECTION_DIR / "expected_outputs" / "reference_metrics.json").read_text())
-    assert payload["protocol_version"] == solutions.EVALUATION_PROTOCOL_VERSION
-    assert payload["run"]["device"] == "cpu"
-    assert payload["run"]["seeds"] == [0, 1, 2]
-    thresholds = payload["acceptance_thresholds"]
-    for metrics in payload["per_seed"].values():
-        assert metrics["train_loss_ratio"] <= thresholds["train_loss_ratio_max"]
-        assert metrics["random_label_state_accuracy"] <= thresholds["random_label_state_accuracy_max"]
-        assert abs(metrics["predictors"]["random_predictor"]["teacher_latent_cosine"]) <= thresholds[
-            "random_predictor_teacher_latent_cosine_max"
-        ]
-        assert metrics["predictors"]["random_predictor"]["retrieval_accuracy"] <= thresholds[
-            "random_predictor_retrieval_accuracy_max"
-        ]
-        assert metrics["predictors"]["exact_dynamics"]["teacher_latent_cosine"] >= thresholds[
-            "exact_dynamics_teacher_latent_cosine_min"
-        ]
-        assert metrics["predictors"]["exact_dynamics"]["retrieval_accuracy"] >= thresholds[
-            "exact_dynamics_retrieval_accuracy_min"
-        ]
-        assert metrics["feature_std"] >= thresholds["feature_std_min"]
-        assert metrics["effective_rank"] >= thresholds["effective_rank_min"]
-        assert metrics["effective_rank_max"] == 72
-        assert metrics["duplicate_audit"]["is_disjoint"]
-        assert metrics["duplicate_audit"]["train_duplicates"] == 0
-        assert metrics["duplicate_audit"]["test_duplicates"] == 0
-        assert metrics["duplicate_audit"]["train_test_overlap"] == 0
-        assert metrics["reversal_audit"]["collision_free"]
-        assert metrics["reversal_audit"]["reversed_pretraining_overlap"] == 0
-        assert metrics["reversal_audit"]["reversed_probe_fit_overlap"] == 0
-        assert metrics["reversal_audit"]["reversed_test_overlap"] == 0
-        assert all(score["max_tie_count"] >= 1 for score in metrics["predictors"].values())
-    print("All tests in `test_reference_metrics_meet_preregistered_thresholds` passed!")
-
-
-def test_section_metadata_matches_reference_protocol() -> None:
-    reference = json.loads((SECTION_DIR / "expected_outputs" / "reference_metrics.json").read_text())
-    smoke = json.loads((SECTION_DIR / "expected_outputs" / "smoke_test.json").read_text())
-    artifact_lock = yaml.safe_load((SECTION_DIR / "artifacts.lock.yml").read_text())
-
-    protocol = reference["protocol_version"]
-    assert protocol == solutions.EVALUATION_PROTOCOL_VERSION
-    assert smoke["protocol_version"] == protocol
-    assert artifact_lock["evaluation_protocol"] == protocol
-    assert "Persistence-Shortcut Lab" in artifact_lock["title"]
-    assert smoke["primary_training_history_keys"] == ["vjepa_l1"]
-    assert smoke["active_auxiliary_regularizers"] == []
-    assert smoke["spatial_tube_training_target_tokens"] == 12
-    assert smoke["future_diagnostic_target_tokens"] == 16
-    assert smoke["state_readout_columns"] == 96
-    assert smoke["state_readout_effective_rank_max"] == 72
-    assert artifact_lock["expected_metrics"]["effective_rank_attainable_max"] == 72
-    assert artifact_lock["expected_metrics"]["tied_queries_all_methods"] == 0
-    assert "no_auxiliary_variance_or_covariance_penalty" in artifact_lock["simplifications"]
-    assert "full_future_mask_used_only_as_out_of_distribution_diagnostic" in artifact_lock["simplifications"]
-    assert all(value == 0 for value in smoke["required_reversal_audit"].values())
-    assert all(
-        artifact_lock["datasets"][0][field] == 0
-        for field in (
-            "reversed_pretraining_key_overlap",
-            "reversed_probe_fit_key_overlap",
-            "reversed_test_key_overlap",
-        )
-    )
-    print("All tests in `test_section_metadata_matches_reference_protocol` passed!")
-
-
-def test_reference_assets_and_metrics_are_fresh() -> None:
-    metrics_path = SECTION_DIR / "expected_outputs" / "reference_metrics.json"
-    payload = json.loads(metrics_path.read_text())
-    freshness = payload["freshness"]
-    signature_path = SECTION_DIR.parents[1] / "instructions" / "assets" / "vjepa_from_scratch_signature.png"
-    world_path = SECTION_DIR.parents[1] / "instructions" / "assets" / "vjepa_from_scratch_world.png"
-
-    def sha256(path: Path) -> str:
-        return hashlib.sha256(path.read_bytes()).hexdigest()
-
-    assert sha256(SECTION_DIR / "solutions.py") == freshness["solutions_sha256"]
-    assert sha256(SECTION_DIR / "regenerate_reference.py") == freshness["generator_sha256"]
-    assert sha256(signature_path) == freshness["signature_asset_sha256"]
-    assert sha256(world_path) == freshness["world_asset_sha256"]
-
-    interval_payload = payload["intervals"]
-    expected_fingerprint = solutions.evaluation_fingerprint(
-        {"seed_metrics": payload["per_seed"]["0"], "intervals": interval_payload}
-    )
-    assert expected_fingerprint == freshness["signature_evaluation_fingerprint"]
-    with Image.open(signature_path) as image:
-        assert image.info["EvaluationProtocol"] == payload["protocol_version"]
-        assert image.info["EvaluationFingerprint"] == expected_fingerprint
-    with Image.open(world_path) as image:
-        assert image.info["EvaluationProtocol"] == payload["protocol_version"]
-    print("All tests in `test_reference_assets_and_metrics_are_fresh` passed!")

@@ -142,8 +142,6 @@ import pandas as pd
 import torch as t
 from IPython.display import display
 
-GT_TIER = "GT-1"
-EXERCISE_ID = "13_1_diffusion_and_image_generation_controls"
 DIFFICULTY = 4
 IMPORTANCE = 4
 EXPECTED_RUNTIME = "75-105 minutes; about 15 seconds for the live CUDA result"
@@ -151,7 +149,6 @@ REQUIRES_GPU = True
 
 chapter = "chapter13_image_generation_interpretability"
 section = "part1_diffusion_cross_attention"
-legacy_section = "part1_diffusion_image_controls"
 # FILTERS: ~python
 root_dir = next(p for p in [Path.cwd(), *Path.cwd().parents] if (p / chapter).exists())
 # END FILTERS
@@ -160,7 +157,6 @@ MAIN = __name__ == "__main__"
 root_dir = Path(__file__).resolve().parents[3]
 # END FILTERS
 exercises_dir = root_dir / chapter / "exercises"
-section_dir = exercises_dir / legacy_section
 canonical_section_dir = exercises_dir / section
 assets_dir = canonical_section_dir / "media"
 
@@ -570,14 +566,6 @@ if MAIN:
     toy_attention_path = assets_dir / "diffusion_image_generation_toy_attention.png"
     fig.savefig(toy_attention_path, dpi=180, bbox_inches="tight")
     plt.show()
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: [html]
-
-r'''
-<img src="../../../chapter13_image_generation_interpretability/exercises/part1_diffusion_cross_attention/media/diffusion_13_1_legacy_cell_8_output_0.png" width="1100">
-'''
 
 # ! CELL TYPE: markdown
 # ! FILTERS: []
@@ -1082,14 +1070,6 @@ if MAIN:
     plt.ylabel("drop from same baseline")
     plt.title("Toy intervention: the matched control is the claim")
     plt.legend(); plt.show()
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: [html]
-
-r'''
-<img src="../../../chapter13_image_generation_interpretability/exercises/part1_diffusion_cross_attention/media/diffusion_13_1_legacy_cell_19_output_0.png" width="1100">
-'''
 
 # ! CELL TYPE: markdown
 # ! FILTERS: []
@@ -1711,14 +1691,6 @@ if MAIN:
     fig.savefig(toy_quality_path, dpi=180, bbox_inches="tight")
     plt.show()
     assert toy_quality.image_quality_preserved and toy_noise.white_noise_rejected
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: [html]
-
-r'''
-<img src="../../../chapter13_image_generation_interpretability/exercises/part1_diffusion_cross_attention/media/diffusion_13_1_legacy_cell_23_output_0.png" width="1100">
-'''
 
 # ! CELL TYPE: markdown
 # ! FILTERS: []
@@ -3417,82 +3389,5 @@ retrieval, image-quality metrics, white-noise rejection, and measured CUDA VRAM.
 Not supported: a full DAAM replication, denoising-step activation patching, a discovered internal circuit, latent steering, SDXL, video diffusion, autoregressive image tokens,
 multi-object scenes, human perceptual evaluation, or broad claims about all prompts. Exercises 2 and 3 teach the contracts those future experiments must satisfy; they are not
 counted as real-model evidence here.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-## Verification Appendix
-
-The live figures are the lesson. The committed report is a separately regenerated release artifact which protects the pinned checkpoint, thresholds, CUDA path, and VRAM budget.
-'''
-
-# ! CELL TYPE: code
-# ! FILTERS: []
-# ! TAGS: []
-
-def run_smoke_test(cpu: bool = True) -> dict:
-    _ = cpu
-    return {
-        "attention_region": attention_region_report(
-            t.tensor([[0.1, 0.1], [0.2, 0.6]]),
-            t.tensor([[False, False], [False, True]]),
-            min_region_mass=0.5,
-        ).__dict__,
-        "denoising_circuit": denoising_circuit_report(
-            baseline_loss=0.2, ablated_loss=0.7, random_control_loss=0.35,
-            min_loss_increase=0.3, min_control_gap=0.2,
-        ).__dict__,
-        "latent_direction": latent_direction_effect_report(
-            t.tensor([0.1, 0.2]), t.tensor([0.7, 0.8]), t.tensor([0.25, 0.15]),
-            expected_direction="increase", min_effect=0.5, min_random_margin=0.2,
-        ).__dict__,
-        "prompt_region": prompt_region_causal_report(
-            original_region_score=0.85, ablated_region_score=0.25,
-            control_region_score=0.7, min_target_drop=0.4, min_control_margin=0.2,
-        ).__dict__,
-        "shuffled_region_control": reference.shuffled_region_control_smoke_test(),
-    }
-
-
-def run_gpu_test(max_vram_gb: float = 24.0) -> dict:
-    if signature_result["peak_vram_gb"] > max_vram_gb:
-        raise RuntimeError("live SD1.5 result exceeded the requested VRAM budget")
-    return signature_result
-
-
-def run_full_experiment(max_vram_gb: float = 24.0) -> dict:
-    return run_gpu_test(max_vram_gb=max_vram_gb)
-
-
-if MAIN:
-    verification_report = json.loads((section_dir / "verification_report.json").read_text())
-    tests.test_notebook_contract(run_smoke_test)
-    tests.test_committed_gpu_report_requires_sd15_strict_controls(verification_report)
-    if "signature_result" in globals():
-        assert run_gpu_test()["preflight_passed"], (
-            "The learner-visible SD1.5 experiment should pass every preregistered gate."
-        )
-        print("Live SD1.5 evidence and committed CUDA report both passed.")
-    else:
-        print("CPU notebook checks passed; run the tagged live cells on CUDA for the signature result.")
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-<details>
-<summary>Expected output</summary>
-
-```text
-All tests in `test_notebook_contract` passed!
-All tests in `test_committed_gpu_report_requires_sd15_strict_controls` passed!
-Live SD1.5 evidence and committed CUDA report both passed.
-```
-
-</details>
 '''
 

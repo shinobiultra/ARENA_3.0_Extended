@@ -975,25 +975,6 @@ if MAIN:
 
 # %%
 
-from chapter16_shapley_attribution_baselines.exercises.part2_kernelshap_partition_shap_controls import solutions as reference
-
-def run_smoke_test(cpu: bool = True) -> dict:
-    return reference.run_smoke_test(cpu=cpu)
-
-def run_gpu_test(max_vram_gb: float = 24.0) -> dict:
-    return reference.run_gpu_test(max_vram_gb=max_vram_gb)
-
-def run_full_experiment(max_vram_gb: float = 24.0) -> dict:
-    return reference.run_full_experiment(max_vram_gb=max_vram_gb)
-
-if MAIN:
-    verification_summary = run_smoke_test(cpu=True)
-
-if MAIN:
-    verification_summary
-
-# %%
-
 def compare_kernelshap_play(*, dividends, budget: int, seed: int, groups) -> dict:
     """Recompute both sampled estimators and partition controls on one exact game."""
     values = game_from_dividends(6, dividends)

@@ -31,9 +31,16 @@ r'''
 r'''
 A unit activates on two red circles. An explanation says “detects red.” Another says “detects circles.” A third says “detects red circles.” All three fit the examples. Which experiment should the interpreter run next?
 
-By the end of this notebook, you will have shown that a bounded experiment-selection loop can distinguish these explanations for a planted image-property neuron, while a one-shot label and a fixed random explanation make measurable held-out simulation errors. You will inspect the agent's actual probe images, its changing hypothesis set and a causal input/feature edit with irrelevant-background controls.
+By the end of this notebook, you will have shown that a bounded experiment-selection loop can distinguish
+these explanations for a planted image-property neuron, while a one-shot label and a fixed random explanation
+make measurable held-out simulation errors. You will inspect the agent's actual probe images, its changing
+hypothesis set and a causal input/feature edit with irrelevant-background controls.
 
-This is the experimental structure of a MAIA/OpenMAIA-style agent, implemented locally with a transparent finite hypothesis controller. It is not a pretrained language or vision model, and the controller is not a small LLM. The native bridge section specifies how an instruction-tuned backend could propose the same structured actions; no backend is loaded or called here. This boundary keeps the causal question understandable instead of hiding it behind an API.
+This is the experimental structure of a MAIA/OpenMAIA-style agent, implemented locally with a transparent
+finite hypothesis controller. It is not a pretrained language or vision model, and the controller is not a
+small LLM. The native bridge section specifies how an instruction-tuned backend could propose the same
+structured actions; no backend is loaded or called here. This boundary keeps the causal question
+understandable instead of hiding it behind an API.
 
 Prerequisites: [7.2] explanation/simulation, [6.3] feature dashboards and causal checks, and basic Python dictionaries. An articulate explanation is a hypothesis, not evidence. Our examples are public analytic fixtures; “held out” below means withheld from the controller's observation history, not unknown to a learner reading the complete notebook.
 
@@ -132,9 +139,18 @@ r'''
 # ! TAGS: []
 
 r'''
-The controlled world has three binary properties: object color (red/blue), shape (circle/square) and background (plain/striped). We render actual tiny RGB images. An explicit sensor extracts the properties, and a planted unit computes $\operatorname{ReLU}(f_{red}+f_{circle}-1)$. Thus it responds only to red circles; the stripe sensor is irrelevant. The unit is synthetic on purpose: we know its ground truth and can independently score the explanation.
+The controlled world has three binary properties: object color (red/blue), shape (circle/square) and
+background (plain/striped). We render actual tiny RGB images. An explicit sensor extracts the properties, and
+a planted unit computes $\operatorname{ReLU}(f_{red}+f_{circle}-1)$. Thus it responds only to red circles; the
+stripe sensor is irrelevant. The unit is synthetic on purpose: we know its ground truth and can independently
+score the explanation.
 
-The controller is allowed to request images and activations. It does not use the target's source code when choosing an experiment. The learner can see that code to understand the oracle, but a clean controller benchmark would hide it and freeze the candidate family before collecting observations. Here the family is deliberately small: red, circle, conjunction and stripes. A unique survivor is identified only **within that family**. An outside-family target can still make it stop with a wrong survivor; the final play exposes exactly this failure and requires a separate counterexample audit.
+The controller is allowed to request images and activations. It does not use the target's source code when
+choosing an experiment. The learner can see that code to understand the oracle, but a clean controller
+benchmark would hide it and freeze the candidate family before collecting observations. Here the family is
+deliberately small: red, circle, conjunction and stripes. A unique survivor is identified only **within that
+family**. An outside-family target can still make it stop with a wrong survivor; the final play exposes
+exactly this failure and requires a separate counterexample audit.
 
 Two positively activating examples cannot distinguish color from conjunction. A decisive counterfactual changes one property while keeping the others fixed. This is the scientific move the loop should learn to make. Looking at more identical positive examples can increase confidence without increasing identifiability.
 '''
@@ -153,7 +169,10 @@ r'''
 > You should spend up to 10-15 minutes on this exercise.
 > ```
 
-The scene dictionary has exactly `color`, `shape`, `background`, with values red/blue, circle/square, plain/striped. Render a centered 3×3 object; our circle is a five-pixel cross, and the square fills all nine pixels. Stripes occupy the left border only, so they never overwrite the object. Return float pixels in `[0,1]`. Invalid categories must fail rather than being silently coerced into another example.
+The scene dictionary has exactly `color`, `shape`, `background`, with values red/blue, circle/square,
+plain/striped. Render a centered 3×3 object; our circle is a five-pixel cross, and the square fills all nine
+pixels. Stripes occupy the left border only, so they never overwrite the object. Return float pixels in `[0,1]`.
+Invalid categories must fail rather than being silently coerced into another example.
 '''
 
 # ! CELL TYPE: code
@@ -216,7 +235,11 @@ r'''
 > You should spend up to 10-15 minutes on this exercise.
 > ```
 
-Return three float indicators. Red is determined by the center pixel. Circle is identified by four absent corners of the central 3×3 region; require a visible center. Stripes are detected on the separate left border. This sensor is valid only for our renderer and must not be described as a general vision feature extractor. A natural-image bridge replaces it with a real cached neuron while keeping the experiment and scoring interfaces.
+Return three float indicators. Red is determined by the center pixel. Circle is identified by four absent
+corners of the central 3×3 region; require a visible center. Stripes are detected on the separate left border.
+This sensor is valid only for our renderer and must not be described as a general vision feature extractor. A
+natural-image bridge replaces it with a real cached neuron while keeping the experiment and scoring
+interfaces.
 '''
 
 # ! CELL TYPE: code
@@ -276,7 +299,11 @@ r'''
 > You should spend up to 10-15 minutes on this exercise.
 > ```
 
-`features` is `(examples,3)` in red/circle/stripe order. Support exactly red, circle, red-and-circle and stripes. Return one numeric prediction per example, and reject unknown names. The family is part of the experimental design: adding a hypothesis after seeing evaluation errors changes the benchmark. Natural-language explanations would need a separately frozen simulator or rubric rather than direct string matching.
+`features` is `(examples,3)` in red/circle/stripe order. Support exactly red, circle, red-and-circle and
+stripes. Return one numeric prediction per example, and reject unknown names. The family is part of the
+experimental design: adding a hypothesis after seeing evaluation errors changes the benchmark.
+Natural-language explanations would need a separately frozen simulator or rubric rather than direct string
+matching.
 '''
 
 # ! CELL TYPE: code
@@ -455,11 +482,17 @@ r'''
 # ! TAGS: []
 
 r'''
-MAIA-style systems reason through experiments, not just descriptions. Their tools can generate or edit inputs and inspect activations. That flexibility makes the execution boundary important: a model-generated tool call is proposed data, not authority to execute arbitrary code. Our deliberately finite tool interface has three actions: activation, ablate a specified sensor coordinate, and steer one coordinate by a bounded amount.
+MAIA-style systems reason through experiments, not just descriptions. Their tools can generate or edit inputs
+and inspect activations. That flexibility makes the execution boundary important: a model-generated tool call
+is proposed data, not authority to execute arbitrary code. Our deliberately finite tool interface has three
+actions: activation, ablate a specified sensor coordinate, and steer one coordinate by a bounded amount.
 
 The scene vocabulary is finite. Actions have exact keys; there is no Python, shell, file path or network tool. The caller supplies the target function and owns the budget. A real service must also enforce authenticated principal, consent, isolation and logging outside the language model. Our schema validation is an educational contract, not a security sandbox.
 
-We separate action validation from execution and keep observations as plain records. Failed or contradictory experiments cannot disappear from a trace just because they would make the explanation less tidy. The controller will only use activation probes for identification; feature edits are a later causal check. This prevents an intervention from being silently mixed into the observational simulator evaluation.
+We separate action validation from execution and keep observations as plain records. Failed or contradictory
+experiments cannot disappear from a trace just because they would make the explanation less tidy. The
+controller will only use activation probes for identification; feature edits are a later causal check. This
+prevents an intervention from being silently mixed into the observational simulator evaluation.
 '''
 
 # ! CELL TYPE: markdown
@@ -476,7 +509,11 @@ r'''
 > You should spend up to 10-15 minutes on this exercise.
 > ```
 
-For activation require exactly `tool,scene`; for ablate add `feature`; for steer add `feature,amount`. Feature is a plain integer in 0..2. Amount is a finite plain number in `[-1,1]`. Reuse `render_scene` to validate categories, not to run a target. Reject extra keys such as code, path or command. Return a copied dictionary, including a copied scene, so a caller cannot mutate the already validated record by changing the original scene later.
+For activation require exactly `tool,scene`; for ablate add `feature`; for steer add `feature,amount`. Feature
+is a plain integer in 0..2. Amount is a finite plain number in `[-1,1]`. Reuse `render_scene` to validate
+categories, not to run a target. Reject extra keys such as code, path or command. Return a copied dictionary,
+including a copied scene, so a caller cannot mutate the already validated record by changing the original
+scene later.
 '''
 
 # ! CELL TYPE: code
@@ -712,9 +749,15 @@ r'''
 # ! TAGS: []
 
 r'''
-After each observation, keep every candidate whose predicted activation matches the observed value within a frozen tolerance. The next probe should be one on which the surviving candidates disagree. For binary candidate predictions, variance is maximized near an even split. This finite-family disagreement score is not a general Bayesian information-gain estimator, but its decision rule is transparent enough to audit.
+After each observation, keep every candidate whose predicted activation matches the observed value within a
+frozen tolerance. The next probe should be one on which the surviving candidates disagree. For binary
+candidate predictions, variance is maximized near an even split. This finite-family disagreement score is not
+a general Bayesian information-gain estimator, but its decision rule is transparent enough to audit.
 
-Use the finite probe pool only. Do not repeat an already observed scene. Stable tie-breaking follows pool order. A budget counts **actual target calls**, not reasoning tokens. Stop when one candidate remains, the pool cannot distinguish the survivors, the budget is exhausted or observations contradict the family. The result must retain its reason; “budget exhausted” cannot be rewritten as “verified.”
+Use the finite probe pool only. Do not repeat an already observed scene. Stable tie-breaking follows pool
+order. A budget counts **actual target calls**, not reasoning tokens. Stop when one candidate remains, the
+pool cannot distinguish the survivors, the budget is exhausted or observations contradict the family. The
+result must retain its reason; “budget exhausted” cannot be rewritten as “verified.”
 
 The deterministic controller is a reference policy, not an LLM. It implements the experimental loop that an LLM-based MAIA agent also needs: propose, test, update, and explain. The later backend contract changes who proposes the experiment, while the tool budget and independent evaluation remain outside that proposer.
 '''
@@ -733,7 +776,10 @@ r'''
 > You should spend up to 10-15 minutes on this exercise.
 > ```
 
-History contains `{scene,activation}` records from unedited activation probes. Evaluate each candidate on all recorded scenes and keep it only if every absolute error is within tolerance. Return candidates in their original order. An empty history preserves all candidates; contradictory history can return an empty list. Do not select only the best-fitting candidate before the observations actually distinguish it.
+History contains `{scene,activation}` records from unedited activation probes. Evaluate each candidate on all
+recorded scenes and keep it only if every absolute error is within tolerance. Return candidates in their
+original order. An empty history preserves all candidates; contradictory history can return an empty list. Do
+not select only the best-fitting candidate before the observations actually distinguish it.
 '''
 
 # ! CELL TYPE: code
@@ -912,7 +958,11 @@ r'''
 > You should spend up to 10-15 minutes on this exercise.
 > ```
 
-Start from copied initial observations, filter candidates, then request one informative activation probe per round. Return `history`, `rounds`, `remaining`, `explanation`, `reason` and `calls`. Reasons are identified, contradicted, indistinguishable or budget_exhausted. The initial provided observations do not consume this additional-call budget. Each round records candidates before/after and the actual scene/result. Empty candidates mean no explanation, not permission to invent a new family from evaluation data.
+Start from copied initial observations, filter candidates, then request one informative activation probe per
+round. Return `history`, `rounds`, `remaining`, `explanation`, `reason` and `calls`. Reasons are identified,
+contradicted, indistinguishable or budget_exhausted. The initial provided observations do not consume this
+additional-call budget. Each round records candidates before/after and the actual scene/result. Empty
+candidates mean no explanation, not permission to invent a new family from evaluation data.
 '''
 
 # ! CELL TYPE: code
@@ -1031,11 +1081,24 @@ r'''
 # ! TAGS: []
 
 r'''
-Freeze an evaluation cohort whose observations are withheld from the controller. An adaptive experiment consumes any examples it queries, so a scoring pool must not be reused for probe selection. The main comparison starts a fresh controller with **one red-circle plain-background observation**, restricts the probe pool to the four plain-background scenes, and evaluates only on the four striped-background scenes. Unlike the earlier demonstration history, this new controller has never received a striped-scene response. The learner has seen public reference examples, which is a separate exposure declaration.
+Freeze an evaluation cohort whose observations are withheld from the controller. An adaptive experiment
+consumes any examples it queries, so a scoring pool must not be reused for probe selection. The main
+comparison starts a fresh controller with **one red-circle plain-background observation**, restricts the probe
+pool to the four plain-background scenes, and evaluates only on the four striped-background scenes. Unlike the
+earlier demonstration history, this new controller has never received a striped-scene response. The learner
+has seen public reference examples, which is a separate exposure declaration.
 
-The planner reads no evaluation labels, and the background is an irrelevant controlled change. This is a tiny fixed synthetic generalization check, not independent natural-model validation. Keep the complete four-item denominator even when a hypothesis fails. A natural-model experiment would need a broader independently constructed cohort and a frozen simulator/rubric, rather than assuming the four known binary factors exhaust the world.
+The planner reads no evaluation labels, and the background is an irrelevant controlled change. This is a tiny
+fixed synthetic generalization check, not independent natural-model validation. Keep the complete four-item
+denominator even when a hypothesis fails. A natural-model experiment would need a broader independently
+constructed cohort and a frozen simulator/rubric, rather than assuming the four known binary factors exhaust
+the world.
 
-The one-shot baseline chooses the first explanation consistent with the initial examples. A fixed random candidate uses a declared seed and no observation. Both must be scored on exactly the same four items as the iterative controller. A failed or ambiguous agent must count as an abstention; it cannot be silently removed from an average. Here we have one deterministic run, so the figure is descriptive and has no invented sampling interval.
+The one-shot baseline chooses the first explanation consistent with the initial examples. A fixed random
+candidate uses a declared seed and no observation. Both must be scored on exactly the same four items as the
+iterative controller. A failed or ambiguous agent must count as an abstention; it cannot be silently removed
+from an average. Here we have one deterministic run, so the figure is descriptive and has no invented sampling
+interval.
 '''
 
 # ! CELL TYPE: markdown
@@ -1262,7 +1325,12 @@ r'''
 <details>
 <summary>Help - how should I interpret this?</summary>
 
-The identification pool has plain backgrounds and evaluation has striped backgrounds; no evaluation response enters the controller. The iterative policy identifies conjunction with MSE 0, the first-consistent one-shot label is red with MSE 0.25, and the fixed seed selects stripes with MSE 0.75. The paired causal check removes red or circle while the irrelevant stripe edit leaves the unit unchanged. The exact four-item score is a property of this planted target and candidate family, not a population estimate of automated interpretability quality.
+The identification pool has plain backgrounds and evaluation has striped backgrounds; no evaluation response
+enters the controller. The iterative policy identifies conjunction with MSE 0, the first-consistent one-shot
+label is red with MSE 0.25, and the fixed seed selects stripes with MSE 0.75. The paired causal check removes
+red or circle while the irrelevant stripe edit leaves the unit unchanged. The exact four-item score is a
+property of this planted target and candidate family, not a population estimate of automated interpretability
+quality.
 
 </details>
 '''
@@ -1284,7 +1352,12 @@ The agent gains information because it asks a discriminating question, not becau
 r'''
 ## Try it yourself
 
-Change only the target from a conjunction to red OR circle. Predict whether the frozen-family loop will notice that none of its candidates is globally correct. It can identify a wrong survivor before querying a decisive counterexample: candidate-family uniqueness is weaker than mechanism identification. Freeze a blue-circle audit before running it, then compare the selected explanation with that audit response. Do not add the OR explanation after seeing evaluation errors and report the repaired score as held out. Separately change the budget to one and inspect whether ambiguity is retained.
+Change only the target from a conjunction to red OR circle. Predict whether the frozen-family loop will notice
+that none of its candidates is globally correct. It can identify a wrong survivor before querying a decisive
+counterexample: candidate-family uniqueness is weaker than mechanism identification. Freeze a blue-circle
+audit before running it, then compare the selected explanation with that audit response. Do not add the OR
+explanation after seeing evaluation errors and report the repaired score as held out. Separately change the
+budget to one and inspect whether ambiguity is retained.
 '''
 
 # ! CELL TYPE: code
@@ -1328,7 +1401,11 @@ r'''
 | MAIA | Actual image probes, explicit hypothesis/simulator, tool trace, disagreement policy, bounded target calls, one-shot/random controls and causal edits | Trained natural-image feature/neuron, free-form multimodal hypothesis generation, broad held-out simulator/human evaluation |
 | OpenMAIA | Open local tool boundary and a JSON backend-action adapter; caller controls schema, budget and observation flow | A pinned local instruction/multimodal backend, installed tokenizer/chat template, model/tool revisions, resource qualification and native behavior |
 
-The source OpenMAIA study uses much larger multimodal backbones than this finite controller. Do not call a small text-only stand-in a reproduction of its results. An instruction backend would receive an explicit observation summary and return one `tool` action in the schema above; the caller validates it, executes at most one approved local tool and appends the actual observation. No fallback executes arbitrary text. An actual host still needs principal/consent/privacy/approval gates and process isolation.
+The source OpenMAIA study uses much larger multimodal backbones than this finite controller. Do not call a
+small text-only stand-in a reproduction of its results. An instruction backend would receive an explicit
+observation summary and return one `tool` action in the schema above; the caller validates it, executes at
+most one approved local tool and appends the actual observation. No fallback executes arbitrary text. An
+actual host still needs principal/consent/privacy/approval gates and process isolation.
 
 Before a native run, freeze target-model/neuron identity, data partition and exposure, candidate-generation policy, tool schema and image-generator revisions, maximum calls/tokens, stopping/abstention policy, simulator scoring and controls. No model budget or API call is authorized by this teaching notebook. The full trace should retain failed actions and negative results.
 '''

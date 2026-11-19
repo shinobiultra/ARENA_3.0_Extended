@@ -22,8 +22,6 @@ if MAIN:
         if (p / "chapter14_jepa_world_models").exists()
     )
     canonical_section_dir = root_dir / "chapter14_jepa_world_models/exercises/part1_ijepa_from_scratch"
-    legacy_section_dir = root_dir / "chapter14_jepa_world_models/exercises/part2_ijepa_from_scratch"
-    SECTION_DIR = legacy_section_dir
     if str(canonical_section_dir.parent) not in sys.path:
         sys.path.insert(0, str(canonical_section_dir.parent))
 
@@ -60,9 +58,7 @@ POSITION_NAMES = ("top left", "top right", "bottom left", "bottom right")
 KEY_ROW_SLICE = slice(0, PATCH_SIZE)
 KEY_COLUMN_SLICE = slice(3 * PATCH_SIZE, 4 * PATCH_SIZE)
 
-EXERCISE_ID = "14_2_ijepa_from_scratch"
-GT_TIER = "GT-0"
-EXPECTED_RUNTIME = "120-180 minutes; under one minute for release verification"
+EXPECTED_RUNTIME = "120-180 minutes"
 REQUIRES_GPU = True
 
 # %%
@@ -974,7 +970,7 @@ def run_seed_suite(
     """Run and validate every predeclared seed, returning per-seed evidence."""
 
     if tuple(seeds) != CONTRACT_SEEDS:
-        raise ValueError(f"the release contract requires exactly seeds {CONTRACT_SEEDS}")
+        raise ValueError(f"the experiment requires exactly seeds {CONTRACT_SEEDS}")
     runs: list[IJEPARun] = []
     for seed in seeds:
         run = run_experiment(
@@ -1026,16 +1022,6 @@ def run_seed_suite(
         }
     )
     return runs, report
-
-
-def run_gpu_test(max_vram_gb: float = 24.0) -> dict:
-    if not t.cuda.is_available():
-        raise RuntimeError("CUDA is required; CPU fallback is forbidden.")
-    _, metrics = run_seed_suite(device="cuda", max_vram_gb=max_vram_gb)
-    return metrics
-
-def run_full_experiment(max_vram_gb: float = 24.0) -> dict:
-    return run_gpu_test(max_vram_gb=max_vram_gb)
 
 
 def plot_signature_result(run: IJEPARun, output_path: str | Path | None = None):
@@ -1182,7 +1168,7 @@ def plot_signature_result(run: IJEPARun, output_path: str | Path | None = None):
 
 if MAIN:
     if not t.cuda.is_available():
-        raise RuntimeError("Section 14.2 release result requires CUDA; no CPU fallback is used.")
+        raise RuntimeError("This experiment requires CUDA; no CPU fallback is used.")
 
     print(f"Torch {t.__version__} | CUDA runtime {t.version.cuda} | {t.cuda.get_device_name()}")
     seed_runs, seed_metrics = run_seed_suite(device="cuda", max_vram_gb=24.0)

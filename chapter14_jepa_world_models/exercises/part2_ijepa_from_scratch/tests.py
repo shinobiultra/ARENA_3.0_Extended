@@ -741,7 +741,7 @@ def test_hard_oracles_reject_shortcuts() -> None:
 
 
 def test_cpu_smoke_signature_result() -> None:
-    report = solutions.run_smoke_test(cpu=True)
+    _, report = solutions.run_seed_suite(device="cpu")
     assert report["heldout_prediction_accuracy"] >= 0.90, (
         "The trained predictor must recover the masked object on disjoint scenes."
     )

@@ -1523,16 +1523,3 @@ Values](https://christophm.github.io/interpretable-ml-book/shapley.html)
 - [Original ARENA toy-model
 exercises](../../../chapter1_transformer_interp/exercises/part54_toy_models_of_superposition_and_saes/1.5.4_Toy_Models_of_Superposition_&_SAEs_exercises.ipynb)
 '''
-
-# ! CELL TYPE: code
-# ! FILTERS: []
-# ! TAGS: []
-
-def run_gpu_test(max_vram_gb: float = 24.0):
-    from part1_exact_shapley_ground_truth_games.solutions import run_gpu_test as _run_gpu_test
-    return _run_gpu_test(max_vram_gb=max_vram_gb)
-
-
-def run_full_experiment(max_vram_gb: float = 24.0):
-    return run_gpu_test(max_vram_gb=max_vram_gb)
-

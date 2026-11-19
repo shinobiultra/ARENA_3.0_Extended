@@ -33,7 +33,11 @@ A red square and the words **red square** should share something, but the image 
 
 By the end of this notebook, you will have linked rendered objects, their words and an answer path in a specified sparse-feature organism, using matched versus shuffled activation matrices and a feature-to-answer circuit with ablation controls. Every encoding, objective, edge calculation and intervention is visible and student implemented.
 
-This is a small **known-dictionary CPU organism**, not features extracted from a pretrained VLM. We fit tiny decoders to inspect the objectives; the encoder dictionaries are declared, so we do not call their semantic labels an unsupervised discovery. The deliberate nuisance channels show why reconstruction, cross-modal alignment and downstream use need separate tests. Prerequisites: [6.1] SAEs, [6.4] transcoders, [6.5] crosscoders and [12.3] the vision-projector-language decomposition. If those are new, complete parts1–2 first.
+This is a small **known-dictionary CPU organism**, not features extracted from a pretrained VLM. We fit tiny
+decoders to inspect the objectives; the encoder dictionaries are declared, so we do not call their semantic
+labels an unsupervised discovery. The deliberate nuisance channels show why reconstruction, cross-modal
+alignment and downstream use need separate tests. Prerequisites: [6.1] SAEs, [6.4] transcoders, [6.5]
+crosscoders and [12.3] the vision-projector-language decomposition. If those are new, complete parts1–2 first.
 '''
 
 # ! CELL TYPE: markdown
@@ -109,7 +113,11 @@ r'''
 # ! TAGS: []
 
 r'''
-The six examples are three coloured shapes at two brightness levels, paired with their exact names. Our visual feature array `(example,4)` contains a one-hot dominant mean-RGB channel and global brightness. Its text counterpart contains a one-hot vocabulary entry and string length divided by10. These are declared features, not an OCR system or language embedding. Colour and object identity are confounded; that confines our claim to this world.
+The six examples are three coloured shapes at two brightness levels, paired with their exact names. Our visual
+feature array `(example,4)` contains a one-hot dominant mean-RGB channel and global brightness. Its text
+counterpart contains a one-hot vocabulary entry and string length divided by10. These are declared features,
+not an OCR system or language embedding. Colour and object identity are confounded; that confines our claim to
+this world.
 
 A VLM offers several distinct activation sites: vision-encoder output, projector output, and language-model residuals at image and text positions. Equal widths do not make those sites equivalent. Our two four-coordinate sites make the distinction visible before introducing a joint code.
 '''
@@ -280,7 +288,10 @@ r'''
 r'''
 An **SAE** encodes $x$ and reconstructs the same activation site: $z=\operatorname{ReLU}(xW_e+b_e)$, $\hat x=zD+b_d$. A **transcoder** instead predicts a target computation, for example an MLP output $y=f(x)$, from a sparse code of its input. A **crosscoder** reads and writes multiple sites with a shared code. These distinctions are about inputs and targets, not just tensor shapes.
 
-Here, squared error means the sum over feature coordinates averaged over examples. The decoder fit below uses an intercept and an optional ridge penalty on decoder weights **only**. It is a small least-squares fit on monitored examples, not a training recipe for a full sparse model. A real SAE/transcoder must also learn or select its encoder with reconstruction/sparsity and downstream-replacement checks.
+Here, squared error means the sum over feature coordinates averaged over examples. The decoder fit below uses
+an intercept and an optional ridge penalty on decoder weights **only**. It is a small least-squares fit on
+monitored examples, not a training recipe for a full sparse model. A real SAE/transcoder must also learn or
+select its encoder with reconstruction/sparsity and downstream-replacement checks.
 '''
 
 # ! CELL TYPE: markdown
@@ -602,7 +613,10 @@ r'''
 r'''
 <details><summary>Help - same code, different verdict</summary>
 
-The semantic-only code cannot reconstruct both brightness values for one object, so the SAE error remains positive. Our answer MLP explicitly ignores brightness; the same code predicts that target nearly exactly. This is an objective comparison on a known computation, not evidence that a learned real transcoder is automatically more faithful. Inspect the omitted error channel before interpreting a scalar average.
+The semantic-only code cannot reconstruct both brightness values for one object, so the SAE error remains
+positive. Our answer MLP explicitly ignores brightness; the same code predicts that target nearly exactly.
+This is an objective comparison on a known computation, not evidence that a learned real transcoder is
+automatically more faithful. Inspect the omitted error channel before interpreting a scalar average.
 
 </details>
 
@@ -894,7 +908,10 @@ r'''
 r'''
 <details><summary>Help - what the shuffled control preserves</summary>
 
-The first three features share support across the correctly paired image and text rows. Their shuffled-pair support fails even though each modality’s activation histogram is unchanged. Brightness and text length are not shared features: each is absent from the other modality. Because the encoder dictionaries are specified, this checks the definition and control rather than demonstrating feature discovery.
+The first three features share support across the correctly paired image and text rows. Their shuffled-pair
+support fails even though each modality’s activation histogram is unchanged. Brightness and text length are
+not shared features: each is absent from the other modality. Because the encoder dictionaries are specified,
+this checks the definition and control rather than demonstrating feature discovery.
 
 </details>
 
@@ -916,7 +933,10 @@ r'''
 # ! TAGS: []
 
 r'''
-For a linear map between two sparse encodings, a source feature’s decoder row $d_i$ reaches downstream feature $j$ with weight $d_iW_{e,j}$. An answer contrast with readout coefficient $u_j$ receives a local contribution $z_i(d_iW_{e,j})u_j$. These products are exact only for the declared linear route (or a fixed local activation regime); a nonlinear real circuit needs reconstruction-error terms, gating checks and intervention validation.
+For a linear map between two sparse encodings, a source feature’s decoder row $d_i$ reaches downstream feature
+$j$ with weight $d_iW_{e,j}$. An answer contrast with readout coefficient $u_j$ receives a local contribution
+$z_i(d_iW_{e,j})u_j$. These products are exact only for the declared linear route (or a fixed local activation
+regime); a nonlinear real circuit needs reconstruction-error terms, gating checks and intervention validation.
 
 Our answer computation reads the three semantic coordinates and ignores brightness. The text-length latent has no image decoder contribution. We will retain the reconstruction residual during ablation rather than replacing the entire activation by a possibly imperfect sparse reconstruction.
 '''
@@ -1117,9 +1137,21 @@ r'''
 r'''
 ## Interpreting the result
 
-The fixed CPU fixture gives semantic support Jaccard `[1,1,1]` for matched pairs and `[0,0,0]` after the cyclic pairing control. Semantic-only SAE reconstruction error is 0.000685, while the transcoder target error rounds to 0.000000. On the first red card, red-feature ablation changes the red-minus-blue contrast from1 to0; brightness ablation leaves it at1. These are seen teaching-fixture results. The edge panel is the signature sparse circuit: three semantic features reach the matching answer features; the two nuisance features have no route to this readout. Red-feature ablation affects red cards, while removing brightness changes the image representation but not the answer. That difference distinguishes reconstruction relevance from answer relevance. Our exact route permits a ground-truth check unavailable in a released VLM.
+The fixed CPU fixture gives semantic support Jaccard `[1,1,1]` for matched pairs and `[0,0,0]` after the
+cyclic pairing control. Semantic-only SAE reconstruction error is 0.000685, while the transcoder target error
+rounds to 0.000000. On the first red card, red-feature ablation changes the red-minus-blue contrast from1 to0;
+brightness ablation leaves it at1. These are seen teaching-fixture results. The edge panel is the signature
+sparse circuit: three semantic features reach the matching answer features; the two nuisance features have no
+route to this readout. Red-feature ablation affects red cards, while removing brightness changes the image
+representation but not the answer. That difference distinguishes reconstruction relevance from answer
+relevance. Our exact route permits a ground-truth check unavailable in a released VLM.
 
-To bridge to [12.3], replace our sites by **cached** projector output and LM residuals at separately recorded image/text positions. Keep example/position correspondence, fit on the declared training cohort, select features only on the authorised development data, preserve decoder biases and residual errors, and compare actual activation replacement with the sparse surrogate. A crosscoder between CLIP vision states and VLM image tokens needs a documented resampling/token correspondence; their patch grids need not coincide. No such trained model/cache/circuit is claimed here.
+To bridge to [12.3], replace our sites by **cached** projector output and LM residuals at separately recorded
+image/text positions. Keep example/position correspondence, fit on the declared training cohort, select
+features only on the authorised development data, preserve decoder biases and residual errors, and compare
+actual activation replacement with the sparse surrogate. A crosscoder between CLIP vision states and VLM image
+tokens needs a documented resampling/token correspondence; their patch grids need not coincide. No such
+trained model/cache/circuit is claimed here.
 
 ## Try it yourself
 
@@ -1144,7 +1176,11 @@ axes[1].plot(play_baseline,"o-",label="brightness-dependent task");axes[1].plot(
 r'''
 ## Limitations
 
-The pixel/word features, dictionaries and readout are specified. Fitting a decoder on six monitored pairs does not identify an unsupervised decomposition. Colour, shape and word identity are confounded, and word length correlates with class. The exact linear edge product does not capture nonlinear gating outside this organism. Native VLM SAEs/transcoders/crosscoders, feature discovery, residual/error accounting in real patching, natural images and real sparse circuits remain pending.
+The pixel/word features, dictionaries and readout are specified. Fitting a decoder on six monitored pairs does
+not identify an unsupervised decomposition. Colour, shape and word identity are confounded, and word length
+correlates with class. The exact linear edge product does not capture nonlinear gating outside this organism.
+Native VLM SAEs/transcoders/crosscoders, feature discovery, residual/error accounting in real patching,
+natural images and real sparse circuits remain pending.
 '''
 
 # ! CELL TYPE: markdown
