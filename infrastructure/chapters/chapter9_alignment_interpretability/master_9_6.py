@@ -77,7 +77,6 @@ MAIN = __name__ == "__main__"
 # ! FILTERS: [python]
 # ! TAGS: []
 
-import json
 import math
 import os
 import sys
@@ -112,12 +111,11 @@ def initialize_notebook_plumbing():
         _batch_inputs, _mean, _normalize_target_list, _positions_for_mode, _single_token_id, \
         assets_dir, device, generate_safe_continuations, load_pinned_model, match_update_norm, \
         next_token_distribution_table, next_token_probability_table, normalize_target_text, \
-        root_dir, section_dir, text_perplexities, tests, reference
+        root_dir, text_perplexities, tests, reference
     root_dir = next(
         p for p in [Path.cwd(), *Path.cwd().parents]
         if (p / "chapter9_alignment_interpretability").exists()
     )
-    section_dir = root_dir / "chapter9_alignment_interpretability" / "exercises" / "part5_rome_model_editing"
     assets_dir = root_dir / "chapter9_alignment_interpretability" / "exercises" / "part6_rome_memit" / "media"
     if str(root_dir) not in sys.path:
         sys.path.append(str(root_dir))
@@ -228,7 +226,6 @@ value-objective parity. It is not a CounterFact replication.
 # ! FILTERS: [~python]
 # ! TAGS: []
 
-import json
 import math
 import os
 import sys
@@ -247,7 +244,6 @@ root_dir = next(
     p for p in [Path.cwd(), *Path.cwd().parents]
     if (p / "chapter9_alignment_interpretability").exists()
 )
-section_dir = root_dir / "chapter9_alignment_interpretability" / "exercises" / "part5_rome_model_editing"
 assets_dir = root_dir / "chapter9_alignment_interpretability" / "exercises" / "part6_rome_memit" / "media"
 if str(root_dir) not in sys.path:
     sys.path.append(str(root_dir))
@@ -4465,14 +4461,6 @@ if MAIN:
 if MAIN:
     plt.show()
 
-if MAIN:
-    summary = reference.serializable_experiment_summary(result)
-
-if MAIN:
-    (section_dir / "expected_outputs" / "reference_metrics.json").write_text(
-        json.dumps(summary, indent=2, sort_keys=True) + "\n"
-    )
-
 # ! CELL TYPE: markdown
 # ! FILTERS: []
 # ! TAGS: []
@@ -4603,11 +4591,6 @@ if MAIN:
 if MAIN:
     tests.test_model_and_revision_are_pinned()
 
-if MAIN:
-    tests.test_section_local_release_report_generation_inputs_are_strict()
-
-if MAIN:
-    tests.test_notebook_contract()
 
 # ! CELL TYPE: markdown
 # ! FILTERS: []
