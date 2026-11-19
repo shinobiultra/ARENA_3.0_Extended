@@ -11,6 +11,7 @@ from __future__ import annotations
 
 import re
 import shutil
+import subprocess
 import sys
 from pathlib import Path
 
@@ -199,7 +200,15 @@ def test_section_directory_is_clean(chapter_name, number, section):
     modules the notebook imports, media, and small data files; no retired verification files."""
     data_dirs = SECTION_DATA_DIRECTORIES.get(number, set())
     unexpected = []
-    for path in exercise_dir.iterdir():
+    # Outputs a learner's own run writes (gitignored) are not shipped files.
+    entries = sorted(exercise_dir.iterdir())
+    ignored = set(subprocess.run(
+        ["git", "check-ignore", "--stdin"], cwd=ROOT, capture_output=True, text=True,
+        input="\n".join(str(path.relative_to(ROOT)) for path in entries),
+    ).stdout.split("\n"))
+    for path in entries:
+        if str(path.relative_to(ROOT)) in ignored:
+            continue
         if path.is_dir():
             if path.name not in ALLOWED_DIRS | data_dirs:
                 unexpected.append(path.name + "/")
@@ -211,7 +220,8 @@ def test_section_directory_is_clean(chapter_name, number, section):
             unexpected.append(path.name)
     for path in exercise_dir.rglob("*"):
         relative = path.relative_to(exercise_dir)
-        if relative.parts[0] in data_dirs or "__pycache__" in relative.parts:
+        top = str((exercise_dir / relative.parts[0]).relative_to(ROOT))
+        if relative.parts[0] in data_dirs or "__pycache__" in relative.parts or top in ignored:
             continue
         if RETIRED_NAME.search(path.name):
             unexpected.append(str(relative))
