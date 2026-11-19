@@ -75,7 +75,7 @@ behavior, and greedy tokens.
 
 ## Setup
 
-This lesson runs on CPU and takes about 3 minutes, including the cached Mamba-130M parity check. A CUDA GPU is needed only for the release verification entry points.
+This lesson runs on CPU and takes about 3 minutes, including the cached Mamba-130M parity check.
 '''
 
 # ! CELL TYPE: markdown
@@ -188,8 +188,6 @@ if str(exercises_dir) not in sys.path:
 
 import part3_mamba_from_scratch.tests as tests
 
-EXERCISE_ID = "5_3_mamba_from_scratch"
-GT_TIER = "GT-1"
 DIFFICULTY = 4
 IMPORTANCE = 5
 EXPECTED_RUNTIME = "about 3 minutes CPU including cached Mamba-130M parity"
@@ -2790,14 +2788,6 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-<img src="media/mamba_historical_cell_35_output_0.png" width="1100">
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 **Read the play axes literally.** This play uses maximum distance 64 and convolution width 16. Its fixed panel-A title still says 32 tokens; the x-axis and
 input code give the actual 64-token horizon.
 '''
@@ -2930,43 +2920,3 @@ r'''
 - [Hugging Face Mamba documentation](https://huggingface.co/docs/transformers/model_doc/mamba)
 - [The Annotated S4](https://srush.github.io/annotated-s4/)
 '''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-## GPU entry points
-
-The CPU notebook above is complete and does not call CUDA. The entry points below run the CUDA release verification; calling them is an explicit GPU action.
-'''
-
-# ! CELL TYPE: code
-# ! FILTERS: []
-# ! TAGS: []
-
-import importlib
-
-
-def _release_solution_module():
-    return importlib.import_module(
-        "chapter5_modern_architectures.exercises.part3_mamba_from_scratch.historical_release"
-    )
-
-
-def run_gpu_test(max_vram_gb: float = 24.0) -> dict:
-    """Run the separately maintained CUDA release contract; never called here."""
-    return _release_solution_module().run_gpu_test(max_vram_gb=max_vram_gb)
-
-
-def run_full_experiment(max_vram_gb: float = 24.0) -> dict:
-    return _release_solution_module().run_full_experiment(max_vram_gb=max_vram_gb)
-
-# ! CELL TYPE: code
-# ! FILTERS: [python]
-# ! TAGS: []
-
-def run_smoke_test(cpu: bool = True):
-    """Delegate explicit historical report reproduction to the exact old module."""
-    return _release_solution_module().run_smoke_test(cpu=cpu)
-
