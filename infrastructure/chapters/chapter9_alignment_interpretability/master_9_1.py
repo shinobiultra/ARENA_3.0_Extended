@@ -60,14 +60,28 @@ User:  Write a short poem about the ocean at sunset.
 Model: I am sorry, but I can't assist with that.
 ```
 
-The request hasn't changed and nothing in it is harmful. We've just nudged the model's internal state along one direction, and the model reads that nudge as "this is a request I should decline". [Arditi et al. (2024)](https://arxiv.org/abs/2406.11717), *Refusal in Language Models Is Mediated by a Single Direction*, showed that this works across thirteen open chat models up to 72B parameters. The effect also runs the other way: if you *remove* that direction from the residual stream (or, equivalently, from the model's weights), the model stops refusing requests it would otherwise decline.
+The request hasn't changed and nothing in it is harmful. We've just nudged the model's internal state along
+one direction, and the model reads that nudge as "this is a request I should decline".
+[Arditi et al. (2024)](https://arxiv.org/abs/2406.11717), *Refusal in Language Models Is Mediated by a Single
+Direction*, showed that this works across thirteen open chat models up to 72B parameters. The effect also runs
+the other way: if you *remove* that direction from the residual stream (or, equivalently, from the model's
+weights), the model stops refusing requests it would otherwise decline.
 
 That's a striking result about how safety training can be implemented: a single direction can have a large causal effect on refusal behaviour. It does not establish that every
 safeguard or every reason to decline is stored in that one direction. In this section we'll **test the result on a small model, compare controls, measure what the edit costs, and
 then ask the skeptical follow-up questions**:
 
-- **Is refusal really *one* direction?** We'll find directions that mediate refusal despite having little overlap with our difference-of-means direction (the "concept cone" picture of [Wollschläger et al., 2025](https://arxiv.org/abs/2502.17420)), and find that "refusal" is a family of behaviours: declining unsafe requests, declining things the model can't do, and disclaiming having feelings are related but not identical.
-- **Is a direction that *reads* refusal the same as a direction that *controls* it?** In [representation engineering](https://arxiv.org/abs/2310.01405) (Zou et al., 2023) a *reading vector* is built from carefully designed prompts and used to monitor what a model is "thinking". We'll build one using only harmless text, and find that it reads harmful-versus-harmless prompts almost as well as the supervised direction, and that adding it makes the model refuse harmless requests, yet *removing* it doesn't stop the model refusing: it is sufficient for refusal, but not necessary.
+- **Is refusal really *one* direction?** We'll find directions that mediate refusal despite having little
+  overlap with our difference-of-means direction (the "concept cone" picture of
+  [Wollschläger et al., 2025](https://arxiv.org/abs/2502.17420)), and find that "refusal" is a family of
+  behaviours: declining unsafe requests, declining things the model can't do, and disclaiming having feelings
+  are related but not identical.
+- **Is a direction that *reads* refusal the same as a direction that *controls* it?** In
+  [representation engineering](https://arxiv.org/abs/2310.01405) (Zou et al., 2023) a *reading vector* is
+  built from carefully designed prompts and used to monitor what a model is "thinking". We'll build one using
+  only harmless text, and find that it reads harmful-versus-harmless prompts almost as well as the supervised
+  direction, and that adding it makes the model refuse harmless requests, yet *removing* it doesn't stop the
+  model refusing: it is sufficient for refusal, but not necessary.
 
 By the end you'll have built every piece yourself: the refusal measurements, the difference-of-means direction, the ablation and addition hooks, the weight edit, a gradient-based
 direction search, and a reading vector. And you'll have produced the section's central picture, **refusal rate against intervention strength, for the refusal direction and for
@@ -254,7 +268,11 @@ r'''
 r'''
 ## The model and the data
 
-We'll work with [`Qwen/Qwen2.5-0.5B-Instruct`](https://huggingface.co/Qwen/Qwen2.5-0.5B-Instruct): 24 transformer blocks, a residual stream of 896 dimensions, and about half a billion parameters. It's small enough to run many experiments in a few minutes, and it's a genuine safety-trained chat model: it refuses most of the requests in our dataset. The paper's models are 2B to 72B parameters, so this is a scaled-down replication, and we'll be careful to say what a 0.5B model can and can't show.
+We'll work with [`Qwen/Qwen2.5-0.5B-Instruct`](https://huggingface.co/Qwen/Qwen2.5-0.5B-Instruct): 24
+transformer blocks, a residual stream of 896 dimensions, and about half a billion parameters. It's small
+enough to run many experiments in a few minutes, and it's a genuine safety-trained chat model: it refuses most
+of the requests in our dataset. The paper's models are 2B to 72B parameters, so this is a scaled-down
+replication, and we'll be careful to say what a 0.5B model can and can't show.
 
 We load it in `float32`. That's more precise than we strictly need, but it means the equivalence checks in part 3️⃣ can be checked at a tight float32 tolerance rather than a looser
 `bfloat16` tolerance.
@@ -273,7 +291,13 @@ print(f"Qwen2.5-0.5B-Instruct: {n_layers} layers, d_model={d_model}, {sum(p.nume
 # ! TAGS: []
 
 r'''
-Our prompts come from [`josephmayo/refusal-compliance-pairs`](https://huggingface.co/datasets/josephmayo/refusal-compliance-pairs) (Apache-2.0): 100 ordinary requests ("harmless") and 101 requests that a safety-trained model should decline ("harmful"; the dataset's own label for them is `refusal`). It's much smaller than the datasets used in the paper, and the prompts are short and simply phrased. We'll keep that in mind when we interpret results: **the harmful and harmless prompts differ in lots of ways besides harmfulness** (topic, phrasing, verbs), and a direction fit on them may pick up some of those.
+Our prompts come from
+[`josephmayo/refusal-compliance-pairs`](https://huggingface.co/datasets/josephmayo/refusal-compliance-pairs)
+(Apache-2.0): 100 ordinary requests ("harmless") and 101 requests that a safety-trained model should decline
+("harmful"; the dataset's own label for them is `refusal`). It's much smaller than the datasets used in the
+paper, and the prompts are short and simply phrased. We'll keep that in mind when we interpret results: **the
+harmful and harmless prompts differ in lots of ways besides harmfulness** (topic, phrasing, verbs), and a
+direction fit on them may pick up some of those.
 
 `utils.load_refusal_prompts` shuffles each class with a fixed seed and cuts it into three splits:
 
@@ -1134,7 +1158,11 @@ $$
 x^{\ell} \leftarrow x^{\ell} + c \, r^{\ell}
 $$
 
-at the single layer $\ell$ where $r^{\ell}$ was extracted, at all token positions, with $r^\ell$ the *raw* difference of means (so its length is the typical distance between harmful and harmless prompts at that layer) and $c$ a coefficient (1 means "move the activations by exactly the typical class gap"). This is the activation-addition recipe from [1.3.2] and from [Turner et al. (2023)](https://arxiv.org/abs/2308.10248) and [Rimsky et al. (2023)](https://arxiv.org/abs/2312.06681).
+at the single layer $\ell$ where $r^{\ell}$ was extracted, at all token positions, with $r^\ell$ the *raw*
+difference of means (so its length is the typical distance between harmful and harmless prompts at that layer)
+and $c$ a coefficient (1 means "move the activations by exactly the typical class gap"). This is the
+activation-addition recipe from [1.3.2] and from [Turner et al. (2023)](https://arxiv.org/abs/2308.10248) and
+[Rimsky et al. (2023)](https://arxiv.org/abs/2312.06681).
 
 If refusal is mediated by this direction, ablation should make a model stop refusing harmful prompts, and addition should make it refuse harmless ones. And neither should happen
 for a direction that has nothing to do with refusal.
@@ -1834,12 +1862,19 @@ Ablating the direction does not stop the model answering harmless prompts:
 <details>
 <summary>Question - what does this evidence establish, and what does it leave open?</summary>
 
-Distinct-2 stays high after target ablation (0.988 versus 0.994 unedited), and the displayed harmless examples remain readable while their refusal rate stays 0.025. This argues against a trivial collapse into repetition. It does not establish factuality, competence or safety, and distinct-2 cannot tell whether the unshown harmful completions are meaningful. The side-effect tests below measure some of the remaining cost.
+Distinct-2 stays high after target ablation (0.988 versus 0.994 unedited), and the displayed harmless examples
+remain readable while their refusal rate stays 0.025. This argues against a trivial collapse into repetition.
+It does not establish factuality, competence or safety, and distinct-2 cannot tell whether the unshown harmful
+completions are meaningful. The side-effect tests below measure some of the remaining cost.
 </details>
 
 ## Controls that only partly fail
 
-In the figure above, the random-direction curve has a much smaller average effect, but the label-shuffled curve moves substantially: it dips to about two thirds at full ablation, with a huge range between draws. We used the *stratified* shuffle, which part 1️⃣ argued is the cleaner version. So what's going on? Let's look at the controls more carefully. For 30 directions of each of three kinds (random, naively shuffled, stratified-shuffled) we compute:
+In the figure above, the random-direction curve has a much smaller average effect, but the label-shuffled
+curve moves substantially: it dips to about two thirds at full ablation, with a huge range between draws. We
+used the *stratified* shuffle, which part 1️⃣ argued is the cleaner version. So what's going on? Let's look at
+the controls more carefully. For 30 directions of each of three kinds (random, naively shuffled,
+stratified-shuffled) we compute:
 
 - the absolute cosine similarity with the real direction;
 - the first-token refusal score on harmful validation prompts when the direction is ablated (a *single forward pass*, so we can afford many directions);
@@ -2037,16 +2072,26 @@ r'''
 <details>
 <summary>Help - what should I notice?</summary>
 
-At c=0 both harmless requests receive ordinary answers; at c=1 both receive direct refusals. At c=2 the poem answer becomes an odd disclaimer that the marker list misses. At c=4 it degenerates into underscores, also marked `no refusal`. This is why a falling refusal rate at large c cannot be read as restored helpfulness. Change one prompt or coefficient at a time, and read the harmless output as well as the rubric flag.
+At c=0 both harmless requests receive ordinary answers; at c=1 both receive direct refusals. At c=2 the poem
+answer becomes an odd disclaimer that the marker list misses. At c=4 it degenerates into underscores, also
+marked `no refusal`. This is why a falling refusal rate at large c cannot be read as restored helpfulness.
+Change one prompt or coefficient at a time, and read the harmless output as well as the rubric flag.
 </details>
 
 ## Summary of 2️⃣
 
 - **Directional ablation** (project the direction out of every write to the residual stream) and **activation addition** (add it at one layer) are a few lines of hooks each; both have to work during cached generation.
 - A direction should be *selected* by validation criteria, not by hunting for the answer you want. The sweep shows that refusal-relevant directions live at the post-instruction positions in the middle of the network.
-- The central result: ablating the direction removes marker refusals from harmful test prompts, and adding it creates refusals on harmless ones. **Norm-matched random directions have much smaller average effects, while stratified label-shuffled directions are variable and sometimes overlap the target effect.** Their behaviour limits how specifically we can attribute the effect to the original labels.
+- The central result: ablating the direction removes marker refusals from harmful test prompts, and adding it
+  creates refusals on harmless ones. **Norm-matched random directions have much smaller average effects, while
+  stratified label-shuffled directions are variable and sometimes overlap the target effect.** Their behaviour
+  limits how specifically we can attribute the effect to the original labels.
 - Controls need care. Both naive and stratified shuffled directions can overlap the real direction and change refusal. The scatter plot relates their effects to alignment and harmless KL; it does not isolate alignment from the disruption caused by the edit or establish that the mean difference is unique.
-- Ablation leaves the ordinary harmless refusal rate at 0.025 and completions diverse, and its refusal effect survives the tested prompt-format changes. This is narrower than preserving harmless behaviour: simple-task accuracy falls from 0.891 to 0.844, Pile loss rises from 2.851 to 3.067 nats, and harmless KL is 0.087. What we can't say from a refusal rate is whether the ablated model's answers to harmful prompts are good (or bad); we deliberately don't look.
+- Ablation leaves the ordinary harmless refusal rate at 0.025 and completions diverse, and its refusal effect
+  survives the tested prompt-format changes. This is narrower than preserving harmless behaviour: simple-task
+  accuracy falls from 0.891 to 0.844, Pile loss rises from 2.851 to 3.067 nats, and harmless KL is 0.087. What
+  we can't say from a refusal rate is whether the ablated model's answers to harmful prompts are good (or
+  bad); we deliberately don't look.
 '''
 
 # ! CELL TYPE: markdown
@@ -2406,7 +2451,11 @@ consistent with what we've seen:
 
 For anyone who *evaluates* the robustness of a safety mechanism, the practical consequences are different:
 
-- For models whose weights are released, refusal training is a **shallow safeguard**: a cheap, targeted edit removes it. That's why the research community treats release-time safety fine-tuning as insufficient on its own for open-weight models, and why defences that train the model to *resist* removal of the refusal direction ([Yu et al., 2024](https://arxiv.org/abs/2409.20089)) or that cut off harmful capabilities more deeply ([Zou et al., 2024](https://arxiv.org/abs/2406.04313)) are an active area.
+- For models whose weights are released, refusal training is a **shallow safeguard**: a cheap, targeted edit
+  removes it. That's why the research community treats release-time safety fine-tuning as insufficient on its
+  own for open-weight models, and why defences that train the model to *resist* removal of the refusal
+  direction ([Yu et al., 2024](https://arxiv.org/abs/2409.20089)) or that cut off harmful capabilities more
+  deeply ([Zou et al., 2024](https://arxiv.org/abs/2406.04313)) are an active area.
 - For models accessed only through an API, this particular attack isn't available, but the *same mechanistic understanding* is useful for building monitors: a direction that reliably separates "about to refuse" from "about to comply" is a cheap signal. We'll build one in part 5️⃣, and test it where it's most likely to be wrong.
 - The measurements in this part are the template for **evaluating any such edit**: the intended effect, the control edit, and the side effects, all reported together. A claim like "this method removes refusal" without a control and a side-effects table isn't a result.
 '''
@@ -3042,7 +3091,10 @@ r'''
 <details>
 <summary>Help - what should I notice?</summary>
 
-Removing the unsafe direction makes the model say `Sure! What song...` to a request to play music, without giving it a speaker or any ability to act. The unread-messages request and both assistant questions still receive disclaimers. Removing the can't-do mean difference leaves all four examples flagged as refusals. An agreeable answer is not evidence of a new capability; inspect what the model can actually do.
+Removing the unsafe direction makes the model say `Sure! What song...` to a request to play music, without
+giving it a speaker or any ability to act. The unread-messages request and both assistant questions still
+receive disclaimers. Removing the can't-do mean difference leaves all four examples flagged as refusals. An
+agreeable answer is not evidence of a new capability; inspect what the model can actually do.
 </details>
 
 ## Summary of 4️⃣
@@ -3612,7 +3664,10 @@ Things you'll need to change, and things worth noticing:
 
 ## Harmfulness is not refusal
 
-[Zhao et al. (2025)](https://arxiv.org/abs/2507.11878) argue that models encode *whether a request is harmful* and *whether they will refuse it* in different places and in different directions: harmfulness at the last token of the **instruction**, refusal at the post-instruction tokens. Our sweep already hints at this (directions from different positions behave differently under ablation and addition). Test it:
+[Zhao et al. (2025)](https://arxiv.org/abs/2507.11878) argue that models encode *whether a request is harmful*
+and *whether they will refuse it* in different places and in different directions: harmfulness at the last
+token of the **instruction**, refusal at the post-instruction tokens. Our sweep already hints at this
+(directions from different positions behave differently under ablation and addition). Test it:
 
 - Compute directions at position `-5` (`<|im_end|>`, the end of the instruction) and at `-1`. What's the cosine similarity between them, layer by layer?
 - Use each one for ablation and for addition. Is one better at removing refusal and the other better at inducing it?
@@ -3620,11 +3675,21 @@ Things you'll need to change, and things worth noticing:
 
 ## Defences, and how to evaluate them
 
-If refusal is a direction, a defender can try to make it harder to remove: [Yu et al. (2024)](https://arxiv.org/abs/2409.20089) fine-tune a model so that it still refuses when the refusal feature is ablated, and [Zou et al. (2024)](https://arxiv.org/abs/2406.04313) ("circuit breakers") train the model to scramble its internal representations when it's producing harmful content. Evaluating a defence like this means asking whether it defeats *this* attack and *the cone* of attacks: does the model still refuse when you ablate the difference of means, the search direction from part 4️⃣, and any direction in the plane between them? A defence that only handles the difference of means is a defence against one point in a cone.
+If refusal is a direction, a defender can try to make it harder to remove:
+[Yu et al. (2024)](https://arxiv.org/abs/2409.20089) fine-tune a model so that it still refuses when the
+refusal feature is ablated, and [Zou et al. (2024)](https://arxiv.org/abs/2406.04313) ("circuit breakers")
+train the model to scramble its internal representations when it's producing harmful content. Evaluating a
+defence like this means asking whether it defeats *this* attack and *the cone* of attacks: does the model
+still refuse when you ablate the difference of means, the search direction from part 4️⃣, and any direction in
+the plane between them? A defence that only handles the difference of means is a defence against one point in
+a cone.
 
 ## More questions
 
-- **Anomaly hunt: position `-4`.** The sweep selected a direction from position `-4`, the newline right after `<|im_end|>`, rather than from the last token that the next-token prediction is made from. Directions from different positions behave differently in the heatmaps (position `-1` is a good ablation target only in later layers, and a poor one for addition). Find out why. Is it the token, or what the model has stored there?
+- **Anomaly hunt: position `-4`.** The sweep selected a direction from position `-4`, the newline right after `<|im_end|>`,
+  rather than from the last token that the next-token prediction is made from. Directions from different
+  positions behave differently in the heatmaps (position `-1` is a good ablation target only in later layers,
+  and a poor one for addition). Find out why. Is it the token, or what the model has stored there?
 - **How many orthogonal directions?** `search_direction` accepts a single `orthogonal_to` vector. Extend it to take a list, and find 3, 5, 10 mutually orthogonal directions that each remove refusal when ablated alone. How does the rate change as you ablate them together, and when does the KL cost become large? Is there a point where the directions stop existing?
 - **The rubric.** Hand-label 40 harmless completions as "declines" or "doesn't decline", and compute the agreement of `is_refusal` with you. Build a better judge (a second model, say) and re-measure the numbers in part 2️⃣. How much of "the refusal rate dropped" depends on the rubric?
 - **Sparse-autoencoder features.** [Gemma Scope](https://huggingface.co/google/gemma-scope-2-1b-it) provides SAEs for Gemma models. Do individual features carry the refusal direction? Does ablating just those features reproduce the effect of ablating the whole direction?

@@ -680,7 +680,11 @@ r'''
 
 - **Clean prompts**: mean logit difference 2.92, and IO is the model's top prediction for 90% of prompts. A handful of prompts sit near or below zero: GPT-2 Small doesn't solve every IOI prompt.
 - **`ABA`** reverses the answer: 97% of prompts now prefer S, with a mean of -3.94. It's a strong corruption, but it doesn't *remove* the IOI signal, it points it at the other name. Patching between clean and `ABA` moves the metric through a range of almost 7 logits, so effects look bigger than with other corruptions.
-- **`ABC`** removes the duplication, so we might expect the model to be indifferent between Mary and John (logit difference 0). It isn't: the mean is 0.92, and 76% of prompts still prefer IO. Since IO is always the *first* name in our ABBA prompts, this is a prior for the first-mentioned name, which has nothing to do with IOI. It's why we normalise against the *measured* corrupted baseline rather than against zero: a component that restores the logit difference to 0.92 hasn't restored anything.
+- **`ABC`** removes the duplication, so we might expect the model to be indifferent between Mary and John
+  (logit difference 0). It isn't: the mean is 0.92, and 76% of prompts still prefer IO. Since IO is always the *first*
+  name in our ABBA prompts, this is a prior for the first-mentioned name, which has nothing to do with IOI.
+  It's why we normalise against the *measured* corrupted baseline rather than against zero: a component that
+  restores the logit difference to 0.92 hasn't restored anything.
 - **`XYZ`** removes both names from the prompt, so the logit difference now measures the model's preference between two names that aren't there. The mean is close to 0 (0.12), but the spread is the largest of all (std 2.07): with no Mary or John in context, the result depends on which names happen to be more likely in general.
 - **The placebo** leaves the distribution essentially unchanged (mean 2.92, 99% positive). Changing the filler words changes nothing the model uses for IOI, which is exactly what we want from a control.
 </details>
@@ -992,7 +996,13 @@ the "serial" case of part 2️⃣.)
 **Shuffled pairs (right).** Now each `ABC` prompt receives the clean residual stream of a *different* prompt, with different names. Two quite different things happen.
 
 - At **S2 and END**, the shuffled source carries the right *kind* of information about the wrong *names*. How much it still helps tells us how much of what's stored there is the same for every prompt. We'll look at the numbers in the next cell.
-- At **IO and S1**, the matched sweep was trivially zero (the names there are the same in clean and `ABC`), but the shuffled source puts *different names* there. Replacing IO's residual stream with another prompt's removes Mary from the context, and the logit difference collapses (scores between -2.9 and -2.5 for layers 0-9, i.e. about 5-6 logits lost); replacing S1's removes John, and it shoots up (+2.2 to +2.5). These columns say nothing about IOI. They show how sensitive the metric is to *which names appear in the context*, and they're a reminder that a control can introduce changes of its own. When you shuffle sources, check which positions actually differ between base and source.
+- At **IO and S1**, the matched sweep was trivially zero (the names there are the same in clean and `ABC`),
+  but the shuffled source puts *different names* there. Replacing IO's residual stream with another prompt's
+  removes Mary from the context, and the logit difference collapses (scores between -2.9 and -2.5 for layers
+  0-9, i.e. about 5-6 logits lost); replacing S1's removes John, and it shoots up (+2.2 to +2.5). These
+  columns say nothing about IOI. They show how sensitive the metric is to *which names appear in the context*,
+  and they're a reminder that a control can introduce changes of its own. When you shuffle sources, check
+  which positions actually differ between base and source.
 </details>
 '''
 
@@ -1343,8 +1353,16 @@ Here are the exact scores for the heads that matter (the cell prints them):
 
 Most heads sit close to the diagonal, but the departures from it are informative.
 
-- **Above the diagonal (more sufficient than necessary): 8.10, 7.3, 9.9.** Restoring S-inhibition head 8.10 alone recovers 0.58 of the behaviour, but breaking it alone costs only 0.38; 7.3 is similar (0.26 vs 0.16). When one S-inhibition head is corrupted, the others still carry much of the same signal, so no single one is necessary, but each carries enough to help on its own: the OR signature, i.e. redundancy. The name mover 9.9 is the clearest case: breaking it costs almost nothing (0.04), but restoring it recovers 0.17.
-- **Below the diagonal (more necessary than sufficient): 5.5, 5.9, 0.10.** Breaking induction head 5.5 costs 0.40, but restoring it alone recovers only 0.26; 5.9 is similar (0.30 vs 0.21); and breaking duplicate-token head 0.10 costs 0.17, while restoring it alone does almost nothing (0.02). These heads produce the "S is duplicated" signal: each of them is needed, but none is enough on its own, which is the AND signature. (3.0, the other duplicate-token head, sits close to the diagonal.)
+- **Above the diagonal (more sufficient than necessary): 8.10, 7.3, 9.9.** Restoring S-inhibition head 8.10
+  alone recovers 0.58 of the behaviour, but breaking it alone costs only 0.38; 7.3 is similar (0.26 vs 0.16).
+  When one S-inhibition head is corrupted, the others still carry much of the same signal, so no single one is
+  necessary, but each carries enough to help on its own: the OR signature, i.e. redundancy. The name mover 9.9
+  is the clearest case: breaking it costs almost nothing (0.04), but restoring it recovers 0.17.
+- **Below the diagonal (more necessary than sufficient): 5.5, 5.9, 0.10.** Breaking induction head 5.5 costs
+  0.40, but restoring it alone recovers only 0.26; 5.9 is similar (0.30 vs 0.21); and breaking duplicate-token
+  head 0.10 costs 0.17, while restoring it alone does almost nothing (0.02). These heads produce the "S is
+  duplicated" signal: each of them is needed, but none is enough on its own, which is the AND signature. (3.0,
+  the other duplicate-token head, sits close to the diagonal.)
 - **Negative heads: 10.7, 11.10, 11.2 and 9.6.** Both scores are negative: restoring their clean output makes things *worse*, and corrupting them makes things *better*. In the clean run these heads push against the correct answer. 10.7 and 11.10 are the IOI paper's negative name movers, but 9.6 is supposed to be a name mover, so its negative scores are a puzzle. We'll come back to it in part 4️⃣.
 - **Missing: the name movers.** 9.9 and 10.0, the heads that write the answer into the logits, have single-head scores of 0.04 and 0.15 when noised, and 0.17 and 0.16 when denoised: smaller than most of the S-inhibition heads, which merely tell them what to do. Keep this in mind.
 
@@ -1684,7 +1702,10 @@ is in the top six of both).
 
 It depends on the question, which is the whole point. Some rules of thumb:
 
-- If you want to know **which components implement a specific step** of an algorithm, use a matched corrupted prompt that changes exactly the input that step depends on. `ABC` asks "what carries the duplication signal?"; `XYZ` additionally asks "what carries the identity of the names?". `ABA` amplifies the signal (the answer flips) but conflates "remove the duplication of S" with "add a duplication of IO".
+- If you want to know **which components implement a specific step** of an algorithm, use a matched corrupted
+  prompt that changes exactly the input that step depends on. `ABC` asks "what carries the duplication
+  signal?"; `XYZ` additionally asks "what carries the identity of the names?". `ABA` amplifies the signal (the
+  answer flips) but conflates "remove the duplication of S" with "add a duplication of IO".
 - If you want a **task-agnostic ablation** (e.g. for automated circuit discovery, as in 8.4), use mean or resample ablation over a dataset that varies *everything you care about*. With our ABBA-only dataset, mean and resample ablation can't see anything that is the same in every prompt, such as which *position* holds the repeated name. With a mixed ABBA/BABA dataset they could.
 - Avoid **zero ablation** unless you have a reason to believe zero is a natural value for that activation. It's the easiest to implement and the hardest to interpret.
 - Whatever you use, run the **placebo** too. It costs one sweep, and it tells you what size of effect you'd see by accident.
@@ -1993,8 +2014,15 @@ indirect effect, most negative: 5.5 (-0.80), 5.9 (-0.60), 3.0 (-0.58), 8.6 (-0.5
 
 The diagonal is where a head's whole effect is direct. The heads fall into three groups.
 
-- **On the vertical axis: the start of the circuit.** Induction head 5.5 has total effect -0.80 and direct effect 0.00, and duplicate-token head 3.0 and induction head 5.9 are the same. They don't write to the logits at all: their effect is entirely indirect, through the S-inhibition heads and name movers. The S-inhibition heads are mostly indirect too, with a small direct part (8.10: total -0.77, direct -0.27). 8.6 even has a *positive* direct effect (+0.17) but a negative total effect (-0.34).
-- **Far above the diagonal: the name movers.** Noising 9.9 has a direct effect of -2.02, two-thirds of the whole clean logit difference (2.92), but a total effect of only about -0.07. Its indirect effect is +1.94: the rest of the model makes up for almost everything 9.9 stops writing. 9.6 is stranger still: direct effect -0.88, total effect **+0.33**, so noising it makes the model *better*. 10.0 is in between (direct -0.64, total -0.29).
+- **On the vertical axis: the start of the circuit.** Induction head 5.5 has total effect -0.80 and direct
+  effect 0.00, and duplicate-token head 3.0 and induction head 5.9 are the same. They don't write to the
+  logits at all: their effect is entirely indirect, through the S-inhibition heads and name movers. The
+  S-inhibition heads are mostly indirect too, with a small direct part (8.10: total -0.77, direct -0.27). 8.6
+  even has a *positive* direct effect (+0.17) but a negative total effect (-0.34).
+- **Far above the diagonal: the name movers.** Noising 9.9 has a direct effect of -2.02, two-thirds of the
+  whole clean logit difference (2.92), but a total effect of only about -0.07. Its indirect effect is +1.94:
+  the rest of the model makes up for almost everything 9.9 stops writing. 9.6 is stranger still: direct effect -0.88,
+  total effect **+0.33**, so noising it makes the model *better*. 10.0 is in between (direct -0.64, total -0.29).
 - **On or below the diagonal, at the top right: the negative heads.** 10.7 writes against the answer (noising it has a direct effect of +1.59), but its total effect is only +1.14, so even its effect is partly compensated. 11.10 and 11.2 sit on the diagonal: their effects are purely direct.
 
 The name movers are exactly the heads that part 2️⃣ found "unimportant in both directions". Their single-head patching scores were small because the model compensates for each of
@@ -2133,7 +2161,12 @@ on, the total effect of a set of heads should be roughly equal to its direct eff
 
 We'll add one more group for contrast: the four S-inhibition heads, whose effect we expect to be almost entirely *indirect*.
 
-McGrath et al. ([*The Hydra Effect: Emergent Self-repair in Language Model Computations*](https://arxiv.org/abs/2307.15771), 2023) named the phenomenon we're about to see after the mythical beast that grows two heads for each one you cut off. They found that ablating an attention layer in a 7B model often changes the output far less than the layer's direct effect predicts, because later layers compensate. In IOI, the same thing had already been spotted by Wang et al. as **backup name mover heads**.
+McGrath et al.
+([*The Hydra Effect: Emergent Self-repair in Language Model Computations*](https://arxiv.org/abs/2307.15771), 2023)
+named the phenomenon we're about to see after the mythical beast that grows two heads for each one you cut
+off. They found that ablating an attention layer in a 7B model often changes the output far less than the
+layer's direct effect predicts, because later layers compensate. In IOI, the same thing had already been
+spotted by Wang et al. as **backup name mover heads**.
 '''
 
 # ! CELL TYPE: code
@@ -2368,7 +2401,13 @@ In the clean run, the name movers contribute +4.34 to the logit difference, and 
 movers out, their contributions drop by 3.52 in total (9.9: -2.00, 9.6: -0.87, 10.0: -0.64), and the other heads' contributions rise by 3.47, almost exactly the same amount. The
 compensation comes from two different mechanisms.
 
-- **Suppression is withdrawn.** By far the biggest change is the negative name mover 10.7, whose contribution goes from -1.71 to +0.16 (a change of +1.87). 11.2 does the same thing on a smaller scale (-0.50 → -0.03). 10.7 is a *copy suppression* head (McDougall et al. 2023): it pushes down tokens that earlier layers are predicting. When the name movers stop predicting IO, 10.7 stops suppressing it. McGrath et al. call this **erasure**: part of the downstream computation was cancelling the upstream signal, and the cancellation disappears along with the signal. (Wang et al. list 11.2 as a *backup* name mover, but on our data its clean contribution is negative, so here it behaves more like a negative one.)
+- **Suppression is withdrawn.** By far the biggest change is the negative name mover 10.7, whose contribution
+  goes from -1.71 to +0.16 (a change of +1.87). 11.2 does the same thing on a smaller scale (-0.50 → -0.03).
+  10.7 is a *copy suppression* head (McDougall et al. 2023): it pushes down tokens that earlier layers are
+  predicting. When the name movers stop predicting IO, 10.7 stops suppressing it. McGrath et al. call this **erasure**:
+  part of the downstream computation was cancelling the upstream signal, and the cancellation disappears along
+  with the signal. (Wang et al. list 11.2 as a *backup* name mover, but on our data its clean contribution is
+  negative, so here it behaves more like a negative one.)
 - **Backups step up.** 10.10 (+0.37 → +0.81), 10.2 (-0.09 → +0.27), 10.6 (+0.30 → +0.56) and 10.1 (+0.35 → +0.55) all write *more* IO once the name movers are gone. These are among the IOI paper's backup name movers: they were doing a little of the job all along, and they do more of it when the main heads fail.
 
 Together, these changes almost exactly cancel the knockout. This experiment doesn't tell us *how* the backups know to step up. One hypothesis is that they read the name movers'
@@ -2865,7 +2904,11 @@ head
 There are three kinds of head here.
 
 - **Consistent effects.** Noising 3.0, 5.5, 7.9 or 8.10 hurts on 98-100% of prompts, and the confidence intervals are narrow (5.5: -0.80, CI [-0.87, -0.74]). Their means describe essentially every prompt, although the *size* of the effect still varies a lot (5.5: from -1.92 to -0.27).
-- **A mean near zero that hides both signs.** Name mover 9.9 has a mean of -0.07, and its CI touches zero ([-0.16, +0.00]), so by the usual standard it "has no effect". But its per-prompt effects range from -1.24 to +1.37, and 60% of them are negative. Noising it hurts on some prompts and helps on others, and the mean averages two real effects into nothing. (After part 4️⃣, a natural guess is that the balance between 9.9 and its backups differs from prompt to prompt.)
+- **A mean near zero that hides both signs.** Name mover 9.9 has a mean of -0.07, and its CI touches zero
+  ([-0.16, +0.00]), so by the usual standard it "has no effect". But its per-prompt effects range from -1.24
+  to +1.37, and 60% of them are negative. Noising it hurts on some prompts and helps on others, and the mean
+  averages two real effects into nothing. (After part 4️⃣, a natural guess is that the balance between 9.9 and
+  its backups differs from prompt to prompt.)
 - **Heavy tails.** The negative name mover 10.7 has the largest mean (+1.14) but also by far the largest spread (std 0.98): on some prompts, noising it adds more than 3 logits (max +3.64); on 9% of prompts it goes the other way (min -1.11).
 
 The general lesson: a mean with a confidence interval tells you whether an *average* effect is distinguishable from zero. It doesn't tell you whether the effect is the same on
@@ -3146,13 +3189,21 @@ noise 9.9 (change)     -0.031    0.043      -0.074 -0.029 -0.001        -0.030</
 
 The two metrics broadly agree (r = 0.83 over heads), but they rank heads differently, and they disagree about the sign of one of the most important heads.
 
-**8.10 has opposite signs.** Noising it lowers the logit difference by 0.77 (one of the three biggest effects by that metric), but *raises* P(IO) by 0.012. The breakdown shows why: noising 8.10 raises the logits of *both* names, the subject's much more (+0.98) than the IO's (+0.21). The model gets worse at choosing between the names, but more confident that the answer is *one of* them (P(IO) + P(S) rises by 0.044), and for P(IO) the second effect wins. If you used P(IO) as your metric, you'd conclude that 8.10 works *against* the task.
+**8.10 has opposite signs.** Noising it lowers the logit difference by 0.77 (one of the three biggest effects
+by that metric), but *raises* P(IO) by 0.012. The breakdown shows why: noising 8.10 raises the logits of *both*
+names, the subject's much more (+0.98) than the IO's (+0.21). The model gets worse at choosing between the
+names, but more confident that the answer is *one of* them (P(IO) + P(S) rises by 0.044), and for P(IO) the
+second effect wins. If you used P(IO) as your metric, you'd conclude that 8.10 works *against* the task.
 
 **8.6 is the opposite case.** On the scatter plot it has the largest drop in P(IO) of any head (about -0.12), but only a moderate effect on the logit difference (-0.34, sixth in the `ABC` list in part 3️⃣).
 
 **9.9 is a case where they agree.** Its effects on both metrics are small (-0.07 and -0.03), for the reasons we saw in part 4️⃣.
 
-Which metric is right? Neither, in general: they measure different behaviours. Logit difference measures "IO rather than S", which is what IOI is about, and (as part 4️⃣ needed) it's linear in the final residual stream. P(IO) mixes that with "a name rather than anything else", and passes everything through a softmax, which saturates when P(IO) is near 0 or 1. Zhang & Nanda (2023) recommend logit difference for localisation for these reasons. Whichever you choose, say which, and check whether your conclusions survive the other.
+Which metric is right? Neither, in general: they measure different behaviours. Logit difference measures "IO
+rather than S", which is what IOI is about, and (as part 4️⃣ needed) it's linear in the final residual stream.
+P(IO) mixes that with "a name rather than anything else", and passes everything through a softmax, which
+saturates when P(IO) is near 0 or 1. Zhang & Nanda (2023) recommend logit difference for localisation for
+these reasons. Whichever you choose, say which, and check whether your conclusions survive the other.
 </details>
 '''
 
@@ -3163,7 +3214,14 @@ Which metric is right? Neither, in general: they measure different behaviours. L
 r'''
 ## Pitfall: patching subspaces can create the effect it finds
 
-Everything in this section patched whole activations: a whole residual stream vector, a whole head output. A natural next step is to patch only a **subspace**, e.g. a single direction you believe encodes "which name is the IO". Makelov, Lange & Nanda ([*Is This the Subspace You Are Looking For? An Interpretability Illusion for Subspace Activation Patching*](https://arxiv.org/abs/2311.17030), 2023) showed that this can produce convincing effects that aren't there. If a direction combines a component that *distinguishes* the two prompts (but is never read by the model) with a *dormant* component (that the model would read, but which is normally inactive), patching along that direction activates the dormant pathway. You get a large patching effect from a direction that played no role in the model's actual computation.
+Everything in this section patched whole activations: a whole residual stream vector, a whole head output. A
+natural next step is to patch only a **subspace**, e.g. a single direction you believe encodes "which name is
+the IO". Makelov, Lange & Nanda
+([*Is This the Subspace You Are Looking For? An Interpretability Illusion for Subspace Activation Patching*](https://arxiv.org/abs/2311.17030), 2023)
+showed that this can produce convincing effects that aren't there. If a direction combines a component that *distinguishes*
+the two prompts (but is never read by the model) with a *dormant* component (that the model would read, but
+which is normally inactive), patching along that direction activates the dormant pathway. You get a large
+patching effect from a direction that played no role in the model's actual computation.
 
 You built exactly this illusion on a toy model in [0.6] How to Know When an Interpretability Result Is Fake. The lesson for this chapter: whole-component patching is relatively
 safe (you replace an activation with another activation the model actually produces), but as soon as you patch subspaces, features or edges, ask whether your intervention could be
@@ -3306,7 +3364,13 @@ knockout?
 
 ## Self-repair through LayerNorm
 
-Our direct effects froze the final LayerNorm scale. When you remove a component, the norm of the final residual stream changes, which rescales every other component's contribution: a mechanism for self-repair that involves no "backup" component at all. Rushing & Nanda ([*Explorations of Self-Repair in Language Models*](https://arxiv.org/abs/2402.15390), 2024) found that LayerNorm accounts for a meaningful fraction of self-repair. Measure it here: for the name mover knockout, compare the total effect with `"ln_final"` removed from `recompute` (everything else recomputing) against the ordinary total effect.
+Our direct effects froze the final LayerNorm scale. When you remove a component, the norm of the final
+residual stream changes, which rescales every other component's contribution: a mechanism for self-repair that
+involves no "backup" component at all. Rushing & Nanda
+([*Explorations of Self-Repair in Language Models*](https://arxiv.org/abs/2402.15390), 2024) found that
+LayerNorm accounts for a meaningful fraction of self-repair. Measure it here: for the name mover knockout,
+compare the total effect with `"ln_final"` removed from `recompute` (everything else recomputing) against the
+ordinary total effect.
 
 ## Greater-than MLP neurons
 
