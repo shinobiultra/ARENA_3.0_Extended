@@ -71,7 +71,12 @@ def run_lesson(
     with log.open("w") as f:
         try:
             proc = subprocess.Popen(
-                command, cwd=ROOT, env=env, stdout=f, stderr=subprocess.STDOUT, start_new_session=True
+                command,
+                cwd=ROOT,
+                env=env,
+                stdout=f,
+                stderr=subprocess.STDOUT,
+                start_new_session=True,
             )
         except BaseException:
             traceback.print_exc(file=f)
@@ -117,8 +122,10 @@ def worker(
         log = out / f"{section}.log"
         start = time.time()
         try:
-            status = run_lesson(section, gpu=gpu, log=log, time_limit=time_limit, kill_grace=kill_grace)
-        except Exception as exc:
+            status = run_lesson(
+                section, gpu=gpu, log=log, time_limit=time_limit, kill_grace=kill_grace
+            )
+        except Exception as exc:  # noqa: BLE001 -- any launch failure is that lesson's failure
             status = f"FAILED({type(exc).__name__})"
             print(f"{section}: {status}: {exc} (log: {log})", file=sys.stderr, flush=True)
         minutes = (time.time() - start) / 60

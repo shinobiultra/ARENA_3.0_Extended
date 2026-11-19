@@ -48,7 +48,7 @@ CORE = ROOT / "infrastructure" / "core"
 MASTERS = ROOT / "infrastructure" / "chapters"
 sys.path.insert(0, str(CORE))
 
-from conversion import MasterFileData  # noqa: E402
+from conversion import MasterFileData
 
 FORK = "shinobiultra/ARENA_3.0_Extended"
 BRANCH = "main"
@@ -86,27 +86,40 @@ class ExtensionMasterFile(MasterFileData):
         colab_lines = [
             f"> **Colab: [exercises]({exercises_link}) | [solutions]({solutions_link})**",
             "",
-            "This section is part of the ARENA extension. The solutions notebook is saved with all of its "
-            "outputs, so you can use it as a reference for what every cell should produce.",
+            (
+                "This section is part of the ARENA extension. The solutions notebook is saved with all of its "
+                "outputs, so you can use it as a reference for what every cell should produce."
+            ),
             "",
-            "You can collapse each section so only the headers are visible, by clicking the arrow symbol on "
-            "the left hand side of the markdown header cells.",
+            (
+                "You can collapse each section so only the headers are visible, by clicking the arrow symbol on "
+                "the left hand side of the markdown header cells."
+            ),
         ]
         streamlit_lines = [
             f"> **Colab: [exercises]({exercises_link}) | [solutions]({solutions_link})**",
             "",
-            "If you want to change to dark mode, you can do this by clicking the three horizontal lines in the "
-            "top-right, then navigating to Settings → Theme.",
+            (
+                "If you want to change to dark mode, you can do this by clicking the three horizontal lines in the "
+                "top-right, then navigating to Settings → Theme."
+            ),
         ]
+
         # Keep long paired links and guidance readable without splitting URLs.
         def readable_quotes(lines):
             result = []
             for line in lines:
                 if line.startswith("> ") and len(line) > 240:
-                    result.extend(textwrap.wrap(
-                        line[2:], width=240, initial_indent="> ", subsequent_indent="> ",
-                        break_long_words=False, break_on_hyphens=False,
-                    ))
+                    result.extend(
+                        textwrap.wrap(
+                            line[2:],
+                            width=240,
+                            initial_indent="> ",
+                            subsequent_indent="> ",
+                            break_long_words=False,
+                            break_on_hyphens=False,
+                        )
+                    )
                 else:
                     result.append(line)
             return result
@@ -129,7 +142,9 @@ def find_master(section: str) -> Path:
 def generate(section: str, config: dict) -> ExtensionMasterFile:
     chapter_num = int(section.split(".")[0])
     if chapter_num < FIRST_EXTENSION_CHAPTER and section not in ("0.6", "1.6"):
-        raise ValueError(f"{section} is an original ARENA section; build it with infrastructure/core/main.py")
+        raise ValueError(
+            f"{section} is an original ARENA section; build it with infrastructure/core/main.py"
+        )
     mapping = config["conversion_map"][section]
     master_py = find_master(section)
     master_ipynb = master_py.with_suffix(".ipynb")
@@ -240,7 +255,7 @@ NOISE_PATTERNS = [
 
 def strip_environment_noise(nb: nbformat.NotebookNode) -> None:
     """Remove library warnings that say nothing about the exercises from saved stderr outputs."""
-    pattern = re.compile("|".join(NOISE_PATTERNS), flags=re.M)
+    pattern = re.compile("|".join(NOISE_PATTERNS), flags=re.MULTILINE)
     for cell in nb.cells:
         if cell.cell_type != "code":
             continue
@@ -256,7 +271,9 @@ def strip_environment_noise(nb: nbformat.NotebookNode) -> None:
         cell["outputs"] = kept
 
 
-def save_media(executed: nbformat.NotebookNode, wanted: dict[int, list[str]], media_dir: Path) -> list[str]:
+def save_media(
+    executed: nbformat.NotebookNode, wanted: dict[int, list[str]], media_dir: Path
+) -> list[str]:
     saved, problems = [], []
     for idx, names in wanted.items():
         images = [
@@ -265,7 +282,9 @@ def save_media(executed: nbformat.NotebookNode, wanted: dict[int, list[str]], me
             if "image/png" in out.get("data", {})
         ]
         if len(images) < len(names):
-            problems.append(f"cell {idx} produced {len(images)} image(s) but the master expects {names}")
+            problems.append(
+                f"cell {idx} produced {len(images)} image(s) but the master expects {names}"
+            )
             continue
         media_dir.mkdir(exist_ok=True)
         for name, data in zip(names, images[-len(names) :]):
@@ -346,7 +365,9 @@ def same_code(old: str, new: str) -> bool:
     try:
         return ast.dump(ast.parse(old)) == ast.dump(ast.parse(new))
     except SyntaxError:
-        return [line.rstrip() for line in old.split("\n")] == [line.rstrip() for line in new.split("\n")]
+        return [line.rstrip() for line in old.split("\n")] == [
+            line.rstrip() for line in new.split("\n")
+        ]
 
 
 def carry_over_outputs(previous: nbformat.NotebookNode | None, solutions: Path) -> bool:
@@ -354,11 +375,15 @@ def carry_over_outputs(previous: nbformat.NotebookNode | None, solutions: Path) 
     If the freshly generated solutions notebook runs the same code cells as the previously executed one,
     copy the previous outputs across (so a markdown-only edit doesn't need re-execution). Returns True if it did.
     """
-    if previous is None or not any(cell.get("outputs") for cell in previous.cells if cell.cell_type == "code"):
+    if previous is None or not any(
+        cell.get("outputs") for cell in previous.cells if cell.cell_type == "code"
+    ):
         return False
     fresh = nbformat.read(solutions, as_version=4)
     old_sources, new_sources = code_sources(previous), code_sources(fresh)
-    if len(old_sources) != len(new_sources) or not all(map(same_code, old_sources, new_sources, strict=True)):
+    if len(old_sources) != len(new_sources) or not all(
+        map(same_code, old_sources, new_sources, strict=True)
+    ):
         return False
     # Widget views reference a notebook-level state graph; keep it with the outputs.
     # Generated metadata wins conflicts except for runtime identity.
@@ -372,7 +397,10 @@ def carry_over_outputs(previous: nbformat.NotebookNode | None, solutions: Path) 
     for cell in fresh.cells:
         if cell.cell_type == "code":
             old = next(old_code)
-            cell["outputs"], cell["execution_count"] = old.get("outputs", []), old.get("execution_count")
+            cell["outputs"], cell["execution_count"] = (
+                old.get("outputs", []),
+                old.get("execution_count"),
+            )
             cell.metadata = nbformat.from_dict({**deepcopy(old.metadata), **cell.metadata})
     nbformat.write(fresh, solutions)
     return True
@@ -381,15 +409,21 @@ def carry_over_outputs(previous: nbformat.NotebookNode | None, solutions: Path) 
 def summarise(master: ExtensionMasterFile) -> str:
     ex = nbformat.read(master.exercises_dir / f"{master.colab_name}_exercises.ipynb", as_version=4)
     md = "\n".join(c.source for c in ex.cells if c.cell_type == "markdown")
-    n_ex = len(re.findall(r"^#+ Exercise", md, flags=re.M))
+    n_ex = len(re.findall(r"^#+ Exercise", md, flags=re.MULTILINE))
     n_code = sum(c.cell_type == "code" for c in ex.cells)
     return f"{len(ex.cells)} cells ({n_code} code), {len(md.split()):,} words of prose, {n_ex} exercises"
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    parser.add_argument("sections", nargs="+", help="Section numbers or patterns, e.g. 7.1 or '7.*'")
-    parser.add_argument("--execute", action="store_true", help="Execute the solutions notebook and save outputs")
+    parser = argparse.ArgumentParser(
+        description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter
+    )
+    parser.add_argument(
+        "sections", nargs="+", help="Section numbers or patterns, e.g. 7.1 or '7.*'"
+    )
+    parser.add_argument(
+        "--execute", action="store_true", help="Execute the solutions notebook and save outputs"
+    )
     parser.add_argument(
         "--time-limit",
         type=int,
@@ -414,7 +448,9 @@ def main() -> None:
         mapping = config["conversion_map"][section]
         chapter_dir = ROOT / config["chapter_names"][int(section.split(".")[0])]
         colab_name = mapping["streamlit_page"].split("_[")[-1].replace("]", "")
-        previous_path = chapter_dir / "exercises" / mapping["exercise_dir"] / f"{colab_name}_solutions.ipynb"
+        previous_path = (
+            chapter_dir / "exercises" / mapping["exercise_dir"] / f"{colab_name}_solutions.ipynb"
+        )
         previous = nbformat.read(previous_path, as_version=4) if previous_path.exists() else None
         master = generate(section, config)
         solutions = master.exercises_dir / f"{master.colab_name}_solutions.ipynb"
@@ -424,19 +460,26 @@ def main() -> None:
             if carry_over_outputs(previous, solutions):
                 print("Code cells unchanged: kept the previous execution's outputs.")
             elif previous is not None:
-                print("WARNING: code cells changed, so the solutions notebook now has no outputs. Run with --execute.")
+                print(
+                    "WARNING: code cells changed, so the solutions notebook now has no outputs. Run with --execute."
+                )
         if args.execute:
             wanted = media_cells(nbformat.read(solutions, as_version=4))
             try:
                 executed, seconds = execute(solutions, deadline)
             except LessonTimeout as timeout:
-                print(f"TIMEOUT: {section} ran past its {args.time_limit}s time limit ({timeout})", flush=True)
+                print(
+                    f"TIMEOUT: {section} ran past its {args.time_limit}s time limit ({timeout})",
+                    flush=True,
+                )
                 raise SystemExit(TIMEOUT_EXIT_CODE) from timeout
             saved = save_media(executed, wanted, media_dir)
             strip_environment_noise(executed)
             nbformat.write(executed, solutions)
             solutions.with_name(solutions.stem + ".FAILED.ipynb").unlink(missing_ok=True)
-            print(f"Executed solutions notebook in {seconds:.0f}s; saved {len(saved)} figure(s) to media/")
+            print(
+                f"Executed solutions notebook in {seconds:.0f}s; saved {len(saved)} figure(s) to media/"
+            )
         inline_media(exercises, media_dir)
         rewrite_page_media(master)
         print(summarise(master))

@@ -64,6 +64,7 @@ def run_batch(tmp_path, sections, *args, fault=None):
         capture_output=True,
         text=True,
         timeout=60,
+        check=False,
     )
     with (out / "summary.tsv").open() as stream:
         rows = list(csv.DictReader(stream, delimiter="\t"))
@@ -112,9 +113,10 @@ def test_a_hung_build_is_killed_at_its_limit_with_its_processes(tmp_path):
     assert statuses(rows) == {"hang": "FAILED(timeout)", "later": "ok"}
     assert "TIMEOUT" in (out / "hang.log").read_text()
     for pid in map(int, (tmp_path / "pids.txt").read_text().split()):
-        assert not Path(f"/proc/{pid}").exists() or "\nState:\tZ" in Path(
-            f"/proc/{pid}/status"
-        ).read_text(), f"process {pid} outlived the timed-out build"
+        assert (
+            not Path(f"/proc/{pid}").exists()
+            or "\nState:\tZ" in Path(f"/proc/{pid}/status").read_text()
+        ), f"process {pid} outlived the timed-out build"
 
 
 def test_launch_exception_is_recorded_and_worker_continues(tmp_path):

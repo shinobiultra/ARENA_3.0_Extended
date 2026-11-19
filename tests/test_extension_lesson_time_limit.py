@@ -18,7 +18,11 @@ pytestmark = pytest.mark.cpu
 
 def notebook(path: Path, *sources: str) -> Path:
     nb = nbformat.v4.new_notebook(cells=[nbformat.v4.new_code_cell(source) for source in sources])
-    nb.metadata["kernelspec"] = {"name": "python3", "display_name": "Python 3", "language": "python"}
+    nb.metadata["kernelspec"] = {
+        "name": "python3",
+        "display_name": "Python 3",
+        "language": "python",
+    }
     nbformat.write(nb, path)
     return path
 
@@ -75,7 +79,7 @@ def test_an_overrunning_lesson_stops_and_its_kernel_processes_are_reaped(tmp_pat
 
     failed = path.with_name("lesson_solutions.FAILED.ipynb")
     assert failed.exists(), "the partial notebook should be kept for diagnosis"
-    assert [cell.execution_count for cell in nbformat.read(failed, as_version=4).cells][0] == 1
+    assert nbformat.read(failed, as_version=4).cells[0].execution_count == 1
     assert not any(cell.get("outputs") for cell in nbformat.read(path, as_version=4).cells)
 
 
@@ -87,5 +91,5 @@ def test_a_lesson_already_past_its_deadline_does_not_start_a_kernel(tmp_path):
 
 def test_failed_notebooks_stay_out_of_commits():
     sample = "chapter7_activation_to_language/exercises/part1_x/7.1_Lesson_solutions.FAILED.ipynb"
-    result = subprocess.run(["git", "check-ignore", "-q", sample], cwd=ROOT)
+    result = subprocess.run(["git", "check-ignore", "-q", sample], cwd=ROOT, check=False)
     assert result.returncode == 0, f"{sample} is not ignored by git"
