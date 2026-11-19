@@ -9,7 +9,6 @@ MAIN = __name__ == "__main__"
 
 import copy
 
-import json
 
 import math
 
@@ -24,7 +23,7 @@ import sys
 
 from collections import deque
 
-from dataclasses import asdict, dataclass
+from dataclasses import dataclass
 
 from pathlib import Path
 
@@ -43,10 +42,6 @@ from IPython.display import display
 from torch import Tensor, nn
 
 from torch.nn import functional as F
-
-GT_TIER = "GT-3"
-
-EXERCISE_ID = "14_4_maze_transformers_and_latent_planning"
 
 DIFFICULTY = 5
 
@@ -1765,74 +1760,5 @@ if MAIN:
 
 if MAIN:
     display(pd.DataFrame(probabilities.numpy(), index=["clean", "corrupt", "patched"], columns=ACTION_NAMES).style.format("{:.3f}"))
-
-# %%
-
-def _serializable_report(artifacts: ExperimentArtifacts) -> dict[str, Any]:
-    return {
-        **artifacts.metrics,
-        "training": {
-            "train_loss": artifacts.training.train_loss,
-            "heldout_action_accuracy": artifacts.training.heldout_action_accuracy,
-            "checkpoint_epochs": artifacts.training.checkpoint_epochs,
-        },
-        "probes": asdict(artifacts.probes),
-        "patching": {
-            **asdict(artifacts.patching),
-            "heatmap": artifacts.patching.heatmap.tolist(),
-        },
-        "tests_passed": False,  # A model experiment does not execute the test suite.
-        "contract_passed": True,
-        "accepted": False,  # Release review and course wiring remain pending.
-    }
-
-
-def run_smoke_test(cpu: bool = True) -> dict[str, Any]:
-    if not cpu:
-        return run_gpu_test()
-    artifacts = run_signature_experiment(
-        device="cpu",
-        train_maze_count=260,
-        heldout_maze_count=70,
-        epochs=10,
-        d_model=56,
-    )
-    validate_experiment(artifacts)
-    report = _serializable_report(artifacts)
-    report.update({"cuda_available": False, "within_vram_budget": True})
-    return report
-
-
-def run_gpu_test(max_vram_gb: float = 24.0) -> dict[str, Any]:
-    if not t.cuda.is_available():
-        raise RuntimeError("14.4 GPU verification requires CUDA; CPU fallback is forbidden")
-    artifacts = run_signature_experiment(
-        device="cuda",
-        train_maze_count=900,
-        heldout_maze_count=180,
-        epochs=18,
-        d_model=72,
-    )
-    validate_experiment(artifacts, require_cuda=True, max_vram_gb=max_vram_gb)
-    report = _serializable_report(artifacts)
-    report.update(
-        {
-            "cuda_available": True,
-            "device": t.cuda.get_device_name(),
-            "gpu_name": t.cuda.get_device_name(),
-            "torch_version": t.__version__,
-            "cuda_version": t.version.cuda,
-            "within_vram_budget": artifacts.metrics["peak_vram_gb"] <= max_vram_gb,
-        }
-    )
-    return report
-
-
-def run_full_experiment(max_vram_gb: float = 24.0) -> dict[str, Any]:
-    return run_gpu_test(max_vram_gb=max_vram_gb)
-
-
-def save_report(report: dict[str, Any], path: str | Path) -> None:
-    Path(path).write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
 
 # %%
