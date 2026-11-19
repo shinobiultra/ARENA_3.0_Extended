@@ -201,7 +201,7 @@ Replicating on another model, harmfulness versus refusal, defences that target t
 r'''
 ## Setup code
 
-SETUP_LINE_PLACEHOLDER
+The whole lesson, quiz included, runs in about 5½ minutes on a laptop RTX 5090 and peaked at about 7 GB of GPU memory. It needs about 4 GB of GPU memory at least, and it works on CPU, but the generation sweeps are slow there (we haven't timed it). The downloads are Qwen2.5-0.5B-Instruct (about 1 GB), a small parquet file of prompts and 100 Pile documents. The saved outputs and figures below were produced on a CUDA GPU.
 '''
 
 # ! CELL TYPE: code
@@ -792,17 +792,17 @@ print("train activations (layer, prompt, position, d_model):", tuple(acts["harmf
 r'''
 ## The difference-of-means direction
 
-Here is the idea behind the whole section, with toy numbers first. Give each prompt two coordinates. Two harmful prompts sit at $(1, 0)$ and $(3, 2)$, so their mean is $(2, 1)$. One harmless prompt sits at $(0, 1)$, so its mean is $(0, 1)$. Subtract the means: $(2, 1) - (0, 1) = [2, 0]$. That arrow points from "typical harmless" to "typical harmful", and it ignores everything the two groups share (here, the second coordinate). In the model the points have 896 coordinates, but the arithmetic is the same.
+Here is the idea behind the whole section, with toy numbers first. Give each prompt two coordinates. Two harmful prompts sit at $(1, 0)$ and $(3, 2)$, with mean $(2, 1)$; one harmless prompt sits at $(0, 1)$. Subtract the means: $(2, 1) - (0, 1) = [2, 0]$. That arrow points from "typical harmless" to "typical harmful" and ignores what the two groups share (here, the second coordinate). In the model the points have 896 coordinates, but the arithmetic is the same.
 
-Two things to remember. The arrow isn't scaled to length one: its length is the gap between the class means, which we'll need when we *add* it later. And it is only as good as the prompts you average: anything that differs between your two groups (topic, phrasing) ends up in it too. You build this function once, here, and the later sections of this chapter reuse it.
+Two things to remember. The arrow isn't scaled to length one: its length is the gap between the class means, which we need when we *add* it later. And anything that differs between your two groups (topic, phrasing) ends up in it too.
 
-In symbols: let $\mu^{\ell, i}_{\text{harmful}}$ be the average residual stream over harmful training prompts at layer $\ell$ and (post-instruction) position $i$, and $\mu^{\ell, i}_{\text{harmless}}$ the same for harmless ones. Then
+At layer $\ell$ and position $i$ it is
 
 $$
-r^{\ell, i} = \mu^{\ell, i}_{\text{harmful}} - \mu^{\ell, i}_{\text{harmless}}.
+r^{\ell, i} = \mu^{\ell, i}_{\text{harmful}} - \mu^{\ell, i}_{\text{harmless}},
 $$
 
-When we need a unit vector we write $\hat r = r / \|r\|$.
+with the means taken over training prompts. We write $\hat r = r / \|r\|$ for the unit vector.
 '''
 
 # ! CELL TYPE: markdown
@@ -2451,8 +2451,8 @@ r'''
 <summary>Help - how should I interpret this?</summary>
 
 Hooks and the weight edit agree on all six printed metrics. Harmful refusal falls from 0.850 to 0, alarming-sounding harmless refusal from 0.200 to 0, and ordinary harmless refusal
-stays 0.025. There is a measurable cost: simple-task accuracy falls from 0.891 to 0.844, Pile loss rises from 2.851 to 3.067 nats, and harmless next-token KL is 0.087. Random edits
-cost less on average; shuffled edits are variable and in this three-draw sample reduce refusal too, with larger KL (0.271) and simple-task cost. Neither the target nor the shuffled
+stays 0.025. There is a measurable cost: simple-task accuracy falls from 0.891 to 0.844, Pile loss rises from 2.851 to 3.067 nats, and harmless next-token KL is 0.087. Over the six shared draws, random edits
+cost little (Pile loss 2.866, KL 0.024), while label-shuffled edits reduce harmful refusal on average (0.646, range 0.025 to 0.875) and cost more (Pile loss 2.984, range 2.909 to 3.167; KL 0.241, range 0.127 to 0.458). The worst shuffled draws cost more than the refusal-direction edit itself (Pile loss 3.167 against 3.067, KL 0.458 against 0.087). Neither the target nor the shuffled
 comparison is a cost-free switch.
 </details>
 
@@ -2460,7 +2460,7 @@ comparison is a cost-free switch.
 <summary>Question - what do these measurements not show?</summary>
 
 These are narrow, small-sample checks on one model. They do not measure general reasoning, multilingual ability, long conversations, deployment safety, or whether unshown harmful
-outputs actually carry out the request. Loss and KL measure distribution changes, not their acceptability. The three control draws are descriptive comparisons, not a precise
+outputs actually carry out the request. Loss and KL measure distribution changes, not their acceptability. The six control draws are descriptive comparisons, not a precise
 estimate of every possible random or shuffled edit.
 </details>
 
@@ -3408,8 +3408,7 @@ r'''
 <summary>Help - how should I interpret this?</summary>
 
 At the selected layer, harmless-only LAT reads well (AUROC 0.989) and addition induces 95% harmless refusal, despite cosine only 0.449 with the supervised direction. But ablating
-it removes -0.075 refusal: the harmful refusal rate rises from 0.850 to 0.925. The supervised direction, dataset LAT and logistic probe each remove 0.850. The random and shuffled
-single draws also remove some refusal (0.250 and 0.200), while inducing none beyond the baseline. Reading, sufficiency under addition, and necessity under this ablation are
+it removes -0.075 refusal: the harmful refusal rate rises from 0.850 to 0.925. The supervised direction, dataset LAT and logistic probe each remove 0.850. Over the six shared draws, random vectors remove 0.05 on average (range -0.05 to 0.25) and induce 0.04 (0.03 to 0.10), while label-shuffled vectors remove 0.20 (-0.02 to 0.83) and induce 0.18 (0.00 to 0.57): some shuffled draws overlap the target effect. Reading, sufficiency under addition, and necessity under this ablation are
 separate measurements.
 </details>
 
@@ -3718,7 +3717,7 @@ r'''
 
 | a | b | c | d | e |
 |---|---|---|---|---|
-| TBD | TBD | TBD | TBD | TBD |
+| below 0.25 | 0.25 to 0.55 | 0.55 to 0.80 | 0.80 to 0.95 | above 0.95 |
 '''
 
 # ! CELL TYPE: markdown
@@ -3743,7 +3742,7 @@ r'''
 
 | a | b | c | d | e |
 |---|---|---|---|---|
-| TBD | TBD | TBD | TBD | TBD |
+| below 0.10 | 0.10 to 0.35 | 0.35 to 0.60 | 0.60 to 0.80 | above 0.80 |
 '''
 
 # ! CELL TYPE: markdown
@@ -3764,7 +3763,7 @@ r'''
           rate = utils.refusal_rate(model, tokenizer, harmless_test, is_refusal).rate
 ```
 
-**Rank the four runs by the harmless refusal they induce, from lowest to highest, writing `=` for runs within 0.05 of each other.** For example `L20 < L6 = L10 < L14`. The runs are `L6`, `L10`, `L14` and `L20`.
+**Rank the four runs by the harmless refusal they induce, from lowest to highest, writing `=` for runs within 0.06 of each other (two prompts out of 40 is 0.05).** For example `L20 < L6 = L10 < L14`. The runs are `L6`, `L10`, `L14` and `L20`.
 '''
 
 # ! CELL TYPE: markdown
@@ -3787,7 +3786,7 @@ r'''
 
 | a | b | c | d | e |
 |---|---|---|---|---|
-| TBD | TBD | TBD | TBD | TBD |
+| below 0.05 nats | 0.05 to 0.15 | 0.15 to 0.30 | 0.30 to 0.60 | above 0.60 nats |
 '''
 
 # ! CELL TYPE: markdown
@@ -3811,7 +3810,7 @@ r'''
 
 | a | b | c | d | e |
 |---|---|---|---|---|
-| TBD | TBD | TBD | TBD | TBD |
+| below 0.05 | 0.05 to 0.25 | 0.25 to 0.50 | 0.50 to 0.75 | above 0.75 |
 '''
 
 # ! CELL TYPE: markdown
@@ -3860,11 +3859,11 @@ Now the key, and your score. (The key is written out in the cell below. If you'd
 # ! TAGS: [main]
 
 quiz = Quiz({
-    "Q1": Interval("c", points=3),
-    "Q2": Interval("c", points=4),
-    "Q3": Ranking("L6 < L10 < L14 < L20"),
-    "Q4": Interval("c", points=4),
-    "Q5": Interval("c", points=5),
+    "Q1": Interval("e", points=3),
+    "Q2": Interval("d", points=4),
+    "Q3": Ranking("L6 = L20 = L10 < L14"),
+    "Q4": Interval("d", points=4),
+    "Q5": Interval("a", points=5),
 })
 quiz.score(my_answers)
 
@@ -3875,7 +3874,65 @@ quiz.score(my_answers)
 r'''
 ## Reveal
 
-REVEALS_TBD
+<details>
+<summary>Reveal - Q1: questions about the assistant</summary>
+
+With the direction added at c = 1, **32 of the 32** questions about the assistant are flagged as refusals (1.000). Unedited, it was also 32 of 32 (1.000).
+
+**Answer: e.**
+
+**The mental model.** In Part 1 you saw that the unedited model already opens its answer to these questions with a disclaimer ("As an AI, I don't have..."), and the rubric counts disclaimers as refusals, so the rate starts at the ceiling. Adding a direction that pushes towards refusal can't lower a rate that is already 100%. The direction mattered on the harmless test prompts because they started at 3%. We didn't read the 32 completions, so we can't say whether the edit changed *how* the model declines.
+
+If you chose a to d, you expected the direction to push these prompts somewhere new. You may have been thinking of Part 4, where the can't-do and about-the-assistant directions were different from the unsafe one, but that was about which direction *removes* a disclaimer, not about adding one to a prompt that already gets it.
+</details>
+
+<details>
+<summary>Reveal - Q2: a direction from an earlier layer</summary>
+
+Ablating the layer-10 direction at full strength leaves a harmful refusal rate of **0.675** (27 of 40). The layer-14 direction leaves 0.000 and the unedited model 0.850.
+
+**Answer: d.**
+
+**The mental model.** Every direction in your sweep table that removed refusal well came from layer 11 or later, and the eight best candidates ran from layer 11 to layer 18. A difference of means is computed layer by layer, and the layer-10 line isn't the one the model's refusal later reads from: ablating it takes away about a fifth of the refusals (0.850 to 0.675) and no more. Because ablation is applied at every layer, it is tempting to think any direction that reads well would work, but Part 1 showed that reading well isn't causing.
+
+If you chose a, b or c, you expected an earlier layer to work about as well as layer 14. If you chose e, you expected it to do nothing, but about a fifth of the refusals did go.
+</details>
+
+<details>
+<summary>Reveal - Q3: four layers, one coefficient</summary>
+
+Harmless refusal induced by adding each layer's direction at its own layer with c = 1: **L6 0.025, L10 0.075, L14 0.875, L20 0.025.** With a tie at 0.06, the ranking is **L6 = L20 = L10 < L14**. (L10 sits two prompts above L6 and L20, which is inside the tie.)
+
+**Answer: L6 = L20 = L10 < L14.**
+
+**The mental model.** Your Part 2 sweep selected layer 14 partly because adding its direction at c = 1 raised the harmless refusal score; the same sweep rejected late layers because their directions mostly encode the output token. The direction's length grows with depth (the position -1 norms printed in Part 1 grow from 1.0 at layer 9 to 15.0 at layer 21), so c = 1 means a very different push at different layers. Only layer 14 is both large enough and the right kind of direction to flip the model. A plausible reading is that layers 6 and 10 are too weak and layer 20 is too late to steer, but we didn't test why.
+
+If you ranked L20 or L10 above L6 by more than a tie, you expected the effect to grow smoothly with depth. If you put L14 below any of them, you expected the selected direction to be no better than its neighbours.
+</details>
+
+<details>
+<summary>Reveal - Q4: the direction the sweep rejected</summary>
+
+The Pile loss after orthogonalising with the layer-17 direction is 3.237 nats, a rise of **0.386** over the unedited 2.851. The layer-14 edit rose by 0.217.
+
+**Answer: d.**
+
+**The mental model.** The sweep rejected layer 17 for a reason: ablating it moved the next-token distribution on harmless prompts by a KL of 0.35, against 0.087 for the layer-14 direction. That is the cost the weight edit pays everywhere, not just on harmless chat prompts, and it shows up in the Pile loss as a rise nearly twice as large. The random-direction edits in Part 3 cost 0.015 nats on average, so a "meaningless" edit of the same form costs almost nothing. The best-ablating direction wasn't the best edit.
+
+If you chose a, b or c, you expected the rejected direction to cost about what the selected one did or less. If you chose e, you expected a large direction to wreck the model's language modelling, but the cost is under half a nat.
+</details>
+
+<details>
+<summary>Reveal - Q5: a direction from eight prompts per class</summary>
+
+Ablating a direction built from 8 prompts per class leaves a harmful refusal rate of **0.000, 0.000 and 0.000** for seeds 0, 1 and 2 (mean 0.000). The direction from 40 prompts per class also leaves 0.000.
+
+**Answer: a.**
+
+**The mental model.** Part 1 showed that the harmful and harmless prompts are almost perfectly separable at layer 14 (AUROC about 0.94 to 1.00 across layers 14 to 23), so the gap between the class means is large compared with the prompt-to-prompt noise, and a mean over 8 prompts already points about the same way as a mean over 40. The shuffled-label controls are a different failure: their labels are scrambled. We didn't measure the angle between the 8-prompt and 40-prompt directions, only what ablating them does, and three seeds on 40 test prompts is a small sample.
+
+If you chose c to e, you expected a direction from so little data to be fragile, as the shuffled controls were. If you chose b, you were close: one or two prompts out of 40 would have put the rate there.
+</details>
 '''
 
 # ! CELL TYPE: markdown
@@ -3931,7 +3988,7 @@ print(f"Q2: harmful refusal with the layer-10 direction ablated: {q2.rate:.3f} (
 # Q3: the direction from layers 6, 10, 14 and 20, each added at its own layer with c = 1
 q3 = {f"L{l}": run_with(activation_addition(model, directions[l, pos], l, coefficient=1.0), harmless_test).rate for l in [6, 10, 14, 20]}
 print(f"Q3: harmless refusal induced at c=1: {q3}")
-print(f"    gaps to the 0.05 tie edge: {sorted(round(abs(abs(a - b) - 0.05), 3) for a in q3.values() for b in q3.values() if a < b)}")
+print(f"    gaps to the 0.06 tie edge: {sorted(round(abs(abs(a - b) - 0.06), 3) for a in q3.values() for b in q3.values() if a < b)}")
 
 # Q4: orthogonalise the weights with the rejected layer-17 direction
 edited_17 = copy.deepcopy(model)
@@ -3966,12 +4023,12 @@ utils.plot_quiz_runs([
 ])
 
 # The written key must match what these runs produced.
-EDGES = {"Q1": [0.0, 0.0, 0.0, 0.0], "Q2": [0.0, 0.0, 0.0, 0.0], "Q4": [0.0, 0.0, 0.0, 0.0], "Q5": [0.0, 0.0, 0.0, 0.0]}
+EDGES = {"Q1": [0.25, 0.55, 0.80, 0.95], "Q2": [0.10, 0.35, 0.60, 0.80], "Q4": [0.05, 0.15, 0.30, 0.60], "Q5": [0.05, 0.25, 0.50, 0.75]}
 measured = {"Q1": q1.rate, "Q2": q2.rate, "Q4": q4_rise, "Q5": q5_mean}
 for name, value in measured.items():
     letter = interval_of(value, EDGES[name])
     assert quiz.questions[name].key == letter, f"{name}: the key says {quiz.questions[name].key}, but {value:.3f} falls in interval {letter}"
-q3_key = Ranking.from_values({name: rate for name, rate in q3.items()}, eps=0.05).key_text
+q3_key = Ranking.from_values({name: rate for name, rate in q3.items()}, eps=0.06).key_text
 assert quiz.questions["Q3"].key_text == q3_key, f"Q3: the key says {quiz.questions['Q3'].key_text}, but the runs give {q3_key}"
 print("The key matches the runs:", {name: quiz.questions[name].key for name in measured}, "and Q3:", q3_key)
 
@@ -3991,12 +4048,16 @@ r'''
 <details>
 <summary>Help - how should I read this figure?</summary>
 
-QUIZ_FIGURE_HELP_TBD
+One panel per question, with every key run on it. **Q1:** the unedited rate on the questions about the assistant and the rate with the direction added are both 1.00. **Q2:** ablating the layer-10 direction (orange) leaves most of the unedited 0.85 in place, while the layer-14 direction takes it to 0. **Q3:** only the layer-14 direction induces refusal on harmless prompts; the three orange bars sit near the floor. **Q4:** the layer-17 edit raises the Pile loss by 0.386 nats, against 0.217 for the layer-14 edit. **Q5:** the directions built from 8 prompts per class (orange, one bar per seed and their mean) all leave 0, the same as the direction built from 40.
 </details>
 
 ## What this quiz tested
 
-QUIZ_TESTED_TBD
+- **A rate at its ceiling can't rise** (Q1). The unedited model already refuses every question about itself, so adding a refusal direction changes nothing the rubric can see.
+- **Where a direction comes from matters** (Q2). The layer-10 difference of means removes only about a fifth of the refusals that the layer-14 one removes entirely.
+- **Addition needs the right layer and the right size** (Q3). Only one of four layers' directions induces refusal at c = 1.
+- **The best ablation isn't the cheapest edit** (Q4). The direction the sweep rejected on KL costs nearly twice as much language-modelling loss.
+- **A difference of means needs little data when the classes are far apart** (Q5). Eight prompts per class already give a working direction.
 '''
 
 # ! CELL TYPE: markdown

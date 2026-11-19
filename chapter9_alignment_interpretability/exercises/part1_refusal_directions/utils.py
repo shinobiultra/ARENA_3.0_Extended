@@ -44,7 +44,7 @@ def load_refusal_prompts(seed: int = 0, splits: tuple[int, int, int] = (40, 20, 
     We use the first 100 of each, shuffle them with a fixed seed, and cut them into train / validation / test splits of
     sizes `splits` (default 40 / 20 / 40). Returns `{"harmful": {"train": [...], "val": [...], "test": [...]}, "harmless": {...}}`.
     """
-    path = hf_hub_download("josephmayo/refusal-compliance-pairs", "data/train-00000-of-00001.parquet", repo_type="dataset")
+    path = hf_hub_download("josephmayo/refusal-compliance-pairs", "data/train-00000-of-00001.parquet", repo_type="dataset", revision=REFUSAL_DATA_REVISION)
     df = pd.read_parquet(path)
     columns = {"harmful": df[df["label"] == "refusal"]["prompt"].tolist()[:100], "harmless": df[df["label"] == "compliance"]["prompt"].tolist()[:100]}
     rng = np.random.default_rng(seed)
@@ -187,11 +187,16 @@ def _normalise_answer(text: str) -> str:
 # --------------------------------------------------------------------------------------------------------------
 
 
+QWEN_REVISION = "7ae557604adf67be50417f59c2c2f167def9a775"
+REFUSAL_DATA_REVISION = "b6ed3432f1d4a695e13be1c373bf7fb5af43f376"
+PILE_REVISION = "127bfedcd5047750df5ccf3a12979a47bfa0bafa"
+
+
 def load_chat_model(device: t.device, dtype: t.dtype = t.float32):
     """Loads Qwen2.5-0.5B-Instruct and its tokenizer (left-padded, so that position -1 is always the last real token)."""
-    tokenizer = AutoTokenizer.from_pretrained("Qwen/Qwen2.5-0.5B-Instruct")
+    tokenizer = AutoTokenizer.from_pretrained("Qwen/Qwen2.5-0.5B-Instruct", revision=QWEN_REVISION)
     tokenizer.padding_side = "left"
-    model = AutoModelForCausalLM.from_pretrained("Qwen/Qwen2.5-0.5B-Instruct", dtype=dtype).to(device).eval()
+    model = AutoModelForCausalLM.from_pretrained("Qwen/Qwen2.5-0.5B-Instruct", revision=QWEN_REVISION, dtype=dtype).to(device).eval()
     model.requires_grad_(False)
     return model, tokenizer
 
@@ -297,7 +302,7 @@ def load_pile_snippets(tokenizer, n: int = 100, length: int = 128) -> Tensor:
     The first `n` documents of `NeelNanda/pile-10k` (equivalent to `load_dataset("NeelNanda/pile-10k")`) that are at least `length`
     tokens long, truncated to exactly `length` tokens. Plain text, with no chat template: shape (n, length).
     """
-    path = hf_hub_download("NeelNanda/pile-10k", "data/train-00000-of-00001-4746b8785c874cc7.parquet", repo_type="dataset")
+    path = hf_hub_download("NeelNanda/pile-10k", "data/train-00000-of-00001-4746b8785c874cc7.parquet", repo_type="dataset", revision=PILE_REVISION)
     rows = []
     for text in pd.read_parquet(path)["text"]:
         ids = tokenizer.encode(text, add_special_tokens=False)

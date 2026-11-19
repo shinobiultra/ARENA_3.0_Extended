@@ -1103,11 +1103,11 @@ if MAIN:
 
 if MAIN:
     quiz = Quiz({
-        "Q1": Interval("c", points=3),
-        "Q2": Interval("c", points=4),
-        "Q3": Ranking("L6 < L10 < L14 < L20"),
-        "Q4": Interval("c", points=4),
-        "Q5": Interval("c", points=5),
+        "Q1": Interval("e", points=3),
+        "Q2": Interval("d", points=4),
+        "Q3": Ranking("L6 = L20 = L10 < L14"),
+        "Q4": Interval("d", points=4),
+        "Q5": Interval("a", points=5),
     })
     quiz.score(my_answers)
 
@@ -1138,7 +1138,7 @@ if MAIN:
     # Q3: the direction from layers 6, 10, 14 and 20, each added at its own layer with c = 1
     q3 = {f"L{l}": run_with(activation_addition(model, directions[l, pos], l, coefficient=1.0), harmless_test).rate for l in [6, 10, 14, 20]}
     print(f"Q3: harmless refusal induced at c=1: {q3}")
-    print(f"    gaps to the 0.05 tie edge: {sorted(round(abs(abs(a - b) - 0.05), 3) for a in q3.values() for b in q3.values() if a < b)}")
+    print(f"    gaps to the 0.06 tie edge: {sorted(round(abs(abs(a - b) - 0.06), 3) for a in q3.values() for b in q3.values() if a < b)}")
     
     # Q4: orthogonalise the weights with the rejected layer-17 direction
     edited_17 = copy.deepcopy(model)
@@ -1173,12 +1173,12 @@ if MAIN:
     ])
     
     # The written key must match what these runs produced.
-    EDGES = {"Q1": [0.0, 0.0, 0.0, 0.0], "Q2": [0.0, 0.0, 0.0, 0.0], "Q4": [0.0, 0.0, 0.0, 0.0], "Q5": [0.0, 0.0, 0.0, 0.0]}
+    EDGES = {"Q1": [0.25, 0.55, 0.80, 0.95], "Q2": [0.10, 0.35, 0.60, 0.80], "Q4": [0.05, 0.15, 0.30, 0.60], "Q5": [0.05, 0.25, 0.50, 0.75]}
     measured = {"Q1": q1.rate, "Q2": q2.rate, "Q4": q4_rise, "Q5": q5_mean}
     for name, value in measured.items():
         letter = interval_of(value, EDGES[name])
         assert quiz.questions[name].key == letter, f"{name}: the key says {quiz.questions[name].key}, but {value:.3f} falls in interval {letter}"
-    q3_key = Ranking.from_values({name: rate for name, rate in q3.items()}, eps=0.05).key_text
+    q3_key = Ranking.from_values({name: rate for name, rate in q3.items()}, eps=0.06).key_text
     assert quiz.questions["Q3"].key_text == q3_key, f"Q3: the key says {quiz.questions['Q3'].key_text}, but the runs give {q3_key}"
     print("The key matches the runs:", {name: quiz.questions[name].key for name in measured}, "and Q3:", q3_key)
 
