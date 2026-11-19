@@ -30,7 +30,6 @@ from __future__ import annotations
 import argparse
 import base64
 import fnmatch
-import math
 import os
 import re
 import sys
@@ -215,13 +214,20 @@ def execute(path: Path, deadline: float) -> tuple[nbformat.NotebookNode, float]:
 
     if time.monotonic() >= deadline:
         raise LessonTimeout(f"{path.name}: the time limit was used up before the kernel started")
+
+    def time_left(cell: nbformat.NotebookNode) -> float:
+        """Each cell may run only for the time left; no cell starts after the deadline."""
+        left = deadline - time.monotonic()
+        if left <= 0:  # nbclient would read 0 or less as "no timeout"
+            raise LessonTimeout(f"{path.name}: the time limit ran out before the next cell")
+        return left
+
     nb = nbformat.read(path, as_version=4)
     # A non-interactive MPLBACKEND (e.g. Agg, set on clusters) would stop the kernel from rendering figures inline
     os.environ.pop("MPLBACKEND", None)
     client = NotebookClient(
         nb,
-        # nbclient treats 0 as "no timeout", so a cell always gets at least one second.
-        timeout_func=lambda cell: max(1, math.ceil(deadline - time.monotonic())),
+        timeout_func=time_left,
         kernel_name="python3",
         resources={"metadata": {"path": str(path.parent)}},
         allow_errors=False,
@@ -232,7 +238,7 @@ def execute(path: Path, deadline: float) -> tuple[nbformat.NotebookNode, float]:
     failed = path.with_name(path.stem + ".FAILED.ipynb")
     try:
         client.execute()
-    except CellTimeoutError as error:
+    except (CellTimeoutError, LessonTimeout) as error:
         nbformat.write(nb, failed)
         print(f"\nTimed out. Partially executed notebook saved to {failed}")
         raise LessonTimeout(

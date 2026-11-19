@@ -200,3 +200,13 @@ def test_a_slurm_hiccup_is_not_mistaken_for_a_lost_worker(cluster):
     threading.Thread(target=play_worker, args=(cluster, ".done", "ok\n")).start()
     out = finish(proc)
     assert proc.returncode == 0, out
+
+
+def test_a_request_abandoned_by_a_replacement_worker_stops_the_wait(cluster):
+    cluster.worker("RUNNING")
+    proc = cluster.start()
+    req = cluster.wait_for_request()
+    req.rename(req.with_suffix(".abandoned"))
+    out = finish(proc, seconds=10)
+    assert proc.returncode == 2, out
+    assert "abandoned" in out

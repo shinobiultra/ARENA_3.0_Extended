@@ -62,6 +62,8 @@ def outcome(queue: Path, request_id: str) -> int | None:
         return DONE
     if (queue / f"{request_id}.failed").exists():
         return FAILED
+    if (queue / f"{request_id}.abandoned").exists():  # e.g. by a replacement worker
+        return WORKER_GONE
     return None
 
 
@@ -118,7 +120,10 @@ def run(section: str, queue: Path, runs: Path, poll: float) -> int:
     queue.mkdir(parents=True, exist_ok=True)
     request_id = f"{section}-{int(time.time())}-{os.getpid()}"
     request = queue / f"{request_id}.req"
-    request.write_text(f"{section} {job}\n")
+    # Write under another name first, so the worker never reads a half-written request.
+    partial = queue / f"{request_id}.partial"
+    partial.write_text(f"{section} {job}\n")
+    partial.rename(request)
     print(f"queued {request_id} for worker job {job} ({state})", flush=True)
 
     finished = False
@@ -136,6 +141,11 @@ def run(section: str, queue: Path, runs: Path, poll: float) -> int:
                     finished = True
                     report_lost_worker(queue, runs, request_id, job)
                     return WORKER_GONE
+            if result == WORKER_GONE:
+                finished = True
+                print(f"{request_id} was abandoned before it finished (a new worker started?)")
+                print(tail(queue / f"{request_id}.log"), flush=True)
+                return result
             if result is not None:
                 finished = True
                 word = "done" if result == DONE else "failed"

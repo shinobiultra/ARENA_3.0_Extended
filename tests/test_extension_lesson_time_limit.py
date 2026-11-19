@@ -93,3 +93,15 @@ def test_failed_notebooks_stay_out_of_commits():
     sample = "chapter7_activation_to_language/exercises/part1_x/7.1_Lesson_solutions.FAILED.ipynb"
     result = subprocess.run(["git", "check-ignore", "-q", sample], cwd=ROOT, check=False)
     assert result.returncode == 0, f"{sample} is not ignored by git"
+
+
+def test_fast_cells_after_the_deadline_do_not_extend_the_run(tmp_path):
+    path = notebook(
+        tmp_path / "lesson_solutions.ipynb",
+        "import time\ntime.sleep(4)",
+        *["time.sleep(0.5)"] * 12,
+    )
+    start = time.monotonic()
+    with pytest.raises(build.LessonTimeout):
+        build.execute(path, deadline=start + 5)
+    assert time.monotonic() - start < 9

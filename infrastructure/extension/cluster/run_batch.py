@@ -38,11 +38,30 @@ KILL_GRACE_S = 60
 TIMEOUT_STATUS = "FAILED(timeout)"
 
 
+# Process groups of the builds now running, so a terminated runner can take them down too.
+_active_builds: set[int] = set()
+_active_lock = threading.Lock()
+
+
 def kill_process_group(pgid: int) -> None:
     try:
         os.killpg(pgid, signal.SIGKILL)
     except ProcessLookupError:
         pass
+
+
+def stop_builds_on_termination() -> None:
+    """On SIGTERM or SIGHUP (scancel, a Slurm time limit, a closed terminal), kill the running
+    builds' process groups before exiting; builds run in their own sessions, so nothing else would."""
+
+    def stop(signum: int, _frame: object) -> None:
+        with _active_lock:
+            for pgid in _active_builds:
+                kill_process_group(pgid)
+        os._exit(128 + signum)
+
+    for signum in (signal.SIGTERM, signal.SIGHUP):
+        signal.signal(signum, stop)
 
 
 def run_lesson(
@@ -81,6 +100,8 @@ def run_lesson(
         except BaseException:
             traceback.print_exc(file=f)
             raise
+        with _active_lock:
+            _active_builds.add(proc.pid)
         try:
             returncode = proc.wait(timeout=time_limit + kill_grace)
         except subprocess.TimeoutExpired:
@@ -90,6 +111,8 @@ def run_lesson(
             return TIMEOUT_STATUS
         finally:
             kill_process_group(proc.pid)
+            with _active_lock:
+                _active_builds.discard(proc.pid)
     if returncode == 0:
         return "ok"
     if returncode == TIMEOUT_EXIT_CODE:
@@ -156,6 +179,7 @@ def main() -> int:
     )
     parser.add_argument("--kill-grace", type=float, default=KILL_GRACE_S, help=argparse.SUPPRESS)
     args = parser.parse_args()
+    stop_builds_on_termination()
 
     expected = {k: float(v) for k, v in (item.split("=") for item in args.order)}
     sections = sorted(args.sections, key=lambda s: -expected.get(s, 5.0))

@@ -22,6 +22,9 @@ import sys
 print('fixture build', sys.argv[1:], flush=True)
 if sys.argv[1] == 'bad':
     raise SystemExit(7)
+if sys.argv[1] == 'slow':
+    import time
+    time.sleep(1.5)
 if sys.argv[1] == 'overrun':
     print('TIMEOUT: overrun ran past its time limit', flush=True)
     raise SystemExit(124)
@@ -145,3 +148,13 @@ def test_the_default_idle_exit_is_thirty_minutes():
         check=True,
     ).stdout
     assert "1800" in out
+
+
+def test_a_build_whose_request_is_moved_away_does_not_hold_the_worker(tmp_path):
+    proc, queue = start_worker(tmp_path, idle_exit=1.5)
+    request(queue, "moved", "slow")
+    assert wait_for(queue / "moved.running"), finish(proc)
+    (queue / "moved.running").rename(queue / "moved.abandoned")
+    out = finish(proc)
+    assert proc.returncode == 0, out
+    assert "idle" in out

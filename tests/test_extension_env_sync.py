@@ -25,6 +25,7 @@ case "$1" in
         mkdir -p .venv/bin && touch .venv/bin/python ;;
 esac
 """
+FAKE_SQUEUE = '#!/bin/sh\nprintf "%b" "$FAKE_SQUEUE_NAMES"\n'
 FAKE_ALLOCATOR = '#!/bin/sh\necho "$(basename "$0") $*" >> "$FAKE_CALLS"\n'
 
 
@@ -45,6 +46,7 @@ class Julia:
         self.uv.write_text(FAKE_UV)
         for name in ("srun", "salloc", "sbatch"):
             (bin_dir / name).write_text(FAKE_ALLOCATOR)
+        (bin_dir / "squeue").write_text(FAKE_SQUEUE)
         for tool in bin_dir.iterdir():
             tool.chmod(0o755)
         self.env = {
@@ -52,6 +54,7 @@ class Julia:
             "PATH": f"{bin_dir}{os.pathsep}{os.environ['PATH']}",
             "FAKE_CALLS": str(self.calls),
             "FAKE_UV_VERSION": UV_VERSION,
+            "FAKE_SQUEUE_NAMES": "",
         }
 
     def copy_lock(self, text: str) -> str:
@@ -127,16 +130,16 @@ def test_copying_the_lock_alone_does_not_count_as_a_sync(julia):
     assert len(julia.syncs()) == 1
 
 
-def test_a_failed_sync_stops_and_records_nothing(julia):
+def test_a_failed_sync_stops_and_forgets_the_last_synced_lock(julia):
     old = julia.copy_lock("lock v1")
     julia.state.write_text(old + "\n")
     new = julia.copy_lock("lock v2")
     result = julia.sync(new, FAKE_UV_SYNC_FAIL="1")
     assert result.returncode != 0
     assert "sync failed" in result.stdout + result.stderr
-    assert julia.state.read_text().strip() == old
-    assert julia.sync(new).returncode == 0, "the next attempt must sync again"
-    assert len(julia.syncs()) == 2
+    assert not julia.state.exists(), "a half-done sync must not leave the old lock recorded"
+    assert julia.sync(julia.copy_lock("lock v1")).returncode == 0
+    assert len(julia.syncs()) == 2, "going back to the old lock must sync again"
 
 
 def test_a_lock_that_did_not_arrive_is_not_synced(julia):
@@ -151,11 +154,27 @@ def test_a_lock_that_did_not_arrive_is_not_synced(julia):
 def test_a_running_build_is_never_synced_under(julia):
     digest = julia.copy_lock("lock v1")
     (julia.queue / "8.4-1-1.running").write_text("8.4 777\n")
-    result = julia.sync(digest)
+    result = julia.sync(digest, FAKE_SQUEUE_NAMES="arena-worker\n")
     assert result.returncode != 0
     assert "running" in result.stdout + result.stderr
     assert julia.syncs() == []
     assert not julia.state.exists()
+
+
+def test_a_running_batch_job_is_never_synced_under(julia):
+    digest = julia.copy_lock("lock v1")
+    result = julia.sync(digest, FAKE_SQUEUE_NAMES="arena-ext\n")
+    assert result.returncode != 0
+    assert "arena-ext" in result.stdout + result.stderr
+    assert julia.syncs() == []
+
+
+def test_a_build_left_by_a_lost_worker_does_not_block_the_sync(julia):
+    digest = julia.copy_lock("lock v1")
+    (julia.queue / "8.4-1-1.running").write_text("8.4 777\n")
+    result = julia.sync(digest)
+    assert result.returncode == 0, result.stdout + result.stderr
+    assert len(julia.syncs()) == 1
 
 
 def test_julia_uv_is_brought_to_the_laptop_version_first(julia):

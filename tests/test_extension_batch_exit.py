@@ -147,3 +147,28 @@ def test_worker_termination_preserves_completed_successes(tmp_path):
     }
     assert "1 ok, 2 failed" in result.stdout
     assert "fixture build" in (out / "good.log").read_text()
+
+
+def test_a_terminated_runner_takes_its_running_build_down_with_it(tmp_path):
+    cluster = tmp_path / "infrastructure/extension/cluster"
+    cluster.mkdir(parents=True)
+    shutil.copyfile(CLUSTER / "run_batch.py", cluster / "run_batch.py")
+    (cluster.parent / "build.py").write_text(FIXTURE_BUILD)
+    pids = tmp_path / "pids.txt"
+    runner = subprocess.Popen(
+        [sys.executable, str(cluster / "run_batch.py"), "hang", "--out", str(tmp_path / "out")],
+        env={**os.environ, "CUDA_VISIBLE_DEVICES": "fixture-gpu", "FIXTURE_PIDS": str(pids)},
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL,
+    )
+    deadline = time.monotonic() + 20
+    while not (pids.exists() and pids.read_text()) and time.monotonic() < deadline:
+        time.sleep(0.05)
+    runner.terminate()
+    assert runner.wait(timeout=20) != 0
+    time.sleep(0.5)
+    for pid in map(int, pids.read_text().split()):
+        status = Path(f"/proc/{pid}/status")
+        assert not status.exists() or "\nState:\tZ" in status.read_text(), (
+            f"process {pid} outlived the terminated runner"
+        )

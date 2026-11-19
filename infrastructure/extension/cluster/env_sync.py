@@ -15,8 +15,10 @@ counts as a sync. A stale environment is synced on the login node, with no GPU a
 2. The Python minor in `.python-version` is installed at its latest patch.
 3. `uv sync --locked`, without the optional `cuda-kernels` extra (it is laptop-only).
 
-Any failure exits nonzero, so the caller queues or submits nothing. A sync is refused while a
-build is running, since it would change packages under that build.
+Any failure exits nonzero, so the caller queues or submits nothing. A sync is refused while the
+worker is running a build or an arena-ext batch job is running, since it would change packages
+under them. The recorded digest is removed before syncing, so a sync that fails partway leaves
+no lock counted as synced.
 """
 
 from __future__ import annotations
@@ -50,6 +52,23 @@ def uv_version(uv: str) -> str:
     return out.split()[1]
 
 
+def running_jobs() -> set[str]:
+    """Names of this user's running Slurm jobs; refuses to guess when Slurm can't be asked."""
+    try:
+        result = subprocess.run(
+            ["squeue", "--me", "-h", "-t", "RUNNING", "-o", "%j"],
+            capture_output=True,
+            text=True,
+            check=False,
+            timeout=60,
+        )
+    except (OSError, subprocess.TimeoutExpired) as error:
+        raise SyncError(f"cannot ask Slurm which jobs are running: {error}") from error
+    if result.returncode != 0:
+        raise SyncError(f"cannot ask Slurm which jobs are running: {result.stderr.strip()}")
+    return set(result.stdout.split())
+
+
 def sync(repo: Path, state: Path, queue: Path, expected: str, uv: str, wanted_uv: str) -> str:
     """Bring Julia's environment to the lock with digest `expected`; return what was done."""
     copied = digest(repo / "uv.lock")
@@ -61,11 +80,16 @@ def sync(repo: Path, state: Path, queue: Path, expected: str, uv: str, wanted_uv
     synced = state.read_text().strip() if state.exists() else None
     if synced == expected and (repo / ".venv" / "bin" / "python").exists():
         return f"Julia's environment matches lock {expected[:12]}"
+    jobs = running_jobs()
+    if "arena-ext" in jobs:
+        raise SyncError("an arena-ext batch job is running; sync after it finishes")
     running = sorted(path.stem for path in queue.glob("*.running"))
-    if running:
+    if running and "arena-worker" in jobs:
         raise SyncError(
             f"builds are running on the worker ({', '.join(running)}); sync after they finish"
         )
+    # From here the environment may be half-changed, so no lock counts as synced until this succeeds.
+    state.unlink(missing_ok=True)
 
     if uv_version(uv) != wanted_uv:
         run([uv, "self", "update", wanted_uv], cwd=repo)
