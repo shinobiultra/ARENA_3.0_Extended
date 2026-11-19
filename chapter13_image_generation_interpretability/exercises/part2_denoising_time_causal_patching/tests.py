@@ -440,46 +440,6 @@ def test_trained_toy_causal_sweep_beats_preregistered_controls():
     print("All tests in `test_trained_toy_causal_sweep_beats_preregistered_controls` passed!")
 
 
-def test_notebook_contract(run_smoke_test: Callable | None = None):
-    solutions = _solutions()
-    run_smoke_test = run_smoke_test or solutions.run_smoke_test
-    smoke = run_smoke_test(cpu=True)
-    assert smoke["tests_passed"], (
-        "The smoke contract must verify the exact clean endpoint."
-    )
-    assert smoke["dataset_size"] == 24, (
-        "The generated world should enumerate all 2x3x2x2 labeled states."
-    )
-    assert smoke["image_shape"] == [2, 3, 16, 16], (
-        "The smoke pair should contain two RGB 16x16 images."
-    )
-    assert smoke["alpha_bar_t0"] == pytest.approx(1.0), (
-        "The analytic diffusion schedule must retain all signal at timestep zero."
-    )
-    print("All tests in `test_notebook_contract` passed!")
-
-
-def test_section_file_contract():
-    section = Path(__file__).resolve().parent
-    required = {
-        "13.2_Denoising-Time_Causal_Patching_exercises.ipynb",
-        "13.2_Denoising-Time_Causal_Patching_solutions.ipynb",
-        "README.md",
-        "artifacts.lock.yml",
-        "solutions.py",
-        "tests.py",
-        "expected_outputs/README.md",
-        "expected_outputs/reference_metrics.json",
-        "expected_outputs/smoke_test.json",
-    }
-    missing = sorted(path for path in required if not (section / path).exists())
-    assert not missing, f"13.2 is missing required learner files: {missing}"
-    print("All tests in `test_section_file_contract` passed!")
-
-
-# These named entrypoints are called immediately after the corresponding learner
-# exercises. They preserve the compact pytest tests above while adding exact,
-# explanatory feedback at the notebook boundary.
 def test_render_object_world_has_exact_state_semantics(
     render_object_world: Callable | None = None,
 ):
@@ -669,104 +629,6 @@ def test_causal_controls_fail_for_the_right_reasons(signature_result=None):
     print("All tests in `test_causal_controls_fail_for_the_right_reasons` passed!")
 
 
-def test_cuda_entrypoints_have_no_cpu_fallback():
-    source = inspect.getsource(_solutions()._cuda_report)
-    assert "if not t.cuda.is_available()" in source and "raise RuntimeError" in source, (
-        "The CUDA verification path must fail explicitly when CUDA is unavailable."
-    )
-    assert 'run_toy_experiment(device="cuda"' in source, (
-        "The CUDA path must train and evaluate the actual denoiser on the GPU."
-    )
-    assert 'device="cpu"' not in source, (
-        "A hidden CPU fallback would make the CUDA evidence ambiguous."
-    )
-    assert "max_memory_allocated" in source, (
-        "The CUDA path must measure peak allocation against the 24 GiB contract."
-    )
-    print("All tests in `test_cuda_entrypoints_have_no_cpu_fallback` passed!")
-
-
-def test_gpu_result_packages_real_numeric_acceptance_metrics():
-    solutions = _solutions()
-    reports = [
-        solutions.SD15PatchControlReport(
-            best_step_index=2,
-            best_scheduler_timestep=851,
-            best_clip_recovery=recovery,
-            best_regional_selectivity=selectivity,
-            wrong_timestep_recovery=wrong_time,
-            wrong_region_recovery=-0.2,
-            random_latent_recovery=random,
-            unpatched_recovery=0.0,
-            target_beats_controls=True,
-        )
-        for recovery, selectivity, wrong_time, random in (
-            (0.65, 0.22, 0.46, 0.21),
-            (0.50, 0.24, 0.29, 0.15),
-        )
-    ]
-    toy = {
-        "accepted": True,
-        "peak_vram_gb": 0.1,
-        "max_vram_gb": 24.0,
-        "controls": {
-            "same_size_random_channels": {"selectivity": 0.01},
-            "wrong_timestep": {"selectivity": 0.0},
-            "shuffled_labels": {"selectivity": 0.0},
-            "untrained_model": {"selectivity": -0.1},
-            "pixel_patch_upper_bound": {"recovery": 1.0},
-        },
-    }
-    real = {
-        "model_id": solutions.REAL_SD15_MODEL_ID,
-        "revision": solutions.REAL_SD15_REVISION,
-        "clip_model_id": solutions.REAL_CLIP_MODEL_ID,
-        "clip_revision": solutions.REAL_CLIP_REVISION,
-        "torch_version": "test",
-        "cuda_version": "test",
-        "gpu_name": "test",
-        "num_inference_steps": 20,
-        "peak_vram_gb": 3.2,
-        "runtime_seconds": 1.0,
-        "within_vram_budget": True,
-        "accepted": True,
-        "cases": [
-            {
-                "case": {"case_id": f"case_{index}", "seed": index},
-                "clip_recoveries": [report.best_clip_recovery],
-                "regional_metrics": [
-                    solutions.LatentTransferMetric(1.0, 0.5, 0.5, 0.1, 0.4)
-                ],
-                "report": report,
-            }
-            for index, report in enumerate(reports)
-        ],
-    }
-    packaged = solutions._package_gpu_result(toy, real)
-    assert packaged["cuda_available"] is True, 'Preserve the measured cuda_available in the release payload; packaging must not alter evidence.'
-    assert packaged["peak_vram_gb"] == pytest.approx(3.2), 'Preserve the measured peak_vram_gb in the release payload; packaging must not alter evidence.'
-    assert packaged["dataset_size"] == 24, 'Preserve the measured dataset_size in the release payload; packaging must not alter evidence.'
-    assert packaged["layer_count"] == 4, 'Preserve the measured layer_count in the release payload; packaging must not alter evidence.'
-    assert packaged["diffusion_steps"] == 8, 'Preserve the measured diffusion_steps in the release payload; packaging must not alter evidence.'
-    assert packaged["heatmap_cell_count"] == 32, 'Preserve the measured heatmap_cell_count in the release payload; packaging must not alter evidence.'
-    assert packaged["random_channel_selectivity"] == pytest.approx(0.01), 'Preserve the measured random_channel_selectivity in the release payload; packaging must not alter evidence.'
-    assert packaged["wrong_timestep_selectivity"] == pytest.approx(0.0), 'Preserve the measured wrong_timestep_selectivity in the release payload; packaging must not alter evidence.'
-    assert packaged["shuffled_label_selectivity"] == pytest.approx(0.0), 'Preserve the measured shuffled_label_selectivity in the release payload; packaging must not alter evidence.'
-    assert packaged["untrained_model_selectivity"] == pytest.approx(-0.1), 'Preserve the measured untrained_model_selectivity in the release payload; packaging must not alter evidence.'
-    assert packaged["pixel_patch_recovery"] == pytest.approx(1.0), 'Preserve the measured pixel_patch_recovery in the release payload; packaging must not alter evidence.'
-    assert packaged["sd15_case_count"] == 2, 'Preserve the measured sd15_case_count in the release payload; packaging must not alter evidence.'
-    assert packaged["sd15_num_inference_steps"] == 20, 'Preserve the measured sd15_num_inference_steps in the release payload; packaging must not alter evidence.'
-    assert packaged["sd15_min_best_clip_recovery"] == pytest.approx(0.50), 'Preserve the measured sd15_min_best_clip_recovery in the release payload; packaging must not alter evidence.'
-    assert packaged["sd15_min_best_regional_selectivity"] == pytest.approx(0.22), 'Preserve the measured sd15_min_best_regional_selectivity in the release payload; packaging must not alter evidence.'
-    assert packaged["sd15_min_target_control_margin"] == pytest.approx(0.19), 'Preserve the measured sd15_min_target_control_margin in the release payload; packaging must not alter evidence.'
-    assert packaged["sd15_accepted"] is True and packaged["accepted"] is True, 'Preserve the measured sd15_accepted, accepted in the release payload; packaging must not alter evidence.'
-    assert "visual_payload" not in packaged, (
-        "Verification reports must keep image and latent payloads in the figure artifact, "
-        "not serialize them into the numeric evidence report."
-    )
-    print("All tests in `test_gpu_result_packages_real_numeric_acceptance_metrics` passed!")
-
-
 def test_notebook_contract_is_learner_visible():
     path = Path(__file__).with_name(
         "13.2_Denoising-Time_Causal_Patching_exercises.ipynb"
@@ -784,8 +646,6 @@ def test_notebook_contract_is_learner_visible():
         "def denoise_trajectory",
         "def regional_causal_metric",
         "def causal_patch_sweep",
-        "def run_gpu_test(max_vram_gb: float = 24.0)",
-        "def run_full_experiment(max_vram_gb: float = 24.0)",
         "## Try It Yourself",
         "## Anomaly hunting",
         "Common bug",

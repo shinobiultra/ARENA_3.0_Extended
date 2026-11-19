@@ -21,9 +21,6 @@ from IPython.display import display
 from torch import Tensor, nn
 from torch.nn import functional as F
 
-GT_TIER = "GT-0"
-REAL_EXTENSION_GT_TIER = "GT-3"
-EXERCISE_ID = "13_2_denoising_time_causal_patching"
 DIFFICULTY = 5
 IMPORTANCE = 5
 EXPECTED_RUNTIME = "120-180 minutes; the full real sweep runs on CUDA"
@@ -1207,21 +1204,6 @@ if MAIN:
         patch_mix=PLAY_PATCH_MIX, cache_states=False,
     )
     display(play_patched.image)
-
-# %%
-
-def run_smoke_test(cpu=True):
-    _ = cpu
-    return reference.run_smoke_test(cpu=True)
-
-def run_gpu_test(max_vram_gb: float = 24.0) -> dict:
-    return reference.run_gpu_test(max_vram_gb=max_vram_gb)
-
-def run_full_experiment(max_vram_gb: float = 24.0) -> dict:
-    return reference.run_full_experiment(max_vram_gb=max_vram_gb)
-if MAIN:
-
-    tests.test_notebook_contract(run_smoke_test)
 
 # %%
 
