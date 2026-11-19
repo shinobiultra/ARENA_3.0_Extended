@@ -7,6 +7,7 @@ follows prek's own file matching.
 import re
 import shutil
 import subprocess
+import sys
 from pathlib import Path
 
 import pytest
@@ -14,6 +15,8 @@ import yaml
 
 ROOT = Path(__file__).resolve().parents[1]
 HOOKS = {"ruff-check", "ruff-format", "ty"}
+# prek from PATH, or installed next to this interpreter (an unactivated venv, as in CI).
+PREK = shutil.which("prek") or shutil.which("prek", path=str(Path(sys.executable).parent))
 pytestmark = pytest.mark.cpu
 
 
@@ -45,7 +48,7 @@ LEARNER = {
 
 def files_per_hook(paths: list[str]) -> dict[str, set[str]]:
     out = subprocess.run(
-        ["prek", "run", "--dry-run", "--verbose", "--color", "never", "--files", *paths],
+        [str(PREK), "run", "--dry-run", "--verbose", "--color", "never", "--files", *paths],
         cwd=ROOT,
         capture_output=True,
         text=True,
@@ -70,7 +73,7 @@ def test_the_hooks_are_ruff_check_fix_ruff_format_and_ty_check():
     assert hooks["ty"]["entry"].startswith("ty check")
 
 
-@pytest.mark.skipif(shutil.which("prek") is None, reason="prek is not installed")
+@pytest.mark.skipif(PREK is None, reason="prek is not installed")
 def test_the_hooks_run_on_maintainer_code_and_skip_learner_material():
     learner = {kind: pick() for kind, pick in LEARNER.items()}
     selected = files_per_hook([*MAINTAINER, *learner.values()])

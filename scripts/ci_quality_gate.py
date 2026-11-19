@@ -2,7 +2,8 @@
 
 The hosted lane runs cheap checks that need no model downloads: the
 chapters 0-4 preservation audit, the merged-config check, the course-surface,
-artifact-hygiene and no-minified audits, and the batch-exit test. Fresh-kernel
+artifact-hygiene and no-minified audits, the batch runner tests (batch exit, lesson
+time limit, lost worker, Julia environment sync) and the hook selection. Fresh-kernel
 lesson runs stay out of CI; they happen on the laptop or the Julia worker
 (`infrastructure/extension/build.py <section> --execute`).
 """
@@ -14,7 +15,6 @@ import subprocess
 import sys
 from pathlib import Path
 
-
 ROOT = Path(__file__).resolve().parents[1]
 
 HOSTED_CPU_PYTEST_TARGETS = [
@@ -24,6 +24,12 @@ HOSTED_CPU_PYTEST_TARGETS = [
     "tests/test_no_minified_files_audit.py",
     "tests/test_build_merged_config.py",
     "tests/test_extension_batch_exit.py",
+    "tests/test_extension_lesson_time_limit.py",
+    "tests/test_extension_cluster_worker.py",
+    "tests/test_extension_remote_request.py",
+    "tests/test_extension_env_sync.py",
+    "tests/test_extension_julia_entry_points.py",
+    "tests/test_prek_hooks.py",
 ]
 
 # The study reader lane checks the learner app without running lesson code.

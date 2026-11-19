@@ -1,5 +1,12 @@
 # Minimal hosted-CI dependencies for metadata and course-surface gates.
-# Do not use this file for notebook execution or GPU evidence generation.
+# Do not use this file for lesson notebook execution or GPU evidence generation.
 pytest
 pyyaml
 pillow
+# build.py and its time-limit test, which runs tiny fixture notebooks in a CPU kernel.
+nbformat
+nbclient
+ipykernel
+tabulate
+# The maintainer-hook selection test asks prek which files each hook covers.
+prek==0.5.2
