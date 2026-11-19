@@ -9,8 +9,8 @@ How to set up this repo on your own machine, and what to expect from your hardwa
 - Python managed by [uv](https://docs.astral.sh/uv/); you don't need to install Python yourself.
 - macOS is not supported.
 
-The reference machine is a laptop with a 24 GB RTX 5090 (Laptop GPU). Everything in the course
-was run there with PyTorch 2.15 built for CUDA 13.4.
+The reference machine is a laptop with a 24 GB RTX 5090 (Laptop GPU). The lessons are run there
+with PyTorch 2.15 built for CUDA 13.4.
 
 ## Install
 
@@ -37,9 +37,6 @@ Skip the extra if you don't plan to do 5.4.
 | No GPU | 62 lessons run fully on CPU and 16 run slowly. The 8 lessons that need CUDA (5.4, 5.8, 11.1, 13.1, 13.2, 14.1, 14.2, 16.7) can't run, but you can read their saved outputs in each solutions notebook. |
 | 8 GB GPU | Everything except 11.1. |
 | 16 GB GPU or more | Everything. 11.1 peaks at 13.6 GiB. |
-
-Slow CPU lessons are marked as such at the top of the lesson. If you are unsure, start the
-lesson and read its first cell: it says what it needs.
 
 ## Check your environment
 
@@ -106,7 +103,7 @@ uv export --frozen --no-hashes --no-dev --emit-index-url --format requirements-t
 
 `--frozen` reads only `uv.lock`, so it needs no network. The export keeps the PyTorch CUDA wheel
 index (`--extra-index-url`) and the local `./infrastructure/extension/ipykernel_pipe_fix`
-package, and leaves out the `cuda-kernels` extra. `tests/test_requirements_export.py` fails
+package, and leaves out the `cuda-kernels` extra. `tests/test_requirements_lock.py` fails
 if the committed file drifts from a fresh export.
 
 `requirements-original.txt` (upstream ARENA) and `requirements-ci-cpu.txt` (hosted CI) are
